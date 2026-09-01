@@ -750,7 +750,7 @@ const AdminProductForm = () => {
     }
 
     if (image.filePath) {
-      return `${import.meta.env.VITE_API_BASE_URL}${image.filePath}`;
+      return `http://localhost:9103${image.filePath}`;
     }
 
     return "";

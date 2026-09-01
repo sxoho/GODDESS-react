@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import "../../styles/admin/AdminProductReview.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = "http://localhost:9103";
 
 type Review = {
   id: number;

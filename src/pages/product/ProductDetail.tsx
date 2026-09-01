@@ -5,8 +5,7 @@ import "../../styles/product/ProductDetail.css";
 import { useGlobalStore } from "../../store/store";
 import { addCartItem } from "../../api/cartApi";
 
-// const API_BASE = "http://10.1.205.116:9102";
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = "http://localhost:9103";
 
 const TEMP_IMAGE =
   "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=90";

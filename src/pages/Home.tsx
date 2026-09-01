@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import "../styles/home/Home.css";
 
-const API_BASE = `http://${window.location.hostname}:9102`;
+const API_BASE = "http://localhost:9103";
 
 type Product = {
   id?: number;

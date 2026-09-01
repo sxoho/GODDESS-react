@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../store/store";
 import "../../styles/wishlist/Wishlist.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = "http://localhost:9103";
 const PAGE_SIZE = 12;
 
 type WishlistItem = {

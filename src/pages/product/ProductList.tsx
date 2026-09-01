@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../styles/product/ProductList.css";
 import { useGlobalStore } from "../../store/store";
 
-const API_BASE = `http://${window.location.hostname}:9102`;
+const API_BASE = "http://localhost:9103";
 
 const TEMP_IMAGE =
   "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80";
