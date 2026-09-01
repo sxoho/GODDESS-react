@@ -1,0 +1,159 @@
+/* src/styles/order/ReturnRequestModal.css */
+.return-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-family: inherit;
+}
+
+.return-modal-content {
+    background-color: #fff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.return-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 12px;
+}
+
+.return-modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #222;
+}
+
+.btn-close {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+}
+
+.btn-close:hover {
+    color: #333;
+}
+
+.return-form .form-group {
+    margin-bottom: 20px;
+}
+
+.return-form label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 8px;
+}
+
+.return-form input[type="text"],
+.return-form select,
+.return-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.return-form .readonly-input {
+    background-color: #f8f9fa;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.return-form textarea {
+    resize: vertical;
+}
+
+.file-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-upload {
+    background-color: #f1f3f5;
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-upload:hover {
+    background-color: #e9ecef;
+}
+
+.file-name {
+    font-size: 13px;
+    color: #666;
+}
+
+.file-hint {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    margin-top: 6px;
+}
+
+.return-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 32px;
+    border-top: 1px solid #eaeaea;
+    padding-top: 20px;
+}
+
+.btn-cancel {
+    padding: 10px 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-submit {
+    padding: 10px 24px;
+    background-color: #d93025;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-submit:disabled {
+    background-color: #f48fb1;
+    cursor: not-allowed;
+}

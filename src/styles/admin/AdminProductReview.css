@@ -1,0 +1,31 @@
+.admin-review-page { max-width:1480px; margin:0 auto; padding:38px 34px 80px; }
+.admin-review-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:30px; padding-bottom:24px; border-bottom:1px solid #ddd; }
+.admin-review-heading p { margin:0 0 7px; color:#999; font-size:10px; letter-spacing:.15em; }
+.admin-review-heading h1 { margin:0; font-size:30px; font-weight:600; }
+.admin-review-heading div > span { display:block; margin-top:9px; color:#888; font-size:12px; }
+.admin-review-heading > strong { font-size:27px; font-weight:500; }
+.admin-review-heading > strong small { color:#aaa; font-size:9px; }
+.admin-review-filter { display:grid; grid-template-columns:minmax(300px,1fr) 150px 130px auto; gap:8px; margin:24px 0 18px; }
+.admin-review-filter form { display:grid; grid-template-columns:1fr 70px; }
+.admin-review-filter input, .admin-review-filter select, .admin-review-filter form button { height:42px; border:1px solid #ddd; background:#fff; font-size:11px; }
+.admin-review-filter input { padding:0 13px; }
+.admin-review-filter form button { border-left:0; background:#444; color:#fff; cursor:pointer; }
+.admin-review-reset { border:0; background:transparent; color:#999; font-size:11px; cursor:pointer; }
+.admin-review-table-wrap { border-top:2px solid #444; }
+.admin-review-table-head, .admin-review-row { display:grid; grid-template-columns:70px minmax(180px,1.1fr) minmax(260px,2fr) 110px 70px 100px 70px; gap:14px; align-items:center; }
+.admin-review-table-head { min-height:46px; padding:0 16px; border-bottom:1px solid #ddd; color:#888; font-size:10px; }
+.admin-review-list article { border-bottom:1px solid #e8e8e8; }
+.admin-review-row { width:100%; min-height:76px; padding:12px 16px; border:0; background:#fff; color:#555; text-align:left; cursor:pointer; }
+.admin-review-row:hover { background:#fafafa; }
+.admin-review-product strong, .admin-review-product small { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.admin-review-product small { margin-top:4px; color:#aaa; font-size:9px; }
+.admin-review-title { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.admin-review-detail { padding:28px 34px; background:#f8f8f8; }
+.admin-review-detail h3 { margin:12px 0 0; font-size:15px; }
+.admin-review-detail p { margin:10px 0 0; color:#555; font-size:12px; line-height:1.8; white-space:pre-wrap; }
+.admin-review-detail-actions { display:flex; justify-content:flex-end; gap:7px; margin-top:22px; padding-top:18px; border-top:1px solid #e2e2e2; }
+.admin-review-detail-actions button { min-width:120px; height:36px; border:1px solid #bbb; background:#fff; color:#555; font-size:10px; cursor:pointer; }
+.admin-review-message { display:flex; min-height:280px; flex-direction:column; align-items:center; justify-content:center; color:#888; font-size:12px; }
+.admin-review-pagination { display:flex; justify-content:center; gap:4px; margin-top:30px; }
+.admin-review-pagination button { min-width:32px; height:32px; border:0; background:transparent; color:#999; cursor:pointer; }
+.admin-review-pagination button.active { background:#444; color:#fff; }

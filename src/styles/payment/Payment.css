@@ -1,0 +1,121 @@
+/* src/styles/payment/Payment.css */
+.payment-container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 0 20px;
+    font-family: inherit;
+}
+
+.payment-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.payment-loading,
+.payment-error {
+    text-align: center;
+    padding: 60px 0;
+    font-size: 16px;
+    color: #666;
+}
+
+.payment-card {
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.payment-order-info {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #eee;
+}
+
+.payment-order-info h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: #222;
+}
+
+.payment-order-info p {
+    font-size: 15px;
+    color: #555;
+    margin: 8px 0;
+}
+
+.payment-order-info .total-amount {
+    font-size: 18px;
+    color: #1a73e8;
+    margin-top: 16px;
+}
+
+.payment-method-section h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: #222;
+}
+
+.payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.method-label {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: all 0.2s;
+}
+
+.method-label:hover {
+    border-color: #aaa;
+}
+
+.method-label.selected {
+    border-color: #1a73e8;
+    background-color: #f4f8ff;
+    font-weight: 600;
+    color: #1a73e8;
+}
+
+.method-label input[type="radio"] {
+    margin-right: 12px;
+    accent-color: #1a73e8;
+}
+
+.payment-actions {
+    margin-top: 40px;
+}
+
+.btn-pay {
+    width: 100%;
+    background-color: #1a73e8;
+    color: #fff;
+    border: none;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-pay:hover:not(:disabled) {
+    background-color: #1557b0;
+}
+
+.btn-pay:disabled {
+    background-color: #a0c3ff;
+    cursor: not-allowed;
+}

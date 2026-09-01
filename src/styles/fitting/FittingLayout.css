@@ -1,0 +1,183 @@
+/* =========================
+   AI FITTING 전체 레이아웃
+========================= */
+
+.fitting-layout {
+  display: flex;
+
+  width: 100%;
+  min-height: calc(100vh - 80px);
+
+  background: #ffffff;
+}
+
+
+/* =========================
+   왼쪽 사이드바
+========================= */
+
+.fitting-sidebar {
+  flex-shrink: 0;
+
+  width: 240px;
+  min-height: calc(100vh - 80px);
+
+  padding: 48px 28px;
+
+  border-right: 1px solid #e8e8e8;
+
+  background: #fafafa;
+
+  box-sizing: border-box;
+}
+
+
+.fitting-sidebar-header {
+  margin-bottom: 48px;
+}
+
+
+.fitting-sidebar-subtitle {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #999;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  letter-spacing: 1.8px;
+}
+
+
+.fitting-sidebar-header h2 {
+  margin: 0;
+
+  color: #111;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  letter-spacing: -0.4px;
+}
+
+
+/* =========================
+   메뉴
+========================= */
+
+.fitting-sidebar-menu {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+
+.fitting-sidebar-link {
+  display: block;
+
+  padding: 14px 12px;
+
+  border-left: 2px solid transparent;
+
+  color: #777;
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.fitting-sidebar-link:hover {
+  color: #111;
+
+  background: #f4f4f4;
+}
+
+
+.fitting-sidebar-link.active {
+  border-left-color: #111;
+
+  background: #f1f1f1;
+
+  color: #111;
+
+  font-weight: 700;
+}
+
+
+/* =========================
+   오른쪽 내용
+========================= */
+
+.fitting-layout-content {
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 52px 64px 100px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   반응형
+========================= */
+
+@media (max-width: 900px) {
+
+  .fitting-layout {
+    display: block;
+  }
+
+
+  .fitting-sidebar {
+    width: 100%;
+    min-height: auto;
+
+    padding: 24px 20px;
+
+    border-right: 0;
+    border-bottom: 1px solid #e8e8e8;
+  }
+
+
+  .fitting-sidebar-header {
+    margin-bottom: 20px;
+  }
+
+
+  .fitting-sidebar-menu {
+    flex-direction: row;
+
+    overflow-x: auto;
+  }
+
+
+  .fitting-sidebar-link {
+    flex-shrink: 0;
+
+    border-left: 0;
+    border-bottom: 2px solid transparent;
+  }
+
+
+  .fitting-sidebar-link.active {
+    border-left-color: transparent;
+    border-bottom-color: #111;
+  }
+
+
+  .fitting-layout-content {
+    padding: 36px 20px 80px;
+  }
+}

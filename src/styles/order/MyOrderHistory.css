@@ -1,0 +1,270 @@
+/* src/styles/order/MyOrderHistory.css */
+.my-order-history-container {
+    font-family: inherit;
+    width: 100%;
+}
+
+.history-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 12px;
+}
+
+.history-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* 좌측: 주문 카드 목록 */
+.order-list-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.order-card {
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.order-card:hover {
+    border-color: #ccc;
+}
+
+.order-card.selected {
+    border-color: #1a73e8;
+    background-color: #f4f8ff;
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.order-date { color: #888; }
+.order-status { font-weight: bold; }
+.order-status.paid { color: #00c853; }
+.order-status.payment_waiting { color: #ff9100; }
+
+.order-name {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    color: #222;
+}
+
+.order-price {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #1a73e8;
+}
+
+/* 우측: 배송 타임라인 */
+.delivery-detail-section {
+    flex: 1;
+    position: sticky;
+    top: 20px;
+}
+
+.delivery-placeholder, .delivery-loading, .delivery-error {
+    background-color: #fcfcfc;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    padding: 60px 20px;
+    text-align: center;
+    color: #666;
+}
+
+.delivery-timeline-card {
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.delivery-timeline-card h4 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: #222;
+}
+
+.courier-info {
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    color: #444;
+}
+
+.timeline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+}
+
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+}
+
+.timeline-step.active {
+    opacity: 1;
+}
+
+.step-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #ccc;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.timeline-step.active .step-circle {
+    background-color: #1a73e8;
+}
+
+.step-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+.timeline-line {
+    flex: 1;
+    height: 2px;
+    background-color: #eaeaea;
+    margin: 0 16px;
+    position: relative;
+    top: -12px;
+}
+
+/* 반품 버튼 */
+.delivery-actions {
+    border-top: 1px solid #eaeaea;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.btn-return-request {
+    background-color: #fff;
+    color: #d93025;
+    border: 1px solid #d93025;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-return-request:hover {
+    background-color: #fce8e6;
+}
+
+.mt-4 {
+    margin-top: 16px;
+}
+
+.order-detail-card {
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.order-detail-card h4 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: #222;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+}
+
+.order-detail-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fcfcfc;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #f1f3f5;
+}
+
+.detail-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.item-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.item-option {
+    margin: 0;
+    font-size: 13px;
+    color: #888;
+}
+
+.detail-item-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.detail-item-price span {
+    font-size: 13px;
+    color: #666;
+}
+
+.detail-item-price strong {
+    font-size: 16px;
+    color: #1a73e8;
+}
+
+.loading-text, .empty-text {
+    font-size: 14px;
+    color: #777;
+    text-align: center;
+    padding: 20px 0;
+}

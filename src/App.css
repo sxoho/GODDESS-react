@@ -1,0 +1,466 @@
+/* ==================================================
+   ONNIVER App 공통 레이아웃
+================================================== */
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #222222;
+}
+
+
+/* ==================================================
+   상단 Header
+================================================== */
+
+.header {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  width: min(1200px, calc(100% - 40px));
+  min-height: 72px;
+  margin: 0 auto;
+}
+
+.logo {
+  flex-shrink: 0;
+  color: #111111;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-decoration: none;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-left: 55px;
+}
+
+.navigation a,
+.member-menu a {
+  color: #444444;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.navigation a:hover,
+.member-menu a:hover {
+  color: #111111;
+  opacity: 0.65;
+}
+
+.member-menu {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-left: auto;
+}
+
+
+/* ==================================================
+   페이지 본문
+================================================== */
+
+.content {
+  flex: 1;
+  width: 100%;
+}
+
+
+/* ==================================================
+   Home
+================================================== */
+
+.home {
+  width: 100%;
+}
+
+.home-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 620px;
+  padding: 80px 20px;
+  text-align: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f7f7f7 0%,
+      #ffffff 52%,
+      #f0f2f5 100%
+    );
+}
+
+.home-label {
+  margin: 0 0 18px;
+  color: #777777;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.home-title {
+  margin: 0;
+  color: #111111;
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 5px;
+}
+
+.home-description {
+  max-width: 620px;
+  margin: 30px auto 0;
+  color: #666666;
+  font-size: 17px;
+  line-height: 1.8;
+  word-break: keep-all;
+}
+
+.home-button-area {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 38px;
+}
+
+.primary-button,
+.secondary-button {
+  min-width: 170px;
+  padding: 14px 22px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.primary-button {
+  color: #ffffff;
+  background-color: #111111;
+  border: 1px solid #111111;
+}
+
+.primary-button:hover {
+  background-color: #333333;
+  transform: translateY(-2px);
+}
+
+.secondary-button {
+  color: #222222;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+}
+
+.secondary-button:hover {
+  border-color: #777777;
+  transform: translateY(-2px);
+}
+
+
+/* ==================================================
+   하단 Footer
+================================================== */
+
+.footer {
+  width: 100%;
+  margin-top: auto;
+  padding: 30px 20px;
+  box-sizing: border-box;
+
+  color: #777777;
+  text-align: center;
+
+  background-color: #fafafa;
+  border-top: 1px solid #eeeeee;
+}
+
+.footer p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.footer-description {
+  margin-bottom: 8px !important;
+}
+
+.footer-copyright {
+  color: #999999;
+  font-size: 12px !important;
+}
+
+
+/* ==================================================
+   반응형
+================================================== */
+
+@media (max-width: 768px) {
+
+  .header-inner {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 16px 0;
+  }
+
+  .navigation {
+    order: 3;
+    width: 100%;
+    margin: 15px 0 0;
+    gap: 16px;
+    overflow-x: auto;
+  }
+
+  .member-menu {
+    margin-left: 20px;
+  }
+
+  .home-hero {
+    min-height: 520px;
+    padding: 60px 20px;
+  }
+
+  .home-description {
+    font-size: 15px;
+  }
+
+  .home-button-area {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   Member - 로그인 / 회원가입
+========================================================= */
+
+.member-page {
+  min-height: calc(100vh - 180px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 70px 20px 100px;
+  background: #faf9f7;
+}
+
+.member-container {
+  width: 100%;
+  max-width: 520px;
+  box-sizing: border-box;
+}
+
+.member-card {
+  width: 100%;
+  max-width: 460px;
+  padding: 50px 46px;
+  background: #ffffff;
+  border: 1px solid #e8e5df;
+  box-sizing: border-box;
+}
+
+.member-signup-card {
+  max-width: 620px;
+}
+
+.member-title {
+  margin: 0 0 10px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #171717;
+}
+
+.member-subtitle {
+  margin: 0 0 40px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #88827a;
+}
+
+.member-form-group {
+  margin-bottom: 22px;
+}
+
+.member-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.member-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #d9d5cf;
+  background: #ffffff;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #222222;
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.member-input::placeholder {
+  color: #b3aea7;
+}
+
+.member-input:focus {
+  border-color: #55504a;
+  box-shadow: 0 0 0 1px #55504a;
+}
+
+.member-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.member-input-row .member-input {
+  flex: 1;
+}
+
+.member-check-button {
+  min-width: 92px;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #272727;
+  background: #ffffff;
+  color: #222222;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.member-check-button:hover {
+  background: #272727;
+  color: #ffffff;
+}
+
+.member-main-button {
+  width: 100%;
+  height: 50px;
+  margin-top: 12px;
+  border: 0;
+  background: #171717;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
+}
+
+.member-main-button:hover {
+  background: #3a3734;
+}
+
+.member-main-button:active {
+  transform: translateY(1px);
+}
+
+.member-bottom {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid #ece9e4;
+  text-align: center;
+  font-size: 13px;
+  color: #77716a;
+}
+
+.member-bottom a {
+  margin-left: 6px;
+  color: #171717;
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px solid #171717;
+}
+
+.member-bottom a:hover {
+  opacity: 0.6;
+}
+
+.member-section-title {
+  margin: 36px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e6e2dc;
+  font-size: 15px;
+  font-weight: 700;
+  color: #292929;
+}
+
+.member-required {
+  margin-left: 3px;
+  color: #a86f55;
+}
+
+@media (max-width: 640px) {
+
+  .member-page {
+    padding: 40px 16px 70px;
+  }
+
+  .member-card {
+    padding: 36px 24px;
+  }
+
+  .member-input-row {
+    flex-direction: column;
+  }
+
+  .member-check-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,300 @@
+.customer-qna-page {
+  width: min(1080px, calc(100% - 60px));
+  margin: 0 auto;
+  padding: 74px 0 110px;
+  box-sizing: border-box;
+}
+
+.customer-qna-heading {
+  margin-bottom: 52px;
+  text-align: center;
+}
+
+.customer-qna-heading p {
+  margin: 0 0 10px;
+  color: #999;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+
+.customer-qna-heading h1 {
+  margin: 0;
+  color: #111;
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.customer-qna-heading > span {
+  display: block;
+  margin-top: 14px;
+  color: #777;
+  font-size: 13px;
+}
+
+.customer-qna-form {
+  width: 100%;
+  border-top: 2px solid #222;
+}
+
+.customer-qna-form-row {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  min-height: 76px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.customer-qna-form-row > label {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  box-sizing: border-box;
+  background: #fafafa;
+  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.customer-qna-required {
+  margin-left: 4px;
+  color: #9f4f4f;
+}
+
+.customer-qna-form-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 15px 20px;
+  box-sizing: border-box;
+}
+
+.customer-qna-form-field input,
+.customer-qna-form-field select,
+.customer-qna-form-field textarea {
+  width: 100%;
+  border: 1px solid #d7d7d7;
+  background: #fff;
+  color: #333;
+  font-family: inherit;
+  font-size: 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.customer-qna-form-field input,
+.customer-qna-form-field select {
+  height: 44px;
+  padding: 0 13px;
+}
+
+.customer-qna-form-field select {
+  cursor: pointer;
+}
+
+.customer-qna-form-field textarea {
+  min-height: 230px;
+  padding: 15px;
+  line-height: 1.8;
+  resize: vertical;
+}
+
+.customer-qna-form-field input:focus,
+.customer-qna-form-field select:focus,
+.customer-qna-form-field textarea:focus {
+  border-color: #666;
+}
+
+.customer-qna-form-field input::placeholder,
+.customer-qna-form-field textarea::placeholder {
+  color: #aaa;
+}
+
+.customer-qna-content-row {
+  min-height: 280px;
+}
+
+.customer-qna-content-row > label {
+  align-items: flex-start;
+  padding-top: 25px;
+}
+
+.customer-qna-help {
+  margin: 8px 0 0;
+  color: #999;
+  font-size: 10px;
+}
+
+.customer-qna-length {
+  margin-top: 7px;
+  color: #aaa;
+  font-size: 10px;
+  text-align: right;
+}
+
+.customer-qna-notice {
+  padding: 22px 25px;
+  border-bottom: 1px solid #ddd;
+  background: #fafafa;
+  color: #777;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.customer-qna-notice strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #444;
+  font-size: 11px;
+}
+
+.customer-qna-notice p {
+  margin: 3px 0;
+}
+
+.customer-qna-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 34px;
+}
+
+.customer-qna-actions button,
+.customer-qna-login-box button {
+  min-width: 126px;
+  height: 46px;
+  padding: 0 20px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.customer-qna-actions button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.customer-qna-cancel-button {
+  border: 1px solid #bbb;
+  background: #fff;
+  color: #555;
+}
+
+.customer-qna-submit-button,
+.customer-qna-login-box button {
+  border: 1px solid #222;
+  background: #222;
+  color: #fff;
+}
+
+.customer-qna-login-box {
+  padding: 75px 24px;
+  border-top: 2px solid #222;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+.customer-qna-login-box p {
+  margin: 0 0 24px;
+  color: #777;
+  font-size: 13px;
+}
+
+/* =========================================================
+   고객 문의 작성 화면 글씨 크기 확대
+   "고객 문의" 메인 제목은 제외
+========================================================= */
+
+/* CUSTOMER SERVICE */
+.customer-qna-heading p {
+  font-size: 13px;
+}
+
+/* 주문, 배송, 교환·반품 및 기타 이용 문의를 남겨주세요. */
+.customer-qna-heading > span {
+  font-size: 16px;
+}
+
+/* 문의 유형 / 관련 주문 번호 / 제목 / 문의 내용 */
+.customer-qna-form-row > label {
+  font-size: 15px;
+}
+
+/* select / input / textarea 입력 글씨 */
+.customer-qna-form-field input,
+.customer-qna-form-field select,
+.customer-qna-form-field textarea {
+  font-size: 15px;
+}
+
+/* 입력창 placeholder도 같이 확대 */
+.customer-qna-form-field input::placeholder,
+.customer-qna-form-field textarea::placeholder {
+  font-size: 15px;
+}
+
+/* 관련 주문 번호 아래 설명 */
+.customer-qna-help {
+  font-size: 13px;
+}
+
+/* 제목 0 / 255 */
+.customer-qna-length {
+  font-size: 13px;
+}
+
+/* 문의 전 확인해주세요 영역 */
+.customer-qna-notice {
+  font-size: 14px;
+}
+
+/* 문의 전 확인해주세요 제목 */
+.customer-qna-notice strong {
+  font-size: 14px;
+}
+
+/* 취소 / 문의 등록 버튼 */
+.customer-qna-actions button,
+.customer-qna-login-box button {
+  font-size: 14px;
+}
+
+@media (max-width: 700px) {
+  .customer-qna-page {
+    width: calc(100% - 32px);
+    padding: 52px 0 80px;
+  }
+
+  .customer-qna-heading {
+    margin-bottom: 38px;
+  }
+
+  .customer-qna-heading h1 {
+    font-size: 30px;
+  }
+
+  .customer-qna-form-row {
+    display: block;
+  }
+
+  .customer-qna-form-row > label {
+    min-height: 48px;
+    padding: 0 15px;
+  }
+
+  .customer-qna-content-row > label {
+    align-items: center;
+    padding-top: 0;
+  }
+
+  .customer-qna-form-field {
+    padding: 15px;
+  }
+
+  .customer-qna-actions button {
+    flex: 1;
+    min-width: 0;
+  }
+}

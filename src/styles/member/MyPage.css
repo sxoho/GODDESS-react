@@ -1,0 +1,2608 @@
+.mypage {
+  width: 100%;
+  max-width: 1200px;
+
+  margin: 0 auto;
+
+  padding: 60px 30px 100px;
+
+  box-sizing: border-box;
+
+  color: #222;
+}
+
+
+/* =========================
+   상단
+========================= */
+
+.mypage-heading {
+  padding: 20px 0 45px;
+
+  text-align: center;
+}
+
+.mypage-heading-label {
+  margin: 0 0 10px;
+
+  color: #999;
+
+  font-size: 11px;
+  letter-spacing: 0.2em;
+}
+
+.mypage-heading h1 {
+  margin: 0;
+
+  font-size: 36px;
+  font-weight: 500;
+
+  letter-spacing: 0.08em;
+}
+
+.mypage-heading-description {
+  margin: 20px 0 0;
+
+  color: #777;
+
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.mypage-heading-description strong {
+  color: #222;
+
+  font-weight: 600;
+}
+
+
+/* =========================
+   상단 메뉴
+========================= */
+
+.mypage-navigation {
+  display: grid;
+
+  grid-template-columns:
+    repeat(6, 1fr);
+
+  margin-bottom: 60px;
+
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #ddd;
+}
+
+.mypage-navigation button {
+  height: 58px;
+
+  border: none;
+  border-right: 1px solid #eee;
+
+  background: #fff;
+
+  color: #999;
+
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+}
+
+.mypage-navigation button:last-child {
+  border-right: none;
+}
+
+.mypage-navigation button.active {
+  background: #222;
+
+  color: #fff;
+}
+
+.mypage-navigation button:disabled {
+  cursor: default;
+
+  opacity: 0.55;
+}
+
+
+/* =========================
+   공통 section
+========================= */
+
+.mypage-section {
+  margin-bottom: 70px;
+}
+
+.mypage-section-heading {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 18px;
+
+  margin-bottom: 22px;
+}
+
+.mypage-section-heading > span {
+  padding-top: 3px;
+
+  color: #999;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mypage-section-heading p {
+  margin: 0 0 4px;
+
+  color: #999;
+
+  font-size: 10px;
+  letter-spacing: 0.15em;
+}
+
+.mypage-section-heading h2 {
+  margin: 0;
+
+  font-size: 22px;
+  font-weight: 500;
+}
+
+
+/* =========================
+   회원 정보
+========================= */
+
+.mypage-info {
+  border-top: 1px solid #222;
+}
+
+.mypage-info-row {
+  display: grid;
+
+  grid-template-columns:
+    200px 1fr;
+
+  min-height: 60px;
+
+  border-bottom: 1px solid #eee;
+
+  align-items: center;
+}
+
+.mypage-info-label {
+  padding-left: 20px;
+
+  color: #777;
+
+  font-size: 13px;
+}
+
+.mypage-info-row > span:not(.mypage-info-label),
+.mypage-info-row > strong {
+  padding: 16px 20px;
+
+  color: #222;
+
+  font-size: 14px;
+  font-weight: 400;
+
+  line-height: 1.7;
+}
+
+.mypage-info-row > strong {
+  font-weight: 600;
+}
+
+
+/* =========================
+   수정 버튼
+========================= */
+
+.mypage-info-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-top: 24px;
+}
+
+.mypage-update-button {
+  min-width: 130px;
+  height: 44px;
+
+  padding: 0 20px;
+
+  border: 1px solid #222;
+
+  background: #222;
+
+  color: #fff;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.mypage-update-button:hover {
+  background: #fff;
+
+  color: #222;
+}
+
+
+/* =========================
+   로그인 내역
+========================= */
+
+.mypage-login-history-wrap {
+  max-height: 400px;
+
+  overflow-x: auto;
+  overflow-y: auto;
+
+  border-top: 1px solid #222;
+}
+
+.mypage-login-history-table {
+  width: 100%;
+
+  min-width: 800px;
+
+  border-collapse: collapse;
+}
+
+.mypage-login-history-table th {
+  position: sticky;
+  top: 0;
+
+  padding: 17px 20px;
+
+  border-bottom: 1px solid #ddd;
+
+  background: #fafafa;
+
+  color: #666;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  text-align: left;
+}
+
+.mypage-login-history-table td {
+  padding: 18px 20px;
+
+  border-bottom: 1px solid #eee;
+
+  color: #333;
+
+  font-size: 13px;
+}
+
+.mypage-login-history-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.mypage-login-history-empty {
+  height: 100px;
+
+  color: #999 !important;
+
+  text-align: center !important;
+}
+
+
+/* =========================
+   로딩 / 오류
+========================= */
+
+.mypage-message {
+  margin: 80px auto;
+
+  padding: 60px 20px;
+
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #eee;
+
+  color: #777;
+
+  text-align: center;
+
+  font-size: 14px;
+}
+
+
+/* =========================
+   반응형
+========================= */
+
+@media (max-width: 800px) {
+
+  .mypage {
+    padding:
+      40px 20px
+      80px;
+  }
+
+  .mypage-navigation {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .mypage-navigation button {
+    border-bottom:
+      1px solid #eee;
+  }
+
+  .mypage-info-row {
+    grid-template-columns:
+      130px 1fr;
+  }
+
+  .mypage-info-label {
+    padding-left: 10px;
+  }
+}
+
+/* =========================
+   마이페이지 수정 입력창
+========================= */
+
+.mypage-edit-input {
+  width: calc(100% - 40px);
+  max-width: 520px;
+
+  margin: 10px 20px;
+  padding: 12px 14px;
+
+  border: 1px solid #d8d8d8;
+  background: #fff;
+
+  box-sizing: border-box;
+
+  color: #222;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+}
+
+.mypage-edit-input:focus {
+  border-color: #333;
+}
+
+
+/* 우편번호 */
+.mypage-edit-zipcode {
+  max-width: 180px;
+}
+
+
+/* 수정 버튼 영역 */
+.mypage-info-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+
+/* 취소 */
+.mypage-cancel-button {
+  min-width: 100px;
+  height: 44px;
+
+  padding: 0 20px;
+
+  border: 1px solid #ccc;
+
+  background: #fff;
+
+  color: #555;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.mypage-cancel-button:hover {
+  border-color: #555;
+}
+
+
+/* 저장 중 버튼 */
+.mypage-update-button:disabled,
+.mypage-cancel-button:disabled {
+  cursor: default;
+
+  opacity: 0.5;
+}
+
+/* =========================
+   아이디 / 닉네임 중복 확인
+========================= */
+
+.mypage-edit-check-wrap {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding-right: 20px;
+}
+
+
+/* 중복 확인이 있는 입력창 */
+.mypage-edit-check-wrap .mypage-edit-input {
+  flex: 1;
+
+  width: auto;
+  max-width: 520px;
+
+  margin-right: 0;
+}
+
+
+/* 중복 확인 버튼 */
+.mypage-check-button {
+  min-width: 90px;
+  height: 42px;
+
+  padding: 0 14px;
+
+  border: 1px solid #555;
+
+  background: #fff;
+
+  color: #333;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+
+.mypage-check-button:hover {
+  border-color: #222;
+
+  background: #222;
+
+  color: #fff;
+}
+
+/* =========================
+   마이페이지 글씨 크기 조정
+========================= */
+
+/* 안녕하세요, OOO님 / 회원 정보를 확인해보세요 */
+.mypage-heading-description {
+  font-size: 17px;
+  line-height: 1.9;
+}
+
+/* 닉네임 강조 */
+.mypage-heading-description strong {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+
+/* 01, 02 숫자 */
+.mypage-section-heading > span {
+  font-size: 14px;
+}
+
+
+/* MY INFORMATION / LOGIN HISTORY */
+.mypage-section-heading p {
+  font-size: 12px;
+}
+
+
+/* 내 정보 / 로그인 내역 */
+.mypage-section-heading h2 {
+  font-size: 27px;
+  font-weight: 600;
+}
+
+
+/* 내 정보 왼쪽 항목
+   아이디, 이름, 닉네임, 이메일 등 */
+.mypage-info-label {
+  font-size: 15px;
+}
+
+
+/* 실제 회원 정보 */
+.mypage-info-row > span:not(.mypage-info-label),
+.mypage-info-row > strong {
+  font-size: 16px;
+}
+
+
+/* 로그인 내역 표 제목 */
+.mypage-login-history-table th {
+  font-size: 14px;
+}
+
+
+/* 로그인 내역 데이터 */
+.mypage-login-history-table td {
+  font-size: 14px;
+}
+
+/* =========================
+   마이페이지 비밀번호 표시
+========================= */
+
+.mypage-password-display {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-left: 20px;
+  box-sizing: border-box;
+}
+
+.mypage-password-display > span {
+  font-size: 16px;
+  color: #333333;
+  letter-spacing: 2px;
+}
+
+.mypage-password-change-button {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid #555555;
+  background: #ffffff;
+  color: #333333;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mypage-password-change-button:hover {
+  border-color: #222222;
+  background: #222222;
+  color: #ffffff;
+}
+
+
+/* =========================
+   마이페이지 비밀번호 변경 화면
+========================= */
+
+.mypage-password-update-form {
+  width: 100%;
+  max-width: 600px;
+  margin: 30px auto 0;
+}
+
+.mypage-password-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 22px;
+}
+
+.mypage-password-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.mypage-password-field input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #d9d5cf;
+  background: #ffffff;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 14px;
+  color: #222222;
+  outline: none;
+}
+
+.mypage-password-field input:focus {
+  border-color: #555555;
+}
+
+.mypage-password-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.mypage-password-cancel-button,
+.mypage-password-submit-button {
+  min-width: 120px;
+  height: 44px;
+  padding: 0 18px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mypage-password-cancel-button {
+  border: 1px solid #cccccc;
+  background: #ffffff;
+  color: #555555;
+}
+
+.mypage-password-submit-button {
+  border: 1px solid #222222;
+  background: #222222;
+  color: #ffffff;
+}
+
+.mypage-password-cancel-button:disabled,
+.mypage-password-submit-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* =========================
+   비밀번호 변경 화면 가운데 정렬
+========================= */
+
+
+.mypage-password-section .mypage-password-update-form {
+  margin: 30px auto 0;
+}
+
+/* 비밀번호 변경 화면 제목 위치 */
+.mypage-password-section .mypage-section-heading {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  justify-content: flex-start;
+}
+
+/* 비밀번호 입력 폼 */
+.mypage-password-update-form {
+  width: 100%;
+  max-width: 600px;
+  margin: 30px auto 0;
+}
+
+/* =========================
+   마이페이지 최근 찜 상품
+========================= */
+
+.mypage-wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px 22px;
+  margin-top: 10px;
+}
+
+.mypage-wishlist-card {
+  min-width: 0;
+}
+
+.mypage-wishlist-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: #f6f6f4;
+  cursor: pointer;
+}
+
+.mypage-wishlist-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mypage-wishlist-no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaaaaa;
+  font-size: 11px;
+}
+
+.mypage-wishlist-info {
+  padding-top: 13px;
+}
+
+.mypage-wishlist-brand {
+  display: block;
+  margin-bottom: 6px;
+  color: #888888;
+  font-size: 11px;
+}
+
+.mypage-wishlist-name {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #222222;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mypage-wishlist-name:hover {
+  text-decoration: underline;
+}
+
+.mypage-wishlist-price {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 9px;
+  font-size: 13px;
+}
+
+.mypage-wishlist-discount {
+  color: #ee3333;
+}
+
+.mypage-wishlist-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 45px;
+}
+
+.mypage-wishlist-more-button {
+  min-width: 150px;
+  height: 44px;
+  border: 1px solid #222222;
+  background: #222222;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.mypage-wishlist-more-button:hover {
+  background: #ffffff;
+  color: #222222;
+}
+
+.mypage-wishlist-message,
+.mypage-wishlist-empty {
+  padding: 70px 20px;
+  border-top: 1px solid #222222;
+  border-bottom: 1px solid #eeeeee;
+  color: #777777;
+  font-size: 14px;
+  text-align: center;
+}
+
+.mypage-wishlist-empty button {
+  margin-top: 20px;
+  height: 40px;
+  padding: 0 18px;
+  border: 1px solid #222222;
+  background: #222222;
+  color: #ffffff;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .mypage-wishlist-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .mypage-wishlist-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   비밀번호 찾기 링크
+========================= */
+
+.mypage-password-label-row {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mypage-password-label-row label {
+  margin: 0;
+}
+
+.mypage-password-find-button {
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: #888888;
+  font-family: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.mypage-password-find-button:hover {
+  color: #222222;
+  text-decoration: underline;
+}
+
+/* =========================
+   마이페이지 준비 중 화면
+========================= */
+
+.mypage-menu-ready {
+  padding: 80px 20px;
+
+  border-top: 1px solid #222222;
+  border-bottom: 1px solid #eeeeee;
+
+  color: #999999;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* =========================================================
+   회원 사진 미등록 안내 배너
+========================================================= */
+
+.mypage-photo-banner {
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 35px 0 65px;
+  padding: 26px 30px;
+
+  border: 1px solid #e3e3e3;
+  background: #fafafa;
+}
+
+.mypage-photo-banner > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+/* AI FITTING 제목 */
+.mypage-photo-banner strong {
+  color: #d93636;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+
+/* 안내 설명 */
+.mypage-photo-banner p {
+  margin: 0;
+
+  color: #777777;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+
+/* 사진 등록하기 버튼 */
+.mypage-photo-banner button {
+  min-width: 120px;
+  height: 42px;
+
+  padding: 0 20px;
+
+  border: 1px solid #222222;
+  background: #222222;
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.mypage-photo-banner button:hover {
+  background: #ffffff;
+  color: #222222;
+}
+
+
+/* =========================================================
+   회원 사진 행
+   기존 아이디/닉네임/회원등급 행과 같은 정렬
+========================================================= */
+
+.mypage-photo-row {
+  align-items: center;
+}
+
+
+/*
+  회원 사진 왼쪽 라벨
+  다른 mypage-info-label과 동일하게 유지
+*/
+.mypage-photo-row .mypage-info-label {
+  padding-left: 20px;
+
+  color: #777777;
+
+  font-size: 15px;
+}
+
+
+/*
+  오른쪽 회원 사진 내용 영역
+  기존 정보 값의 padding 16px 20px와 동일
+*/
+.mypage-photo-area {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 16px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+/* 사진이 없을 때 문구 */
+.mypage-photo-empty {
+  display: block;
+
+  margin: 0;
+  padding: 0;
+
+  color: #222222;
+
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   저장된 회원 사진 / 미리보기
+========================================================= */
+
+.mypage-member-photo {
+  width: 150px;
+  height: 180px;
+
+  display: block;
+
+  object-fit: cover;
+
+  border: 1px solid #dddddd;
+  background: #f7f7f7;
+}
+
+
+/* =========================================================
+   수정 상태 - 회원 사진 등록 영역
+========================================================= */
+
+.mypage-photo-edit {
+  width: 100%;
+  max-width: 540px;
+
+  box-sizing: border-box;
+
+  margin-top: 18px;
+  padding: 22px 24px;
+
+  border: 1px solid #e2e2e2;
+  background: #fafafa;
+}
+
+
+.mypage-photo-guide {
+  margin: 0 0 18px;
+
+  color: #555555;
+
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+
+/* 파일 선택 */
+.mypage-photo-file-input {
+  width: 100%;
+  max-width: 430px;
+
+  color: #555555;
+
+  font-family: inherit;
+  font-size: 13px;
+}
+
+
+.mypage-photo-file-input::file-selector-button {
+  height: 38px;
+
+  margin-right: 12px;
+  padding: 0 16px;
+
+  border: 1px solid #aaaaaa;
+  background: #ffffff;
+
+  color: #222222;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+
+.mypage-photo-file-input::file-selector-button:hover {
+  border-color: #222222;
+}
+
+
+/* 선택된 파일명 */
+.mypage-photo-selected-name {
+  margin-top: 12px;
+
+  color: #888888;
+  font-size: 12px;
+}
+
+
+/* 사진 등록 / 변경 */
+.mypage-photo-upload-button {
+  min-width: 120px;
+  height: 40px;
+
+  margin-top: 18px;
+  padding: 0 20px;
+
+  border: 1px solid #222222;
+  background: #222222;
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+.mypage-photo-upload-button:hover:not(:disabled) {
+  background: #ffffff;
+  color: #222222;
+}
+
+
+.mypage-photo-upload-button:disabled {
+  border-color: #dddddd;
+  background: #eeeeee;
+
+  color: #aaaaaa;
+
+  cursor: default;
+}
+
+
+/* =========================================================
+   반응형
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .mypage-photo-banner {
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 20px;
+
+    padding: 22px 20px;
+  }
+
+
+  .mypage-photo-banner button {
+    width: 100%;
+  }
+
+
+  .mypage-photo-area {
+    padding-left: 10px;
+  }
+
+
+  .mypage-photo-edit {
+    padding: 18px;
+  }
+
+
+  .mypage-member-photo {
+    width: 130px;
+    height: 160px;
+  }
+}
+
+
+/* =========================================================
+   마이페이지 상품 Q&A
+========================================================= */
+
+.mypage-qna-wrap {
+  width: 100%;
+}
+
+/* =========================================================
+   상품 문의 상단 안내
+========================================================= */
+
+.mypage-qna-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 18px;
+}
+
+.mypage-qna-title-row span {
+  margin: 0;
+
+  color: #777777;
+
+  font-size: 13px;
+}
+
+.mypage-qna-title-row p {
+  margin: 0;
+
+  color: #888888;
+
+  font-size: 13px;
+
+  text-align: right;
+}
+
+.mypage-qna-title-row strong {
+  color: #222222;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.mypage-qna-title-row span {
+  color: #888888;
+
+  font-size: 12px;
+}
+
+.mypage-qna-table-wrap {
+  width: 100%;
+
+  overflow-x: auto;
+
+  border-top: 2px solid #222222;
+}
+
+.mypage-qna-table {
+  width: 100%;
+  min-width: 820px;
+
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.mypage-qna-table th {
+  height: 52px;
+
+  padding: 0 18px;
+
+  border-bottom: 1px solid #dddddd;
+
+  background: #fafafa;
+
+  color: #333333;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-align: center;
+
+  vertical-align: middle;
+}
+
+.mypage-qna-product-col {
+  width: 20%;
+}
+
+.mypage-qna-content-col {
+  width: 55%;
+}
+
+.mypage-qna-date-col {
+  width: 13%;
+
+  text-align: center !important;
+}
+
+.mypage-qna-answer-col {
+  width: 12%;
+
+  text-align: center !important;
+}
+
+.mypage-qna-row {
+  cursor: pointer;
+}
+
+.mypage-qna-row td {
+  height: 64px;
+
+  padding: 0 18px;
+
+  border-bottom: 1px solid #eeeeee;
+
+  color: #333333;
+
+  font-size: 13px;
+
+  vertical-align: middle;
+}
+
+.mypage-qna-row:hover {
+  background: #fafafa;
+}
+
+.mypage-qna-row.open td {
+  border-bottom: 0;
+}
+
+.mypage-qna-product-button {
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: #222222;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  line-height: 1.5;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.mypage-qna-product-button:hover {
+  text-decoration: underline;
+}
+
+.mypage-qna-title-cell {
+  line-height: 1.6;
+}
+
+.mypage-qna-lock {
+  margin-right: 6px;
+
+  color: #777777;
+}
+
+.mypage-qna-center {
+  text-align: center;
+}
+
+.mypage-qna-answer-yes,
+.mypage-qna-answer-no {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.mypage-qna-answer-yes {
+  color: #111111;
+}
+
+.mypage-qna-answer-no {
+  color: #888888;
+}
+
+.mypage-qna-detail-row td {
+  padding: 0;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.mypage-qna-detail {
+  padding: 34px 38px 40px;
+
+  background: #f5f5f5;
+}
+
+.mypage-qna-detail-block {
+  display: grid;
+
+  grid-template-columns: 64px 1fr;
+
+  gap: 18px;
+}
+
+.mypage-qna-detail-block + .mypage-qna-detail-block {
+  margin-top: 42px;
+}
+
+.mypage-qna-mark {
+  color: #111111;
+
+  font-size: 42px;
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+.mypage-qna-detail-content {
+  min-width: 0;
+}
+
+.mypage-qna-detail-title {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color: #222222;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mypage-qna-detail-content p {
+  margin: 0;
+
+  color: #333333;
+
+  font-size: 13px;
+
+  line-height: 1.8;
+
+  white-space: pre-wrap;
+}
+
+.mypage-qna-no-answer {
+  color: #999999 !important;
+}
+
+.mypage-qna-answer-date {
+  display: block;
+
+  margin-top: 12px;
+
+  color: #999999;
+
+  font-size: 11px;
+}
+
+.mypage-qna-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  margin-top: 38px;
+}
+
+.mypage-qna-pagination button {
+  min-width: 34px;
+  height: 34px;
+
+  padding: 0 8px;
+
+  border: 0;
+  border-bottom: 2px solid transparent;
+
+  background: transparent;
+
+  color: #888888;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.mypage-qna-pagination button:first-child,
+.mypage-qna-pagination button:last-child {
+  font-size: 22px;
+}
+
+.mypage-qna-pagination button.active {
+  border-bottom-color: #111111;
+
+  color: #111111;
+
+  font-weight: 700;
+}
+
+.mypage-qna-pagination button:disabled {
+  color: #cccccc;
+
+  cursor: default;
+}
+
+@media (max-width: 768px) {
+
+  .mypage-qna-title-row {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 8px;
+  }
+
+
+  .mypage-qna-detail {
+    padding: 26px 20px 30px;
+  }
+
+
+  .mypage-qna-detail-block {
+    grid-template-columns: 46px 1fr;
+
+    gap: 12px;
+  }
+
+
+  .mypage-qna-mark {
+    font-size: 32px;
+  }
+}
+
+/* =========================
+   MY REVIEW
+========================= */
+
+.mypage-review {
+  width: 100%;
+}
+
+.mypage-review-summary {
+  margin-bottom: 18px;
+
+  color: #777;
+
+  font-size: 13px;
+}
+
+.mypage-review-summary strong {
+  margin: 0 4px;
+
+  color: #222;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mypage-review-message,
+.mypage-review-empty {
+  padding: 80px 20px;
+
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #ddd;
+
+  color: #888;
+
+  font-size: 14px;
+
+  text-align: center;
+}
+
+.mypage-review-list {
+  border-top: 2px solid #222;
+}
+
+.mypage-review-item {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    110px
+    minmax(0, 1fr)
+    auto;
+
+  gap: 30px;
+
+  padding: 26px 20px;
+
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.mypage-review-main {
+  min-width: 0;
+}
+
+/* 리뷰 상품 대표 이미지 */
+.mypage-review-product-image-button {
+  width: 110px;
+  height: 138px;
+
+  display: block;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border: 1px solid #eeeeee;
+  background: #f7f7f5;
+
+  cursor: pointer;
+}
+
+.mypage-review-product-image-button:hover {
+  border-color: #999999;
+}
+
+.mypage-review-product-image {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+.mypage-review-product-no-image {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #aaaaaa;
+
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+
+.mypage-review-product {
+  margin-bottom: 9px;
+
+  color: #888;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.mypage-review-title-row {
+  display: flex;
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 14px;
+
+  margin-bottom: 10px;
+}
+
+.mypage-review-title-row strong {
+  color: #222;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.mypage-review-rating {
+  color: #222;
+
+  font-size: 13px;
+
+  letter-spacing: 1px;
+}
+
+.mypage-review-content {
+  margin: 0 0 16px;
+
+  color: #666;
+
+  font-size: 13px;
+
+  line-height: 1.7;
+
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.mypage-review-meta {
+  display: flex;
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 18px;
+
+  color: #aaa;
+
+  font-size: 11px;
+}
+
+.mypage-review-actions {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 6px;
+}
+
+.mypage-review-actions button {
+  min-width: 52px;
+  height: 32px;
+
+  padding: 0 11px;
+
+  border: 1px solid #d8d8d8;
+
+  background: #fff;
+
+  color: #555;
+
+  font-family: inherit;
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.mypage-review-actions button:hover {
+  border-color: #333;
+
+  color: #111;
+}
+
+.mypage-review-actions button.delete:hover {
+  border-color: #a44;
+
+  color: #a44;
+}
+
+
+/* =========================
+   리뷰 수정
+========================= */
+
+.mypage-review-edit {
+  grid-column: 1 / -1;
+
+  padding: 22px;
+
+  background: #fafafa;
+
+  border: 1px solid #e5e5e5;
+}
+
+.mypage-review-edit-row {
+  display: grid;
+
+  grid-template-columns:
+    80px
+    minmax(0, 1fr);
+
+  align-items: start;
+
+  gap: 16px;
+
+  margin-bottom: 14px;
+}
+
+.mypage-review-edit-row label {
+  padding-top: 11px;
+
+  color: #555;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mypage-review-edit-row input,
+.mypage-review-edit-row select,
+.mypage-review-edit-row textarea {
+  width: 100%;
+
+  padding: 10px 12px;
+
+  border: 1px solid #d8d8d8;
+
+  background: #fff;
+
+  color: #333;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  outline: none;
+
+  box-sizing: border-box;
+}
+
+.mypage-review-edit-row input,
+.mypage-review-edit-row select {
+  height: 42px;
+}
+
+.mypage-review-edit-row textarea {
+  resize: vertical;
+
+  line-height: 1.6;
+}
+
+.mypage-review-edit-row input:focus,
+.mypage-review-edit-row select:focus,
+.mypage-review-edit-row textarea:focus {
+  border-color: #555;
+}
+
+.mypage-review-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  margin-top: 18px;
+}
+
+.mypage-review-edit-actions button {
+  min-width: 88px;
+  height: 38px;
+
+  padding: 0 18px;
+
+  border: 1px solid #222;
+
+  background: #222;
+
+  color: #fff;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.mypage-review-edit-actions button.cancel {
+  border-color: #ccc;
+
+  background: #fff;
+
+  color: #555;
+}
+
+
+/* =========================
+   리뷰 페이징
+========================= */
+
+.mypage-review-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  margin-top: 28px;
+}
+
+.mypage-review-pagination button {
+  min-width: 36px;
+  height: 36px;
+
+  padding: 0 10px;
+
+  border: 1px solid #ddd;
+
+  background: #fff;
+
+  color: #666;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.mypage-review-pagination button.active {
+  border-color: #222;
+
+  background: #222;
+
+  color: #fff;
+
+  font-weight: 600;
+}
+
+.mypage-review-pagination button:disabled {
+  color: #bbb;
+
+  background: #fafafa;
+
+  cursor: default;
+}
+
+
+@media (max-width: 700px) {
+
+  .mypage-review-item {
+    grid-template-columns:
+      82px
+      minmax(0, 1fr);
+
+    gap: 18px;
+
+    padding:
+      22px 10px;
+  }
+
+  .mypage-review-product-image-button {
+    width: 82px;
+    height: 104px;
+  }
+
+  .mypage-review-actions {
+    grid-column: 2;
+
+    justify-content: flex-start;
+  }
+
+  .mypage-review-edit {
+    grid-column: 1 / -1;
+  }
+}
+
+/* =========================================================
+   Q&A 서브 메뉴 - 상품 문의 / 고객 문의
+========================================================= */
+
+.mypage-qna-submenu {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.mypage-qna-submenu button {
+  min-width: 120px;
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid #d6d6d6;
+  background: #fff;
+  color: #777;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.mypage-qna-submenu button.active {
+  border-color: #222;
+  background: #222;
+  color: #fff;
+}
+
+
+/* =========================================================
+   마이페이지 고객 문의
+========================================================= */
+
+.mypage-customer-qna {
+  width: 100%;
+}
+
+.mypage-customer-qna-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.mypage-customer-qna-top p {
+  margin: 0;
+  color: #777;
+  font-size: 11px;
+}
+
+.mypage-customer-qna-top strong {
+  color: #222;
+  font-weight: 600;
+}
+
+.mypage-customer-qna-top > button {
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid #222;
+  background: #222;
+  color: #fff;
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.mypage-customer-qna-table-wrap {
+  overflow-x: auto;
+  border-top: 2px solid #222;
+}
+
+.mypage-customer-qna-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.mypage-customer-qna-table th {
+  height: 46px;
+  border-bottom: 1px solid #ddd;
+  background: #fafafa;
+  color: #666;
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.mypage-customer-qna-table th:nth-child(1) {
+  width: 110px;
+}
+
+.mypage-customer-qna-table th:nth-child(2) {
+  width: 120px;
+}
+
+.mypage-customer-qna-table th:nth-child(4) {
+  width: 110px;
+}
+
+.mypage-customer-qna-table th:nth-child(5) {
+  width: 150px;
+}
+
+.mypage-customer-qna-row {
+  cursor: pointer;
+}
+
+.mypage-customer-qna-row:hover {
+  background: #fafafa;
+}
+
+.mypage-customer-qna-row td {
+  height: 58px;
+  padding: 0 12px;
+  border-bottom: 1px solid #eee;
+  color: #555;
+  font-size: 11px;
+  text-align: center;
+}
+
+.mypage-customer-qna-title {
+  overflow: hidden;
+  text-align: left !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mypage-customer-qna-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 66px;
+  height: 25px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  font-size: 9px;
+}
+
+.mypage-customer-qna-status.waiting {
+  background: #fff;
+  color: #888;
+}
+
+.mypage-customer-qna-status.answered {
+  border-color: #333;
+  background: #333;
+  color: #fff;
+}
+
+.mypage-customer-qna-detail-row > td {
+  padding: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.mypage-customer-qna-detail {
+  padding: 28px 32px;
+  background: #fafafa;
+}
+
+.mypage-customer-qna-question,
+.mypage-customer-qna-answer {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.mypage-customer-qna-question {
+  padding-bottom: 22px;
+}
+
+.mypage-customer-qna-question strong,
+.mypage-customer-qna-answer strong {
+  color: #222;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.mypage-customer-qna-question p,
+.mypage-customer-qna-answer p {
+  margin: 0;
+  color: #555;
+  font-size: 12px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.mypage-customer-qna-answer {
+  padding: 22px 0;
+  border-top: 1px solid #e1e1e1;
+}
+
+.mypage-customer-qna-answer.waiting p {
+  color: #999;
+}
+
+.mypage-customer-qna-answer span {
+  display: block;
+  margin-top: 8px;
+  color: #999;
+  font-size: 9px;
+}
+
+.mypage-customer-qna-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+  margin-top: 16px;
+}
+
+.mypage-customer-qna-actions button {
+  height: 32px;
+  padding: 0 13px;
+  border: 1px solid #bbb;
+  background: #fff;
+  color: #555;
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.mypage-customer-qna-actions button.delete {
+  color: #a04d4d;
+}
+
+.mypage-customer-qna-edit {
+  display: grid;
+  gap: 12px;
+}
+
+.mypage-customer-qna-edit-row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+}
+
+.mypage-customer-qna-edit-row label {
+  color: #555;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mypage-customer-qna-edit-row input,
+.mypage-customer-qna-edit-row select,
+.mypage-customer-qna-edit-row textarea {
+  width: 100%;
+  border: 1px solid #d6d6d6;
+  background: #fff;
+  color: #444;
+  font-family: inherit;
+  font-size: 11px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.mypage-customer-qna-edit-row input,
+.mypage-customer-qna-edit-row select {
+  height: 38px;
+  padding: 0 10px;
+}
+
+.mypage-customer-qna-edit-row textarea {
+  min-height: 150px;
+  padding: 12px;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.mypage-customer-qna-edit-row.content {
+  align-items: start;
+}
+
+.mypage-customer-qna-edit-row input:focus,
+.mypage-customer-qna-edit-row select:focus,
+.mypage-customer-qna-edit-row textarea:focus {
+  border-color: #777;
+}
+
+.mypage-customer-qna-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.mypage-customer-qna-edit-actions button {
+  height: 35px;
+  padding: 0 15px;
+  border: 1px solid #222;
+  background: #222;
+  color: #fff;
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.mypage-customer-qna-edit-actions button.cancel {
+  border-color: #bbb;
+  background: #fff;
+  color: #666;
+}
+
+.mypage-customer-qna-message,
+.mypage-customer-qna-empty {
+  padding: 65px 20px;
+  border-top: 2px solid #222;
+  border-bottom: 1px solid #ddd;
+  color: #888;
+  font-size: 12px;
+  text-align: center;
+}
+
+.mypage-customer-qna-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 28px;
+}
+
+.mypage-customer-qna-pagination button {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #777;
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.mypage-customer-qna-pagination button.active {
+  border-color: #222;
+  background: #222;
+  color: #fff;
+}
+
+.mypage-customer-qna-pagination button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (max-width: 700px) {
+  .mypage-qna-submenu button {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mypage-customer-qna-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .mypage-customer-qna-detail {
+    padding: 24px 18px;
+  }
+
+  .mypage-customer-qna-edit-row {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+}
+
+/* 상품 문의 - 상품정보 / 문의내용은 왼쪽 정렬 */
+.mypage-qna-product-col,
+.mypage-qna-content-col {
+  text-align: left !important;
+}
+
+/* 상품 문의 수정 / 삭제 */
+.mypage-qna-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.mypage-qna-actions button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #999999;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mypage-qna-actions button:hover {
+  color: #555555;
+}
+
+.mypage-qna-actions .delete {
+  color: #999999;
+}
+
+.mypage-qna-actions .delete:hover {
+  color: #555555;
+}
+
+/* =========================================================
+   고객 문의 글씨 크기 조정
+   상품 문의 글씨 크기와 통일
+========================================================= */
+
+.mypage-customer-qna-top p {
+  font-size: 13px;
+}
+
+.mypage-customer-qna-top strong {
+  font-size: 13px;
+}
+
+.mypage-customer-qna-top > button {
+  font-size: 12px;
+}
+
+.mypage-customer-qna-table th {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.mypage-customer-qna-table td {
+  font-size: 13px;
+}
+
+.mypage-customer-qna-status {
+  font-size: 12px;
+}
+
+.mypage-customer-qna-title-button {
+  font-size: 13px;
+}
+
+.mypage-customer-qna-detail {
+  font-size: 13px;
+}
+
+.mypage-customer-qna-detail p {
+  font-size: 13px;
+}
+
+.mypage-customer-qna-actions button {
+  font-size: 12px;
+}
+
+.mypage-customer-qna-pagination button {
+  font-size: 13px;
+}
+
+/* =========================================================
+   고객 문의 AI 분석
+========================================================= */
+
+.mypage-customer-qna-ai {
+  margin: 24px 0 28px;
+  padding: 22px 24px;
+  border: 1px solid #e5e5e5;
+  background: #fafafa;
+}
+
+.mypage-customer-qna-ai-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.mypage-customer-qna-ai-title > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+  background: #222;
+  color: #fff;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+
+  flex-shrink: 0;
+}
+
+.mypage-customer-qna-ai-title > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mypage-customer-qna-ai-title strong {
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+}
+
+.mypage-customer-qna-ai-title p {
+  margin: 0;
+  font-size: 10px;
+  color: #999;
+}
+
+.mypage-customer-qna-ai-content {
+  padding-top: 14px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.mypage-customer-qna-ai-content p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.8;
+  color: #555;
+  word-break: keep-all;
+}
+
+.mypage-customer-qna-ai-content p.error {
+  color: #b24a4a;
+}
+
+/* =========================================================
+   고객 문의 영역 글씨 크기 조정
+========================================================= */
+
+/* AI 문의 분석 제목 */
+.mypage-customer-qna-ai-title strong {
+  font-size: 15px;
+}
+
+/* AI 문의 분석 설명 */
+.mypage-customer-qna-ai-title p {
+  font-size: 11px;
+}
+
+/* AI 분석 결과 문장 */
+.mypage-customer-qna-ai-content p {
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+
+/* 총 문의 건수 */
+.mypage-customer-qna-top p {
+  font-size: 13px;
+}
+
+/* 고객 문의하기 버튼 */
+.mypage-customer-qna-top button {
+  font-size: 12px;
+}
+
+
+/* 테이블 제목줄 */
+.mypage-customer-qna-table th {
+  font-size: 12px;
+}
+
+/* 테이블 내용 */
+.mypage-customer-qna-table td {
+  font-size: 12px;
+}
+
+
+/* 상태 뱃지 */
+.mypage-customer-qna-status {
+  font-size: 11px;
+}
+
+
+/* 문의 상세 질문/답변 */
+.mypage-customer-qna-question,
+.mypage-customer-qna-answer {
+  font-size: 13px;
+}
+
+
+/* 문의 상세 날짜 */
+.mypage-customer-qna-answer span {
+  font-size: 11px;
+}
+
+
+/* 수정 / 삭제 버튼 */
+.mypage-customer-qna-actions button {
+  font-size: 11px;
+}
+
+/* 고객 문의 테이블 글씨 크기 조금 더 확대 */
+
+.mypage-customer-qna-table th {
+  font-size: 13px;
+}
+
+.mypage-customer-qna-table td {
+  font-size: 13px;
+}
+
+.mypage-customer-qna-status {
+  font-size: 12px;
+}
+
+.mypage-customer-qna-title {
+  font-size: 14px;
+}
+
+/* =========================================================
+   고객 문의 AI 로딩
+========================================================= */
+
+.mypage-customer-qna-ai-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mypage-customer-qna-ai-loading p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.mypage-customer-qna-ai-spinner {
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid #e4e4e4;
+  border-top-color: #222;
+
+  border-radius: 50%;
+
+  animation: customerQnaAiSpin 0.8s linear infinite;
+
+  flex-shrink: 0;
+}
+
+@keyframes customerQnaAiSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   회원 사진 AI 검사
+========================================================= */
+
+.mypage-photo-ai-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 12px;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+/* AI 검사 중 */
+.mypage-photo-ai-result.checking {
+  color: #666666;
+}
+
+
+/* 정면 사진 검사 성공 */
+.mypage-photo-ai-result.success {
+  color: #2f6f44;
+  font-weight: 600;
+}
+
+
+/* 정면 사진 검사 실패 */
+.mypage-photo-ai-result.fail {
+  color: #a94442;
+}
+
+
+/* AI 검사 로딩 */
+.mypage-photo-ai-spinner {
+  width: 14px;
+  height: 14px;
+
+  border: 2px solid #dddddd;
+  border-top-color: #222222;
+  border-radius: 50%;
+
+  flex-shrink: 0;
+
+  animation:
+    memberPhotoAiSpin
+    0.8s
+    linear
+    infinite;
+}
+
+
+@keyframes memberPhotoAiSpin {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

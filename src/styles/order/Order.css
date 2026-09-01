@@ -1,0 +1,192 @@
+/* src/styles/order/Order.css */
+.order-page-wrapper {
+    max-width: 1200px;
+    margin: 40px auto;
+    font-family: 'Pretendard', sans-serif;
+    color: #111;
+    padding: 0 20px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #111;
+}
+
+.order-layout {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* 좌측 메인 섹션 */
+.order-main-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* 주문 상품 목록 */
+.order-items-container {
+    border-top: 1px solid #111;
+}
+
+.order-item-row {
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+    gap: 20px;
+}
+
+.item-thumb {
+    width: 80px;
+    height: 80px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 12px;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-brand { font-size: 13px; color: #666; margin: 0 0 4px 0; }
+.item-name { font-size: 15px; font-weight: 600; margin: 0 0 4px 0; }
+.item-option { font-size: 13px; color: #888; margin: 0; }
+
+.item-price-qty {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.item-price-qty span { font-size: 13px; color: #666; }
+.item-price-qty strong { font-size: 16px; font-weight: bold; }
+
+/* 폼 그리드 */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    background-color: #fcfcfc;
+    padding: 24px;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group.full-width {
+    grid-column: span 2;
+}
+
+.input-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.input-group input {
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #1a73e8;
+}
+
+/* 우측 결제 요약 (Sticky) */
+.order-summary-section {
+    width: 360px;
+    position: sticky;
+    top: 40px;
+}
+
+.summary-box {
+    border: 1px solid #111;
+    padding: 28px;
+    background-color: #fff;
+}
+
+.summary-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 24px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.summary-row.font-md { font-size: 15px; }
+.summary-row.font-xl { font-size: 20px; font-weight: bold; margin-bottom: 24px; }
+
+.text-orange { color: #ff4800; }
+.text-blue { color: #1a73e8; }
+.divider.lg { height: 2px; background-color: #111; margin: 24px 0; }
+
+.agreement-box {
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.agreement-box span {
+    font-size: 13px;
+    color: #444;
+}
+
+.btn-pay {
+    width: 100%;
+    padding: 18px 0;
+    background-color: #1a73e8;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-pay:hover:not(:disabled) {
+    background-color: #1557b0;
+}
+
+.btn-pay:disabled {
+    background-color: #a0c3ff;
+    cursor: not-allowed;
+}
+
+/* 체크박스 스타일 재사용 */
+.checkbox-label { display: flex; align-items: center; cursor: pointer; }
+.checkbox-label input { display: none; }
+.custom-checkbox { width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 4px; margin-right: 10px; display: flex; align-items: center; justify-content: center; }
+.checkbox-label input:checked + .custom-checkbox { background-color: #1a73e8; border-color: #1a73e8; }
+.checkbox-label input:checked + .custom-checkbox::after { content: '✓'; color: #fff; font-size: 14px; }

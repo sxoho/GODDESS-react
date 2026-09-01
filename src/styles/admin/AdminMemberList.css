@@ -1,0 +1,696 @@
+/* =========================
+   회원 관리 페이지
+========================= */
+
+.admin-member-page {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   상단 제목
+========================= */
+
+.admin-member-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+
+  margin-bottom: 30px;
+}
+
+.admin-member-title p {
+  margin: 0 0 9px;
+
+  color: #8a8a8a;
+
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+
+.admin-member-title h1 {
+  margin: 0;
+
+  color: #111;
+
+  font-size: 34px;
+  font-weight: 500;
+}
+
+
+/* =========================
+   회원 검색
+========================= */
+
+.admin-member-search {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.admin-member-search-box {
+  position: relative;
+
+  width: 380px;
+}
+
+.admin-member-search-box input {
+  width: 100%;
+  height: 48px;
+
+  padding:
+    0 80px
+    0 16px;
+
+  border: 1px solid #d8d8d5;
+
+  background: #fff;
+
+  color: #222;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  box-sizing: border-box;
+}
+
+.admin-member-search-box input:focus {
+  border-color: #555;
+}
+
+.admin-member-search-box input::placeholder {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.admin-member-search-icon {
+  position: absolute;
+
+  top: 50%;
+  right: 16px;
+
+  transform:
+    translateY(-50%);
+
+  color: #666;
+
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+
+  pointer-events: none;
+}
+
+.admin-member-search-reset {
+  height: 48px;
+
+  padding: 0 18px;
+
+  border: 1px solid #d8d8d5;
+
+  background: #fff;
+
+  color: #444;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.admin-member-search-reset:hover {
+  border-color: #333;
+
+  color: #111;
+}
+
+
+/* =========================
+   검색 결과
+========================= */
+
+.admin-member-search-result {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin:
+    -10px 0
+    16px;
+
+  color: #777;
+
+  font-size: 14px;
+}
+
+.admin-member-search-result strong {
+  color: #222;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+
+/* =========================
+   테이블
+========================= */
+
+.admin-member-table-wrap {
+  width: 100%;
+
+  border: 1px solid #e1e1de;
+
+  background: #fff;
+
+  overflow-x: auto;
+}
+
+.admin-member-table {
+  width: 100%;
+  min-width: 1250px;
+
+  border-collapse: collapse;
+
+  background: #fff;
+}
+
+.admin-member-table thead {
+  background: #fafaf9;
+}
+
+.admin-member-table th {
+  padding: 18px 16px;
+
+  border-bottom: 1px solid #e6e6e3;
+
+  color: #555;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+.admin-member-table td {
+  padding: 22px 16px;
+
+  border-bottom: 1px solid #eeeeeb;
+
+  color: #222;
+
+  font-size: 15px;
+
+  vertical-align: middle;
+
+  white-space: nowrap;
+}
+
+.admin-member-table td strong {
+  color: #111;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.admin-member-status-active {
+  color: #333;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  letter-spacing: 0.03em;
+}
+
+
+/* =========================
+   수정 / 삭제 버튼
+========================= */
+
+.admin-member-actions {
+  display: flex;
+
+  gap: 8px;
+}
+
+.admin-member-actions button {
+  min-width: 52px;
+  height: 38px;
+
+  padding:
+    0 14px;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.admin-member-info {
+  border: 1px solid #333;
+
+  background: #222;
+
+  color: #fff;
+}
+
+.admin-member-info:hover {
+  background: #111;
+
+  border-color: #111;
+}
+
+
+.admin-member-edit {
+  border:
+    1px solid #d3d3d0;
+
+  background: #fff;
+
+  color: #333;
+}
+
+.admin-member-edit:hover {
+  border-color: #555;
+
+  background: #f7f7f7;
+}
+
+.admin-member-delete {
+  border:
+    1px solid #ddd;
+
+  background: #fff;
+
+  color: #b45b5b;
+}
+
+.admin-member-delete:hover {
+  border-color: #b45b5b;
+
+  background: #fff8f8;
+}
+
+
+/* =========================
+   빈 목록 / 로딩
+========================= */
+
+.admin-member-empty {
+  height: 140px;
+
+  color: #999 !important;
+
+  text-align: center !important;
+
+  font-size: 14px !important;
+}
+
+.admin-message {
+  padding: 70px;
+
+  border: 1px solid #eee;
+
+  background: #fff;
+
+  color: #777;
+
+  text-align: center;
+
+  font-size: 14px;
+}
+
+
+/* =========================
+   반응형
+========================= */
+
+@media (max-width: 900px) {
+
+  .admin-member-heading {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 20px;
+  }
+
+  .admin-member-search {
+    width: 100%;
+  }
+
+  .admin-member-search-box {
+    flex: 1;
+
+    width: auto;
+  }
+}
+
+/* =========================
+   회원 구분 영역
+========================= */
+
+.admin-member-category-section {
+  margin-top: 55px;
+  padding-top: 35px;
+
+  border-top: 1px solid #e4e4e1;
+}
+
+.admin-member-category-header {
+  margin-bottom: 25px;
+}
+
+.admin-member-category-header p {
+  margin: 0 0 8px;
+
+  color: #8a8a8a;
+
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+
+.admin-member-category-header h2 {
+  margin: 0 0 8px;
+
+  color: #111;
+
+  font-size: 27px;
+  font-weight: 500;
+}
+
+.admin-member-category-header span {
+  color: #777;
+
+  font-size: 13px;
+}
+
+
+/* =========================
+   등급별 버튼
+========================= */
+
+.admin-member-category-buttons {
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(150px, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 30px;
+}
+
+.admin-member-category-buttons button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 68px;
+
+  padding: 0 20px;
+
+  border: 1px solid #deded9;
+  border-radius: 14px;
+
+  background: #fff;
+
+  color: #333;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: 0.15s;
+}
+
+.admin-member-category-buttons button:hover {
+  border-color: #777;
+
+  transform: translateY(-1px);
+}
+
+.admin-member-category-buttons button strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 30px;
+  height: 30px;
+
+  padding: 0 7px;
+
+  border-radius: 15px;
+
+  background: #f0f0ed;
+
+  color: #333;
+
+  font-size: 12px;
+}
+
+.admin-member-category-buttons button.active {
+  border-color: #222;
+
+  background: #222;
+
+  color: #fff;
+}
+
+.admin-member-category-buttons button.active strong {
+  background: #fff;
+
+  color: #222;
+}
+
+
+/* 탈퇴 회원 버튼 */
+.admin-member-category-buttons button.withdrawn {
+  color: #a95e5e;
+}
+
+.admin-member-category-buttons button.withdrawn.active {
+  border-color: #a95e5e;
+
+  background: #a95e5e;
+
+  color: #fff;
+}
+
+
+/* =========================
+   선택 회원 목록
+========================= */
+
+.admin-member-category-list {
+  border: 1px solid #e1e1de;
+
+  background: #fff;
+}
+
+.admin-member-category-list-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 22px 24px;
+
+  border-bottom: 1px solid #e9e9e6;
+}
+
+.admin-member-category-list-title h3 {
+  margin: 0;
+
+  color: #111;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.admin-member-category-list-title span {
+  color: #777;
+
+  font-size: 13px;
+}
+
+.admin-member-category-table-wrap {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.admin-member-category-table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+.admin-member-category-table th {
+  padding: 17px 20px;
+
+  border-bottom: 1px solid #e8e8e5;
+
+  background: #fafaf9;
+
+  color: #555;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  text-align: left;
+}
+
+.admin-member-category-table td {
+  padding: 20px;
+
+  border-bottom: 1px solid #eeeeeb;
+
+  color: #222;
+
+  font-size: 15px;
+}
+
+.admin-member-category-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-member-category-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.admin-member-category-table td strong {
+  font-weight: 600;
+}
+
+.admin-member-category-empty {
+  height: 110px;
+
+  color: #999 !important;
+
+  text-align: center !important;
+}
+
+
+/* =========================
+   회원 구분 반응형
+========================= */
+
+@media (max-width: 1100px) {
+
+  .admin-member-category-buttons {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+
+  .admin-member-category-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-member-detail-link {
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: #111;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  text-align: left;
+}
+
+.admin-member-detail-link:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   회원 관리 페이징
+========================= */
+
+.admin-member-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 26px 0 32px;
+
+  
+}
+
+
+/* 페이지 번호 */
+.admin-member-page-number {
+  width: 36px;
+  height: 36px;
+
+  border: 1px solid #d8d8d8;
+  background: #fff;
+
+  color: #555;
+
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+
+/* 현재 페이지 */
+.admin-member-page-number.active {
+  border-color: #222;
+
+  background: #222;
+
+  color: #fff;
+}
+
+
+/* 이전 / 다음 */
+.admin-member-page-arrow {
+  height: 36px;
+
+  padding: 0 14px;
+
+  border: 1px solid #d8d8d8;
+  background: #fff;
+
+  color: #555;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+
+.admin-member-page-arrow:hover:not(:disabled),
+.admin-member-page-number:hover:not(.active) {
+  border-color: #222;
+}
+
+
+/* 비활성화 */
+.admin-member-page-arrow:disabled {
+  opacity: 0.35;
+
+  cursor: default;
+}

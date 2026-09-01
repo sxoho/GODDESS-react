@@ -1,0 +1,127 @@
+.admin-layout {
+  min-height: 100vh;
+  display: flex;
+  background: #f7f7f5;
+  color: #111;
+}
+
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100vh;
+  padding: 32px 24px;
+  box-sizing: border-box;
+  background: #111;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-logo {
+  cursor: pointer;
+  margin-bottom: 56px;
+}
+
+.admin-logo strong {
+  display: block;
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+
+.admin-logo span {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #999;
+}
+
+.admin-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-menu a,
+.admin-menu button {
+  width: 100%;
+  padding: 13px 12px;
+  border: 0;
+  background: none;
+  color: #888;
+  font-size: 14px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.admin-menu a:hover,
+.admin-menu a.active {
+  background: #222;
+  color: #fff;
+}
+
+.admin-menu button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.admin-sidebar-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-sidebar-bottom button,
+.admin-sidebar-bottom a {
+  padding: 11px 10px;
+  border: 1px solid #333;
+  background: transparent;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 쇼핑몰 보기 */
+.admin-sidebar-bottom .admin-shop-link {
+  color: #ddd;
+  border-color: #555;
+}
+
+
+
+/* 로그아웃 */
+.admin-sidebar-bottom .admin-logout-button {
+  color: #b87979;
+  border-color: #553333;
+}
+
+
+
+.admin-layout-main {
+  width: calc(100% - 240px);
+  margin-left: 240px;
+}
+
+.admin-topbar {
+  height: 64px;
+  padding: 0 40px;
+  border-bottom: 1px solid #e3e3e0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-topbar span {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: #777;
+}
+
+.admin-content {
+  padding: 48px;
+}

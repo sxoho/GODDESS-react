@@ -1,0 +1,160 @@
+.admin-home {
+  max-width: 1400px;
+}
+
+.admin-home-heading {
+  margin-bottom: 48px;
+}
+
+.admin-home-heading p {
+  margin: 0 0 10px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: #777;
+}
+
+.admin-home-heading h1 {
+  margin: 0 0 10px;
+  font-size: 38px;
+  font-weight: 500;
+}
+
+.admin-home-heading span {
+  font-size: 14px;
+  color: #777;
+}
+
+.admin-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 56px;
+}
+
+.admin-summary-grid article {
+  min-height: 150px;
+  padding: 24px;
+  border: 1px solid #e2e2df;
+  background: #fff;
+}
+
+.admin-summary-grid article > span {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #888;
+}
+
+.admin-summary-grid strong {
+  display: block;
+  margin-top: 20px;
+  font-size: 38px;
+  font-weight: 500;
+}
+
+.admin-summary-grid p {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #888;
+}
+
+.admin-home-section {
+  background: #fff;
+  border: 1px solid #e2e2df;
+  padding: 32px;
+}
+
+.admin-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eee;
+}
+
+.admin-section-heading p {
+  margin: 0 0 5px;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: #888;
+}
+
+.admin-section-heading h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.admin-section-heading button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.admin-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.admin-quick-grid button {
+  min-height: 180px;
+  padding: 28px;
+  border: 0;
+  border-right: 1px solid #eee;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-quick-grid button:last-child {
+  border-right: 0;
+}
+
+.admin-quick-grid button:hover {
+  background: #fafafa;
+}
+
+.admin-quick-grid span {
+  font-size: 11px;
+  color: #999;
+}
+
+.admin-quick-grid strong {
+  display: block;
+  margin: 28px 0 8px;
+  font-size: 18px;
+}
+
+.admin-quick-grid p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #888;
+}
+
+@media (max-width: 1000px) {
+  .admin-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-quick-grid {
+    grid-template-columns: 1fr;
+  }
+  
+}.admin-summary-link {
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.admin-summary-link:hover {
+  background: #f7f7f7;
+  border-color: #ccc;
+}
+
+.admin-summary-link small {
+  display: block;
+  margin-top: 8px;
+  color: #aaa;
+  font-size: 10px;
+}

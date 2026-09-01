@@ -1,0 +1,261 @@
+.admin-member-detail-page {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.admin-member-detail-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  margin-bottom: 32px;
+}
+
+.admin-member-detail-heading p {
+  margin: 0 0 9px;
+
+  color: #8a8a8a;
+
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+
+.admin-member-detail-heading h1 {
+  margin: 0;
+
+  color: #111;
+
+  font-size: 34px;
+  font-weight: 500;
+}
+
+.admin-member-detail-back {
+  height: 44px;
+
+  padding: 0 20px;
+
+  border: 1px solid #d6d6d2;
+
+  background: #fff;
+
+  color: #333;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.admin-member-detail-back:hover {
+  border-color: #555;
+}
+
+
+/* =========================
+   공통 section
+========================= */
+
+.admin-member-detail-section {
+  margin-bottom: 45px;
+
+  border: 1px solid #e1e1de;
+
+  background: #fff;
+}
+
+.admin-member-detail-section-title {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 22px 24px;
+
+  border-bottom: 1px solid #e8e8e5;
+}
+
+.admin-member-detail-section-title span {
+  color: #999;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.admin-member-detail-section-title h2 {
+  margin: 0;
+
+  color: #111;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+
+/* =========================
+   기본 회원 정보
+========================= */
+
+.admin-member-detail-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+}
+
+.admin-member-detail-item {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  min-height: 82px;
+
+  padding: 20px 24px;
+
+  border-right: 1px solid #eeeeeb;
+  border-bottom: 1px solid #eeeeeb;
+
+  box-sizing: border-box;
+}
+
+.admin-member-detail-item:nth-child(even) {
+  border-right: none;
+}
+
+.admin-member-detail-item span {
+  color: #888;
+
+  font-size: 12px;
+}
+
+.admin-member-detail-item strong {
+  color: #222;
+
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.admin-member-detail-wide {
+  grid-column: span 2;
+}
+
+
+/* =========================
+   로그인 내역
+========================= */
+
+.admin-login-history-wrap {
+  width: 100%;
+
+  max-height: 430px;
+
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.admin-login-history-table {
+  width: 100%;
+
+  min-width: 1200px;
+
+  border-collapse: collapse;
+}
+
+.admin-login-history-table th {
+  position: sticky;
+  top: 0;
+
+  padding: 17px 16px;
+
+  border-bottom: 1px solid #e5e5e2;
+
+  background: #fafaf9;
+
+  color: #555;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+.admin-login-history-table td {
+  padding: 19px 16px;
+
+  border-bottom: 1px solid #eeeeeb;
+
+  color: #222;
+
+  font-size: 14px;
+
+  white-space: nowrap;
+}
+
+.admin-login-history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-login-history-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.admin-login-success {
+  color: #333;
+  font-weight: 600;
+}
+
+.admin-login-fail {
+  color: #b45b5b;
+  font-weight: 600;
+}
+
+.admin-login-history-empty {
+  height: 120px;
+
+  color: #999 !important;
+
+  text-align: center !important;
+}
+
+
+/* =========================
+   로딩 / 오류
+========================= */
+
+.admin-member-detail-message {
+  padding: 70px;
+
+  border: 1px solid #eee;
+
+  background: #fff;
+
+  color: #777;
+
+  text-align: center;
+
+  font-size: 14px;
+}
+
+
+/* =========================
+   반응형
+========================= */
+
+@media (max-width: 800px) {
+
+  .admin-member-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-member-detail-item {
+    border-right: none;
+  }
+
+  .admin-member-detail-wide {
+    grid-column: span 1;
+  }
+}

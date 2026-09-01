@@ -1,0 +1,210 @@
+.admin-member-update-page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+}
+
+.admin-member-update-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.admin-member-update-header p {
+  margin: 0 0 8px;
+  color: #888;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+.admin-member-update-header h1 {
+  margin: 0 0 10px;
+  color: #111;
+  font-size: 34px;
+  font-weight: 500;
+}
+
+.admin-member-update-header span {
+  color: #888;
+  font-size: 13px;
+}
+
+.admin-member-update-back {
+  padding: 10px 16px;
+  border: 1px solid #d8d8d4;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+.admin-member-update-section {
+  margin-bottom: 24px;
+  padding: 32px;
+  border: 1px solid #e2e2df;
+  background: #fff;
+}
+
+.admin-member-update-section-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding-bottom: 24px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid #eee;
+}
+
+.admin-member-update-section-title > span {
+  padding-top: 4px;
+  color: #999;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.admin-member-update-section-title > div {
+  flex: 1;
+}
+
+.admin-member-update-section-title h2 {
+  margin: 0 0 6px;
+  color: #171717;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.admin-member-update-section-title p {
+  margin: 0;
+  color: #888;
+  font-size: 12px;
+}
+
+.admin-member-update-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px 24px;
+}
+
+.admin-member-update-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-member-update-field.full {
+  grid-column: 1 / -1;
+}
+
+.admin-member-update-field label {
+  color: #444;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.admin-member-update-field input {
+  width: 100%;
+  height: 44px;
+  padding: 0 13px;
+  border: 1px solid #dcdcd8;
+  background: #fff;
+  color: #222;
+  box-sizing: border-box;
+  outline: none;
+  font-family: inherit;
+}
+
+.admin-member-update-field input:focus {
+  border-color: #555;
+}
+
+.admin-member-update-field input[readonly] {
+  background: #f7f7f5;
+  color: #777;
+}
+
+.admin-member-update-field small {
+  color: #999;
+  font-size: 11px;
+}
+
+.admin-member-update-inline {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-member-update-inline input {
+  flex: 1;
+}
+
+.admin-member-update-inline button {
+  min-width: 100px;
+  border: 1px solid #222;
+  background: #fff;
+  color: #222;
+  cursor: pointer;
+}
+
+.admin-member-update-inline button:hover {
+  background: #222;
+  color: #fff;
+}
+
+.admin-member-update-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 16px;
+}
+
+.admin-member-update-actions button {
+  min-width: 130px;
+  height: 48px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.admin-member-update-cancel {
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #333;
+}
+
+.admin-member-update-submit {
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+}
+
+.admin-member-update-submit:hover {
+  background: #333;
+}
+
+.admin-member-update-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.admin-member-update-message {
+  padding: 60px;
+  border: 1px solid #eee;
+  background: #fff;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+
+  .admin-member-update-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-member-update-field.full {
+    grid-column: auto;
+  }
+
+  .admin-member-update-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+}

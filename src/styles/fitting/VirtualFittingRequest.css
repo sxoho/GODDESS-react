@@ -1,0 +1,50 @@
+/* src/styles/fitting/VirtualFittingRequest.css (기존 내용에 이어서 추가) */
+
+/* 탭 네비게이션 스타일 */
+.fitting-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.tab-btn {
+    background-color: #fff;
+    border: 2px solid #eaeaea;
+    color: #666;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #ccc;
+}
+
+.tab-btn.active {
+    background-color: #1a73e8;
+    border-color: #1a73e8;
+    color: #fff;
+}
+
+.options-card {
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.coord-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.coord-groups .form-group {
+    margin-bottom: 0;
+}
