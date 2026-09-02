@@ -1117,6 +1117,43 @@ const ProductDetail = () => {
     ];
   }, [colors, productImages, selectedColor]);
 
+  /**
+   * 최근 본 상품 저장
+   * - 로그인/JWT와 무관하게 브라우저 localStorage에 저장
+   * - 같은 상품은 중복 제거 후 가장 앞으로 이동
+   * - 최대 8개 유지
+   */
+  useEffect(() => {
+    if (!product) return;
+
+    try {
+      const storageKey = "starRecentProducts";
+      const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+      const recentProducts = Array.isArray(saved) ? saved : [];
+
+      const recentItem = {
+        productId: product.productId,
+        productName: product.name,
+        brand: product.brand ?? "STAR",
+        price: product.price,
+        discount: product.discount,
+        imageUrl: galleryItems[0]?.imageUrl ?? "",
+        viewedAt: new Date().toISOString(),
+      };
+
+      const updated = [
+        recentItem,
+        ...recentProducts.filter(
+          (item: { productId?: number }) => item.productId !== product.productId,
+        ),
+      ].slice(0, 8);
+
+      localStorage.setItem(storageKey, JSON.stringify(updated));
+    } catch (error) {
+      console.error("최근 본 상품 저장 오류:", error);
+    }
+  }, [product, galleryItems]);
+
   // 상품 상세 설명 영역 전용 이미지
   const detailImages = useMemo(() => {
     if (!selectedColor) return [];

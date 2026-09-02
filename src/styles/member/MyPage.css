@@ -2606,3 +2606,838 @@
     transform: rotate(360deg);
   }
 }
+/* =========================================================
+   MY PAGE DASHBOARD
+   - 기존 상단 탭은 유지
+   - MY PAGE 진입 시 개인정보 대신 쇼핑 대시보드 노출
+========================================================= */
+
+.mypage-dashboard {
+  margin-top: 48px;
+}
+
+.mypage-dashboard-welcome {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 38px 42px;
+  border: 1px solid #e7e7e7;
+  background: #fafafa;
+}
+
+.mypage-dashboard-eyebrow,
+.mypage-dashboard-section-title span,
+.mypage-dashboard-account > div > span {
+  display: block;
+  margin-bottom: 10px;
+  color: #999;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+}
+
+.mypage-dashboard-welcome h2,
+.mypage-dashboard-section-title h3,
+.mypage-dashboard-account h3 {
+  margin: 0;
+  color: #111;
+  font-weight: 700;
+}
+
+.mypage-dashboard-welcome h2 {
+  font-size: 26px;
+}
+
+.mypage-dashboard-welcome p,
+.mypage-dashboard-account p {
+  margin: 12px 0 0;
+  color: #777;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.mypage-dashboard-grade {
+  min-width: 150px;
+  padding-left: 28px;
+  border-left: 1px solid #ddd;
+  text-align: right;
+}
+
+.mypage-dashboard-grade span {
+  display: block;
+  margin-bottom: 8px;
+  color: #aaa;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.mypage-dashboard-grade strong {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.mypage-dashboard-menu {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 20px;
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #ddd;
+}
+
+.mypage-dashboard-menu > button {
+  min-height: 124px;
+  padding: 24px 26px;
+  border: 0;
+  border-right: 1px solid #e7e7e7;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.mypage-dashboard-menu > button:last-child {
+  border-right: 0;
+}
+
+.mypage-dashboard-menu > button:hover {
+  background: #f8f8f8;
+}
+
+.mypage-dashboard-menu > button span,
+.mypage-dashboard-menu > button strong,
+.mypage-dashboard-menu > button small {
+  display: block;
+}
+
+.mypage-dashboard-menu > button span {
+  margin-bottom: 16px;
+  color: #aaa;
+  font-size: 10px;
+}
+
+.mypage-dashboard-menu > button strong {
+  margin-bottom: 6px;
+  color: #111;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.mypage-dashboard-menu > button small {
+  color: #888;
+  font-size: 12px;
+}
+
+.mypage-dashboard-section {
+  margin-top: 68px;
+}
+
+.mypage-dashboard-section-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #222;
+}
+
+.mypage-dashboard-section-title h3,
+.mypage-dashboard-account h3 {
+  font-size: 21px;
+}
+
+.mypage-dashboard-section-title > button,
+.mypage-dashboard-account > button,
+.mypage-info-back-button {
+  border: 0;
+  background: transparent;
+  color: #555;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mypage-dashboard-section-title > button:hover,
+.mypage-dashboard-account > button:hover,
+.mypage-info-back-button:hover {
+  color: #111;
+}
+
+.mypage-dashboard-products {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  padding-top: 24px;
+}
+
+.mypage-dashboard-product {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mypage-dashboard-product-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #f5f5f5;
+  color: #aaa;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.mypage-dashboard-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.mypage-dashboard-product:hover .mypage-dashboard-product-image img {
+  transform: scale(1.025);
+}
+
+.mypage-dashboard-product-info {
+  padding-top: 12px;
+}
+
+.mypage-dashboard-product-info > span,
+.mypage-dashboard-product-info > strong {
+  display: block;
+}
+
+.mypage-dashboard-product-info > span {
+  margin-bottom: 5px;
+  color: #888;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.mypage-dashboard-product-info > strong {
+  overflow: hidden;
+  color: #222;
+  font-size: 13px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mypage-dashboard-product-info > p {
+  margin: 8px 0 0;
+  color: #111;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mypage-dashboard-product-info > p b {
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+.mypage-dashboard-empty {
+  padding: 52px 20px;
+  border-bottom: 1px solid #eee;
+  color: #999;
+  font-size: 13px;
+  text-align: center;
+}
+
+.mypage-dashboard-empty p {
+  margin: 0 0 14px;
+}
+
+.mypage-dashboard-empty button {
+  padding: 10px 18px;
+  border: 1px solid #222;
+  background: #fff;
+  color: #222;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.mypage-dashboard-account {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 68px;
+  padding: 32px 0;
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #ddd;
+}
+
+.mypage-dashboard-account > button {
+  flex: 0 0 auto;
+  padding: 12px 0 12px 24px;
+}
+
+.mypage-info-back-wrap {
+  margin-top: 42px;
+  margin-bottom: -18px;
+}
+
+.mypage-info-back-button {
+  padding: 0;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 900px) {
+  .mypage-dashboard-welcome {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 28px;
+  }
+
+  .mypage-dashboard-grade {
+    width: 100%;
+    padding: 18px 0 0;
+    border-top: 1px solid #ddd;
+    border-left: 0;
+    text-align: left;
+  }
+
+  .mypage-dashboard-menu,
+  .mypage-dashboard-products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mypage-dashboard-menu > button:nth-child(2) {
+    border-right: 0;
+  }
+
+  .mypage-dashboard-menu > button:nth-child(-n + 2) {
+    border-bottom: 1px solid #e7e7e7;
+  }
+}
+
+@media (max-width: 560px) {
+  .mypage-dashboard {
+    margin-top: 32px;
+  }
+
+  .mypage-dashboard-welcome h2 {
+    font-size: 22px;
+  }
+
+  .mypage-dashboard-menu {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mypage-dashboard-products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .mypage-dashboard-account {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .mypage-dashboard-account > button {
+    padding-left: 0;
+  }
+}
+
+/* =========================================================
+   MY PAGE PROFILE + RECENTLY VIEWED
+   - 상단 탭 유지
+   - 왼쪽 프로필은 메뉴가 아닌 요약 정보만 표시
+   - 최근 찜 대신 최근 본 상품 표시
+========================================================= */
+
+.mypage-dashboard-welcome {
+  align-items: stretch;
+  padding: 0;
+  background: #fff;
+}
+
+.mypage-dashboard-profile,
+.mypage-dashboard-intro {
+  box-sizing: border-box;
+}
+
+.mypage-dashboard-profile {
+  flex: 0 0 34%;
+  padding: 34px 38px;
+  background: #fafafa;
+  border-right: 1px solid #e7e7e7;
+}
+
+.mypage-dashboard-intro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 34px 42px;
+}
+
+.mypage-dashboard-profile h2 {
+  margin-bottom: 8px;
+  font-size: 25px;
+}
+
+.mypage-dashboard-profile-grade {
+  display: inline-block;
+  color: #555;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mypage-dashboard-profile-summary {
+  margin-top: 22px !important;
+  color: #888 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.03em;
+}
+
+.mypage-dashboard-profile-link {
+  margin-top: 24px;
+  padding: 0 0 4px;
+  border: 0;
+  border-bottom: 1px solid #222;
+  background: transparent;
+  color: #222;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mypage-dashboard-profile-link:hover {
+  color: #777;
+  border-bottom-color: #777;
+}
+
+.mypage-dashboard-section-count {
+  margin: 0 0 2px !important;
+  color: #999 !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+}
+
+@media (max-width: 760px) {
+  .mypage-dashboard-welcome {
+    flex-direction: column;
+  }
+
+  .mypage-dashboard-profile {
+    flex-basis: auto;
+    border-right: 0;
+    border-bottom: 1px solid #e7e7e7;
+  }
+
+  .mypage-dashboard-profile,
+  .mypage-dashboard-intro {
+    padding: 28px 24px;
+  }
+}
+
+
+/* MY PAGE count + font refinement */
+.mypage-dashboard-profile h2 {
+  font-size: 30px;
+  line-height: 1.25;
+  margin: 8px 0 14px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.mypage-dashboard-profile-grade {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.mypage-dashboard-profile-link {
+  margin-top: 38px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.mypage-dashboard-intro h2 {
+  font-size: 36px;
+  line-height: 1.2;
+  letter-spacing: -0.045em;
+}
+
+.mypage-dashboard-intro > p:last-child {
+  margin-top: 16px;
+  font-size: 15px;
+}
+
+.mypage-dashboard-menu > button {
+  min-height: 178px;
+}
+
+.mypage-dashboard-menu-count {
+  display: block;
+  margin: 14px 0 9px;
+  color: #111;
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+@media (max-width: 760px) {
+  .mypage-dashboard-profile h2 { font-size: 28px; }
+  .mypage-dashboard-intro h2 { font-size: 30px; }
+  .mypage-dashboard-menu-count { font-size: 27px; }
+}
+
+/* =========================================================
+   MY PAGE - LEFT SIDEBAR VERSION
+   쇼핑 대분류 상단 유지 + 왼쪽 마이페이지 메뉴
+========================================================= */
+
+.mypage {
+  max-width: 1380px;
+  padding: 30px 34px 100px;
+}
+
+/* SHOP 페이지와 같은 대분류 바로가기 */
+.mypage-shop-categories {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin: 0 0 38px;
+  padding: 18px 0;
+  overflow-x: auto;
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #e5e5e5;
+  scrollbar-width: none;
+}
+
+.mypage-shop-categories::-webkit-scrollbar {
+  display: none;
+}
+
+.mypage-shop-categories button {
+  flex-shrink: 0;
+  padding: 0 0 5px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #777;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.mypage-shop-categories button:hover {
+  color: #111;
+  border-bottom-color: #111;
+}
+
+/* 전체 2단 레이아웃 */
+.mypage-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 52px;
+  align-items: start;
+}
+
+.mypage-content {
+  min-width: 0;
+}
+
+/* 왼쪽 프로필 */
+.mypage-sidebar {
+  position: sticky;
+  top: 96px;
+  min-width: 0;
+  padding-right: 26px;
+  border-right: 1px solid #e4e4e4;
+}
+
+.mypage-sidebar-profile {
+  padding: 5px 0 30px;
+  border-bottom: 1px solid #222;
+}
+
+.mypage-sidebar-label {
+  margin: 0 0 12px;
+  color: #999;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+}
+
+.mypage-sidebar-profile h2 {
+  margin: 0 0 10px;
+  color: #222;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.035em;
+  word-break: break-word;
+}
+
+.mypage-sidebar-grade {
+  display: block;
+  color: #777;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.mypage-sidebar-manage {
+  display: block;
+  width: fit-content;
+  margin: 18px 0 0;
+  padding: 0 0 3px;
+  border: 0;
+  border-bottom: 1px solid #999;
+  background: transparent;
+  color: #555;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.mypage-sidebar-manage:hover {
+  color: #111;
+  border-bottom-color: #111;
+}
+
+/* 왼쪽 내부 메뉴 */
+.mypage-sidebar-navigation {
+  display: flex;
+  flex-direction: column;
+  padding-top: 18px;
+}
+
+.mypage-sidebar-navigation button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 10px 14px 0;
+  border: 0;
+  background: transparent;
+  color: #777;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mypage-sidebar-navigation button::after {
+  content: "";
+  position: absolute;
+  right: -27px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: transparent;
+}
+
+.mypage-sidebar-navigation button span {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.mypage-sidebar-navigation button small {
+  color: #aaa;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.mypage-sidebar-navigation button:hover,
+.mypage-sidebar-navigation button.active {
+  color: #111;
+}
+
+.mypage-sidebar-navigation button.active::after {
+  background: #111;
+}
+
+.mypage-sidebar-navigation button.active small {
+  color: #666;
+}
+
+/* 기존 상단 마이페이지 헤더/탭은 왼쪽바 버전에서 사용하지 않음 */
+.mypage-heading,
+.mypage-navigation {
+  display: none;
+}
+
+/* 오른쪽 대시보드 */
+.mypage-dashboard {
+  margin-top: 0;
+}
+
+.mypage-dashboard-heading {
+  margin-bottom: 28px;
+  padding: 6px 0 24px;
+  border-bottom: 1px solid #222;
+}
+
+.mypage-dashboard-heading p {
+  margin: 0 0 8px;
+  color: #999;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+}
+
+.mypage-dashboard-heading h2 {
+  margin: 0;
+  color: #222;
+  font-size: 31px;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+}
+
+.mypage-dashboard-heading span {
+  display: block;
+  margin-top: 10px;
+  color: #888;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.mypage-dashboard-menu {
+  border-top: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.mypage-dashboard-menu > button {
+  min-height: 150px;
+  background: #fff;
+  transition: background 0.18s ease;
+}
+
+.mypage-dashboard-menu > button:hover {
+  background: #fafafa;
+}
+
+.mypage-dashboard-menu > button > span {
+  color: #aaa;
+  font-weight: 400;
+}
+
+.mypage-dashboard-menu > button > strong {
+  font-weight: 500;
+}
+
+.mypage-dashboard-menu-count {
+  margin: 13px 0 8px;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.mypage-dashboard-menu > button > small {
+  font-weight: 400;
+}
+
+/* 최근 본 상품 */
+.mypage-dashboard-section {
+  margin-top: 62px;
+}
+
+.mypage-dashboard-section-title h3 {
+  font-weight: 500;
+}
+
+.mypage-dashboard-product-info > strong,
+.mypage-dashboard-product-info > p,
+.mypage-dashboard-product-info > p b {
+  font-weight: 500;
+}
+
+/* 회원정보 상세에서 왼쪽바와 자연스럽게 맞추기 */
+.mypage-info-back-wrap {
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
+/* 반응형 */
+@media (max-width: 980px) {
+  .mypage {
+    padding: 28px 24px 80px;
+  }
+
+  .mypage-layout {
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 34px;
+  }
+
+  .mypage-sidebar {
+    padding-right: 20px;
+  }
+
+  .mypage-sidebar-navigation button::after {
+    right: -21px;
+  }
+}
+
+@media (max-width: 760px) {
+  .mypage-shop-categories {
+    gap: 22px;
+    margin-bottom: 28px;
+  }
+
+  .mypage-layout {
+    display: block;
+  }
+
+  .mypage-sidebar {
+    position: static;
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  .mypage-sidebar-profile {
+    padding-bottom: 22px;
+  }
+
+  .mypage-sidebar-navigation {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 36px;
+    padding-top: 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .mypage-sidebar-navigation button {
+    padding: 14px 6px;
+  }
+
+  .mypage-sidebar-navigation button::after {
+    right: auto;
+    top: auto;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 2px;
+  }
+
+  .mypage-sidebar-navigation button small {
+    display: none;
+  }
+
+  .mypage-dashboard-heading h2 {
+    font-size: 27px;
+  }
+}
+
+@media (max-width: 520px) {
+  .mypage {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .mypage-sidebar-navigation {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mypage-dashboard-menu > button {
+    min-height: 132px;
+  }
+}

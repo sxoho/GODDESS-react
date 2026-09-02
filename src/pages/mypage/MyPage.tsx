@@ -124,6 +124,17 @@ type WishlistPreviewItem =
   };
 
 
+type RecentViewedItem = {
+  productId: number;
+  productName: string;
+  brand?: string;
+  price: number;
+  discount?: string;
+  imageUrl?: string;
+  viewedAt?: string;
+};
+
+
 type MyPageUpdateForm = {
   loginId: string;
   nickname: string;
@@ -2147,6 +2158,18 @@ const MyPage = () => {
 
 
   /**
+   * MY PAGE 첫 화면 / 회원정보 상세 화면
+   *
+   * false : 마이페이지 대시보드
+   * true  : 기존 회원정보 상세 화면
+   */
+  const [
+    infoDetailOpen,
+    setInfoDetailOpen
+  ] = useState(false);
+
+
+  /**
    * Q&A 내부 선택 메뉴
    *
    * product  : 상품 문의
@@ -2180,6 +2203,26 @@ const MyPage = () => {
     wishlistLoading,
     setWishlistLoading
   ] = useState(false);
+
+
+  /**
+   * 최근 본 상품 - 브라우저 localStorage 기반
+   */
+  const [
+    recentViewedItems,
+    setRecentViewedItems
+  ] = useState<RecentViewedItem[]>([]);
+
+
+  const [
+    dashboardCounts,
+    setDashboardCounts
+  ] = useState({
+    order: 0,
+    wishlist: 0,
+    fitting: 0,
+    review: 0
+  });
 
 
   /**
@@ -2730,6 +2773,93 @@ const MyPage = () => {
         );
       }
     };
+
+
+    /** MY PAGE 카드 개수 */
+  const loadDashboardCounts = async () => {
+    if (!memberId || sw !== true) return;
+
+    const next = { order: 0, wishlist: 0, fitting: 0, review: 0 };
+
+    try {
+      const r = await fetch(`${API_BASE}/wishlist/member/${memberId}/count`);
+      if (r.ok) next.wishlist = Number(await r.json()) || 0;
+    } catch {}
+
+    try {
+      const r = await fetch(`${API_BASE}/product_review/member/${memberId}/page?page=0&size=1`);
+      if (r.ok) {
+        const data = await r.json();
+        next.review = Number(data?.totalElements) || 0;
+      }
+    } catch {}
+
+    try {
+      if (member?.loginId) {
+        const r = await fetch(`${API_BASE}/api/commerce/orders/my?loginId=${encodeURIComponent(member.loginId)}`);
+        if (r.ok) {
+          const data = await r.json();
+          const list = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+          next.order = list.length;
+        }
+      }
+    } catch {}
+
+    try {
+      const r = await fetch(`${API_BASE}/api/fitting/saves`);
+      if (r.ok) {
+        const data = await r.json();
+        const list = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+        next.fitting = list.length;
+      }
+    } catch {}
+
+    setDashboardCounts(next);
+  };
+
+
+/**
+   * MY PAGE 첫 화면에서 최근 본 상품 불러오기
+   */
+  useEffect(() => {
+
+    if (
+      activeMenu !== "info" ||
+      infoDetailOpen === true
+    ) {
+      return;
+    }
+
+
+    try {
+
+      const saved =
+        JSON.parse(
+          localStorage.getItem("starRecentProducts") || "[]"
+        ) as RecentViewedItem[];
+
+
+      setRecentViewedItems(
+        Array.isArray(saved)
+          ? saved.slice(0, 8)
+          : []
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "최근 본 상품 조회 오류:",
+        error
+      );
+
+      setRecentViewedItems([]);
+    }
+
+  }, [
+    activeMenu,
+    infoDetailOpen
+  ]);
 
 
   /**
@@ -3679,6 +3809,13 @@ const MyPage = () => {
     };
 
 
+  useEffect(() => {
+    if (member && memberId && sw === true) {
+      void loadDashboardCounts();
+    }
+  }, [member, memberId, sw]);
+
+
   if (
     loading
   ) {
@@ -3725,164 +3862,301 @@ const MyPage = () => {
 
 
       {/* =========================
-          상단
+          마이페이지 2단 레이아웃
+          - 왼쪽: 프로필 + 마이페이지 메뉴
+          - 오른쪽: 선택된 내용
       ========================= */}
+      <div className="mypage-layout">
 
-      <section className="mypage-heading">
+        <aside className="mypage-sidebar">
 
-        <p className="mypage-heading-label">
-          MEMBER
-        </p>
+          <div className="mypage-sidebar-profile">
+            <p className="mypage-sidebar-label">
+              MY ACCOUNT
+            </p>
 
+            <h2>
+              {member.nickname}님
+            </h2>
 
-        <h1>
-          MY PAGE
-        </h1>
+            <span className="mypage-sidebar-grade">
+              {member.gradeName || member.status || "일반회원"}
+            </span>
 
-
-        <p className="mypage-heading-description">
-
-          안녕하세요,{" "}
-
-          <strong>
-            {member.nickname}
-          </strong>
-
-          님.
-
-          <br />
-
-          ONNIVER 회원 정보를 확인해보세요.
-
-        </p>
-
-      </section>
+            <button
+              type="button"
+              className="mypage-sidebar-manage"
+              onClick={() => {
+                setActiveMenu("info");
+                setInfoDetailOpen(true);
+              }}
+            >
+              회원정보 관리 →
+            </button>
+          </div>
 
 
-      {/* =========================
-          마이페이지 메뉴
-      ========================= */}
+          <nav
+            className="mypage-sidebar-navigation"
+            aria-label="마이페이지 메뉴"
+          >
+            <button
+              type="button"
+              className={
+                activeMenu === "info" && !infoDetailOpen
+                  ? "active"
+                  : ""
+              }
+              onClick={() => {
+                setActiveMenu("info");
+                setInfoDetailOpen(false);
+              }}
+            >
+              <span>MY PAGE</span>
+              <small>나의 쇼핑</small>
+            </button>
 
-      <nav className="mypage-navigation">
+            <button
+              type="button"
+              className={activeMenu === "order" ? "active" : ""}
+              onClick={() => setActiveMenu("order")}
+            >
+              <span>ORDER</span>
+              <small>주문 내역</small>
+            </button>
 
-        <button
-          type="button"
-          className={
-            activeMenu === "info"
-              ? "active"
-              : ""
-          }
-          onClick={
-            () =>
-              setActiveMenu(
-                "info"
-              )
-          }
-        >
-          MY INFO
-        </button>
+            <button
+              type="button"
+              className={activeMenu === "wishlist" ? "active" : ""}
+              onClick={async () => {
+                setActiveMenu("wishlist");
+                await loadWishlistPreview();
+              }}
+            >
+              <span>WISHLIST</span>
+              <small>찜한 상품</small>
+            </button>
 
+            <button
+              type="button"
+              className={activeMenu === "fitting" ? "active" : ""}
+              onClick={() => setActiveMenu("fitting")}
+            >
+              <span>FITTING</span>
+              <small>나의 피팅</small>
+            </button>
 
-        <button
-          type="button"
-          className={
-            activeMenu === "order"
-              ? "active"
-              : ""
-          }
-          onClick={
-            () =>
-              setActiveMenu(
-                "order"
-              )
-          }
-        >
-          ORDER
-        </button>
+            <button
+              type="button"
+              className={activeMenu === "review" ? "active" : ""}
+              onClick={() => setActiveMenu("review")}
+            >
+              <span>REVIEW</span>
+              <small>작성 리뷰</small>
+            </button>
 
+            <button
+              type="button"
+              className={activeMenu === "qna" ? "active" : ""}
+              onClick={() => setActiveMenu("qna")}
+            >
+              <span>Q&A</span>
+              <small>문의 내역</small>
+            </button>
+          </nav>
 
-        <button
-          type="button"
-          className={
-            activeMenu === "wishlist"
-              ? "active"
-              : ""
-          }
-          onClick={
-            async () => {
-
-              setActiveMenu(
-                "wishlist"
-              );
-
-
-              await loadWishlistPreview();
-            }
-          }
-        >
-          WISHLIST
-        </button>
-
-
-        <button
-          type="button"
-          className={
-            activeMenu === "fitting"
-              ? "active"
-              : ""
-          }
-          onClick={
-            () =>
-              setActiveMenu(
-                "fitting"
-              )
-          }
-        >
-          FITTING
-        </button>
+        </aside>
 
 
-        <button
-          type="button"
-          className={
-            activeMenu === "review"
-              ? "active"
-              : ""
-          }
-          onClick={
-            () =>
-              setActiveMenu(
-                "review"
-              )
-          }
-        >
-          REVIEW
-        </button>
-
-
-        <button
-          type="button"
-          className={
-            activeMenu === "qna"
-              ? "active"
-              : ""
-          }
-          onClick={
-            () =>
-              setActiveMenu(
-                "qna"
-              )
-          }
-        >
-          Q&A
-        </button>
-
-      </nav>
-
+        <div className="mypage-content">
 
       {activeMenu === "info" && (
 
         <>
+
+          {!infoDetailOpen && (
+
+            <>
+
+              <section className="mypage-dashboard">
+
+                <div className="mypage-dashboard-heading">
+                  <p>MY SHOPPING</p>
+                  <h2>나의 쇼핑</h2>
+                  <span>주문, 찜, 피팅, 리뷰 활동을 한눈에 확인해보세요.</span>
+                </div>
+
+
+                <div className="mypage-dashboard-menu">
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveMenu("order")}
+                  >
+                    <span>01</span>
+                    <strong>ORDER</strong>
+                    <b className="mypage-dashboard-menu-count">{dashboardCounts.order}</b>
+                    <small>주문 내역</small>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setActiveMenu("wishlist");
+                      await loadWishlistPreview();
+                    }}
+                  >
+                    <span>02</span>
+                    <strong>WISHLIST</strong>
+                    <b className="mypage-dashboard-menu-count">{dashboardCounts.wishlist}</b>
+                    <small>찜한 상품</small>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveMenu("fitting")}
+                  >
+                    <span>03</span>
+                    <strong>FITTING</strong>
+                    <b className="mypage-dashboard-menu-count">{dashboardCounts.fitting}</b>
+                    <small>나의 피팅</small>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveMenu("review")}
+                  >
+                    <span>04</span>
+                    <strong>REVIEW</strong>
+                    <b className="mypage-dashboard-menu-count">{dashboardCounts.review}</b>
+                    <small>작성 리뷰</small>
+                  </button>
+
+                </div>
+
+              </section>
+
+
+              <section className="mypage-dashboard-section">
+
+                <div className="mypage-dashboard-section-title">
+                  <div>
+                    <span>RECENTLY VIEWED</span>
+                    <h3>최근 본 상품</h3>
+                  </div>
+
+                  {recentViewedItems.length > 4 && (
+                    <span className="mypage-dashboard-section-count">
+                      최근 {recentViewedItems.length}개
+                    </span>
+                  )}
+                </div>
+
+
+                {recentViewedItems.length === 0 ? (
+
+                  <div className="mypage-dashboard-empty">
+                    <p>아직 최근 본 상품이 없습니다.</p>
+                    <button
+                      type="button"
+                      onClick={() => navigate("/products")}
+                    >
+                      상품 둘러보기
+                    </button>
+                  </div>
+
+                ) : (
+
+                  <div className="mypage-dashboard-products">
+
+                    {recentViewedItems.slice(0, 4).map((item) => {
+
+                      const discountRate =
+                        getDiscountRate(item.discount);
+
+                      const salePrice =
+                        discountRate > 0
+                          ? Math.round(
+                              item.price *
+                              (1 - discountRate / 100)
+                            )
+                          : item.price;
+
+
+                      return (
+
+                        <button
+                          type="button"
+                          key={item.productId}
+                          className="mypage-dashboard-product"
+                          onClick={() =>
+                            navigate(
+                              `/products/${item.productId}`
+                            )
+                          }
+                        >
+
+                          <div className="mypage-dashboard-product-image">
+                            {item.imageUrl ? (
+                              <img
+                                src={item.imageUrl}
+                                alt={item.productName}
+                              />
+                            ) : (
+                              <span>NO IMAGE</span>
+                            )}
+                          </div>
+
+                          <div className="mypage-dashboard-product-info">
+                            <span>
+                              {item.brand || "STAR"}
+                            </span>
+                            <strong>
+                              {item.productName}
+                            </strong>
+                            <p>
+                              {discountRate > 0 && (
+                                <b>{discountRate}%</b>
+                              )}
+                              {salePrice.toLocaleString()}원
+                            </p>
+                          </div>
+
+                        </button>
+                      );
+                    })}
+
+                  </div>
+
+                )}
+
+              </section>
+
+
+
+
+            </>
+
+          )}
+
+
+          {infoDetailOpen && (
+
+            <>
+
+              <div className="mypage-info-back-wrap">
+                <button
+                  type="button"
+                  className="mypage-info-back-button"
+                  onClick={() => {
+                    setInfoDetailOpen(false);
+                    setIsEditing(false);
+                  }}
+                >
+                  ← 나의 쇼핑
+                </button>
+              </div>
+
 
 
           {/* =========================
@@ -4658,6 +4932,10 @@ const MyPage = () => {
 
           </section>
 
+
+            </>
+
+          )}
         </>
 
       )}
@@ -4802,7 +5080,7 @@ const MyPage = () => {
 
                             {
                               item.brand ||
-                              "ONNIVER"
+                              "STAR"
                             }
 
                           </span>
@@ -5104,6 +5382,10 @@ const MyPage = () => {
 
         </section>
       )}
+
+        </div>
+
+      </div>
 
     </main>
   );
