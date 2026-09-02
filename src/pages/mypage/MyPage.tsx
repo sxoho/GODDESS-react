@@ -1,6 +1,7 @@
 import {
   Fragment,
   useEffect,
+  useRef,
   useState
 } from "react";
 
@@ -2051,6 +2052,13 @@ const MyPage = () => {
 
 
   /**
+   * 비로그인 안내 alert 중복 표시 방지
+   */
+  const loginAlertShown =
+    useRef(false);
+
+
+  /**
    * 회원 정보
    */
   const [
@@ -2319,9 +2327,18 @@ const MyPage = () => {
       !memberId
     ) {
 
-      alert(
-        "로그인이 필요한 페이지입니다."
-      );
+      if (
+        !loginAlertShown.current
+      ) {
+
+        loginAlertShown.current =
+          true;
+
+
+        alert(
+          "로그인이 필요한 페이지입니다."
+        );
+      }
 
 
       navigate(

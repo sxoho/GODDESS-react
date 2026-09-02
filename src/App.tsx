@@ -19,6 +19,7 @@ import ProductList from "./pages/product/ProductList";
 import ProductDetail from "./pages/product/ProductDetail";
 
 import Member_Login from "./components/member/Member_Login";
+import Member_Logout from "./components/member/Member_Logout";
 import Member_Signup from "./components/member/Member_Signup";
 import Member_FindId from "./components/member/Member_FindId";
 import Member_FindPassword from "./components/member/Member_FindPassword";
@@ -383,6 +384,12 @@ function App() {
               <Route
                 path="/login"
                 element={<Member_Login />}
+              />
+
+              {/* 로그아웃 */}
+              <Route
+                path="/logout"
+                element={<Member_Logout />}
               />
 
               {/* 회원가입 */}

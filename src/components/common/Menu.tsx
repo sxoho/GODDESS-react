@@ -9,10 +9,6 @@ import {
   useGlobalStore
 } from "../../store/store";
 
-import {
-  axiosInstance
-} from "../ToolBak";
-
 
 const Menu = () => {
 
@@ -22,14 +18,7 @@ const Menu = () => {
 
   const {
     sw,
-    memberId,
     gradeId,
-    setSW,
-    setMemberId,
-    setLoginId,
-    setNickname,
-    setGradeId,
-    setGradeName,
   } = useGlobalStore();
 
 
@@ -86,72 +75,10 @@ const Menu = () => {
     Number(gradeId) === 4;
 
 
-  /**
-   * 로그아웃
-   *
-   * 로그아웃 버튼 클릭 시
-   * LOGIN_HISTORY의 LOGOUT_DATE를 먼저 저장한 후
-   * 전역 로그인 정보를 초기화한다.
-   */
-  const logout = async () => {
-
-    try {
-
-      /**
-       * 로그인 중인 회원이면
-       * 로그아웃 시간 저장
-       */
-      if (
-        sw === true &&
-        memberId
-      ) {
-
-        await axiosInstance.put(
-          `/login-history/logout/${memberId}`
-        );
-      }
-
-
-    } catch (error) {
-
-      /**
-       * 로그아웃 시간 저장 실패 시에도
-       * 실제 로그아웃은 진행
-       */
-      console.error(
-        "로그아웃 시간 저장 오류:",
-        error
-      );
-
-
-    } finally {
-
-      setSW(false);
-
-      setMemberId(0);
-
-      setLoginId("");
-
-      setNickname("");
-
-      setGradeId(0);
-
-      setGradeName("");
-
-
-      alert(
-        "로그아웃되었습니다."
-      );
-    }
-  };
-
-
   return (
-
     <header className="common-header">
 
       <div className="common-header-inner">
-
 
         {/* 로고 */}
         <NavLink
@@ -167,7 +94,6 @@ const Menu = () => {
           className="common-header-navigation"
           aria-label="주요 메뉴"
         >
-
           <NavLink
             to="/"
             end
@@ -180,7 +106,6 @@ const Menu = () => {
             HOME
           </NavLink>
 
-
           <NavLink
             to="/products"
             className={({ isActive }) =>
@@ -191,7 +116,6 @@ const Menu = () => {
           >
             SHOP
           </NavLink>
-
 
           <NavLink
             to="/fitting"
@@ -204,7 +128,6 @@ const Menu = () => {
             AI FITTING
           </NavLink>
 
-
           <NavLink
             to="/recommend"
             className={({ isActive }) =>
@@ -215,7 +138,6 @@ const Menu = () => {
           >
             STYLE RECOMMENDATION
           </NavLink>
-
 
           <NavLink
             to="/cart"
@@ -228,7 +150,6 @@ const Menu = () => {
             CART
           </NavLink>
 
-
           {/* 공지사항 */}
           <NavLink
             to="/notice"
@@ -240,7 +161,6 @@ const Menu = () => {
           >
             NOTICE
           </NavLink>
-
         </nav>
 
 
@@ -262,7 +182,6 @@ const Menu = () => {
                 >
                   ADMIN MODE
                 </NavLink>
-
               )}
 
 
@@ -270,11 +189,9 @@ const Menu = () => {
               MY PAGE
             </NavLink>
 
-
             <NavLink to="/wishlist">
               MY LIKE
             </NavLink>
-
 
             <NavLink to="/cart">
               SHOPPING BAG
@@ -283,12 +200,7 @@ const Menu = () => {
 
             {sw === true ? (
 
-              <NavLink
-                to="/"
-                onClick={
-                  logout
-                }
-              >
+              <NavLink to="/logout">
                 LOGOUT
               </NavLink>
 
@@ -297,7 +209,6 @@ const Menu = () => {
               <NavLink to="/login">
                 LOGIN
               </NavLink>
-
             )}
 
           </nav>
@@ -322,15 +233,11 @@ const Menu = () => {
                   >
                     ADMIN MODE
                   </NavLink>
-
                 )}
 
 
                 <NavLink
-                  to="/"
-                  onClick={
-                    logout
-                  }
+                  to="/logout"
                   className="common-header-login-logout"
                 >
                   LOGOUT
@@ -360,7 +267,6 @@ const Menu = () => {
                   LOGIN
                 </NavLink>
 
-
                 <NavLink
                   to="/signup"
                   className="common-header-signup"
@@ -369,11 +275,9 @@ const Menu = () => {
                 </NavLink>
 
               </>
-
             )}
 
           </nav>
-
         )}
 
       </div>
