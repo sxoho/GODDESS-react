@@ -199,7 +199,7 @@ const AdminProductQna = () => {
         productId,
         brand:
           product?.brand ??
-          "ONNIVER",
+          "GODDESS",
         name:
           product?.name ??
           `상품 #${productId}`,
@@ -219,7 +219,7 @@ const AdminProductQna = () => {
 
       return {
         productId,
-        brand: "ONNIVER",
+        brand: "GODDESS",
         name: `상품 #${productId}`,
         price: 0,
         imageUrl: "",
@@ -657,7 +657,7 @@ const AdminProductQna = () => {
                         <span className="admin-qna-product-text">
                           <small>
                             {product?.brand ||
-                              "ONNIVER"} · 상품 #
+                              "GODDESS"} · 상품 #
                             {item.productId}
                           </small>
 
@@ -877,7 +877,7 @@ const AdminProductQna = () => {
 
                     <strong>
                       {product?.brand ||
-                        "ONNIVER"}
+                        "GODDESS"}
                     </strong>
 
                     <h3>

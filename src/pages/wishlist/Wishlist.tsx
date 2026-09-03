@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../store/store";
 import "../../styles/wishlist/Wishlist.css";
 
-const API_BASE = "http://localhost:9103";
+const API_BASE = "http://localhost:9104";
 const PAGE_SIZE = 12;
 
 type WishlistItem = {
@@ -16,7 +16,7 @@ type WishlistItem = {
   brand?: string;
   productName: string;
   price: number;
-  discount?: string;
+  discount?: number;
   createdAt?: string;
 };
 
@@ -420,12 +420,12 @@ const Wishlist = () => {
     }
   };
 
-  const getDiscountRate = (discount?: string) => {
+  const getDiscountRate = (discount?: string | number) => {
     if (!discount) {
       return 0;
     }
 
-    const value = Number(discount.replace(/[^0-9]/g, ""));
+    const value = typeof discount === "number" ? discount : Number(discount.replace(/[^0-9]/g, ""));
 
     return Number.isNaN(value) ? 0 : value;
   };
@@ -640,7 +640,7 @@ const Wishlist = () => {
 
                       <div className="wishlist-info">
                         <span className="wishlist-brand">
-                          {item.brand || "ONNIVER"}
+                          {item.brand || "GODDESS"}
                         </span>
 
                         <button

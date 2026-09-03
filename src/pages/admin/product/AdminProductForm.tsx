@@ -14,7 +14,7 @@ type ProductForm = {
   description: string;
   material: string;
   washingInfo: string;
-  fittingEnabled: string;
+  aiApplyEnabled: string;
   status: string;
 };
 
@@ -37,11 +37,11 @@ type ProductColorForm = {
   images: ProductImageForm[];
 };
 
-type ProductSizeForm = {
+type ProductVariantForm = {
   id: number;
   backendId?: number;
-  sizeName: string;
-  sizeDescription: string;
+  variantName: string;
+  variantDescription: string;
 };
 
 type ProductOptionForm = {
@@ -73,7 +73,7 @@ type ProductDetailResponse = {
   discount?: string;
   material?: string;
   washing?: string;
-  fittingEnabled: string;
+  aiApplyEnabled: string;
   status: string;
 };
 
@@ -117,15 +117,15 @@ type ProductColorResponse = {
   colorCode: string;
   isMain: string;
   sortOrder: number;
-  fittingEnabled: string;
+  aiApplyEnabled: string;
   visible: string;
   images: ProductColorImageResponse[];
 };
 
-type ProductSizeResponse = {
+type ProductVariantResponse = {
   id: number;
-  sizeName: string;
-  sizeDescription?: string;
+  variantName: string;
+  variantDescription?: string;
   visible: string;
   sortOrder: number;
 };
@@ -133,7 +133,7 @@ type ProductSizeResponse = {
 type ProductOptionResponse = {
   id: number;
   productColorId: number;
-  productSizeId: number;
+  productVariantId: number;
   stock: number;
   addPrice: number;
   visible: string;
@@ -162,7 +162,7 @@ const AdminProductForm = () => {
     description: "",
     material: "",
     washingInfo: "",
-    fittingEnabled: "Y",
+    aiApplyEnabled: "Y",
     status: "판매중",
   });
 
@@ -232,21 +232,21 @@ const AdminProductForm = () => {
     },
   ]);
 
-  const [sizes, setSizes] = useState<ProductSizeForm[]>([
+  const [sizes, setSizes] = useState<ProductVariantForm[]>([
     {
       id: Date.now() + 1,
-      sizeName: "S",
-      sizeDescription: "",
+      variantName: "S",
+      variantDescription: "",
     },
     {
       id: Date.now() + 2,
-      sizeName: "M",
-      sizeDescription: "",
+      variantName: "M",
+      variantDescription: "",
     },
     {
       id: Date.now() + 3,
-      sizeName: "L",
-      sizeDescription: "",
+      variantName: "L",
+      variantDescription: "",
     },
   ]);
 
@@ -438,25 +438,25 @@ const AdminProductForm = () => {
   };
 
   /**
-   * 사이즈 추가
+   * 옵션 추가
    */
   const addSize = () => {
     setSizes((prev) => [
       ...prev,
       {
         id: Date.now(),
-        sizeName: "",
-        sizeDescription: "",
+        variantName: "",
+        variantDescription: "",
       },
     ]);
   };
 
   /**
-   * 사이즈 변경
+   * 옵션 변경
    */
   const changeSize = (
     id: number,
-    field: "sizeName" | "sizeDescription",
+    field: "variantName" | "variantDescription",
     value: string
   ) => {
     setSizes((prev) =>
@@ -472,12 +472,12 @@ const AdminProductForm = () => {
   };
 
   /**
-   * 사이즈 삭제
+   * 옵션 삭제
    */
   const removeSize = (id: number) => {
     const targetSize = sizes.find((size) => size.id === id);
 
-    // 기존 DB 사이즈는 바로 삭제하지 않고 "수정 저장"할 때 삭제한다.
+    // 기존 DB 옵션는 바로 삭제하지 않고 "수정 저장"할 때 삭제한다.
     if (targetSize?.backendId) {
       setDeletedSizeIds((prev) =>
         prev.includes(targetSize.backendId!)
@@ -496,7 +496,7 @@ const AdminProductForm = () => {
   };
 
   /**
-   * 색상 × 사이즈 조합 생성
+   * 색상 × 옵션 조합 생성
    */
   const generateOptions = () => {
     const generated: ProductOptionForm[] = [];
@@ -554,8 +554,8 @@ const AdminProductForm = () => {
 
   const findSizeName = (id: number) => {
     return (
-      sizes.find((size) => size.id === id)?.sizeName ||
-      "사이즈 미입력"
+      sizes.find((size) => size.id === id)?.variantName ||
+      "옵션 미입력"
     );
   };
 
@@ -568,7 +568,7 @@ const AdminProductForm = () => {
         const [categoryResponse, colorResponse] = await Promise.all([
           axiosInstance.get<CategoryResponse[]>("/category/find_all"),
           axiosInstance.get<ProductColorInfoResponse[]>(
-            "/product_color_info/find_all"
+            "/product_color_master/find_all"
           ),
         ]);
 
@@ -607,7 +607,7 @@ const AdminProductForm = () => {
           await Promise.all([
             axiosInstance.get<ProductDetailResponse>(`/product/${productId}`),
             axiosInstance.get<ProductColorResponse[]>(`/product_color/product/${productId}`),
-            axiosInstance.get<ProductSizeResponse[]>(`/product_size/product/${productId}`),
+            axiosInstance.get<ProductVariantResponse[]>(`/product_variant/product/${productId}`),
             axiosInstance.get<ProductOptionResponse[]>(`/product_option/product/${productId}`),
           ]);
 
@@ -643,7 +643,7 @@ const AdminProductForm = () => {
           description: data.description ?? "",
           material: data.material ?? "",
           washingInfo: data.washing ?? "",
-          fittingEnabled: data.fittingEnabled ?? "Y",
+          aiApplyEnabled: data.aiApplyEnabled ?? "Y",
           status: data.status ?? "판매중",
         });
 
@@ -667,31 +667,31 @@ const AdminProductForm = () => {
 
         setColors(loadedColors);
 
-        // 기존 상품에 등록된 사이즈가 하나도 없으면
+        // 기존 상품에 등록된 옵션가 하나도 없으면
         // 수정 화면에서 S / M / L을 기본으로 생성한다.
-        const loadedSizes: ProductSizeForm[] =
+        const loadedSizes: ProductVariantForm[] =
           sizeResponse.data.length > 0
             ? sizeResponse.data.map((size) => ({
                 id: size.id,
                 backendId: size.id,
-                sizeName: size.sizeName,
-                sizeDescription: size.sizeDescription ?? "",
+                variantName: size.variantName,
+                variantDescription: size.variantDescription ?? "",
               }))
             : [
                 {
                   id: Date.now() + 101,
-                  sizeName: "S",
-                  sizeDescription: "",
+                  variantName: "S",
+                  variantDescription: "",
                 },
                 {
                   id: Date.now() + 102,
-                  sizeName: "M",
-                  sizeDescription: "",
+                  variantName: "M",
+                  variantDescription: "",
                 },
                 {
                   id: Date.now() + 103,
-                  sizeName: "L",
-                  sizeDescription: "",
+                  variantName: "L",
+                  variantDescription: "",
                 },
               ];
 
@@ -701,12 +701,12 @@ const AdminProductForm = () => {
           optionResponse.data.map((option) => ({
             id: option.id,
             colorId: option.productColorId,
-            sizeId: option.productSizeId,
+            sizeId: option.productVariantId,
             stock: option.stock ?? 0,
             addPrice: option.addPrice ?? 0,
           }));
 
-        // 기존 사이즈/옵션이 전혀 없는 예전 상품은
+        // 기존 옵션/옵션이 전혀 없는 예전 상품은
         // 현재 등록된 색상 × S/M/L 조합을 자동 생성하고 재고를 30으로 시작한다.
         if (
           sizeResponse.data.length === 0 &&
@@ -750,7 +750,7 @@ const AdminProductForm = () => {
     }
 
     if (image.filePath) {
-      return `http://localhost:9103${image.filePath}`;
+      return `http://localhost:9104${image.filePath}`;
     }
 
     return "";
@@ -799,8 +799,8 @@ const AdminProductForm = () => {
         return;
       }
 
-      if (sizes.some((size) => !size.sizeName.trim())) {
-        alert("사이즈명을 모두 입력해주세요.");
+      if (sizes.some((size) => !size.variantName.trim())) {
+        alert("옵션명을 모두 입력해주세요.");
         return;
       }
 
@@ -835,19 +835,19 @@ const AdminProductForm = () => {
         discount: product.discount || "0",
         material: product.material.trim(),
         washing: product.washingInfo.trim(),
-        fittingEnabled: product.fittingEnabled,
+        aiApplyEnabled: product.aiApplyEnabled,
         status: product.status,
       };
 
-      // 수정 모드: 상품 + 색상 + 이미지 + 사이즈 + 옵션/재고 수정
+      // 수정 모드: 상품 + 색상 + 이미지 + 옵션 + 옵션/재고 수정
       if (isEdit && productId) {
-        // 수정 화면에서도 색상 선택/사이즈명을 반드시 확인한다.
+        // 수정 화면에서도 색상 선택/옵션명을 반드시 확인한다.
         if (colors.some((color) => !color.masterColorId)) {
           throw new Error("선택되지 않은 색상이 있습니다.");
         }
 
-        if (sizes.some((size) => !size.sizeName.trim())) {
-          throw new Error("사이즈명을 모두 입력해주세요.");
+        if (sizes.some((size) => !size.variantName.trim())) {
+          throw new Error("옵션명을 모두 입력해주세요.");
         }
 
         if (
@@ -870,10 +870,10 @@ const AdminProductForm = () => {
           await axiosInstance.delete(`/product_color_image/${deletedImageId}`);
         }
 
-        // 삭제한 기존 사이즈는 DB에서 삭제
-        // 백엔드 ProductSizeService가 연결된 PRODUCT_OPTION을 먼저 정리한다.
+        // 삭제한 기존 옵션는 DB에서 삭제
+        // 백엔드 ProductVariantService가 연결된 PRODUCT_OPTION을 먼저 정리한다.
         for (const deletedSizeId of deletedSizeIds) {
-          await axiosInstance.delete(`/product_size/${deletedSizeId}`);
+          await axiosInstance.delete(`/product_variant/${deletedSizeId}`);
         }
 
         // 삭제한 기존 색상은 물리 삭제 대신 visible=N 처리한다.
@@ -889,7 +889,7 @@ const AdminProductForm = () => {
               colorId: deletedColor.masterColorId,
               isMain: "N",
               sortOrder: 9999,
-              fittingEnabled: product.fittingEnabled,
+              aiApplyEnabled: product.aiApplyEnabled,
               visible: "N",
             }
           );
@@ -918,7 +918,7 @@ const AdminProductForm = () => {
                 colorId: color.masterColorId,
                 isMain: index === 0 ? "Y" : "N",
                 sortOrder: index + 1,
-                fittingEnabled: product.fittingEnabled,
+                aiApplyEnabled: product.aiApplyEnabled,
                 visible: "Y",
               }
             );
@@ -932,7 +932,7 @@ const AdminProductForm = () => {
                 colorId: color.masterColorId,
                 isMain: index === 0 ? "Y" : "N",
                 sortOrder: index + 1,
-                fittingEnabled: product.fittingEnabled,
+                aiApplyEnabled: product.aiApplyEnabled,
                 visible: "Y",
               }
             );
@@ -991,7 +991,7 @@ const AdminProductForm = () => {
         }
 
         // -------------------------------------------------
-        // 4. 사이즈 수정 / 신규 추가
+        // 4. 옵션 수정 / 신규 추가
         // 화면 size.id -> 실제 PRODUCT_SIZE ID 매핑
         // -------------------------------------------------
         const savedEditSizeIdMap = new Map<number, number>();
@@ -999,39 +999,39 @@ const AdminProductForm = () => {
         for (let index = 0; index < sizes.length; index += 1) {
           const size = sizes[index];
 
-          let actualProductSizeId: number;
+          let actualProductVariantId: number;
 
           if (size.backendId) {
-            const sizeResponse = await axiosInstance.put<ProductSizeResponse>(
-              `/product_size/${size.backendId}`,
+            const sizeResponse = await axiosInstance.put<ProductVariantResponse>(
+              `/product_variant/${size.backendId}`,
               {
-                sizeName: size.sizeName.trim(),
-                sizeDescription: size.sizeDescription.trim(),
+                variantName: size.variantName.trim(),
+                variantDescription: size.variantDescription.trim(),
                 visible: "Y",
                 sortOrder: index + 1,
               }
             );
 
-            actualProductSizeId = sizeResponse.data.id ?? size.backendId;
+            actualProductVariantId = sizeResponse.data.id ?? size.backendId;
           } else {
-            const sizeResponse = await axiosInstance.post<ProductSizeResponse>(
-              `/product_size/product/${productId}/save`,
+            const sizeResponse = await axiosInstance.post<ProductVariantResponse>(
+              `/product_variant/product/${productId}/save`,
               {
-                sizeName: size.sizeName.trim(),
-                sizeDescription: size.sizeDescription.trim(),
+                variantName: size.variantName.trim(),
+                variantDescription: size.variantDescription.trim(),
                 visible: "Y",
                 sortOrder: index + 1,
               }
             );
 
-            actualProductSizeId = sizeResponse.data.id;
+            actualProductVariantId = sizeResponse.data.id;
           }
 
-          if (!actualProductSizeId) {
-            throw new Error(`${size.sizeName} 사이즈 저장 후 사이즈번호를 받지 못했습니다.`);
+          if (!actualProductVariantId) {
+            throw new Error(`${size.variantName} 옵션 저장 후 옵션번호를 받지 못했습니다.`);
           }
 
-          savedEditSizeIdMap.set(size.id, actualProductSizeId);
+          savedEditSizeIdMap.set(size.id, actualProductVariantId);
         }
 
         // -------------------------------------------------
@@ -1041,7 +1041,7 @@ const AdminProductForm = () => {
         for (const option of options) {
           const actualProductColorId =
             savedEditColorIdMap.get(option.colorId) ?? option.colorId;
-          const actualProductSizeId =
+          const actualProductVariantId =
             savedEditSizeIdMap.get(option.sizeId) ?? option.sizeId;
 
           if (option.id) {
@@ -1049,7 +1049,7 @@ const AdminProductForm = () => {
               `/product_option/${option.id}`,
               {
                 productColorId: actualProductColorId,
-                productSizeId: actualProductSizeId,
+                productVariantId: actualProductVariantId,
                 addPrice: option.addPrice,
                 stock: option.stock,
                 visible: "Y",
@@ -1060,7 +1060,7 @@ const AdminProductForm = () => {
               `/product_option/product/${productId}/save`,
               {
                 productColorId: actualProductColorId,
-                productSizeId: actualProductSizeId,
+                productVariantId: actualProductVariantId,
                 addPrice: option.addPrice,
                 stock: option.stock,
                 visible: "Y",
@@ -1077,7 +1077,7 @@ const AdminProductForm = () => {
           await Promise.all([
             axiosInstance.get<ProductDetailResponse>(`/product/${productId}`),
             axiosInstance.get<ProductColorResponse[]>(`/product_color/product/${productId}`),
-            axiosInstance.get<ProductSizeResponse[]>(`/product_size/product/${productId}`),
+            axiosInstance.get<ProductVariantResponse[]>(`/product_variant/product/${productId}`),
             axiosInstance.get<ProductOptionResponse[]>(`/product_option/product/${productId}`),
           ]);
 
@@ -1101,17 +1101,17 @@ const AdminProductForm = () => {
         );
 
         const expectedSizeNames = sizes
-          .map((size) => size.sizeName.trim())
+          .map((size) => size.variantName.trim())
           .sort()
           .join("|");
 
         const verifiedSizeNames = verifiedVisibleSizes
-          .map((size) => size.sizeName.trim())
+          .map((size) => size.variantName.trim())
           .sort()
           .join("|");
 
         if (expectedSizeNames !== verifiedSizeNames) {
-          throw new Error("상품 사이즈 추가/수정/삭제가 서버에 정확히 반영되지 않았습니다.");
+          throw new Error("상품 옵션 추가/수정/삭제가 서버에 정확히 반영되지 않았습니다.");
         }
 
         if (options.length > 0 && verifyOptions.data.length < options.length) {
@@ -1167,7 +1167,7 @@ const AdminProductForm = () => {
             colorId: color.masterColorId,
             isMain: colorIndex === 0 ? "Y" : "N",
             sortOrder: colorIndex + 1,
-            fittingEnabled: product.fittingEnabled,
+            aiApplyEnabled: product.aiApplyEnabled,
             visible: "Y",
           }
         );
@@ -1224,30 +1224,30 @@ const AdminProductForm = () => {
       }
 
       // -------------------------------------------------
-      // 4. 상품 사이즈 저장
+      // 4. 상품 옵션 저장
       // -------------------------------------------------
       for (let sizeIndex = 0; sizeIndex < sizes.length; sizeIndex += 1) {
         const size = sizes[sizeIndex];
 
         const sizeResponse = await axiosInstance.post<IdResponse>(
-          `/product_size/product/${savedProductId}/save`,
+          `/product_variant/product/${savedProductId}/save`,
           {
-            sizeName: size.sizeName.trim(),
-            sizeDescription: size.sizeDescription.trim(),
+            variantName: size.variantName.trim(),
+            variantDescription: size.variantDescription.trim(),
             visible: "Y",
             sortOrder: sizeIndex + 1,
           }
         );
 
-        const savedProductSizeId = sizeResponse.data.id;
+        const savedProductVariantId = sizeResponse.data.id;
 
-        if (!savedProductSizeId) {
+        if (!savedProductVariantId) {
           throw new Error(
-            `${size.sizeName} 사이즈 등록 후 사이즈번호를 받지 못했습니다.`
+            `${size.variantName} 옵션 등록 후 옵션번호를 받지 못했습니다.`
           );
         }
 
-        savedSizeIdMap.set(size.id, savedProductSizeId);
+        savedSizeIdMap.set(size.id, savedProductVariantId);
       }
 
       // -------------------------------------------------
@@ -1255,17 +1255,17 @@ const AdminProductForm = () => {
       // -------------------------------------------------
       for (const option of options) {
         const savedProductColorId = savedColorIdMap.get(option.colorId);
-        const savedProductSizeId = savedSizeIdMap.get(option.sizeId);
+        const savedProductVariantId = savedSizeIdMap.get(option.sizeId);
 
-        if (!savedProductColorId || !savedProductSizeId) {
-          throw new Error("옵션 저장에 필요한 색상/사이즈 번호가 없습니다.");
+        if (!savedProductColorId || !savedProductVariantId) {
+          throw new Error("옵션 저장에 필요한 색상/옵션 번호가 없습니다.");
         }
 
         await axiosInstance.post(
           `/product_option/product/${savedProductId}/save`,
           {
             productColorId: savedProductColorId,
-            productSizeId: savedProductSizeId,
+            productVariantId: savedProductVariantId,
             addPrice: option.addPrice,
             stock: option.stock,
             visible: "Y",
@@ -1356,7 +1356,7 @@ const AdminProductForm = () => {
               name="brand"
               value={product.brand}
               onChange={handleProductChange}
-              placeholder="예: ONNIVER"
+              placeholder="예: GODDESS"
             />
           </div>
 
@@ -1504,8 +1504,8 @@ const AdminProductForm = () => {
             <label>AI 피팅</label>
 
             <select
-              name="fittingEnabled"
-              value={product.fittingEnabled}
+              name="aiApplyEnabled"
+              value={product.aiApplyEnabled}
               onChange={handleProductChange}
             >
               <option value="Y">사용</option>
@@ -1740,16 +1740,16 @@ const AdminProductForm = () => {
       </section>
 
       {/* ==========================================
-          03 사이즈
+          03 옵션
       ========================================== */}
       <section className="admin-form-section">
         <div className="admin-form-section-title">
           <span>03</span>
 
           <div>
-            <h2>사이즈</h2>
+            <h2>옵션</h2>
             <p>
-              상품에서 판매할 사이즈를 설정해주세요.
+              상품에서 판매할 옵션를 설정해주세요.
             </p>
           </div>
 
@@ -1758,7 +1758,7 @@ const AdminProductForm = () => {
             className="admin-outline-button"
             onClick={addSize}
           >
-            + 사이즈 추가
+            + 옵션 추가
           </button>
         </div>
 
@@ -1770,28 +1770,28 @@ const AdminProductForm = () => {
             >
               <input
                 type="text"
-                value={size.sizeName}
+                value={size.variantName}
                 onChange={(event) =>
                   changeSize(
                     size.id,
-                    "sizeName",
+                    "variantName",
                     event.target.value
                   )
                 }
-                placeholder="사이즈"
+                placeholder="옵션"
               />
 
               <input
                 type="text"
-                value={size.sizeDescription}
+                value={size.variantDescription}
                 onChange={(event) =>
                   changeSize(
                     size.id,
-                    "sizeDescription",
+                    "variantDescription",
                     event.target.value
                   )
                 }
-                placeholder="사이즈 설명 (선택)"
+                placeholder="옵션 설명 (선택)"
               />
 
               <button
@@ -1815,7 +1815,7 @@ const AdminProductForm = () => {
           <div>
             <h2>옵션 및 재고</h2>
             <p>
-              색상과 사이즈 조합별 재고를
+              색상과 옵션 조합별 재고를
               입력해주세요.
             </p>
           </div>
@@ -1831,7 +1831,7 @@ const AdminProductForm = () => {
 
         {options.length === 0 ? (
           <div className="admin-option-empty">
-            색상과 사이즈를 입력한 후
+            색상과 옵션를 입력한 후
             <strong> 옵션 조합 생성</strong>을 눌러주세요.
           </div>
         ) : (
@@ -1840,7 +1840,7 @@ const AdminProductForm = () => {
               <thead>
                 <tr>
                   <th>색상</th>
-                  <th>사이즈</th>
+                  <th>옵션</th>
                   <th>재고</th>
                   <th>추가 금액</th>
                 </tr>

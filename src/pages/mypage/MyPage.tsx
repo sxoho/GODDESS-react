@@ -23,7 +23,7 @@ import MyCustomerQnaSection from "./MyCustomerQnaSection";
 import "../../styles/member/MyPage.css";
 
 
-const API_BASE = "http://localhost:9103";
+const API_BASE = "http://localhost:9104";
 
 
 type Member = {
@@ -82,7 +82,7 @@ type WishlistItem = {
   productId: number;
   productName: string;
   price: number;
-  discount?: string;
+  discount?: number;
   createdAt?: string;
 };
 
@@ -114,7 +114,7 @@ type Product = {
   brand?: string;
   name: string;
   price: number;
-  discount?: string;
+  discount?: number;
 };
 
 
@@ -130,7 +130,7 @@ type RecentViewedItem = {
   productName: string;
   brand?: string;
   price: number;
-  discount?: string;
+  discount?: number;
   imageUrl?: string;
   viewedAt?: string;
 };
@@ -180,8 +180,8 @@ type ProductReview = {
   orderDetailId?: number | null;
   productId: number;
   productName: string;
-  fittingSaveId?: number | null;
-  fittingImageUrl?: string | null;
+  beautySaveId?: number | null;
+  beautyImageUrl?: string | null;
 
   /**
    * 마이페이지 REVIEW에서 사용할 상품 대표 이미지
@@ -664,8 +664,8 @@ const MyProductReviewSection = ({
         `/product_review/${review.id}`,
         {
           memberId: memberId,
-          fittingSaveId:
-            review.fittingSaveId ?? null,
+          beautySaveId:
+            review.beautySaveId ?? null,
           title:
             editTitle.trim(),
           content:
@@ -2155,7 +2155,7 @@ const MyPage = () => {
     "info" |
     "order" |
     "wishlist" |
-    "fitting" |
+    "beauty" |
     "review" |
     "qna"
   >(
@@ -2228,7 +2228,7 @@ const MyPage = () => {
   ] = useState({
     order: 0,
     wishlist: 0,
-    fitting: 0,
+    beauty: 0,
     review: 0
   });
 
@@ -2796,7 +2796,7 @@ const MyPage = () => {
   const loadDashboardCounts = async () => {
     if (!memberId || sw !== true) return;
 
-    const next = { order: 0, wishlist: 0, fitting: 0, review: 0 };
+    const next = { order: 0, wishlist: 0, beauty: 0, review: 0 };
 
     try {
       const r = await fetch(`${API_BASE}/wishlist/member/${memberId}/count`);
@@ -2822,14 +2822,7 @@ const MyPage = () => {
       }
     } catch {}
 
-    try {
-      const r = await fetch(`${API_BASE}/api/fitting/saves`);
-      if (r.ok) {
-        const data = await r.json();
-        const list = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
-        next.fitting = list.length;
-      }
-    } catch {}
+    // 현재 Spring에는 BEAUTY_SAVE 조회 Controller가 아직 없어 AI BEAUTY 카운트는 0으로 둡니다.
 
     setDashboardCounts(next);
   };
@@ -2883,7 +2876,7 @@ const MyPage = () => {
    * 할인율 숫자 변환
    */
   const getDiscountRate = (
-    discount?: string
+    discount?: string | number
   ) => {
 
     if (!discount) {
@@ -2892,12 +2885,9 @@ const MyPage = () => {
 
 
     const value =
-      Number(
-        discount.replace(
-          /[^0-9]/g,
-          ""
-        )
-      );
+      typeof discount === "number"
+        ? discount
+        : Number(discount.replace(/[^0-9]/g, ""));
 
 
     return Number.isNaN(
@@ -3956,11 +3946,11 @@ const MyPage = () => {
 
             <button
               type="button"
-              className={activeMenu === "fitting" ? "active" : ""}
-              onClick={() => setActiveMenu("fitting")}
+              className={activeMenu === "beauty" ? "active" : ""}
+              onClick={() => setActiveMenu("beauty")}
             >
-              <span>FITTING</span>
-              <small>나의 피팅</small>
+              <span>BEAUTY</span>
+              <small>나의 뷰티 체험</small>
             </button>
 
             <button
@@ -4000,7 +3990,7 @@ const MyPage = () => {
                 <div className="mypage-dashboard-heading">
                   <p>MY SHOPPING</p>
                   <h2>나의 쇼핑</h2>
-                  <span>주문, 찜, 피팅, 리뷰 활동을 한눈에 확인해보세요.</span>
+                  <span>주문, 찜, 뷰티 체험, 리뷰 활동을 한눈에 확인해보세요.</span>
                 </div>
 
 
@@ -4031,12 +4021,12 @@ const MyPage = () => {
 
                   <button
                     type="button"
-                    onClick={() => setActiveMenu("fitting")}
+                    onClick={() => setActiveMenu("beauty")}
                   >
                     <span>03</span>
-                    <strong>FITTING</strong>
-                    <b className="mypage-dashboard-menu-count">{dashboardCounts.fitting}</b>
-                    <small>나의 피팅</small>
+                    <strong>BEAUTY</strong>
+                    <b className="mypage-dashboard-menu-count">{dashboardCounts.beauty}</b>
+                    <small>나의 뷰티 체험</small>
                   </button>
 
                   <button
@@ -4188,14 +4178,14 @@ const MyPage = () => {
               <div>
 
                 <strong>
-                  AI FITTING을 준비해보세요
+                  AI BEAUTY을 준비해보세요
                 </strong>
 
 
                 <p>
                   아직 등록된 회원 사진이 없습니다.
                   정면 얼굴 사진을 등록하면
-                  AI 피팅 기능에서 사용할 수 있습니다.
+                  AI 뷰티 체험 기능에서 사용할 수 있습니다.
                 </p>
 
               </div>
@@ -4507,7 +4497,7 @@ const MyPage = () => {
 
                       <p className="mypage-photo-guide">
 
-                        AI 피팅에 사용할
+                        AI 뷰티 체험에 사용할
                         정면 얼굴 사진을 등록해주세요.
 
                         <br />
@@ -5229,10 +5219,10 @@ const MyPage = () => {
 
 
       {/* =========================
-          FITTING
+          BEAUTY
       ========================= */}
 
-      {activeMenu === "fitting" && (
+      {activeMenu === "beauty" && (
 
         <section className="mypage-section">
 
@@ -5246,12 +5236,12 @@ const MyPage = () => {
             <div>
 
               <p>
-                MY FITTING
+                MY BEAUTY
               </p>
 
 
               <h2>
-                피팅 내역
+                뷰티 체험 내역
               </h2>
 
             </div>
@@ -5261,7 +5251,7 @@ const MyPage = () => {
 
           <div className="mypage-menu-ready">
 
-            피팅 내역 기능은 준비 중입니다.
+            뷰티 체험 내역 기능은 준비 중입니다.
 
           </div>
 

@@ -288,7 +288,7 @@ const NoticeList = () => {
       <section className="notice-heading">
 
         <p>
-          ONNIVER
+          GODDESS
         </p>
 
 
@@ -298,7 +298,7 @@ const NoticeList = () => {
 
 
         <span>
-          ONNIVER의 새로운 소식과 안내사항을 확인하세요.
+          GODDESS의 새로운 소식과 안내사항을 확인하세요.
         </span>
 
       </section>

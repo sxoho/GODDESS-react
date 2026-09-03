@@ -24,16 +24,16 @@ type ProductColor = {
   colorCode: string;
   isMain: string;
   sortOrder: number;
-  fittingEnabled: string;
+  aiApplyEnabled: string;
   visible: string;
   images: ProductImage[];
 };
 
-type ProductSize = {
+type ProductVariant = {
   id: number;
   productId: number;
-  sizeName: string;
-  sizeDescription?: string;
+  variantName: string;
+  variantDescription?: string;
   visible: string;
   sortOrder: number;
 };
@@ -43,8 +43,8 @@ type ProductOption = {
   productId: number;
   productColorId: number;
   colorName: string;
-  productSizeId: number;
-  sizeName: string;
+  productVariantId: number;
+  variantName: string;
   addPrice: number;
   stock: number;
   visible: string;
@@ -62,7 +62,7 @@ type Product = {
   discount?: string;
   material?: string;
   washing?: string;
-  fittingEnabled: string;
+  aiApplyEnabled: string;
   status: string;
   viewCount?: number;
   createdAt?: string;
@@ -76,7 +76,7 @@ const AdminProductDetail = () => {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [colors, setColors] = useState<ProductColor[]>([]);
-  const [sizes, setSizes] = useState<ProductSize[]>([]);
+  const [sizes, setSizes] = useState<ProductVariant[]>([]);
   const [options, setOptions] = useState<ProductOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -113,8 +113,8 @@ const AdminProductDetail = () => {
           axiosInstance.get<ProductColor[]>(
             `/product_color/product/${productId}`
           ),
-          axiosInstance.get<ProductSize[]>(
-            `/product_size/product/${productId}`
+          axiosInstance.get<ProductVariant[]>(
+            `/product_variant/product/${productId}`
           ),
           axiosInstance.get<ProductOption[]>(
             `/product_option/product/${productId}`
@@ -290,8 +290,8 @@ const AdminProductDetail = () => {
             <dd>{product.discount || "-"}</dd>
           </div>
           <div>
-            <dt>AI FITTING</dt>
-            <dd>{product.fittingEnabled}</dd>
+            <dt>AI BEAUTY</dt>
+            <dd>{product.aiApplyEnabled}</dd>
           </div>
           <div>
             <dt>판매 상태</dt>
@@ -401,21 +401,21 @@ const AdminProductDetail = () => {
         <div className="admin-product-detail-section-title">
           <span>04</span>
           <div>
-            <h2>사이즈</h2>
-            <p>상품에 등록된 사이즈 정보를 확인합니다.</p>
+            <h2>옵션</h2>
+            <p>상품에 등록된 옵션 정보를 확인합니다.</p>
           </div>
         </div>
 
         {sizes.length === 0 ? (
           <div className="admin-product-detail-empty">
-            등록된 사이즈가 없습니다.
+            등록된 옵션가 없습니다.
           </div>
         ) : (
           <div className="admin-product-size-list">
             {sizes.map((size) => (
               <div className="admin-product-size-card" key={size.id}>
-                <strong>{size.sizeName}</strong>
-                <span>{size.sizeDescription || "-"}</span>
+                <strong>{size.variantName}</strong>
+                <span>{size.variantDescription || "-"}</span>
                 <small>{size.visible === "Y" ? "노출" : "숨김"}</small>
               </div>
             ))}
@@ -428,7 +428,7 @@ const AdminProductDetail = () => {
           <span>05</span>
           <div>
             <h2>옵션 및 재고</h2>
-            <p>색상과 사이즈 조합별 판매 재고를 확인합니다.</p>
+            <p>색상과 옵션 조합별 판매 재고를 확인합니다.</p>
           </div>
         </div>
 
@@ -443,7 +443,7 @@ const AdminProductDetail = () => {
                 <tr>
                   <th>옵션 ID</th>
                   <th>색상</th>
-                  <th>사이즈</th>
+                  <th>옵션</th>
                   <th>추가금액</th>
                   <th>재고</th>
                   <th>노출</th>
@@ -454,7 +454,7 @@ const AdminProductDetail = () => {
                   <tr key={option.id}>
                     <td>{option.id}</td>
                     <td>{option.colorName}</td>
-                    <td>{option.sizeName}</td>
+                    <td>{option.variantName}</td>
                     <td>
                       {(option.addPrice ?? 0).toLocaleString()}원
                     </td>

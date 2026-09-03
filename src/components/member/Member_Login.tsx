@@ -199,7 +199,7 @@ const Member_Login = () => {
         </h1>
 
         <p className="member-subtitle">
-          ONNIVER에 로그인하고
+          GODDESS에 로그인하고
           <br />
           나만의 스타일과 가상 피팅을 만나보세요.
         </p>

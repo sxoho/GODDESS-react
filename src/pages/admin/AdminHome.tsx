@@ -66,11 +66,11 @@ const AdminHome = () => {
   return (
     <main className="admin-home">
       <section className="admin-home-heading">
-        <p>ONNIVER ADMINISTRATION</p>
+        <p>GODDESS ADMINISTRATION</p>
 
         <h1>Dashboard</h1>
 
-        <span>ONNIVER 서비스 운영 현황을 확인하세요.</span>
+        <span>GODDESS 서비스 운영 현황을 확인하세요.</span>
       </section>
 
       {/* 운영 현황 */}

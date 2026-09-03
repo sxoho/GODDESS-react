@@ -14,7 +14,7 @@ type Product = {
   name: string;
   price: number;
   discount?: string;
-  fittingEnabled: string;
+  aiApplyEnabled: string;
   status: string;
 };
 
@@ -400,7 +400,7 @@ const AdminProductList = () => {
                   <th>카테고리</th>
                   <th>가격</th>
                   <th>판매상태</th>
-                  <th>AI FITTING</th>
+                  <th>AI BEAUTY</th>
                   <th>관리</th>
                 </tr>
               </thead>
@@ -441,7 +441,7 @@ const AdminProductList = () => {
                       >
                         {product.status}
                       </td>
-                      <td>{product.fittingEnabled}</td>
+                      <td>{product.aiApplyEnabled}</td>
                       <td>
                         <div className="admin-product-actions">
                           <button

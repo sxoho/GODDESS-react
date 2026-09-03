@@ -4,9 +4,8 @@ import {
   useLocation
 } from "react-router-dom";
 
-import {
-  getCopyright
-} from "./components/ToolBak";
+import { BRAND } from "./config/brand";
+import BeautyHome from "./pages/beauty/BeautyHome";
 
 import "./App.css";
 
@@ -69,16 +68,10 @@ import Order from "./pages/order/Order.tsx";
 import Chat from "./pages/chat/Chat.tsx";
 
 
-/**
- * AI FITTING
- */
-import VirtualFittingRequest from "./pages/fitting/VirtualFittingRequest.tsx";
-import FittingLayout from "./pages/fitting/FittingLayout";
-import FittingProfile from "./pages/fitting/FittingProfile";
 
 
 /**
- * ONNIVER 전체 라우팅 설정
+ * GODDESS 전체 라우팅 설정
  *
  * React 실행 주소:
  * http://localhost:5173
@@ -276,6 +269,8 @@ function App() {
                 element={<ProductList />}
               />
 
+              <Route path="/beauty" element={<BeautyHome />} />
+
               {/* 상품 상세 */}
               <Route
                 path="/products/:productId"
@@ -304,47 +299,6 @@ function App() {
               <Route
                 path="/chat"
                 element={<Chat />}
-              />
-
-
-              {/* =========================
-                  AI FITTING
-              ========================= */}
-
-              <Route
-                path="/fitting"
-                element={<FittingLayout />}
-              >
-
-                {/* AI FITTING 첫 화면 */}
-                <Route
-                  index
-                  element={<FittingProfile />}
-                />
-
-
-                {/* 피팅 프로필 */}
-                <Route
-                  path="profile"
-                  element={<FittingProfile />}
-                />
-
-
-                {/* AI 가상 피팅 */}
-                <Route
-                  path="tryon"
-                  element={<VirtualFittingRequest />}
-                />
-
-              </Route>
-
-
-              {/* 기존 가상 피팅 경로
-                  기존 연결 보호를 위해 유지
-              */}
-              <Route
-                path="/fitting/request"
-                element={<VirtualFittingRequest />}
               />
 
 
@@ -433,14 +387,15 @@ function App() {
 
 
           {/* 공통 하단 영역 */}
-          <footer className="footer">
+          <footer className="footer goddess-footer">
+            <strong className="goddess-footer-logo">{BRAND.name}</strong>
 
             <p className="footer-description">
-              AI 기반 가상 피팅 패션 플랫폼
+              {BRAND.description}
             </p>
 
             <p className="footer-copyright">
-              © 2026 {getCopyright()}. All rights reserved.
+              © 2026 {BRAND.name}. All rights reserved.
             </p>
 
           </footer>

@@ -1,3 +1,4 @@
+import { BRAND } from "../../config/brand";
 import {
   NavLink,
   useLocation,
@@ -25,7 +26,7 @@ const Menu = () => {
   /**
    * 로그인 후 사용자 메뉴를 표시할 페이지
    *
-   * SHOP / AI FITTING / STYLE RECOMMENDATION /
+   * SHOP / AI BEAUTY /
    * CART / NOTICE /
    * MY PAGE / MY LIKE / SHOPPING BAG
    *
@@ -48,13 +49,9 @@ const Menu = () => {
     location.pathname === "/wishlist" ||
     location.pathname.startsWith("/wishlist/") ||
 
-    /* AI FITTING */
-    location.pathname === "/fitting" ||
-    location.pathname.startsWith("/fitting/") ||
-
-    /* STYLE RECOMMENDATION */
-    location.pathname === "/recommend" ||
-    location.pathname.startsWith("/recommend/") ||
+    /* AI BEAUTY */
+    location.pathname === "/beauty" ||
+    location.pathname.startsWith("/beauty/") ||
 
     /* CART / SHOPPING BAG */
     location.pathname === "/cart" ||
@@ -85,7 +82,7 @@ const Menu = () => {
           to="/"
           className="common-header-logo"
         >
-          ONNIVER
+          {BRAND.name}
         </NavLink>
 
 
@@ -118,26 +115,17 @@ const Menu = () => {
           </NavLink>
 
           <NavLink
-            to="/fitting"
+            to="/beauty"
             className={({ isActive }) =>
               isActive
                 ? "common-header-link active"
                 : "common-header-link"
             }
           >
-            AI FITTING
+            AI BEAUTY
           </NavLink>
 
-          <NavLink
-            to="/recommend"
-            className={({ isActive }) =>
-              isActive
-                ? "common-header-link active"
-                : "common-header-link"
-            }
-          >
-            STYLE RECOMMENDATION
-          </NavLink>
+
 
           <NavLink
             to="/cart"

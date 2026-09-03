@@ -11,7 +11,7 @@ const AdminMenu = () => {
       ========================= */}
 
       <div className="admin-logo" onClick={() => navigate("/")}>
-        <strong>ONNIVER</strong>
+        <strong>GODDESS</strong>
 
         <span>ADMIN</span>
       </div>

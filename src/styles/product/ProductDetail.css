@@ -271,7 +271,7 @@
   font-size:16px;
 }
 
-.product-detail-fitting-button{
+.product-detail-beauty-button{
   width:100%;
   margin-top:22px;
   background:#111;
@@ -282,7 +282,7 @@
   font-size:16px;
   font-weight:700;
 }
-.product-detail-fitting-button span{
+.product-detail-beauty-button span{
   display:block;
   font-size:12px;
   margin-top:6px;
@@ -1198,7 +1198,7 @@
   border-color: #999;
 }
 
-.product-review-fitting-guide {
+.product-review-beauty-guide {
   display: flex;
   align-items: center;
   gap: 14px;
@@ -1207,14 +1207,14 @@
   background: #f2f2f2;
 }
 
-.product-review-fitting-guide span {
+.product-review-beauty-guide span {
   color: #666;
   font-size: 9px;
   font-weight: 600;
   letter-spacing: .12em;
 }
 
-.product-review-fitting-guide p {
+.product-review-beauty-guide p {
   margin: 0;
   color: #999;
   font-size: 11px;
@@ -1322,11 +1322,11 @@
   font-size: 10px;
 }
 
-.product-review-fitting-image {
+.product-review-beauty-image {
   width: 150px;
 }
 
-.product-review-fitting-image span {
+.product-review-beauty-image span {
   display: block;
   margin-bottom: 7px;
   color: #999;
@@ -1334,7 +1334,7 @@
   letter-spacing: .12em;
 }
 
-.product-review-fitting-image img {
+.product-review-beauty-image img {
   width: 150px;
   height: 190px;
   margin: 0;
@@ -1458,7 +1458,7 @@
     padding-top: 0;
   }
 
-  .product-review-fitting-guide {
+  .product-review-beauty-guide {
     margin-left: 0;
   }
 

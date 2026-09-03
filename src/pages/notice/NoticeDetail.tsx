@@ -327,7 +327,7 @@ const NoticeDetail = () => {
       <section className="notice-heading">
 
         <p>
-          ONNIVER
+          GODDESS
         </p>
 
 

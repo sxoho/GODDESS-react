@@ -14,14 +14,12 @@ export interface CartItem {
     brand?: string | null;               // 브랜드명
     productName: string;                 // 상품명
     colorName: string;                   // 색상명
-    sizeName: string;                    // 사이즈명
+    variantName: string;                 // 상품 옵션명
     price: number;                       // 기본 상품 가격
-    discount?: string | null;            // 할인율
+    discount?: number | null;            // 할인율
     addPrice: number;                    // 옵션 추가 금액
     quantity: number;                    // 수량
     filePath?: string | null;            // 상품 이미지 경로
-    quickFittingResultId: number | null; // 퀵 피팅 결과 ID
-    coordFittingResultId: number | null; // 코디 피팅 결과 ID
     createdAt: string;                   // 생성일시 (ISO 문자열)
 
     // UI 보조 필드 (선택적)
@@ -34,7 +32,7 @@ interface ProductOptionInfo {
     id: number;
     productId: number;
     colorName?: string;
-    sizeName?: string;
+    variantName?: string;
 }
 
 interface ProductInfo {
@@ -42,7 +40,7 @@ interface ProductInfo {
     brand?: string;
     name?: string;
     price?: number;
-    discount?: string;
+    discount?: number;
 }
 
 interface BrandGroup {
@@ -135,7 +133,7 @@ const Cart: React.FC = () => {
             let productName = item.productName;
 
             // DTO에 brand가 없거나 기본값일 경우 상품 마스터에서 실제 브랜드명 조회
-            if ((!brand || brand === 'ONNIVER') && allOptions && allProducts) {
+            if ((!brand || brand === 'GODDESS') && allOptions && allProducts) {
                 const opt = allOptions.find(o => o.id === item.productOptionId);
                 if (opt && opt.productId) {
                     const prod = allProducts.find(p => p.id === opt.productId);
@@ -149,7 +147,7 @@ const Cart: React.FC = () => {
 
             return {
                 ...item,
-                brand: brand || 'ONNIVER',
+                brand: brand || 'GODDESS',
                 discount: discount ?? item.discount,
                 productName: productName || item.productName,
                 quantity: quantityOverrides[item.id] ?? item.quantity,
@@ -161,7 +159,7 @@ const Cart: React.FC = () => {
     const brandGroups: BrandGroup[] = useMemo(() => {
         const map = new Map<string, CartItem[]>();
         cartItems.forEach(item => {
-            const brand = (item.brand || item.brandName || 'ONNIVER').trim();
+            const brand = (item.brand || item.brandName || 'GODDESS').trim();
             if (!map.has(brand)) {
                 map.set(brand, []);
             }
@@ -285,7 +283,7 @@ const Cart: React.FC = () => {
                     <button
                         className="btn-checkout"
                         style={{ maxWidth: '200px', margin: '0 auto', display: 'inline-block' }}
-                        onClick={() => navigate('/member/login')}
+                        onClick={() => navigate('/login')}
                     >
                         로그인하기
                     </button>
@@ -411,7 +409,7 @@ const Cart: React.FC = () => {
                                                             </button>
                                                         </div>
                                                         <p className="item-option">
-                                                            [옵션] {item.optionName || `${item.colorName} / ${item.sizeName}`}
+                                                            [옵션] {item.optionName || `${item.colorName || "기본색상"} / ${item.variantName || "기본옵션"}`}
                                                         </p>
 
                                                         <div className="quantity-control">

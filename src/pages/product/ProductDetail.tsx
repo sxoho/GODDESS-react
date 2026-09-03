@@ -5,7 +5,7 @@ import "../../styles/product/ProductDetail.css";
 import { useGlobalStore } from "../../store/store";
 import { addCartItem } from "../../api/cartApi";
 
-const API_BASE = "http://localhost:9103";
+const API_BASE = "http://localhost:9104";
 
 const TEMP_IMAGE =
   "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=90";
@@ -31,14 +31,21 @@ type Product = {
   productId: number;
   category?: Category | null;
   categoryId?: number;
+  parentCategoryId?: number | null;
+  categoryName?: string;
+  usageInfo?: string;
+  productType?: string;
+  volume?: string;
+  skinType?: string;
+  personalColor?: string;
   brand?: string;
   name: string;
   description?: string;
   price: number;
-  discount?: string;
+  discount?: number;
   material?: string;
   washing?: string;
-  fittingEnabled: string;
+  aiApplyEnabled: string;
   status: string;
   viewCount?: number;
   createdAt?: string;
@@ -54,7 +61,7 @@ type ProductColor = {
   colorCode: string;
   isMain: string;
   sortOrder: number;
-  fittingEnabled: string;
+  aiApplyEnabled: string;
   visible: string;
 };
 
@@ -82,6 +89,15 @@ type ProductSize = {
   sortOrder: number;
 };
 
+type ProductVariantApi = {
+  id: number;
+  productId: number;
+  variantName: string;
+  variantDescription?: string;
+  visible: string;
+  sortOrder: number;
+};
+
 type ProductOption = {
   id: number;
   productId: number;
@@ -89,6 +105,8 @@ type ProductOption = {
   colorName: string;
   productSizeId: number;
   sizeName: string;
+  productVariantId?: number;
+  variantName?: string;
   addPrice: number;
   stock: number;
   visible: string;
@@ -100,8 +118,8 @@ type ProductReview = {
   memberNickname: string;
   productId: number;
   productName: string;
-  fittingSaveId?: number | null;
-  fittingImageUrl?: string | null;
+  beautySaveId?: number | null;
+  beautyImageUrl?: string | null;
   title: string;
   content: string;
   rating: number;
@@ -316,7 +334,7 @@ const ProductDetail = () => {
           fetch(`${API_BASE}/product/${productId}`),
           fetch(`${API_BASE}/product_color/find_all`),
           fetch(`${API_BASE}/product_color_image/find_all`),
-          fetch(`${API_BASE}/product_size/product/${productId}`),
+          fetch(`${API_BASE}/product_variant/product/${productId}`),
           fetch(`${API_BASE}/product_option/product/${productId}`),
         ]);
 
@@ -343,7 +361,7 @@ const ProductDetail = () => {
         const rawProductData: Product = await productResponse.json();
         const rawColorData: ProductColor[] = await colorResponse.json();
         const rawImageData: ProductColorImage[] = await imageResponse.json();
-        const rawSizeData: ProductSize[] = await sizeResponse.json();
+        const rawSizeData: ProductVariantApi[] = await sizeResponse.json();
         const rawOptionData: ProductOption[] = await optionResponse.json();
 
         const productData: Product = {
@@ -371,12 +389,24 @@ const ProductDetail = () => {
         }));
 
         const sizeData: ProductSize[] = rawSizeData
-          .filter((size) => size.visible === "Y")
-          .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+          .filter((variant) => variant.visible === "Y")
+          .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+          .map((variant) => ({
+            id: variant.id,
+            productId: variant.productId,
+            sizeName: variant.variantName,
+            sizeDescription: variant.variantDescription,
+            visible: variant.visible,
+            sortOrder: variant.sortOrder,
+          }));
 
-        const optionData: ProductOption[] = rawOptionData.filter(
-          (option) => option.visible === "Y",
-        );
+        const optionData: ProductOption[] = rawOptionData
+          .filter((option) => option.visible === "Y")
+          .map((option) => ({
+            ...option,
+            productSizeId: option.productVariantId ?? option.productSizeId,
+            sizeName: option.variantName ?? option.sizeName,
+          }));
 
         setProduct(productData);
         setColors(colorData);
@@ -558,7 +588,7 @@ const ProductDetail = () => {
             isEdit
               ? {
                   memberId,
-                  fittingSaveId: null,
+                  beautySaveId: null,
                   title: reviewTitle.trim(),
                   content: reviewContent.trim(),
                   rating: reviewRating,
@@ -567,7 +597,7 @@ const ProductDetail = () => {
                   memberId,
                   orderDetailId: null,
                   productId: product.productId,
-                  fittingSaveId: null,
+                  beautySaveId: null,
                   title: reviewTitle.trim(),
                   content: reviewContent.trim(),
                   rating: reviewRating,
@@ -1173,18 +1203,16 @@ const ProductDetail = () => {
   const currentImage = currentGalleryItem?.imageUrl ?? TEMP_IMAGE;
 
   const categoryText = useMemo(() => {
-    if (!product?.category) return "PRODUCT";
-
-    const names = [product.category.parent?.name, product.category.name].filter(
-      Boolean,
-    );
-
+    if (!product) return "PRODUCT";
+    if (product.categoryName) return product.categoryName;
+    if (!product.category) return "PRODUCT";
+    const names = [product.category.parent?.name, product.category.name].filter(Boolean);
     return names.join(" / ");
   }, [product]);
 
   const discountRate = useMemo(() => {
     if (!product?.discount) return null;
-    const number = Number(product.discount.replace(/[^0-9]/g, ""));
+    const number = Number(product.discount);
     return Number.isNaN(number) || number <= 0 ? null : number;
   }, [product]);
 
@@ -1327,9 +1355,7 @@ const ProductDetail = () => {
           addCartItem({
             memberId,
             productOptionId: item.optionId,
-            quickFittingResultId: null,
-            coordFittingResultId: null,
-            quantity: item.quantity,
+                        quantity: item.quantity,
           }),
         ),
       );
@@ -1395,8 +1421,8 @@ const ProductDetail = () => {
               {(product.brand || "O").slice(0, 1)}
             </div>
             <div>
-              <strong>{product.brand || "ONNIVER"}</strong>
-              <p>ONNIVER SELECTED BRAND</p>
+              <strong>{product.brand || "GODDESS"}</strong>
+              <p>GODDESS SELECTED BRAND</p>
             </div>
           </div>
 
@@ -1446,7 +1472,7 @@ const ProductDetail = () => {
 
         <aside className="product-detail-information">
           <div className="product-detail-brand-row">
-            <button type="button">{product.brand || "ONNIVER"}</button>
+            <button type="button">{product.brand || "GODDESS"}</button>
 
             <button
               type="button"
@@ -1631,20 +1657,20 @@ const ProductDetail = () => {
             </div>
           )}
 
-          {product.fittingEnabled === "Y" && (
+          {product.aiApplyEnabled === "Y" && (
             <button
               type="button"
-              className="product-detail-fitting-button"
+              className="product-detail-beauty-button"
               onClick={() =>
                 navigate(
-                  `/fitting?productId=${product.productId}${
+                  `/beauty?productId=${product.productId}${
                     selectedColor ? `&colorId=${selectedColor.colorId}` : ""
                   }`,
                 )
               }
             >
-              AI FITTING
-              <span>구매 전에 가상으로 착용해보세요</span>
+              AI BEAUTY
+              <span>메이크업·헤어 AI 체험으로 확인해보세요</span>
             </button>
           )}
 
@@ -1840,8 +1866,8 @@ const ProductDetail = () => {
                     />
                   </label>
 
-                  <div className="product-review-fitting-guide">
-                    <span>AI FITTING</span>
+                  <div className="product-review-beauty-guide">
+                    <span>AI BEAUTY</span>
 
                     <p>
                       AI 피팅 결과 첨부는 피팅 기능 연동 후 사용할 수 있습니다.
@@ -1927,12 +1953,12 @@ const ProductDetail = () => {
                             )}
                           </div>
 
-                          {review.fittingImageUrl && (
-                            <div className="product-review-fitting-image">
-                              <span>AI FITTING RESULT</span>
+                          {review.beautyImageUrl && (
+                            <div className="product-review-beauty-image">
+                              <span>AI BEAUTY RESULT</span>
 
                               <img
-                                src={getReviewImageUrl(review.fittingImageUrl)}
+                                src={getReviewImageUrl(review.beautyImageUrl)}
                                 alt="AI 피팅 리뷰 이미지"
                               />
                             </div>
@@ -2189,7 +2215,7 @@ const ProductDetail = () => {
                               <div className="product-qna-answer">
                                 <span>A</span>
                                 <div>
-                                  <strong>ONNIVER</strong>
+                                  <strong>GODDESS</strong>
                                   <p>{qna.answer}</p>
                                   <small>{formatQnaDate(qna.answerDate)}</small>
                                 </div>

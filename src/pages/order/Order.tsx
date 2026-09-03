@@ -164,7 +164,7 @@ const Order: React.FC = () => {
                                             </div>
                                         </div>
                                         <div className="item-info">
-                                            <p className="item-brand">{item.brand || item.brandName || 'ONNIVER'}</p>
+                                            <p className="item-brand">{item.brand || item.brandName || 'GODDESS'}</p>
                                             <p className="item-name">{item.productName}</p>
                                             {optionText && <p className="item-option">[옵션] {optionText}</p>}
                                         </div>

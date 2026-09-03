@@ -379,7 +379,7 @@ const Member_Signup = () => {
         </h2>
 
         <p className="member-subtitle">
-          ONNIVER 회원이 되어
+          GODDESS 회원이 되어
           <br />
           AI 기반 스타일 추천과 가상 피팅을 경험해보세요.
         </p>

@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import "../../styles/admin/AdminProductReview.css";
 
-const API_BASE = "http://localhost:9103";
+const API_BASE = "http://localhost:9104";
 
 type Review = {
   id: number;
@@ -14,8 +14,8 @@ type Review = {
   orderDetailId?: number | null;
   productId: number;
   productName: string;
-  fittingSaveId?: number | null;
-  fittingImageUrl?: string | null;
+  beautySaveId?: number | null;
+  beautyImageUrl?: string | null;
   title: string;
   content: string;
   rating: number;

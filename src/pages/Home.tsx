@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BRAND } from "../config/brand";
 
 import "../styles/home/Home.css";
 
-const API_BASE = "http://localhost:9103";
+const API_BASE = "http://localhost:9104";
 
 type Product = {
   id?: number;
   productId: number;
   name: string;
   brand?: string;
-  fittingEnabled: string;
+  aiApplyEnabled: string;
   status: string;
   createdAt?: string;
 };
@@ -51,6 +52,7 @@ const getImageUrl = (filePath?: string) => {
 const Home = () => {
   const navigate = useNavigate();
 
+  const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
   const [products, setProducts] = useState<Product[]>([]);
   const [productColors, setProductColors] = useState<ProductColor[]>([]);
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
@@ -77,6 +79,7 @@ const Home = () => {
         const colorData: ProductColor[] = await colorResponse.json();
         const imageData: ProductImage[] = await imageResponse.json();
 
+        setLoadState("ready");
         setProducts(
           productData.map((product) => ({
             ...product,
@@ -100,6 +103,7 @@ const Home = () => {
           }))
         );
       } catch (error) {
+        setLoadState("error");
         console.error("홈 상품 조회 오류", error);
       }
     };
@@ -147,22 +151,6 @@ const Home = () => {
     return getImageUrl(images[0]?.filePath);
   };
 
-  const fittingProducts = useMemo(() => {
-    return [...products]
-      .filter(
-        (product) =>
-          product.fittingEnabled === "Y" &&
-          product.status !== "판매중지" &&
-          getMainImage(product.productId)
-      )
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt ?? 0).getTime() -
-          new Date(a.createdAt ?? 0).getTime()
-      )
-      .slice(0, 5);
-  }, [products, productColors, productImages]);
-
   const newProducts = useMemo(() => {
     return [...products]
       .filter(
@@ -179,182 +167,45 @@ const Home = () => {
   }, [products, productColors, productImages]);
 
   return (
-    <main className="home">
-      <section className="home-hero">
-        <div className="home-meta">
-          <span>ONNIVER</span>
-          <span>AI VIRTUAL FITTING</span>
-          <span>2026</span>
+    <div className="gd-home">
+      <section className="gd-hero" aria-labelledby="gd-hero-title">
+        <div className="gd-hero-copy">
+          <p className="gd-eyebrow">{BRAND.name} BEAUTY EDIT</p>
+          <h1 id="gd-hero-title">취향을 발견하는<br />새로운 뷰티.</h1>
+          <p className="gd-hero-korean">매일의 루틴부터 새로운 메이크업까지.<br />지금, 나에게 맞는 뷰티를 만나보세요.</p>
+          <button className="gd-button" onClick={() => navigate("/products")}>상품 둘러보기 <span aria-hidden="true">→</span></button>
         </div>
-
-        <div className="home-title-area">
-          <p>TRY IT BEFORE YOU WEAR IT</p>
-
-          <h1>
-            YOUR LOOK,
-            <br />
-            BEFORE YOU WEAR.
-          </h1>
-
-          <div className="home-actions">
-            <button
-              type="button"
-              onClick={() => navigate("/fitting")}
-            >
-              AI FITTING
-            </button>
-
-            <button
-              type="button"
-              onClick={() => navigate("/products")}
-            >
-              SHOP
-            </button>
-          </div>
-        </div>
-
-        <div className="home-product-stage">
-          {fittingProducts.map((product, index) => (
-            <button
-              key={product.productId}
-              type="button"
-              className={`home-floating-product home-product-${index + 1}`}
-              onClick={() =>
-                navigate(`/products/${product.productId}`)
-              }
-            >
-              <img
-                src={getMainImage(product.productId)}
-                alt={product.name}
-              />
-
-              <span className="home-product-info">
-                <small>
-                  LOOK {String(index + 1).padStart(2, "0")}
-                </small>
-
-                <strong>{product.name}</strong>
-              </span>
-            </button>
-          ))}
-        </div>
-
-        <div className="home-bottom-copy">
-          <p>
-            ONE PHOTO.
-            <br />
-            EVERY LOOK.
-          </p>
-
-          <span>
-            실제 ONNIVER 상품으로
-            <br />
-            나만의 스타일을 미리 경험해보세요.
-          </span>
+        <div className="gd-hero-visual">
+          <img src="/images/goddess/beauty-editorial.webp" alt="자연스러운 로즈빛 메이크업 뷰티 화보" width="1254" height="1254" fetchPriority="high" />
         </div>
       </section>
-
-      <section className="home-new">
-        <div className="home-section-heading">
-          <div>
-            <span>NEW ARRIVALS</span>
-            <h2>새로 들어온 상품</h2>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => navigate("/products")}
-          >
-            VIEW ALL →
-          </button>
-        </div>
-
-        <div className="home-new-grid">
-          {newProducts.map((product) => (
-            <button
-              key={product.productId}
-              type="button"
-              className="home-new-card"
-              onClick={() =>
-                navigate(`/products/${product.productId}`)
-              }
-            >
-              <div className="home-new-image">
-                <img
-                  src={getMainImage(product.productId)}
-                  alt={product.name}
-                  loading="lazy"
-                />
-              </div>
-
-              <div className="home-new-info">
-                <span>{product.brand || "ONNIVER"}</span>
-                <strong>{product.name}</strong>
-              </div>
+      <section className="gd-new" aria-labelledby="gd-new-title">
+        <div className="gd-section-top"><div><h2 id="gd-new-title">NEW ARRIVALS</h2><p className="gd-section-description">새롭게 들어온 상품을 만나보세요.</p></div><button className="gd-text-button" onClick={() => navigate("/products")}>전체 상품 보기 <span aria-hidden="true">↗</span></button></div>
+        {loadState === "loading" ? <p className="gd-empty" role="status">상품을 불러오고 있어요.</p> : loadState === "error" ? <div className="gd-empty" role="status"><p>상품을 불러오지 못했어요.</p><button className="gd-text-button" onClick={() => navigate("/products")}>상품 목록으로 이동 →</button></div> : newProducts.length === 0 ? <p className="gd-empty">새로운 상품을 준비하고 있어요.</p> : (
+          <div className="gd-product-grid">{newProducts.map((product) => (
+            <button key={product.productId} className="gd-product" onClick={() => navigate(`/products/${product.productId}`)}>
+              <div className="gd-product-image"><img src={getMainImage(product.productId)} alt={product.name} loading="lazy" /></div>
+              <div className="gd-product-info"><span>{product.brand || BRAND.name}</span><strong>{product.name}</strong></div>
+            </button>
+          ))}</div>
+        )}
+      </section>
+      <section className="gd-discover" aria-labelledby="gd-discover-title">
+        <div className="gd-section-top"><div><h2 id="gd-discover-title">AI BEAUTY</h2><p className="gd-section-description">메이크업부터 헤어까지, 나에게 어울리는 변화를 찾아보세요.</p></div><span className="gd-section-aside">서비스 준비 중</span></div>
+        <div className="gd-services">
+          {[
+            { mode: "makeup", no: "01", title: "메이크업", text: "나에게 어울리는 색, 새로운 메이크업.", tag: "COLOR YOUR MOOD" },
+            { mode: "hair-style", no: "02", title: "헤어스타일", text: "단발부터 웨이브까지, 스타일의 변화.", tag: "CHANGE YOUR LOOK" },
+            { mode: "hair-color", no: "03", title: "헤어컬러", text: "한 톤의 차이로 달라지는 분위기.", tag: "FIND YOUR SHADE" },
+          ].map((service) => (
+            <button className="gd-service" key={service.mode} onClick={() => navigate(`/beauty?mode=${service.mode}`)}>
+              <span className="gd-service-meta">{service.no}</span>
+              <h3>{service.title}<span aria-hidden="true">↗</span></h3><p>{service.text}</p>
             </button>
           ))}
         </div>
       </section>
-
-      <section className="home-how">
-        <div className="home-how-heading">
-          <span>HOW IT WORKS</span>
-          <h2>간단하게, 미리 입어보세요.</h2>
-        </div>
-
-        <div className="home-how-grid">
-          <div className="home-how-item">
-            <span>01</span>
-            <strong>PHOTO</strong>
-            <p>내 사진을 등록합니다.</p>
-          </div>
-
-          <div className="home-how-item">
-            <span>02</span>
-            <strong>SELECT</strong>
-            <p>입어볼 상품을 선택합니다.</p>
-          </div>
-
-          <div className="home-how-item">
-            <span>03</span>
-            <strong>FITTING</strong>
-            <p>AI 피팅 결과를 확인합니다.</p>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          className="home-how-start"
-          onClick={() => navigate("/fitting")}
-        >
-          START AI FITTING →
-        </button>
-      </section>
-
-      {/* =========================
-          고객 문의 바로가기
-      ========================= */}
-      <section className="home-customer-qna">
-        <div className="home-customer-qna-copy">
-          <span>CUSTOMER SERVICE</span>
-
-          <h2>도움이 필요하신가요?</h2>
-
-          <p>
-            주문, 배송, 교환·반품 등 이용 중 궁금한 점을 남겨주세요.
-            <br />
-            마이페이지 Q&A에서 답변을 확인할 수 있습니다.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => navigate("/customer_qna")}
-        >
-          고객 문의하기 →
-        </button>
-      </section>
-    </main>
+    </div>
   );
 };
 

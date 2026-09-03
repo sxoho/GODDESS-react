@@ -16,9 +16,6 @@ export interface ApiResponse<T> {
 export interface CartAddRequest {
     memberId: number;
     productOptionId: number;
-    filePath?: string | null;
-    quickFittingResultId?: number | null;
-    coordFittingResultId?: number | null;
     quantity: number;
 }
 
@@ -29,14 +26,11 @@ export interface CartResponse {
     brand?: string | null;               // 브랜드명
     productName: string;                 // 상품명
     colorName: string;                   // 색상명
-    sizeName: string;                    // 사이즈명
+    variantName: string;                 // 색상/용량/타입 등 상품 옵션명
     price: number;                       // 기본 상품 가격
-    discount?: string | null;            // 할인율
+    discount?: number | null;            // 할인율
     addPrice: number;                    // 옵션 추가 금액
     quantity: number;                    // 수량
-    filePath?: string | null;            // 상품 이미지 경로
-    quickFittingResultId: number | null; // 퀵 피팅 결과 ID
-    coordFittingResultId: number | null; // 코디 피팅 결과 ID
     createdAt: string;                   // 생성일시 (ISO 문자열)
 
     // UI 보조 필드 (선택적)

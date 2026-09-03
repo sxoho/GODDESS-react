@@ -1,0 +1,40 @@
+GODDESS React 정리 메모
+
+실행 포트
+- Spring Boot: 9104 (현재 전달받은 goddess-spring/application.properties 기준)
+- React(Vite): 5173
+- API base: http://localhost:9104
+
+삭제한 기존 ONNIVER 피팅 전용 파일
+- src/pages/fitting/
+- src/components/fitting/
+- src/styles/fitting/
+- src/api/fittingApi.ts
+- src/api/fittingProfileApi.ts
+- src/api/fittingSaveApi.ts
+- src/features/useFitting.ts
+- src/features/useFittingSave.ts
+
+추가 정리
+- dist/ 삭제
+- node_modules/ 삭제 (npm install로 재생성)
+- .git/ 제외 (기존 React 저장소의 .git은 그대로 유지할 것)
+- src/assets/react.svg, src/assets/vite.svg 삭제
+- 피팅용 3D 패키지 의존성 제거: @react-three/fiber, @react-three/drei, three, react-compare-slider
+
+주요 수정
+- 모든 기존 Spring 9103 주소 -> 9104
+- product_size API -> product_variant API
+- product_color_info -> product_color_master
+- fittingEnabled -> aiApplyEnabled
+- fittingSaveId/fittingImageUrl -> beautySaveId/beautyImageUrl
+- /fitting 라우트 제거, /beauty 중심으로 정리
+- 상품 목록을 의류 WOMEN/MEN/EYEWEAR 고정 분류에서 DB CATEGORY 기반 동적 뷰티 카테고리로 변경
+- ProductDetail의 PRODUCT_VARIANT 응답을 기존 옵션 UI에 연결
+- 장바구니 DTO를 Spring CartResponseDto의 variantName/discount(number) 구조에 맞춤
+
+주의
+- Spring beauty 패키지에는 현재 Entity/Repository만 있고 Beauty Controller/Service API가 아직 없습니다.
+  따라서 /beauty 화면은 소개 화면으로 유지하며 실제 AI 메이크업/헤어 요청 API는 임의로 만들지 않았습니다.
+- 기존 주문내역/결제 관련 React 파일 중 일부는 현재 Spring이 제공하지 않는 조회 API를 전제로 만든 예전 코드입니다.
+  실제 주문/결제 기능 구현 단계에서 Spring Controller와 함께 다시 맞추는 것이 안전합니다.
