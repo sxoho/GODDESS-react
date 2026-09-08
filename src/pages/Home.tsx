@@ -560,7 +560,7 @@ const Home = () => {
 
               <button
                 className="analysis-start-button"
-                onClick={() => navigate("/diagnosis/skin")}
+                onClick={() => navigate("/diagnosis?type=skin")}
               >
                 피부 진단 시작하기
                 <span>→</span>
@@ -600,7 +600,7 @@ const Home = () => {
 
               <button
                 className="analysis-start-button"
-                onClick={() => navigate("/diagnosis/personal-color")}
+                onClick={() => navigate("/diagnosis?type=personal-color")}
               >
                 퍼스널컬러 진단 시작하기
                 <span>→</span>

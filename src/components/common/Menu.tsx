@@ -217,7 +217,7 @@ const Menu = () => {
           </NavLink>
 
           <NavLink
-            to="/diagnosis/skin"
+            to="/diagnosis?type=skin"
             className="goddess-nav-link"
             onMouseEnter={() =>
               setActiveMenu("diagnosis")
@@ -644,7 +644,7 @@ const Menu = () => {
                 <button
                   type="button"
                   className="diagnosis-mega-card skin"
-                  onClick={() => navigate("/diagnosis/skin")}
+                  onClick={() => navigate("/diagnosis?type=skin")}
                 >
                   <span className="diagnosis-mega-number">01</span>
                   <div>
@@ -658,7 +658,7 @@ const Menu = () => {
                 <button
                   type="button"
                   className="diagnosis-mega-card personal"
-                  onClick={() => navigate("/diagnosis/personal-color")}
+                  onClick={() => navigate("/diagnosis?type=personal-color")}
                 >
                   <span className="diagnosis-mega-number">02</span>
                   <div>

@@ -68,6 +68,10 @@ import Order from "./pages/order/Order.tsx";
 import Chat from "./pages/chat/Chat.tsx";
 
 
+/**
+ * 피부 / 퍼스널컬러 자가진단
+ */
+import Diagnosis from "./pages/diagnosis/Diagnosis";
 
 
 /**
@@ -269,7 +273,11 @@ function App() {
                 element={<ProductList />}
               />
 
-              <Route path="/beauty" element={<BeautyHome />} />
+              {/* AI BEAUTY */}
+              <Route
+                path="/beauty"
+                element={<BeautyHome />}
+              />
 
               {/* 상품 상세 */}
               <Route
@@ -299,6 +307,16 @@ function App() {
               <Route
                 path="/chat"
                 element={<Chat />}
+              />
+
+
+              {/* =========================
+                  피부 / 퍼스널컬러 자가진단
+              ========================= */}
+
+              <Route
+                path="/diagnosis"
+                element={<Diagnosis />}
               />
 
 
@@ -388,7 +406,10 @@ function App() {
 
           {/* 공통 하단 영역 */}
           <footer className="footer goddess-footer">
-            <strong className="goddess-footer-logo">{BRAND.name}</strong>
+
+            <strong className="goddess-footer-logo">
+              {BRAND.name}
+            </strong>
 
             <p className="footer-description">
               {BRAND.description}
