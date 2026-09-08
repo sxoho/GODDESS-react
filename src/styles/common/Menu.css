@@ -191,7 +191,7 @@
   align-items: stretch;
   justify-content: center;
 
-  gap: 140px;
+  gap: 58px;
 }
 
 .goddess-nav-link {
@@ -884,5 +884,168 @@
 ) {
   .goddess-mega-menu {
     display: none;
+  }
+}
+
+/* =========================================
+   DIAGNOSIS MEGA MENU
+========================================= */
+
+.diagnosis-mega {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr;
+  gap: 0;
+  min-height: 270px;
+  border-top: 1px solid #efedeb;
+  border-bottom: 1px solid #efedeb;
+}
+
+.diagnosis-mega-heading {
+  padding: 38px 44px 34px 4px;
+  border-right: 1px solid #e7e4e1;
+}
+
+.diagnosis-mega-heading > span {
+  display: block;
+  margin-bottom: 16px;
+  color: #a36873;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.diagnosis-mega-heading h3 {
+  max-width: 360px;
+  margin: 0;
+  color: #171717;
+  font-size: 24px;
+  font-weight: 560;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+
+.diagnosis-mega-heading p {
+  max-width: 390px;
+  margin: 16px 0 0;
+  color: #8c8783;
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.diagnosis-mega-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+  gap: 18px;
+  min-height: 270px;
+  padding: 30px 30px 28px;
+  border: 0;
+  border-right: 1px solid #e7e4e1;
+  background: #fff;
+  color: #171717;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.22s ease,
+    transform 0.22s ease;
+}
+
+.diagnosis-mega-card:last-child {
+  border-right: 0;
+}
+
+.diagnosis-mega-card:hover {
+  background: #fbf3f5;
+}
+
+.diagnosis-mega-card::before {
+  content: "";
+  position: absolute;
+  top: 34px;
+  right: 34px;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  opacity: 0.78;
+}
+
+.diagnosis-mega-card.skin::before {
+  background:
+    radial-gradient(circle at 35% 30%, #f8e7e1, #d6aaa4 72%);
+}
+
+.diagnosis-mega-card.personal::before {
+  background:
+    conic-gradient(
+      from 45deg,
+      #e4b29d,
+      #c98f94,
+      #9f8eaa,
+      #d9bba5,
+      #e4b29d
+    );
+}
+
+.diagnosis-mega-number {
+  align-self: end;
+  color: #b5afaa;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+}
+
+.diagnosis-mega-card div {
+  align-self: end;
+  position: relative;
+  z-index: 1;
+}
+
+.diagnosis-mega-card small {
+  display: block;
+  margin-bottom: 7px;
+  color: #a36873;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.diagnosis-mega-card strong {
+  display: block;
+  color: #171717;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.diagnosis-mega-card p {
+  margin: 7px 0 0;
+  color: #918b87;
+  font-size: 9px;
+}
+
+.diagnosis-mega-card b {
+  position: relative;
+  z-index: 1;
+  color: #171717;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+@media (max-width: 1000px) {
+  .diagnosis-mega {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .diagnosis-mega-heading {
+    grid-column: 1 / -1;
+    min-height: auto;
+    padding: 24px 4px;
+    border-right: 0;
+    border-bottom: 1px solid #e7e4e1;
+  }
+
+  .diagnosis-mega-card {
+    min-height: 210px;
   }
 }

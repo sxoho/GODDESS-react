@@ -316,29 +316,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* =================================
-          INTRO
-      ================================= */}
-
-      <section className="home-intro">
-        <div className="home-intro-number">01</div>
-
-        <div className="home-intro-content">
-          <p className="home-section-label">BEAUTY EXPERIENCE</p>
-
-          <h2>
-            보기만 하는 뷰티가 아닌,
-            <br />
-            직접 경험하는 뷰티.
-          </h2>
-
-          <p>
-            원하는 스타일을 먼저 경험하고,
-            <br />
-            나에게 어울리는 제품을 선택하세요.
-          </p>
-        </div>
-      </section>
+    
 
       {/* =================================
           AI BEAUTY CARDS
@@ -347,12 +325,12 @@ const Home = () => {
       <section className="home-ai">
         <div className="home-section-heading">
           <div>
+            
             <p className="home-section-label">AI BEAUTY</p>
 
             <h2>
               TRY YOUR
               <br />
-              NEW LOOK.
             </h2>
           </div>
 
@@ -401,11 +379,7 @@ const Home = () => {
           <div>
             <p className="home-section-label">AI MAKEUP EXPERIENCE</p>
 
-            <h2>
-              YOUR FACE,
-              <br />
-              YOUR COLOR.
-            </h2>
+         
           </div>
 
           <p className="home-section-side">REAL BEAUTY EXPERIENCE</p>
@@ -539,18 +513,13 @@ const Home = () => {
       <section className="home-analysis">
         <div className="home-section-heading">
           <div>
-            <p className="home-section-label">BEAUTY ANALYSIS</p>
 
             <h2 className="analysis-title">
-              진단부터 시작하는
-              <br />
-              맞춤 추천.
+             BEAUTY CHECK
             </h2>
           </div>
 
-          <p className="home-section-side analysis-side">
-            ANALYZE · DISCOVER · RECOMMEND
-          </p>
+          <span className="home-section-count">03</span>
         </div>
 
         <div className="analysis-grid">
@@ -574,9 +543,7 @@ const Home = () => {
               </h3>
 
               <p className="analysis-card-description">
-                몇 가지 질문으로 현재 피부 타입을 알아보고,
-                <br />
-                나에게 맞는 스킨케어를 추천받아보세요.
+                피부 타입을 확인하고 맞춤 제품을 찾아보세요.
               </p>
 
               <div className="skin-type-list">
@@ -593,7 +560,7 @@ const Home = () => {
 
               <button
                 className="analysis-start-button"
-                onClick={() => navigate("/diagnosis?type=skin")}
+                onClick={() => navigate("/diagnosis/skin")}
               >
                 피부 진단 시작하기
                 <span>→</span>
@@ -628,13 +595,12 @@ const Home = () => {
               </h3>
 
               <p className="analysis-card-description">
-                나에게 어울리는 계절 컬러를 찾고,
-                <br />립 · 블러셔 · 헤어컬러 추천까지 이어집니다.
+                나에게 어울리는 컬러를 가볍게 확인해보세요.
               </p>
 
               <button
                 className="analysis-start-button"
-                onClick={() => navigate("/diagnosis?type=personal-color")}
+                onClick={() => navigate("/diagnosis/personal-color")}
               >
                 퍼스널컬러 진단 시작하기
                 <span>→</span>
@@ -681,15 +647,11 @@ const Home = () => {
         </div>
 
         <div className="analysis-recommend-flow">
-          <span>DIAGNOSIS</span>
-
+          <span>CHECK</span>
           <i>→</i>
-
-          <span>BEAUTY PROFILE</span>
-
+          <span>DISCOVER</span>
           <i>→</i>
-
-          <span>PERSONALIZED PRODUCTS</span>
+          <span>YOUR BEAUTY</span>
         </div>
       </section>
 
@@ -702,11 +664,7 @@ const Home = () => {
           <div>
             <p className="home-section-label">NEW ARRIVALS</p>
 
-            <h2>
-              JUST
-              <br />
-              ARRIVED.
-            </h2>
+            <h2>NEW.</h2>
           </div>
 
           <button

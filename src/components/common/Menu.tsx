@@ -15,6 +15,7 @@ type MegaMenuKey =
   | "makeup"
   | "skincare"
   | "hair"
+  | "diagnosis"
   | null;
 
 const Menu = () => {
@@ -216,6 +217,16 @@ const Menu = () => {
           </NavLink>
 
           <NavLink
+            to="/diagnosis/skin"
+            className="goddess-nav-link"
+            onMouseEnter={() =>
+              setActiveMenu("diagnosis")
+            }
+          >
+            BEAUTY CHECK
+          </NavLink>
+
+          <NavLink
             to="/beauty"
             className="goddess-nav-link"
             onMouseEnter={() =>
@@ -223,16 +234,6 @@ const Menu = () => {
             }
           >
             AI BEAUTY
-          </NavLink>
-
-          <NavLink
-            to="/notice"
-            className="goddess-nav-link"
-            onMouseEnter={() =>
-              setActiveMenu(null)
-            }
-          >
-            NOTICE
           </NavLink>
         </nav>
       </div>
@@ -355,7 +356,7 @@ const Menu = () => {
                     className="mega-feature-card"
                     onClick={() =>
                       navigate(
-                        "/products?category=makeup&sub=7"
+                        "/products?category=makeup&type=base"
                       )
                     }
                   >
@@ -372,7 +373,7 @@ const Menu = () => {
                     className="mega-feature-card"
                     onClick={() =>
                       navigate(
-                        "/products?category=makeup&sub=8"
+                        "/products?category=makeup&type=lip"
                       )
                     }
                   >
@@ -391,23 +392,23 @@ const Menu = () => {
                     FACE
                   </h3>
 
-                  <NavLink to="/products?category=makeup&sub=7">
+                  <NavLink to="/products?category=makeup&type=foundation">
                     파운데이션
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&sub=7">
+                  <NavLink to="/products?category=makeup&type=cushion">
                     쿠션
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&sub=10">
+                  <NavLink to="/products?category=makeup&type=blusher">
                     블러셔
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&sub=7">
+                  <NavLink to="/products?category=makeup&type=powder">
                     파우더
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&sub=7">
+                  <NavLink to="/products?category=makeup&type=concealer">
                     컨실러
                   </NavLink>
                 </div>
@@ -417,23 +418,23 @@ const Menu = () => {
                     LIP
                   </h3>
 
-                  <NavLink to="/products?category=makeup&sub=8">
+                  <NavLink to="/products?category=makeup&type=lipstick">
                     립스틱
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&sub=8">
+                  <NavLink to="/products?category=makeup&type=lipbalm">
                     립밤
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&sub=8">
+                  <NavLink to="/products?category=makeup&type=lip-tint">
                     립틴트
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&sub=8">
+                  <NavLink to="/products?category=makeup&type=lip-gloss">
                     립글로스
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&sub=8">
+                  <NavLink to="/products?category=makeup&type=lip-liner">
                     립라이너
                   </NavLink>
                 </div>
@@ -443,15 +444,15 @@ const Menu = () => {
                     EYE
                   </h3>
 
-                  <NavLink to="/products?category=makeup&sub=9">
+                  <NavLink to="/products?category=makeup&type=mascara">
                     마스카라
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&sub=9">
+                  <NavLink to="/products?category=makeup&type=eyeshadow">
                     아이 팔레트
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&sub=9">
+                  <NavLink to="/products?category=makeup&type=eyeliner">
                     아이라이너
                   </NavLink>
                 </div>
@@ -469,7 +470,7 @@ const Menu = () => {
                     className="mega-feature-card"
                     onClick={() =>
                       navigate(
-                        "/products?category=skincare&sub=14"
+                        "/products?category=skincare&type=serum"
                       )
                     }
                   >
@@ -486,7 +487,7 @@ const Menu = () => {
                     className="mega-feature-card"
                     onClick={() =>
                       navigate(
-                        "/products?category=skincare&sub=15"
+                        "/products?category=skincare&type=cream"
                       )
                     }
                   >
@@ -505,24 +506,23 @@ const Menu = () => {
                     SKINCARE
                   </h3>
 
-                  <NavLink to="/products?category=skincare&sub=13">
+                  <NavLink to="/products?category=skincare&type=toner">
                     토너
                   </NavLink>
 
-                  <NavLink to="/products?category=skincare&sub=14">
+                  <NavLink to="/products?category=skincare&type=serum">
                     세럼
                   </NavLink>
 
-                  <NavLink to="/products?category=skincare&sub=15">
+                  <NavLink to="/products?category=skincare&type=cream">
                     크림
                   </NavLink>
 
-                  {/* 현재 DB에 마스크 카테고리가 없어서 상위 스킨케어로 이동 */}
-                  <NavLink to="/products?category=skincare">
+                  <NavLink to="/products?category=skincare&type=mask">
                     마스크
                   </NavLink>
 
-                  <NavLink to="/products?category=skincare&sub=12">
+                  <NavLink to="/products?category=skincare&type=cleanser">
                     클렌저
                   </NavLink>
                 </div>
@@ -558,7 +558,7 @@ const Menu = () => {
                     className="mega-feature-card"
                     onClick={() =>
                       navigate(
-                        "/products?category=hair&sub=17"
+                        "/products?category=hair&type=shampoo"
                       )
                     }
                   >
@@ -594,20 +594,19 @@ const Menu = () => {
                     HAIR
                   </h3>
 
-                  <NavLink to="/products?category=hair&sub=17">
+                  <NavLink to="/products?category=hair&type=shampoo">
                     샴푸
                   </NavLink>
 
-                  <NavLink to="/products?category=hair&sub=18">
+                  <NavLink to="/products?category=hair&type=conditioner">
                     컨디셔너
                   </NavLink>
 
-                  <NavLink to="/products?category=hair&sub=18">
+                  <NavLink to="/products?category=hair&type=treatment">
                     트리트먼트
                   </NavLink>
 
-                  {/* 현재 DB에 헤어 에센스 카테고리가 없어서 상위 헤어로 이동 */}
-                  <NavLink to="/products?category=hair">
+                  <NavLink to="/products?category=hair&type=essence">
                     헤어 에센스
                   </NavLink>
                 </div>
@@ -627,6 +626,51 @@ const Menu = () => {
                 </div>
               </>
             )}
+
+            {/* =====================
+                DIAGNOSIS
+            ====================== */}
+            {activeMenu === "diagnosis" && (
+              <div className="diagnosis-mega">
+                <div className="diagnosis-mega-heading">
+                  <span>DISCOVER YOUR BEAUTY</span>
+                  <h3>나에게 맞는 뷰티 기준을 찾아보세요.</h3>
+                  <p>
+                    간단한 셀프 진단으로 피부 타입과 퍼스널 컬러를 확인하고
+                    나에게 어울리는 제품 선택에 활용할 수 있어요.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  className="diagnosis-mega-card skin"
+                  onClick={() => navigate("/diagnosis/skin")}
+                >
+                  <span className="diagnosis-mega-number">01</span>
+                  <div>
+                    <small>SKIN DIAGNOSIS</small>
+                    <strong>피부 타입 진단</strong>
+                    <p>건성 · 지성 · 복합성 · 중성 · 민감성</p>
+                  </div>
+                  <b>→</b>
+                </button>
+
+                <button
+                  type="button"
+                  className="diagnosis-mega-card personal"
+                  onClick={() => navigate("/diagnosis/personal-color")}
+                >
+                  <span className="diagnosis-mega-number">02</span>
+                  <div>
+                    <small>PERSONAL COLOR</small>
+                    <strong>퍼스널 컬러 진단</strong>
+                    <p>봄웜 · 여름쿨 · 가을웜 · 겨울쿨</p>
+                  </div>
+                  <b>→</b>
+                </button>
+              </div>
+            )}
+
           </div>
         </div>
       )}
