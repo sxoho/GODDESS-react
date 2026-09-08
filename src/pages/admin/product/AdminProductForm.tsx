@@ -1291,870 +1291,672 @@ const AdminProductForm = () => {
     }
   };
 
-  const toggleProductCsvValue = (
-    field: "skinType" | "personalColor",
-    value: string
-  ) => {
-    setProduct((prev) => {
-      const currentValues = (prev[field] ?? "")
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean);
-
-      const nextValues = currentValues.includes(value)
-        ? currentValues.filter((item) => item !== value)
-        : [...currentValues, value];
-
-      return {
-        ...prev,
-        [field]: nextValues.join(","),
-      };
-    });
-  };
-
-  const hasProductCsvValue = (
-    field: "skinType" | "personalColor",
-    value: string
-  ) =>
-    (product[field] ?? "")
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean)
-      .includes(value);
-
   return (
-    <main className="admin-product-form-page admin-product-form-v2">
-      <div className="admin-form-header admin-form-header-v2">
+    <main className="admin-product-form-page">
+      {/* 상단 */}
+      <div className="admin-form-header">
         <div>
           <p>PRODUCT MANAGEMENT</p>
-          <h1>{isEdit ? "상품 수정" : "새 상품 등록"}</h1>
+
+          <h1>
+            {isEdit ? "상품 수정" : "상품 등록"}
+          </h1>
+
           <span>
-            필수 정보부터 옵션·재고까지 순서대로 입력하면 됩니다.
+            상품 정보와 판매 옵션을 등록합니다.
           </span>
         </div>
 
-        <div className="admin-form-header-actions">
-          <span className="admin-form-mode-badge">
-            {isEdit ? "EDIT MODE" : "NEW PRODUCT"}
-          </span>
-          <button
-            type="button"
-            className="admin-form-back"
-            onClick={() => navigate(productListUrl)}
-          >
-            목록으로
-          </button>
-        </div>
+        <button
+          type="button"
+          className="admin-form-back"
+          onClick={() => navigate(productListUrl)}
+        >
+          목록으로
+        </button>
       </div>
 
-      <div className="admin-product-workspace">
-        <aside className="admin-product-stepper">
-          <div className="admin-stepper-head">
-            <span>REGISTRATION FLOW</span>
-            <strong>등록 순서</strong>
+      {/* ==========================================
+          01 기본 정보
+      ========================================== */}
+      <section className="admin-form-section">
+        <div className="admin-form-section-title">
+          <span>01</span>
+
+          <div>
+            <h2>기본 정보</h2>
+            <p>상품의 기본 정보를 입력해주세요.</p>
+          </div>
+        </div>
+
+        <div className="admin-form-grid">
+          <div className="admin-form-field full">
+            <label>상품명 *</label>
+
+            <input
+              type="text"
+              name="name"
+              value={product.name}
+              onChange={handleProductChange}
+              placeholder="상품명을 입력해주세요."
+            />
           </div>
 
-          <nav className="admin-stepper-nav">
-            <a
-              href="#admin-step-basic"
-              className={product.name && product.brand ? "is-complete" : ""}
-            >
-              <span>01</span>
-              <div>
-                <strong>기본 정보</strong>
-                <small>상품명 · 브랜드 · 분류</small>
-              </div>
-            </a>
+          {/* 브랜드 */}
+          <div className="admin-form-field full">
+            <label>브랜드 *</label>
 
-            <a
-              href="#admin-step-beauty"
-              className={product.productType ? "is-complete" : ""}
-            >
-              <span>02</span>
-              <div>
-                <strong>뷰티 정보</strong>
-                <small>타입 · 피부 · 퍼스널컬러</small>
-              </div>
-            </a>
+            <input
+              type="text"
+              name="brand"
+              value={product.brand}
+              onChange={handleProductChange}
+              placeholder="예: GODDESS"
+            />
+          </div>
 
-            <a
-              href="#admin-step-color"
-              className={
-                colors.length > 0 && colors.every((color) => color.masterColorId)
-                  ? "is-complete"
-                  : ""
-              }
-            >
-              <span>03</span>
-              <div>
-                <strong>색상 & 이미지</strong>
-                <small>컬러 · 썸네일 · 상세 이미지</small>
-              </div>
-            </a>
+          <div className="admin-form-field">
+            <label>대분류 *</label>
 
-            <a
-              href="#admin-step-variant"
-              className={
-                sizes.length > 0 && sizes.every((size) => size.variantName.trim())
-                  ? "is-complete"
-                  : ""
-              }
+            <select
+              name="mainCategoryId"
+              value={product.mainCategoryId}
+              onChange={handleProductChange}
             >
-              <span>04</span>
-              <div>
-                <strong>규격</strong>
-                <small>용량 · 호수 · 구성</small>
-              </div>
-            </a>
+              <option value="">대분류 선택</option>
 
-            <a
-              href="#admin-step-stock"
-              className={options.length > 0 ? "is-complete" : ""}
-            >
-              <span>05</span>
-              <div>
-                <strong>옵션 & 재고</strong>
-                <small>조합 자동 생성 · 재고 입력</small>
-              </div>
-            </a>
-          </nav>
+              {mainCategories.map((category) => {
+                const categoryId = category.categoryId ?? category.id ?? 0;
 
-          <div className="admin-stepper-summary">
-            <div>
-              <span>COLOR</span>
-              <strong>{colors.length}</strong>
+                return (
+                  <option
+                    key={`main-category-${categoryId}`}
+                    value={String(categoryId)}
+                  >
+                    {category.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {hasSubCategories ? (
+            <div className="admin-form-field">
+              <label>하위 카테고리 *</label>
+
+              <select
+                name="categoryId"
+                value={product.categoryId}
+                onChange={handleProductChange}
+                disabled={!product.mainCategoryId}
+              >
+                <option value="">
+                  {product.mainCategoryId
+                    ? "카테고리 선택"
+                    : "대분류를 먼저 선택해주세요"}
+                </option>
+
+                {subCategories.map((category) => {
+                  const categoryId = category.categoryId ?? category.id ?? 0;
+
+                  return (
+                    <option
+                      key={`sub-category-${categoryId}`}
+                      value={String(categoryId)}
+                    >
+                      {category.name}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
-            <div>
-              <span>VARIANT</span>
-              <strong>{sizes.length}</strong>
+          ) : product.mainCategoryId ? (
+            <div className="admin-form-field">
+              <label>카테고리</label>
+              <input
+                type="text"
+                value={selectedMainCategory?.name ?? ""}
+                readOnly
+              />
+              <p>하위 카테고리가 없어 대분류 자체로 등록됩니다.</p>
             </div>
-            <div>
-              <span>OPTION</span>
-              <strong>{options.length}</strong>
+          ) : (
+            <div className="admin-form-field">
+              <label>하위 카테고리</label>
+              <input
+                type="text"
+                value=""
+                placeholder="대분류를 먼저 선택해주세요"
+                readOnly
+              />
+            </div>
+          )}
+
+          <div className="admin-form-field">
+            <label>판매 가격 *</label>
+
+            <div className="admin-input-unit">
+              <input
+                type="number"
+                name="price"
+                min="0"
+                value={product.price}
+                onChange={handleProductChange}
+                placeholder="0"
+              />
+
+              <span>원</span>
             </div>
           </div>
 
-          <div className="admin-stepper-tip">
-            <strong>빠른 등록 TIP</strong>
+          <div className="admin-form-field">
+            <label>할인율</label>
+
+            <div className="admin-input-unit">
+              <input
+                type="number"
+                name="discount"
+                min="0"
+                max="100"
+                step="1"
+                value={product.discount}
+                onChange={handleProductChange}
+                placeholder="0"
+              />
+
+              <span className="admin-input-unit-text">%</span>
+            </div>
+
+            {product.price && Number(product.discount) > 0 && (
+              <p className="admin-discount-preview">
+                할인 적용가{" "}
+                <strong>
+                  {Math.round(
+                    Number(product.price) *
+                      (1 - Number(product.discount) / 100)
+                  ).toLocaleString()}
+                  원
+                </strong>
+              </p>
+            )}
+          </div>
+
+          <div className="admin-form-field">
+            <label>판매 상태</label>
+
+            <select
+              name="status"
+              value={product.status}
+              onChange={handleProductChange}
+            >
+              <option value="ON_SALE">판매중</option>
+              <option value="SOLD_OUT">품절</option>
+              <option value="STOPPED">판매중지</option>
+              <option value="HIDDEN">숨김</option>
+            </select>
+          </div>
+
+          <div className="admin-form-field">
+            <label>AI BEAUTY 적용</label>
+
+            <select
+              name="aiApplyEnabled"
+              value={product.aiApplyEnabled}
+              onChange={handleProductChange}
+            >
+              <option value="Y">사용</option>
+              <option value="N">사용 안 함</option>
+            </select>
+          </div>
+
+          <div className="admin-form-field">
+            <label>상품 유형</label>
+            <select
+              name="productType"
+              value={product.productType}
+              onChange={handleProductChange}
+            >
+              <option value="">선택 안 함</option>
+              <option value="BASE">베이스 / 파운데이션</option>
+              <option value="LIP">립</option>
+              <option value="EYE">아이</option>
+              <option value="BLUSH">치크 / 블러셔</option>
+              <option value="BROW">브로우</option>
+              <option value="SKINCARE">스킨케어</option>
+              <option value="HAIR">헤어</option>
+              <option value="BODY">바디</option>
+              <option value="FRAGRANCE">향수</option>
+              <option value="TOOL">뷰티소품</option>
+            </select>
+          </div>
+
+          <div className="admin-form-field">
+            <label>용량 / 중량</label>
+            <input
+              type="text"
+              name="volume"
+              value={product.volume}
+              onChange={handleProductChange}
+              placeholder="예: 4.5g, 30ml"
+            />
+          </div>
+
+          <div className="admin-form-field">
+            <label>추천 피부 타입</label>
+            <input
+              type="text"
+              name="skinType"
+              value={product.skinType}
+              onChange={handleProductChange}
+              placeholder="예: 건성, 복합성, 민감성"
+            />
+          </div>
+
+          <div className="admin-form-field">
+            <label>추천 퍼스널컬러</label>
+            <input
+              type="text"
+              name="personalColor"
+              value={product.personalColor}
+              onChange={handleProductChange}
+              placeholder="예: 봄웜, 여름쿨"
+            />
+          </div>
+
+          <div className="admin-form-field full">
+            <label>사용 방법</label>
+            <textarea
+              name="usageInfo"
+              value={product.usageInfo}
+              onChange={handleProductChange}
+              placeholder="상품 사용 방법을 입력해주세요."
+              rows={3}
+            />
+          </div>
+
+          <div className="admin-form-field full">
+            <label>상품 설명</label>
+
+            <textarea
+              name="description"
+              value={product.description}
+              onChange={handleProductChange}
+              placeholder="상품 설명을 입력해주세요."
+              rows={5}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ==========================================
+          02 색상 / 이미지
+      ========================================== */}
+      <section className="admin-form-section">
+        <div className="admin-form-section-title">
+          <span>02</span>
+
+          <div>
+            <h2>색상 및 이미지</h2>
             <p>
-              색상과 규격을 먼저 만든 뒤 마지막 단계에서 조합을 한 번에
-              생성하면 재고 입력이 훨씬 빨라요.
+              판매할 색상과 색상별 상품 이미지를
+              등록해주세요.
             </p>
           </div>
-        </aside>
 
-        <div className="admin-product-editor">
-          <section
-            id="admin-step-basic"
-            className="admin-form-section admin-editor-section"
+          <button
+            type="button"
+            className="admin-outline-button"
+            onClick={addColor}
           >
-            <div className="admin-form-section-title admin-editor-section-title">
-              <span>01</span>
-              <div>
-                <p className="admin-section-kicker">CORE INFORMATION</p>
-                <h2>기본 정보</h2>
-                <p>판매에 꼭 필요한 정보부터 먼저 입력합니다.</p>
-              </div>
-              <span className="admin-required-pill">필수</span>
-            </div>
+            + 색상 추가
+          </button>
+        </div>
 
-            <div className="admin-editor-block">
-              <div className="admin-editor-block-head">
-                <strong>상품 기본</strong>
-                <span>고객에게 가장 먼저 보이는 정보</span>
-              </div>
+        <div className="admin-color-list">
+          {colors.map((color, index) => {
+            const thumbnailImages = color.images.filter(
+              (image) => image.imageType === "THUMBNAIL"
+            );
+            const detailImages = color.images.filter(
+              (image) => image.imageType === "DETAIL"
+            );
 
-              <div className="admin-form-grid admin-form-grid-v2">
-                <div className="admin-form-field full admin-field-featured">
-                  <label>상품명 *</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={product.name}
-                    onChange={handleProductChange}
-                    placeholder="예: Dewy Lip Tint"
-                  />
-                </div>
+            return (
+              <div className="admin-color-card" key={color.id}>
+                <div className="admin-color-card-header">
+                  <strong>
+                    COLOR {String(index + 1).padStart(2, "0")}
+                  </strong>
 
-                <div className="admin-form-field">
-                  <label>브랜드 *</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    value={product.brand}
-                    onChange={handleProductChange}
-                    placeholder="예: GODDESS"
-                  />
-                </div>
-
-                <div className="admin-form-field">
-                  <label>상품 유형</label>
-                  <select
-                    name="productType"
-                    value={product.productType}
-                    onChange={handleProductChange}
-                  >
-                    <option value="">상품 유형 선택</option>
-                    <option value="BASE">베이스 / 파운데이션</option>
-                    <option value="LIP">립</option>
-                    <option value="EYE">아이</option>
-                    <option value="BLUSH">치크 / 블러셔</option>
-                    <option value="BROW">브로우</option>
-                    <option value="SKINCARE">스킨케어</option>
-                    <option value="HAIR">헤어</option>
-                    <option value="BODY">바디</option>
-                    <option value="FRAGRANCE">향수</option>
-                    <option value="TOOL">뷰티소품</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div className="admin-editor-block">
-              <div className="admin-editor-block-head">
-                <strong>분류 & 판매</strong>
-                <span>카테고리, 가격, 판매 상태 설정</span>
-              </div>
-
-              <div className="admin-form-grid admin-form-grid-v2 admin-grid-3">
-                <div className="admin-form-field">
-                  <label>대분류 *</label>
-                  <select
-                    name="mainCategoryId"
-                    value={product.mainCategoryId}
-                    onChange={handleProductChange}
-                  >
-                    <option value="">대분류 선택</option>
-                    {mainCategories.map((category) => {
-                      const categoryId = category.categoryId ?? category.id ?? 0;
-                      return (
-                        <option
-                          key={`main-category-${categoryId}`}
-                          value={String(categoryId)}
-                        >
-                          {category.name}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-
-                {hasSubCategories ? (
-                  <div className="admin-form-field">
-                    <label>하위 카테고리 *</label>
-                    <select
-                      name="categoryId"
-                      value={product.categoryId}
-                      onChange={handleProductChange}
-                      disabled={!product.mainCategoryId}
+                  {colors.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeColor(color.id)}
                     >
-                      <option value="">
-                        {product.mainCategoryId
-                          ? "카테고리 선택"
-                          : "대분류를 먼저 선택"}
-                      </option>
-                      {subCategories.map((category) => {
-                        const categoryId = category.categoryId ?? category.id ?? 0;
-                        return (
-                          <option
-                            key={`sub-category-${categoryId}`}
-                            value={String(categoryId)}
-                          >
-                            {category.name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                ) : product.mainCategoryId ? (
-                  <div className="admin-form-field">
-                    <label>카테고리</label>
-                    <input
-                      type="text"
-                      value={selectedMainCategory?.name ?? ""}
-                      readOnly
-                    />
-                    <p>하위 카테고리가 없어 대분류로 등록됩니다.</p>
-                  </div>
-                ) : (
-                  <div className="admin-form-field">
-                    <label>하위 카테고리</label>
-                    <input
-                      type="text"
-                      value=""
-                      placeholder="대분류를 먼저 선택"
-                      readOnly
-                    />
-                  </div>
-                )}
-
-                <div className="admin-form-field">
-                  <label>판매 상태</label>
-                  <select
-                    name="status"
-                    value={product.status}
-                    onChange={handleProductChange}
-                  >
-                    <option value="ON_SALE">판매중</option>
-                    <option value="SOLD_OUT">품절</option>
-                    <option value="STOPPED">판매중지</option>
-                    <option value="HIDDEN">숨김</option>
-                  </select>
-                </div>
-
-                <div className="admin-form-field">
-                  <label>판매 가격 *</label>
-                  <div className="admin-input-unit">
-                    <input
-                      type="number"
-                      name="price"
-                      min="0"
-                      value={product.price}
-                      onChange={handleProductChange}
-                      placeholder="0"
-                    />
-                    <span className="admin-input-unit-text">원</span>
-                  </div>
-                </div>
-
-                <div className="admin-form-field">
-                  <label>할인율</label>
-                  <div className="admin-input-unit">
-                    <input
-                      type="number"
-                      name="discount"
-                      min="0"
-                      max="100"
-                      step="1"
-                      value={product.discount}
-                      onChange={handleProductChange}
-                      placeholder="0"
-                    />
-                    <span className="admin-input-unit-text">%</span>
-                  </div>
-                  {product.price && Number(product.discount) > 0 && (
-                    <p className="admin-discount-preview">
-                      최종 판매가{" "}
-                      <strong>
-                        {Math.round(
-                          Number(product.price) *
-                            (1 - Number(product.discount) / 100)
-                        ).toLocaleString()}
-                        원
-                      </strong>
-                    </p>
+                      삭제
+                    </button>
                   )}
                 </div>
 
-                <div className="admin-form-field">
-                  <label>용량 / 중량</label>
-                  <input
-                    type="text"
-                    name="volume"
-                    value={product.volume}
-                    onChange={handleProductChange}
-                    placeholder="예: 4.5g, 30ml"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
+                <div className="admin-color-fields">
+                  <div className="admin-form-field full">
+                    <label>색상 선택 *</label>
 
-          <section
-            id="admin-step-beauty"
-            className="admin-form-section admin-editor-section"
-          >
-            <div className="admin-form-section-title admin-editor-section-title">
-              <span>02</span>
-              <div>
-                <p className="admin-section-kicker">BEAUTY TARGETING</p>
-                <h2>뷰티 추천 정보</h2>
-                <p>필터와 AI BEAUTY 추천에 사용할 값을 빠르게 선택합니다.</p>
-              </div>
-            </div>
-
-            <div className="admin-editor-block">
-              <div className="admin-form-grid admin-form-grid-v2">
-                <div className="admin-form-field full">
-                  <label>추천 피부 타입</label>
-                  <div className="admin-choice-chips">
-                    {["건성", "지성", "복합성", "중성", "민감성"].map(
-                      (skinType) => (
-                        <button
-                          key={skinType}
-                          type="button"
-                          className={
-                            hasProductCsvValue("skinType", skinType)
-                              ? "is-selected"
-                              : ""
-                          }
-                          onClick={() =>
-                            toggleProductCsvValue("skinType", skinType)
-                          }
-                        >
-                          {skinType}
-                        </button>
-                      )
-                    )}
-                  </div>
-                  <p>여러 개 선택할 수 있습니다.</p>
-                </div>
-
-                <div className="admin-form-field full">
-                  <label>추천 퍼스널컬러</label>
-                  <div className="admin-choice-chips">
-                    {["봄웜", "여름쿨", "가을웜", "겨울쿨"].map(
-                      (personalColor) => (
-                        <button
-                          key={personalColor}
-                          type="button"
-                          className={
-                            hasProductCsvValue("personalColor", personalColor)
-                              ? "is-selected"
-                              : ""
-                          }
-                          onClick={() =>
-                            toggleProductCsvValue(
-                              "personalColor",
-                              personalColor
-                            )
-                          }
-                        >
-                          {personalColor}
-                        </button>
-                      )
-                    )}
-                  </div>
-                  <p>상품과 잘 맞는 톤만 골라주세요.</p>
-                </div>
-
-                <div className="admin-form-field full">
-                  <label>AI BEAUTY 적용</label>
-                  <div className="admin-segmented-control">
-                    <button
-                      type="button"
-                      className={
-                        product.aiApplyEnabled === "Y" ? "is-selected" : ""
-                      }
-                      onClick={() =>
-                        setProduct((prev) => ({
-                          ...prev,
-                          aiApplyEnabled: "Y",
-                        }))
+                    <select
+                      value={color.masterColorId ?? ""}
+                      onChange={(event) =>
+                        changeColor(color.id, Number(event.target.value))
                       }
                     >
-                      AI 체험 사용
-                    </button>
-                    <button
-                      type="button"
-                      className={
-                        product.aiApplyEnabled === "N" ? "is-selected" : ""
-                      }
-                      onClick={() =>
-                        setProduct((prev) => ({
-                          ...prev,
-                          aiApplyEnabled: "N",
-                        }))
-                      }
-                    >
-                      사용 안 함
-                    </button>
-                  </div>
-                </div>
+                      <option value="">COLOR 테이블에서 선택</option>
+                      {masterColors.map((masterColor) => (
+                        <option key={masterColor.id} value={masterColor.id}>
+                          {masterColor.colorName} ({masterColor.colorCode})
+                        </option>
+                      ))}
+                    </select>
 
-                <div className="admin-form-field full">
-                  <label>사용 방법</label>
-                  <textarea
-                    name="usageInfo"
-                    value={product.usageInfo}
-                    onChange={handleProductChange}
-                    placeholder="예: 적당량을 덜어 입술 안쪽부터 부드럽게 펴 발라주세요."
-                    rows={3}
-                  />
-                </div>
-
-                <div className="admin-form-field full">
-                  <label>상품 설명</label>
-                  <textarea
-                    name="description"
-                    value={product.description}
-                    onChange={handleProductChange}
-                    placeholder="상품의 특징과 장점을 입력해주세요."
-                    rows={5}
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section
-            id="admin-step-color"
-            className="admin-form-section admin-editor-section"
-          >
-            <div className="admin-form-section-title admin-editor-section-title">
-              <span>03</span>
-              <div>
-                <p className="admin-section-kicker">COLOR & MEDIA</p>
-                <h2>색상 및 이미지</h2>
-                <p>색상을 추가하고 각 컬러의 이미지를 바로 연결합니다.</p>
-              </div>
-              <button
-                type="button"
-                className="admin-pink-outline-button"
-                onClick={addColor}
-              >
-                + 색상 추가
-              </button>
-            </div>
-
-            <div className="admin-color-list admin-color-list-v2">
-              {colors.map((color, index) => {
-                const thumbnailImages = color.images.filter(
-                  (image) => image.imageType === "THUMBNAIL"
-                );
-                const detailImages = color.images.filter(
-                  (image) => image.imageType === "DETAIL"
-                );
-
-                return (
-                  <div className="admin-color-card admin-color-card-v2" key={color.id}>
-                    <div className="admin-color-card-header">
-                      <div className="admin-color-title-wrap">
+                    {color.masterColorId && (
+                      <p>
                         <span
-                          className="admin-color-swatch-large"
                           style={{
-                            backgroundColor: color.colorCode || "#f4f2f1",
+                            display: "inline-block",
+                            width: 14,
+                            height: 14,
+                            marginRight: 8,
+                            border: "1px solid #d8d8d8",
+                            verticalAlign: "-2px",
+                            backgroundColor: color.colorCode,
                           }}
                         />
-                        <div>
-                          <small>
-                            COLOR {String(index + 1).padStart(2, "0")}
-                            {index === 0 ? " · 대표" : ""}
-                          </small>
-                          <strong>{color.colorName || "색상을 선택해주세요"}</strong>
-                        </div>
-                      </div>
-
-                      {colors.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeColor(color.id)}
-                        >
-                          삭제
-                        </button>
-                      )}
-                    </div>
-
-                    <div className="admin-color-fields">
-                      <div className="admin-form-field full">
-                        <label>색상 선택 *</label>
-                        <select
-                          value={color.masterColorId ?? ""}
-                          onChange={(event) =>
-                            changeColor(color.id, Number(event.target.value))
-                          }
-                        >
-                          <option value="">등록된 컬러에서 선택</option>
-                          {masterColors.map((masterColor) => (
-                            <option key={masterColor.id} value={masterColor.id}>
-                              {masterColor.colorName} ({masterColor.colorCode})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="admin-media-columns">
-                      <div className="admin-image-upload admin-image-upload-v2">
-                        <div className="admin-upload-head">
-                          <div>
-                            <strong>상품 이미지</strong>
-                            <span>목록 + 상세 상단 갤러리</span>
-                          </div>
-                          <label className="admin-file-button">
-                            이미지 선택
-                            <input
-                              type="file"
-                              accept="image/*"
-                              multiple
-                              onChange={(event) =>
-                                changeImages(color.id, "THUMBNAIL", event)
-                              }
-                            />
-                          </label>
-                        </div>
-
-                        {thumbnailImages.length === 0 ? (
-                          <div className="admin-upload-empty">
-                            대표 상품 이미지를 추가해주세요.
-                          </div>
-                        ) : (
-                          <div className="admin-image-preview-list">
-                            {thumbnailImages.map((image, imageIndex) => (
-                              <div className="admin-image-preview" key={image.id}>
-                                <img src={getImagePreviewUrl(image)} alt="" />
-                                {imageIndex === 0 && <span>대표</span>}
-                                <input
-                                  type="text"
-                                  value={image.fileName}
-                                  onChange={(event) =>
-                                    changeImageFileName(
-                                      color.id,
-                                      image.id,
-                                      event.target.value
-                                    )
-                                  }
-                                  placeholder="저장 파일명"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => removeImage(color.id, image.id)}
-                                >
-                                  {image.file ? "제거" : "삭제"}
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="admin-image-upload admin-image-upload-v2">
-                        <div className="admin-upload-head">
-                          <div>
-                            <strong>상세 설명 이미지</strong>
-                            <span>PRODUCT INFORMATION 영역</span>
-                          </div>
-                          <label className="admin-file-button">
-                            이미지 선택
-                            <input
-                              type="file"
-                              accept="image/*"
-                              multiple
-                              onChange={(event) =>
-                                changeImages(color.id, "DETAIL", event)
-                              }
-                            />
-                          </label>
-                        </div>
-
-                        {detailImages.length === 0 ? (
-                          <div className="admin-upload-empty">
-                            필요할 때만 상세 이미지를 추가하세요.
-                          </div>
-                        ) : (
-                          <div className="admin-image-preview-list">
-                            {detailImages.map((image) => (
-                              <div className="admin-image-preview" key={image.id}>
-                                <img src={getImagePreviewUrl(image)} alt="" />
-                                <input
-                                  type="text"
-                                  value={image.fileName}
-                                  onChange={(event) =>
-                                    changeImageFileName(
-                                      color.id,
-                                      image.id,
-                                      event.target.value
-                                    )
-                                  }
-                                  placeholder="저장 파일명"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => removeImage(color.id, image.id)}
-                                >
-                                  {image.file ? "제거" : "삭제"}
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                        {color.colorName} · {color.colorCode}
+                      </p>
+                    )}
                   </div>
-                );
-              })}
-            </div>
-          </section>
-
-          <section
-            id="admin-step-variant"
-            className="admin-form-section admin-editor-section"
-          >
-            <div className="admin-form-section-title admin-editor-section-title">
-              <span>04</span>
-              <div>
-                <p className="admin-section-kicker">VARIANTS</p>
-                <h2>상품 규격</h2>
-                <p>용량, 호수, 구성처럼 실제 판매 단위를 등록합니다.</p>
-              </div>
-              <button
-                type="button"
-                className="admin-pink-outline-button"
-                onClick={addSize}
-              >
-                + 규격 추가
-              </button>
-            </div>
-
-            <div className="admin-size-list admin-size-list-v2">
-              <div className="admin-variant-table-head">
-                <span>규격명</span>
-                <span>설명</span>
-                <span></span>
-              </div>
-              {sizes.map((size) => (
-                <div className="admin-size-row admin-size-row-v2" key={size.id}>
-                  <input
-                    type="text"
-                    value={size.variantName}
-                    onChange={(event) =>
-                      changeSize(size.id, "variantName", event.target.value)
-                    }
-                    placeholder="예: 기본, 30ml, 21호"
-                  />
-                  <input
-                    type="text"
-                    value={size.variantDescription}
-                    onChange={(event) =>
-                      changeSize(
-                        size.id,
-                        "variantDescription",
-                        event.target.value
-                      )
-                    }
-                    placeholder="규격 설명 (선택)"
-                  />
-                  <button type="button" onClick={() => removeSize(size.id)}>
-                    삭제
-                  </button>
                 </div>
-              ))}
-            </div>
-          </section>
 
-          <section
-            id="admin-step-stock"
-            className="admin-form-section admin-editor-section"
-          >
-            <div className="admin-form-section-title admin-editor-section-title">
-              <span>05</span>
-              <div>
-                <p className="admin-section-kicker">STOCK MATRIX</p>
-                <h2>판매 옵션 및 재고</h2>
-                <p>색상 × 규격 조합을 자동으로 만든 뒤 재고만 입력하세요.</p>
-              </div>
-              <button
-                type="button"
-                className="admin-option-generate-button"
-                onClick={generateOptions}
-              >
-                색상 × 규격 옵션 자동 생성
-              </button>
-            </div>
+                <div className="admin-image-upload">
+                  <label>상품 썸네일 / 상단 갤러리 이미지</label>
 
-            {options.length === 0 ? (
-              <div className="admin-option-empty admin-option-empty-v2">
-                <span>OPTION MATRIX</span>
-                <strong>아직 판매 옵션이 없어요.</strong>
-                <p>
-                  위에서 색상과 규격을 입력한 다음
-                  <b> 옵션 자동 생성</b> 버튼을 눌러주세요.
-                </p>
-              </div>
-            ) : (
-              <div className="admin-option-table-wrap admin-option-table-wrap-v2">
-                <div className="admin-option-count-row">
-                  <span>생성된 옵션</span>
-                  <strong>{options.length}개</strong>
-                </div>
-                <table className="admin-option-table">
-                  <thead>
-                    <tr>
-                      <th>색상</th>
-                      <th>규격</th>
-                      <th>재고</th>
-                      <th>추가 금액</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {options.map((option) => (
-                      <tr key={`${option.colorId}-${option.sizeId}`}>
-                        <td>{findColorName(option.colorId)}</td>
-                        <td>{findSizeName(option.sizeId)}</td>
-                        <td>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(event) =>
+                      changeImages(color.id, "THUMBNAIL", event)
+                    }
+                  />
+
+                  <p>
+                    여러 장 등록할 수 있으며 첫 번째 썸네일 이미지가 대표 이미지로 사용됩니다.
+                  </p>
+
+                  {thumbnailImages.length > 0 && (
+                    <div className="admin-image-preview-list">
+                      {thumbnailImages.map((image, imageIndex) => (
+                        <div className="admin-image-preview" key={image.id}>
+                          <img src={getImagePreviewUrl(image)} alt="" />
+
+                          {imageIndex === 0 && <span>대표</span>}
+
                           <input
-                            type="number"
-                            min="0"
-                            value={option.stock}
+                            type="text"
+                            value={image.fileName}
                             onChange={(event) =>
-                              changeOption(
-                                option.colorId,
-                                option.sizeId,
-                                "stock",
-                                Number(event.target.value)
+                              changeImageFileName(
+                                color.id,
+                                image.id,
+                                event.target.value
                               )
                             }
+                            placeholder="저장 파일명"
                           />
-                        </td>
-                        <td>
-                          <div className="admin-option-price-input">
-                            <input
-                              type="number"
-                              min="0"
-                              value={option.addPrice}
-                              onChange={(event) =>
-                                changeOption(
-                                  option.colorId,
-                                  option.sizeId,
-                                  "addPrice",
-                                  Number(event.target.value)
-                                )
-                              }
-                            />
-                            <span>원</span>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+
+                          <button
+                            type="button"
+                            onClick={() => removeImage(color.id, image.id)}
+                          >
+                            {image.file ? "제거" : "삭제"}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="admin-image-upload">
+                  <label>상품 상세 설명 이미지</label>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(event) =>
+                      changeImages(color.id, "DETAIL", event)
+                    }
+                  />
+
+                  <p>
+                    이 이미지는 상품 상세페이지 아래 PRODUCT INFORMATION 영역에 표시됩니다.
+                  </p>
+
+                  {detailImages.length > 0 && (
+                    <div className="admin-image-preview-list">
+                      {detailImages.map((image) => (
+                        <div className="admin-image-preview" key={image.id}>
+                          <img src={getImagePreviewUrl(image)} alt="" />
+
+                          <input
+                            type="text"
+                            value={image.fileName}
+                            onChange={(event) =>
+                              changeImageFileName(
+                                color.id,
+                                image.id,
+                                event.target.value
+                              )
+                            }
+                            placeholder="저장 파일명"
+                          />
+
+                          <button
+                            type="button"
+                            onClick={() => removeImage(color.id, image.id)}
+                          >
+                            {image.file ? "제거" : "삭제"}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </section>
+            );
+          })}
         </div>
-      </div>
+      </section>
 
-      <div className="admin-form-actions admin-form-actions-v2">
-        <div className="admin-save-guide">
-          <span />
-          <p>
-            {product.name.trim()
-              ? `${product.name} 저장 준비 중`
-              : "상품명을 입력하면 등록을 시작할 수 있어요."}
-          </p>
-        </div>
+      {/* ==========================================
+          03 옵션
+      ========================================== */}
+      <section className="admin-form-section">
+        <div className="admin-form-section-title">
+          <span>03</span>
 
-        <div>
+          <div>
+            <h2>상품 규격</h2>
+            <p>
+              상품의 용량, 호수, 구성 등 규격을 설정해주세요.
+            </p>
+          </div>
+
           <button
             type="button"
-            className="admin-form-cancel"
-            onClick={() => navigate(productListUrl)}
+            className="admin-outline-button"
+            onClick={addSize}
           >
-            취소
-          </button>
-          <button
-            type="button"
-            className="admin-form-submit"
-            onClick={submitProduct}
-            disabled={submitting}
-          >
-            {submitting
-              ? "저장 중..."
-              : isEdit
-                ? "변경사항 저장"
-                : "상품 등록 완료"}
+            + 규격 추가
           </button>
         </div>
+
+        <div className="admin-size-list">
+          {sizes.map((size) => (
+            <div
+              className="admin-size-row"
+              key={size.id}
+            >
+              <input
+                type="text"
+                value={size.variantName}
+                onChange={(event) =>
+                  changeSize(
+                    size.id,
+                    "variantName",
+                    event.target.value
+                  )
+                }
+                placeholder="예: 기본, 30ml, 21호"
+              />
+
+              <input
+                type="text"
+                value={size.variantDescription}
+                onChange={(event) =>
+                  changeSize(
+                    size.id,
+                    "variantDescription",
+                    event.target.value
+                  )
+                }
+                placeholder="규격 설명 (선택)"
+              />
+
+              <button
+                type="button"
+                onClick={() => removeSize(size.id)}
+              >
+                삭제
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ==========================================
+          04 옵션 / 재고
+      ========================================== */}
+      <section className="admin-form-section">
+        <div className="admin-form-section-title">
+          <span>04</span>
+
+          <div>
+            <h2>판매 옵션 및 재고</h2>
+            <p>
+              색상과 규격 조합별 재고를
+              입력해주세요.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="admin-outline-button"
+            onClick={generateOptions}
+          >
+            판매 옵션 생성
+          </button>
+        </div>
+
+        {options.length === 0 ? (
+          <div className="admin-option-empty">
+            색상과 규격을 입력한 후
+            <strong> 판매 옵션 생성</strong>을 눌러주세요.
+          </div>
+        ) : (
+          <div className="admin-option-table-wrap">
+            <table className="admin-option-table">
+              <thead>
+                <tr>
+                  <th>색상</th>
+                  <th>규격</th>
+                  <th>재고</th>
+                  <th>추가 금액</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {options.map((option) => (
+                  <tr
+                    key={`${option.colorId}-${option.sizeId}`}
+                  >
+                    <td>
+                      {findColorName(option.colorId)}
+                    </td>
+
+                    <td>
+                      {findSizeName(option.sizeId)}
+                    </td>
+
+                    <td>
+                      <input
+                        type="number"
+                        min="0"
+                        value={option.stock}
+                        onChange={(event) =>
+                          changeOption(
+                            option.colorId,
+                            option.sizeId,
+                            "stock",
+                            Number(event.target.value)
+                          )
+                        }
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        type="number"
+                        min="0"
+                        value={option.addPrice}
+                        onChange={(event) =>
+                          changeOption(
+                            option.colorId,
+                            option.sizeId,
+                            "addPrice",
+                            Number(event.target.value)
+                          )
+                        }
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* 하단 버튼 */}
+      <div className="admin-form-actions">
+        <button
+          type="button"
+          className="admin-form-cancel"
+          onClick={() => navigate(productListUrl)}
+        >
+          취소
+        </button>
+
+        <button
+          type="button"
+          className="admin-form-submit"
+          onClick={submitProduct}
+          disabled={submitting}
+        >
+          {submitting
+            ? "등록 중..."
+            : isEdit
+              ? "수정 저장"
+              : "상품 등록"}
+        </button>
       </div>
     </main>
   );

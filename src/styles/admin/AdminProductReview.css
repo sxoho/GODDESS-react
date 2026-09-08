@@ -29,5 +29,3 @@
 .admin-review-pagination { display:flex; justify-content:center; gap:4px; margin-top:30px; }
 .admin-review-pagination button { min-width:32px; height:32px; border:0; background:transparent; color:#999; cursor:pointer; }
 .admin-review-pagination button.active { background:#444; color:#fff; }
-/* GODDESS ADMIN WHITE THEME */
-[class*="admin-"] button,[class*="admin-"] input,[class*="admin-"] select,[class*="admin-"] textarea{border-radius:0}

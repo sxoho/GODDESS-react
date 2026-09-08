@@ -455,21 +455,3 @@
     padding-left: 26px;
   }
 }
-
-
-/* GODDESS CATEGORY — WHITE */
-.admin-category-page{width:100%;max-width:1540px;margin:0 auto}
-.admin-category-header h1{font-size:38px;font-weight:620;letter-spacing:-.04em}
-.admin-category-summary{gap:0;border-top:1px solid #dcdcd7;border-bottom:1px solid #dcdcd7;background:#fff}
-.admin-category-summary>div{border:0;border-right:1px solid #e8e8e4}
-.admin-category-tree{border-top:1px solid #111;border-bottom:1px solid #dcdcd7}
-.admin-category-table-head{background:#fff}
-.admin-category-main-row:hover,.admin-category-child-row:hover{background:#fafaf8}
-.admin-category-toggle,.admin-category-actions button{border-radius:0}
-
-/* GODDESS ROSE ACCENT */
-.admin-category-header p { color: #a96573; }
-.admin-category-tree { border-top-color: #c98291; }
-.admin-category-main-row:hover,
-.admin-category-child-row:hover { background: #fdf8f9; }
-.admin-category-header > button:hover { border-color: #a96573; background: #a96573; }

@@ -259,5 +259,3 @@
     grid-column: span 1;
   }
 }
-/* GODDESS ADMIN WHITE THEME */
-[class*="admin-"] button,[class*="admin-"] input,[class*="admin-"] select,[class*="admin-"] textarea{border-radius:0}

@@ -1157,7 +1157,7 @@ const ProductDetail = () => {
     if (!product) return;
 
     try {
-      const storageKey = "starRecentProducts";
+      const storageKey = "goddessRecentProducts";
       const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
       const recentProducts = Array.isArray(saved) ? saved : [];
 

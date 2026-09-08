@@ -2811,16 +2811,20 @@ const MyPage = () => {
       }
     } catch {}
 
-    try {
-      if (member?.loginId) {
-        const r = await fetch(`${API_BASE}/api/commerce/orders/my?loginId=${encodeURIComponent(member.loginId)}`);
-        if (r.ok) {
-          const data = await r.json();
-          const list = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
-          next.order = list.length;
-        }
-      }
-    } catch {}
+    /**
+     * [임시 처리]
+     * 현재 Spring Boot에 아래 주문 조회 API가 아직 구현되어 있지 않음.
+     *
+     * GET /api/commerce/orders/my?loginId=...
+     *
+     * 존재하지 않는 API를 호출하면
+     * NoResourceFoundException / 500 오류가 반복되므로
+     * 주문 API가 구현될 때까지 주문 개수는 0으로 표시한다.
+     *
+     * 주문 조회 API 구현 후 아래 코드를 제거하고
+     * 실제 주문 개수 조회 로직으로 교체할 것.
+     */
+    next.order = 0;
 
     // 현재 Spring에는 BEAUTY_SAVE 조회 Controller가 아직 없어 AI BEAUTY 카운트는 0으로 둡니다.
 
@@ -2845,7 +2849,7 @@ const MyPage = () => {
 
       const saved =
         JSON.parse(
-          localStorage.getItem("starRecentProducts") || "[]"
+          localStorage.getItem("goddessRecentProducts") || "[]"
         ) as RecentViewedItem[];
 
 
