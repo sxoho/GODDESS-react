@@ -102,7 +102,7 @@ export default function ProductList() {
   const [totalElements, setTotalElements] = useState(0);
 
   const categoryParam = params.get("category") || "ALL";
-  const subParam = params.get("sub") || params.get("type") || "ALL";
+  const subParam = params.get("sub") || "ALL";
   const sort = params.get("sort") || "recommended";
   const viewMode = params.get("view") === "shade" ? "shade" : "product";
   const aiOnly = params.get("ai") === "Y";
@@ -198,7 +198,7 @@ export default function ProductList() {
       );
     }
 
-    if (subParam !== "ALL") {
+    if (subParam !== "ALL" && !Number.isNaN(Number(subParam))) {
       query.set("categoryId", subParam);
     }
 
