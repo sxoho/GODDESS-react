@@ -1406,73 +1406,15 @@ const ProductDetail = () => {
 
   return (
     <main className="product-detail-page">
-      <div className="product-detail-breadcrumb">
-        <button type="button" onClick={() => navigate("/products")}>
-          SHOP
-        </button>
-        <span>/</span>
-        <span>{categoryText}</span>
-      </div>
-
-      <section className="product-detail-main">
-        <div className="product-detail-gallery">
-          <div className="product-detail-brand-summary">
-            <div className="product-detail-brand-image">
-              {(product.brand || "O").slice(0, 1)}
-            </div>
-            <div>
-              <strong>{product.brand || "GODDESS"}</strong>
-              <p>GODDESS SELECTED BRAND</p>
-            </div>
-          </div>
-
-          <div className="product-detail-main-image">
-            <img src={currentImage} alt={product.name} />
-
-            {galleryItems.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  className="product-detail-image-arrow previous"
-                  aria-label="이전 이미지"
-                  onClick={handlePreviousImage}
-                >
-                  ‹
-                </button>
-
-                <button
-                  type="button"
-                  className="product-detail-image-arrow next"
-                  aria-label="다음 이미지"
-                  onClick={handleNextImage}
-                >
-                  ›
-                </button>
-              </>
-            )}
-          </div>
-
-          <div className="product-detail-thumbnail-list">
-            {galleryItems.map((item, index) => (
-              <button
-                key={`${item.imageId}-${index}`}
-                type="button"
-                className={activeImageIndex === index ? "active" : ""}
-                onClick={() => moveGalleryImage(index)}
-                aria-label={`${item.colorName || "상품"} 이미지 ${index + 1}`}
-              >
-                <img
-                  src={item.imageUrl}
-                  alt={`${product.name} ${item.colorName || ""} 이미지 ${index + 1}`}
-                />
-              </button>
-            ))}
-          </div>
-        </div>
-
+      <section className="product-detail-main product-detail-main-editorial">
         <aside className="product-detail-information">
-          <div className="product-detail-brand-row">
-            <button type="button">{product.brand || "GODDESS"}</button>
+          <div className="product-detail-product-topline">
+            <div>
+              <p className="product-detail-brand-name">
+                {product.brand || "GODDESS"} · {categoryText}
+              </p>
+              <h1>{product.name}</h1>
+            </div>
 
             <button
               type="button"
@@ -1485,55 +1427,71 @@ const ProductDetail = () => {
             </button>
           </div>
 
-          <h1>{product.name}</h1>
-
           <div className="product-detail-rating">
-            <strong>VIEW {product.viewCount ?? 0}</strong>
+            <button type="button" onClick={() => changeTab("review")}>
+              <span className="product-detail-stars">
+                {"★".repeat(
+                  Math.max(
+                    0,
+                    Math.min(5, Math.round(reviewSummary.averageRating || 0)),
+                  ),
+                )}
+                {"☆".repeat(
+                  Math.max(
+                    0,
+                    5 -
+                      Math.min(
+                        5,
+                        Math.round(reviewSummary.averageRating || 0),
+                      ),
+                  ),
+                )}
+              </span>
+              <span>
+                {reviewSummary.reviewCount > 0
+                  ? `${reviewSummary.averageRating.toFixed(1)} (${reviewSummary.reviewCount})`
+                  : "리뷰 없음"}
+              </span>
+            </button>
+
+            {product.aiApplyEnabled === "Y" && (
+              <span className="product-detail-badge">AI BEAUTY</span>
+            )}
           </div>
+
+          {product.description && (
+            <p className="product-detail-short-copy">
+              {product.description}
+            </p>
+          )}
 
           <div className="product-detail-price-block">
-            <div>
-              {discountRate ? (
-                <>
-                  <strong className="product-detail-discount">
-                    {discountRate}%
-                  </strong>
-
-                  <strong className="product-detail-sale-price">
-                    {discountedPrice.toLocaleString()}원
-                  </strong>
-
-                  <del className="product-detail-original-price">
-                    {product.price.toLocaleString()}원
-                  </del>
-                </>
-              ) : (
+            {discountRate ? (
+              <div className="product-detail-price-line">
                 <strong className="product-detail-sale-price">
-                  {product.price.toLocaleString()}원
+                  {discountedPrice.toLocaleString()}원
                 </strong>
-              )}
-            </div>
+                <del className="product-detail-original-price">
+                  {product.price.toLocaleString()}원
+                </del>
+                <span className="product-detail-discount">
+                  {discountRate}% OFF
+                </span>
+              </div>
+            ) : (
+              <strong className="product-detail-sale-price">
+                {product.price.toLocaleString()}원
+              </strong>
+            )}
           </div>
 
-          <dl className="product-detail-benefits">
-            <div>
-              <dt>소재</dt>
-              <dd>{product.material || "-"}</dd>
+          <div className="product-detail-option product-detail-color-section">
+            <div className="product-detail-option-heading">
+              <span>SHADE</span>
+              <strong>{selectedColor?.colorName || "색상을 선택해주세요"}</strong>
             </div>
-            <div>
-              <dt>세탁 정보</dt>
-              <dd>{product.washing || "-"}</dd>
-            </div>
-            <div>
-              <dt>판매 상태</dt>
-              <dd>{product.status}</dd>
-            </div>
-          </dl>
 
-          <div className="product-detail-option">
-            <span>COLOR</span>
-
-            <div className="product-detail-color-options">
+            <div className="product-detail-color-options product-detail-color-swatches">
               {colors.length > 0 ? (
                 colors.map((color) => (
                   <button
@@ -1543,12 +1501,13 @@ const ProductDetail = () => {
                       selectedColorId === color.colorId ? "active" : ""
                     }
                     onClick={() => handleColorSelect(color.colorId)}
+                    aria-label={color.colorName}
+                    title={color.colorName}
                   >
                     <span
                       className="product-detail-color-chip"
                       style={{ backgroundColor: color.colorCode }}
                     />
-                    {color.colorName}
                   </button>
                 ))
               ) : (
@@ -1558,7 +1517,13 @@ const ProductDetail = () => {
           </div>
 
           <div className="product-detail-option">
-            <span>SIZE</span>
+            <div className="product-detail-option-heading">
+              <span>OPTION</span>
+              <strong>
+                {selectedSize?.sizeName ||
+                  (product.volume ? product.volume : "규격을 선택해주세요")}
+              </strong>
+            </div>
 
             <div className="product-detail-size-options">
               {availableSizes.length > 0 ? (
@@ -1577,7 +1542,7 @@ const ProductDetail = () => {
                   </button>
                 ))
               ) : (
-                <p>선택 가능한 사이즈가 없습니다.</p>
+                <p>선택 가능한 규격이 없습니다.</p>
               )}
             </div>
           </div>
@@ -1592,16 +1557,10 @@ const ProductDetail = () => {
                   <div className="product-detail-selected-option-info">
                     <span>
                       {item.colorName} / {item.sizeName}
-                      {item.stock > 0 && item.stock <= 5 && (
-                        <>
-                          {" · "}
-                          재고 {item.stock}개 남음
-                        </>
-                      )}
                     </span>
 
                     <div className="product-detail-quantity">
-                      <span>수량</span>
+                      <span>QTY</span>
                       <div className="product-detail-quantity-control">
                         <button
                           type="button"
@@ -1628,34 +1587,50 @@ const ProductDetail = () => {
 
                   <div className="product-detail-selected-option-right">
                     <strong>
-                      {((discountedPrice + item.addPrice) * item.quantity).toLocaleString()}원
+                      {(
+                        (discountedPrice + item.addPrice) *
+                        item.quantity
+                      ).toLocaleString()}
+                      원
                     </strong>
                     <button
                       type="button"
                       className="product-detail-selected-option-remove"
                       onClick={() => removeCartSelection(item.optionId)}
                     >
-                      삭제
+                      REMOVE
                     </button>
                   </div>
                 </div>
               ))}
 
               <div className="product-detail-selected-total">
-                <span>총 상품 금액</span>
+                <span>TOTAL</span>
                 <strong>
                   {cartSelections
                     .reduce(
                       (sum, item) =>
                         sum +
-                        (discountedPrice + item.addPrice) * item.quantity,
+                        (discountedPrice + item.addPrice) *
+                          item.quantity,
                       0,
                     )
-                    .toLocaleString()}원
+                    .toLocaleString()}
+                  원
                 </strong>
               </div>
             </div>
           )}
+
+          <div className="product-detail-purchase-buttons">
+            <button type="button" className="cart" onClick={handleAddToCart}>
+              ADD TO BAG
+            </button>
+
+            <button type="button" className="buy" onClick={handleBuyNow}>
+              BUY NOW
+            </button>
+          </div>
 
           {product.aiApplyEnabled === "Y" && (
             <button
@@ -1669,21 +1644,124 @@ const ProductDetail = () => {
                 )
               }
             >
-              AI BEAUTY
-              <span>메이크업·헤어 AI 체험으로 확인해보세요</span>
+              <span className="product-detail-beauty-title">
+                AI BEAUTY TRY-ON
+              </span>
+              <span>선택한 컬러를 내 얼굴에 미리 체험해보세요</span>
             </button>
           )}
 
-          <div className="product-detail-purchase-buttons">
-            <button type="button" className="cart" onClick={handleAddToCart}>
-              장바구니 담기
-            </button>
+          <div className="product-detail-editorial-info">
+            <div>
+              <span>ABOUT</span>
+              <p>{product.description || "상품 설명이 없습니다."}</p>
+            </div>
 
-            <button type="button" className="buy" onClick={handleBuyNow}>
-              바로 구매하기
-            </button>
+            {product.usageInfo && (
+              <div>
+                <span>HOW TO USE</span>
+                <p>{product.usageInfo}</p>
+              </div>
+            )}
+
+            {(product.skinType || product.personalColor || product.volume) && (
+              <div className="product-detail-fit-row">
+                {product.skinType && (
+                  <p>
+                    <span>SKIN TYPE</span>
+                    {product.skinType}
+                  </p>
+                )}
+                {product.personalColor && (
+                  <p>
+                    <span>PERSONAL COLOR</span>
+                    {product.personalColor}
+                  </p>
+                )}
+                {product.volume && (
+                  <p>
+                    <span>VOLUME</span>
+                    {product.volume}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </aside>
+
+        <div className="product-detail-gallery product-detail-gallery-editorial">
+          <div className="product-detail-image-grid">
+            <button
+              type="button"
+              className="product-detail-image-panel primary"
+              onClick={handleNextImage}
+              aria-label="다음 이미지 보기"
+            >
+              <img src={currentImage} alt={product.name} />
+            </button>
+
+            <button
+              type="button"
+              className="product-detail-image-panel secondary"
+              onClick={handleNextImage}
+              aria-label="다음 이미지 보기"
+            >
+              <img
+                src={
+                  galleryItems.length > 1
+                    ? galleryItems[(activeImageIndex + 1) % galleryItems.length]
+                        .imageUrl
+                    : currentImage
+                }
+                alt={`${product.name} 추가 이미지`}
+              />
+
+              {selectedColor?.colorName && (
+                <span className="product-detail-image-caption">
+                  {selectedColor.colorName}
+                </span>
+              )}
+            </button>
+          </div>
+
+          <div className="product-detail-gallery-footer">
+            <div className="product-detail-thumbnail-list">
+              {galleryItems.map((item, index) => (
+                <button
+                  key={`${item.imageId}-${index}`}
+                  type="button"
+                  className={activeImageIndex === index ? "active" : ""}
+                  onClick={() => moveGalleryImage(index)}
+                  aria-label={`${item.colorName || "상품"} 이미지 ${index + 1}`}
+                >
+                  <img
+                    src={item.imageUrl}
+                    alt={`${product.name} ${item.colorName || ""} 이미지 ${index + 1}`}
+                  />
+                </button>
+              ))}
+            </div>
+
+            {galleryItems.length > 1 && (
+              <div className="product-detail-gallery-arrows">
+                <button
+                  type="button"
+                  aria-label="이전 이미지"
+                  onClick={handlePreviousImage}
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  aria-label="다음 이미지"
+                  onClick={handleNextImage}
+                >
+                  ›
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </section>
 
       <section className="product-detail-bottom">

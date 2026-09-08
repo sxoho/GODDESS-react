@@ -158,3 +158,26 @@
   color: #aaa;
   font-size: 10px;
 }
+
+
+/* GODDESS ADMIN HOME — WHITE */
+.admin-home{width:100%;max-width:1540px;margin:0 auto}
+.admin-home-heading h1{font-size:40px;font-weight:620;letter-spacing:-.04em}
+.admin-summary-grid{gap:0;border-top:1px solid #d9d9d4;border-bottom:1px solid #d9d9d4;background:#fff}
+.admin-summary-grid article{border:0;border-right:1px solid #e7e7e3;background:#fff}
+.admin-summary-grid article:last-child{border-right:0}
+.admin-summary-grid strong{font-size:42px;font-weight:520}
+.admin-summary-link:hover{background:#f8f8f6}
+.admin-home-section{padding:0;border:0;border-top:1px solid #d9d9d4;border-bottom:1px solid #d9d9d4;background:#fff}
+.admin-section-heading{padding:28px 30px 24px}
+.admin-section-heading button{padding-bottom:4px;border-bottom:1px solid #111}
+.admin-quick-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.admin-quick-grid button{border-right:1px solid #e7e7e3}
+@media(max-width:1100px){.admin-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* GODDESS ROSE ACCENT */
+.admin-home-heading p { color: #a96573; }
+.admin-summary-grid { border-top-color: #dcc1c7; }
+.admin-summary-link:hover { background: #fdf7f8; }
+.admin-quick-grid button:hover { background: #fdf7f8; }
+.admin-section-heading p { color: #a96573; }

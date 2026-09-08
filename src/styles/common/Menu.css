@@ -181,18 +181,17 @@
 ========================================= */
 
 .goddess-main-nav {
-  width: min(1250px, 90%);
+  width: min(1580px, 96%);
 
   height: 100%;
 
   margin: 0 auto;
 
-  display: grid;
-
-  grid-template-columns:
-    repeat(6, 1fr);
-
+  display: flex;
   align-items: stretch;
+  justify-content: center;
+
+  gap: 140px;
 }
 
 .goddess-nav-link {
@@ -200,20 +199,31 @@
 
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 
-  color: #222222;
+  min-width: max-content;
+
+  color: #111111;
 
   text-decoration: none;
 
-  font-size: 11px;
+  font-family:
+    "Arial Narrow",
+    "Roboto Condensed",
+    "Helvetica Neue Condensed",
+    Arial,
+    sans-serif;
+
+  font-size: 15px;
   font-weight: 500;
 
-  letter-spacing: 0.6px;
+  letter-spacing: 0.15px;
+  transform: scaleX(0.92);
+  transform-origin: center;
 
   transition:
-    color 0.3s ease,
-    background-color 0.3s ease;
+    color 0.2s ease,
+    opacity 0.2s ease;
 }
 
 /* 밑줄 */
@@ -226,41 +236,33 @@
 
   position: absolute;
 
-  left: 50%;
-  bottom: 16px;
+  left: 0;
+  bottom: 14px;
 
   background: #111111;
 
-  transform: translateX(-50%);
-
   transition:
-    width 0.3s
-      cubic-bezier(
-        0.16,
-        1,
-        0.3,
-        1
-      );
+    width 0.22s ease;
 }
 
 .goddess-nav-link:hover::after {
-  width: 28px;
+  width: 100%;
 }
 
 .goddess-nav-link:hover {
-  color: #a56874;
+  color: #111111;
+  opacity: 0.62;
 }
 
 /* ACTIVE */
 
 .goddess-nav-link.active {
-  color: #a56874;
+  color: #111111;
 }
 
 .goddess-nav-link.active::after {
-  width: 28px;
-
-  background: #a56874;
+  width: 100%;
+  background: #111111;
 }
 
 /* =========================================
@@ -301,7 +303,7 @@
 }
 
 .goddess-nav-link:hover::before {
-  background: #faf8f7;
+  background: transparent;
 }
 
 /* =========================================
@@ -341,10 +343,12 @@
     width: 100%;
 
     padding: 0 20px;
+    gap: 34px;
+    justify-content: center;
   }
 
   .goddess-nav-link {
-    font-size: 10px;
+    font-size: 13px;
   }
 }
 
@@ -408,9 +412,10 @@
   .goddess-nav-link {
     min-width: max-content;
 
-    padding: 0 20px;
+    padding: 0 14px;
 
-    font-size: 9px;
+    font-size: 12px;
+    transform: none;
   }
 
   .goddess-nav-link::after {

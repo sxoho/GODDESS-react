@@ -125,3 +125,40 @@
 .admin-content {
   padding: 48px;
 }
+
+
+/* GODDESS ADMIN — WHITE REDESIGN */
+.admin-layout{background:#f7f7f5;color:#111}
+.admin-sidebar{width:248px;padding:30px 24px 24px;background:#fff;color:#111;border-right:1px solid #e6e6e2}
+.admin-logo{margin-bottom:46px}
+.admin-logo strong{color:#111;font-size:24px;font-weight:650;letter-spacing:-.055em}
+.admin-logo span{color:#999994;font-size:9px}
+.admin-menu{gap:2px}
+.admin-menu a,.admin-menu button{position:relative;min-height:42px;padding:0 12px;background:transparent;color:#777772;font-size:13px;font-weight:500}
+.admin-menu a:hover{background:#f7f7f5;color:#111}
+.admin-menu a.active{background:#f2f2ef;color:#111;font-weight:650}
+.admin-menu a.active::before{content:"";position:absolute;left:0;top:50%;width:2px;height:18px;background:#111;transform:translateY(-50%)}
+.admin-menu button:disabled{color:#c3c3bf}
+.admin-sidebar-bottom{padding-top:18px;border-top:1px solid #e6e6e2}
+.admin-sidebar-bottom button,.admin-sidebar-bottom a{min-height:38px;padding:0 10px;border:0;background:transparent;font-size:12px}
+.admin-sidebar-bottom .admin-shop-link{color:#666662}
+.admin-sidebar-bottom .admin-logout-button{color:#9c4f4f}
+.admin-layout-main{width:calc(100% - 248px);margin-left:248px}
+.admin-topbar{position:sticky;top:0;z-index:20;height:70px;padding:0 44px;border-bottom:1px solid #e6e6e2;background:rgba(255,255,255,.96);backdrop-filter:blur(10px)}
+.admin-topbar span{color:#777772;font-size:10px;font-weight:600}
+.admin-content{padding:46px 48px 72px}
+@media(max-width:1080px){.admin-sidebar{width:210px}.admin-layout-main{width:calc(100% - 210px);margin-left:210px}.admin-content{padding:36px 30px 60px}}
+
+/* GODDESS ROSE ACCENT */
+:root {
+  --admin-rose: #c98291;
+  --admin-rose-dark: #a96573;
+  --admin-rose-soft: #fbf1f3;
+  --admin-rose-line: #ead2d8;
+}
+
+.admin-logo span { color: var(--admin-rose-dark); }
+.admin-menu a.active { background: var(--admin-rose-soft); }
+.admin-menu a.active::before { background: var(--admin-rose); }
+.admin-menu a:hover { background: #fcf7f8; }
+.admin-topbar { border-bottom-color: #eee5e7; }

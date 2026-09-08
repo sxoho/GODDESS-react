@@ -295,3 +295,25 @@
   color: #d32f2f;
 
 }
+
+
+/* GODDESS PRODUCT LIST — WHITE */
+.admin-product-list-page{width:100%;max-width:1540px;margin:0 auto}
+.admin-product-header h1{font-size:38px;font-weight:620;letter-spacing:-.04em}
+.admin-product-header>button{height:44px;border:1px solid #111;background:#111;font-size:12px}
+.admin-product-header>button:hover{background:#fff;color:#111}
+.admin-product-filter{padding:18px 0;border:0;border-top:1px solid #dcdcd7;border-bottom:1px solid #dcdcd7;background:transparent}
+.admin-product-search{width:min(460px,100%)}
+.admin-product-filter-selects select,.admin-product-filter-reset{height:42px;border-color:#dcdcd7;border-radius:0}
+.admin-product-table-wrap{border:0;border-top:1px solid #111;border-bottom:1px solid #dcdcd7;box-shadow:none}
+.admin-product-table th{background:#fff;color:#8c8c87;font-size:10px;font-weight:650}
+.admin-product-table tbody tr:hover{background:#fafaf8}
+.admin-product-table td button{border-radius:0}
+
+/* GODDESS ROSE ACCENT */
+.admin-product-header p { color: #a96573; }
+.admin-product-header > button:hover { border-color: #a96573; background: #a96573; color: #fff; }
+.admin-product-table-wrap { border-top-color: #c98291; }
+.admin-product-table tbody tr:hover { background: #fdf8f9; }
+.admin-product-filter-selects select:focus { border-color: #c98291; }
+.admin-product-pagination .pagination-number.active { color: #a96573; border-bottom-color: #c98291; }

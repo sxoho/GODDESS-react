@@ -416,3 +416,30 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+
+/* GODDESS PRODUCT DETAIL — WHITE */
+.admin-product-detail-page{max-width:1380px;padding:0 0 70px}
+.admin-product-detail-header h1{font-size:38px;font-weight:620;letter-spacing:-.04em}
+.admin-product-detail-summary{border:0;border-top:1px solid #111;border-bottom:1px solid #deded9}
+.admin-product-detail-summary>div{border-right:1px solid #e8e8e4}
+.admin-product-detail-section{padding:0;border:0;border-top:1px solid #111;border-bottom:1px solid #deded9}
+.admin-product-detail-section-title{display:grid;grid-template-columns:42px minmax(0,1fr);gap:0;margin:0;padding:20px 22px;border-bottom:1px solid #e8e8e4}
+.admin-product-detail-section-title>span{color:#999994;font-size:10px;font-weight:650}
+.admin-product-detail-section-title h2{font-size:17px;font-weight:620}
+.admin-product-detail-info-grid{border-top:0}
+.admin-product-detail-info-grid dt{background:#fafaf8;color:#888883;font-size:10px}
+.admin-product-color-list,.admin-product-size-list,.admin-product-image-grid{padding:22px}
+.admin-product-color-card,.admin-product-image-card,.admin-product-size-card{border-color:#e1e1dc;border-radius:0;box-shadow:none}
+.admin-product-option-table-wrap{margin:22px;border-top:1px solid #111;border-bottom:1px solid #deded9}
+.admin-product-detail-header-actions button,.admin-product-detail-bottom-actions button{border-radius:0}
+.admin-product-detail-header-actions .primary,.admin-product-detail-bottom-actions .primary{background:#111;border-color:#111}
+
+/* GODDESS ROSE ACCENT */
+.admin-product-detail-header p { color: #a96573; }
+.admin-product-detail-summary { border-top-color: #c98291; }
+.admin-product-detail-section { border-top-color: #d9b1ba; }
+.admin-product-detail-section-title > span { color: #c98291; }
+.admin-product-color-chip { box-shadow: 0 0 0 3px #fbf1f3; }
+.admin-product-detail-header-actions .primary:hover,
+.admin-product-detail-bottom-actions .primary:hover { border-color: #a96573; background: #a96573; color: #fff; }
