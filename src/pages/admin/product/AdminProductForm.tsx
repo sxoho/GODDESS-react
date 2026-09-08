@@ -12,8 +12,11 @@ type ProductForm = {
   price: string;
   discount: string;
   description: string;
-  material: string;
-  washingInfo: string;
+  usageInfo: string;
+  productType: string;
+  volume: string;
+  skinType: string;
+  personalColor: string;
   aiApplyEnabled: string;
   status: string;
 };
@@ -71,8 +74,11 @@ type ProductDetailResponse = {
   description?: string;
   price: number;
   discount?: string;
-  material?: string;
-  washing?: string;
+  usageInfo?: string;
+  productType?: string;
+  volume?: string;
+  skinType?: string;
+  personalColor?: string;
   aiApplyEnabled: string;
   status: string;
 };
@@ -160,10 +166,13 @@ const AdminProductForm = () => {
     price: "",
     discount: "0",
     description: "",
-    material: "",
-    washingInfo: "",
+    usageInfo: "",
+    productType: "",
+    volume: "",
+    skinType: "",
+    personalColor: "",
     aiApplyEnabled: "Y",
-    status: "판매중",
+    status: "ON_SALE",
   });
 
   const [masterColors, setMasterColors] = useState<ProductColorInfoResponse[]>([]);
@@ -235,17 +244,7 @@ const AdminProductForm = () => {
   const [sizes, setSizes] = useState<ProductVariantForm[]>([
     {
       id: Date.now() + 1,
-      variantName: "S",
-      variantDescription: "",
-    },
-    {
-      id: Date.now() + 2,
-      variantName: "M",
-      variantDescription: "",
-    },
-    {
-      id: Date.now() + 3,
-      variantName: "L",
+      variantName: "기본",
       variantDescription: "",
     },
   ]);
@@ -496,7 +495,7 @@ const AdminProductForm = () => {
   };
 
   /**
-   * 색상 × 옵션 조합 생성
+   * 색상 × 판매 옵션 생성
    */
   const generateOptions = () => {
     const generated: ProductOptionForm[] = [];
@@ -555,7 +554,7 @@ const AdminProductForm = () => {
   const findSizeName = (id: number) => {
     return (
       sizes.find((size) => size.id === id)?.variantName ||
-      "옵션 미입력"
+      "규격 미입력"
     );
   };
 
@@ -639,12 +638,15 @@ const AdminProductForm = () => {
                 )
               : "",
           price: String(data.price ?? ""),
-          discount: data.discount ?? "0",
+          discount: String(data.discount ?? "0"),
           description: data.description ?? "",
-          material: data.material ?? "",
-          washingInfo: data.washing ?? "",
+          usageInfo: data.usageInfo ?? "",
+          productType: data.productType ?? "",
+          volume: data.volume ?? "",
+          skinType: data.skinType ?? "",
+          personalColor: data.personalColor ?? "",
           aiApplyEnabled: data.aiApplyEnabled ?? "Y",
-          status: data.status ?? "판매중",
+          status: data.status ?? "ON_SALE",
         });
 
         const loadedColors: ProductColorForm[] =
@@ -668,7 +670,7 @@ const AdminProductForm = () => {
         setColors(loadedColors);
 
         // 기존 상품에 등록된 옵션가 하나도 없으면
-        // 수정 화면에서 S / M / L을 기본으로 생성한다.
+        // 수정 화면에서 기본 규격을 기본으로 생성한다.
         const loadedSizes: ProductVariantForm[] =
           sizeResponse.data.length > 0
             ? sizeResponse.data.map((size) => ({
@@ -680,17 +682,7 @@ const AdminProductForm = () => {
             : [
                 {
                   id: Date.now() + 101,
-                  variantName: "S",
-                  variantDescription: "",
-                },
-                {
-                  id: Date.now() + 102,
-                  variantName: "M",
-                  variantDescription: "",
-                },
-                {
-                  id: Date.now() + 103,
-                  variantName: "L",
+                  variantName: "기본",
                   variantDescription: "",
                 },
               ];
@@ -707,7 +699,7 @@ const AdminProductForm = () => {
           }));
 
         // 기존 옵션/옵션이 전혀 없는 예전 상품은
-        // 현재 등록된 색상 × S/M/L 조합을 자동 생성하고 재고를 30으로 시작한다.
+        // 현재 등록된 색상 × 기본 규격 조합을 자동 생성하고 재고를 30으로 시작한다.
         if (
           sizeResponse.data.length === 0 &&
           optionResponse.data.length === 0
@@ -763,7 +755,7 @@ const AdminProductForm = () => {
    * 1. PRODUCT
    * 2. PRODUCT_COLOR
    * 3. PRODUCT_COLOR_IMAGE
-   * 4. PRODUCT_SIZE
+   * 4. PRODUCT_VARIANT
    * 5. PRODUCT_OPTION
    */
   const submitProduct = async () => {
@@ -800,7 +792,7 @@ const AdminProductForm = () => {
       }
 
       if (sizes.some((size) => !size.variantName.trim())) {
-        alert("옵션명을 모두 입력해주세요.");
+        alert("규격명을 모두 입력해주세요.");
         return;
       }
 
@@ -814,7 +806,7 @@ const AdminProductForm = () => {
       }
 
       if (options.length === 0) {
-        alert("옵션 조합 생성 버튼을 눌러주세요.");
+        alert("판매 옵션 생성 버튼을 눌러주세요.");
         return;
       }
     }
@@ -830,11 +822,14 @@ const AdminProductForm = () => {
         categoryId: effectiveCategoryId,
         brand: product.brand.trim(),
         name: product.name.trim(),
-        description: product.description.trim(),
+        description: (product.description ?? "").trim(),
         price: Number(product.price),
         discount: product.discount || "0",
-        material: product.material.trim(),
-        washing: product.washingInfo.trim(),
+        usageInfo: (product.usageInfo ?? "").trim(),
+        productType: (product.productType ?? "").trim() || null,
+        volume: (product.volume ?? "").trim() || null,
+        skinType: (product.skinType ?? "").trim() || null,
+        personalColor: (product.personalColor ?? "").trim() || null,
         aiApplyEnabled: product.aiApplyEnabled,
         status: product.status,
       };
@@ -847,7 +842,7 @@ const AdminProductForm = () => {
         }
 
         if (sizes.some((size) => !size.variantName.trim())) {
-          throw new Error("옵션명을 모두 입력해주세요.");
+          throw new Error("규격명을 모두 입력해주세요.");
         }
 
         if (
@@ -992,7 +987,7 @@ const AdminProductForm = () => {
 
         // -------------------------------------------------
         // 4. 옵션 수정 / 신규 추가
-        // 화면 size.id -> 실제 PRODUCT_SIZE ID 매핑
+        // 화면 size.id -> 실제 PRODUCT_VARIANT ID 매핑
         // -------------------------------------------------
         const savedEditSizeIdMap = new Map<number, number>();
 
@@ -1028,7 +1023,7 @@ const AdminProductForm = () => {
           }
 
           if (!actualProductVariantId) {
-            throw new Error(`${size.variantName} 옵션 저장 후 옵션번호를 받지 못했습니다.`);
+            throw new Error(`${size.variantName} 규격 저장 후 규격번호를 받지 못했습니다.`);
           }
 
           savedEditSizeIdMap.set(size.id, actualProductVariantId);
@@ -1243,7 +1238,7 @@ const AdminProductForm = () => {
 
         if (!savedProductVariantId) {
           throw new Error(
-            `${size.variantName} 옵션 등록 후 옵션번호를 받지 못했습니다.`
+            `${size.variantName} 규격 등록 후 규격번호를 받지 못했습니다.`
           );
         }
 
@@ -1494,14 +1489,15 @@ const AdminProductForm = () => {
               value={product.status}
               onChange={handleProductChange}
             >
-              <option value="판매중">판매중</option>
-              <option value="품절">품절</option>
-              <option value="판매중지">판매중지</option>
+              <option value="ON_SALE">판매중</option>
+              <option value="SOLD_OUT">품절</option>
+              <option value="STOPPED">판매중지</option>
+              <option value="HIDDEN">숨김</option>
             </select>
           </div>
 
           <div className="admin-form-field">
-            <label>AI 피팅</label>
+            <label>AI BEAUTY 적용</label>
 
             <select
               name="aiApplyEnabled"
@@ -1513,6 +1509,71 @@ const AdminProductForm = () => {
             </select>
           </div>
 
+          <div className="admin-form-field">
+            <label>상품 유형</label>
+            <select
+              name="productType"
+              value={product.productType}
+              onChange={handleProductChange}
+            >
+              <option value="">선택 안 함</option>
+              <option value="BASE">베이스 / 파운데이션</option>
+              <option value="LIP">립</option>
+              <option value="EYE">아이</option>
+              <option value="BLUSH">치크 / 블러셔</option>
+              <option value="BROW">브로우</option>
+              <option value="SKINCARE">스킨케어</option>
+              <option value="HAIR">헤어</option>
+              <option value="BODY">바디</option>
+              <option value="FRAGRANCE">향수</option>
+              <option value="TOOL">뷰티소품</option>
+            </select>
+          </div>
+
+          <div className="admin-form-field">
+            <label>용량 / 중량</label>
+            <input
+              type="text"
+              name="volume"
+              value={product.volume}
+              onChange={handleProductChange}
+              placeholder="예: 4.5g, 30ml"
+            />
+          </div>
+
+          <div className="admin-form-field">
+            <label>추천 피부 타입</label>
+            <input
+              type="text"
+              name="skinType"
+              value={product.skinType}
+              onChange={handleProductChange}
+              placeholder="예: 건성, 복합성, 민감성"
+            />
+          </div>
+
+          <div className="admin-form-field">
+            <label>추천 퍼스널컬러</label>
+            <input
+              type="text"
+              name="personalColor"
+              value={product.personalColor}
+              onChange={handleProductChange}
+              placeholder="예: 봄웜, 여름쿨"
+            />
+          </div>
+
+          <div className="admin-form-field full">
+            <label>사용 방법</label>
+            <textarea
+              name="usageInfo"
+              value={product.usageInfo}
+              onChange={handleProductChange}
+              placeholder="상품 사용 방법을 입력해주세요."
+              rows={3}
+            />
+          </div>
+
           <div className="admin-form-field full">
             <label>상품 설명</label>
 
@@ -1522,30 +1583,6 @@ const AdminProductForm = () => {
               onChange={handleProductChange}
               placeholder="상품 설명을 입력해주세요."
               rows={5}
-            />
-          </div>
-
-          <div className="admin-form-field">
-            <label>소재</label>
-
-            <input
-              type="text"
-              name="material"
-              value={product.material}
-              onChange={handleProductChange}
-              placeholder="예: Cotton 100%"
-            />
-          </div>
-
-          <div className="admin-form-field">
-            <label>세탁 정보</label>
-
-            <input
-              type="text"
-              name="washingInfo"
-              value={product.washingInfo}
-              onChange={handleProductChange}
-              placeholder="예: 단독 세탁 권장"
             />
           </div>
         </div>
@@ -1747,9 +1784,9 @@ const AdminProductForm = () => {
           <span>03</span>
 
           <div>
-            <h2>옵션</h2>
+            <h2>상품 규격</h2>
             <p>
-              상품에서 판매할 옵션를 설정해주세요.
+              상품의 용량, 호수, 구성 등 규격을 설정해주세요.
             </p>
           </div>
 
@@ -1758,7 +1795,7 @@ const AdminProductForm = () => {
             className="admin-outline-button"
             onClick={addSize}
           >
-            + 옵션 추가
+            + 규격 추가
           </button>
         </div>
 
@@ -1778,7 +1815,7 @@ const AdminProductForm = () => {
                     event.target.value
                   )
                 }
-                placeholder="옵션"
+                placeholder="예: 기본, 30ml, 21호"
               />
 
               <input
@@ -1791,7 +1828,7 @@ const AdminProductForm = () => {
                     event.target.value
                   )
                 }
-                placeholder="옵션 설명 (선택)"
+                placeholder="규격 설명 (선택)"
               />
 
               <button
@@ -1813,9 +1850,9 @@ const AdminProductForm = () => {
           <span>04</span>
 
           <div>
-            <h2>옵션 및 재고</h2>
+            <h2>판매 옵션 및 재고</h2>
             <p>
-              색상과 옵션 조합별 재고를
+              색상과 규격 조합별 재고를
               입력해주세요.
             </p>
           </div>
@@ -1825,14 +1862,14 @@ const AdminProductForm = () => {
             className="admin-outline-button"
             onClick={generateOptions}
           >
-            옵션 조합 생성
+            판매 옵션 생성
           </button>
         </div>
 
         {options.length === 0 ? (
           <div className="admin-option-empty">
-            색상과 옵션를 입력한 후
-            <strong> 옵션 조합 생성</strong>을 눌러주세요.
+            색상과 규격을 입력한 후
+            <strong> 판매 옵션 생성</strong>을 눌러주세요.
           </div>
         ) : (
           <div className="admin-option-table-wrap">
@@ -1840,7 +1877,7 @@ const AdminProductForm = () => {
               <thead>
                 <tr>
                   <th>색상</th>
-                  <th>옵션</th>
+                  <th>규격</th>
                   <th>재고</th>
                   <th>추가 금액</th>
                 </tr>

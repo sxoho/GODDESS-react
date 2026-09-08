@@ -7,6 +7,21 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:9104";
 const PAGE_SIZE = 24;
 const TEMP_IMAGE = "/images/goddess/beauty-editorial.webp";
 
+const SKIN_TYPE_FILTERS = [
+  { value: "복합성", label: "Combination" },
+  { value: "건성", label: "Dry" },
+  { value: "중성", label: "Normal" },
+  { value: "지성", label: "Oily" },
+  { value: "민감성", label: "Sensitive" },
+];
+
+const PERSONAL_COLOR_FILTERS = [
+  { value: "봄웜", label: "Spring Warm" },
+  { value: "여름쿨", label: "Summer Cool" },
+  { value: "가을웜", label: "Autumn Warm" },
+  { value: "겨울쿨", label: "Winter Cool" },
+];
+
 type Category = {
   id?: number;
   categoryId?: number;
@@ -84,35 +99,82 @@ export default function ProductList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
 
   const categoryParam = params.get("category") || "ALL";
-  const subParam = params.get("sub") || "ALL";
+  const subParam = params.get("sub") || params.get("type") || "ALL";
   const sort = params.get("sort") || "recommended";
-  const keyword = params.get("keyword") || "";
+  const viewMode = params.get("view") === "shade" ? "shade" : "product";
   const aiOnly = params.get("ai") === "Y";
+  const skinTypeParam = params.get("skinType") || "";
+  const personalColorParam = params.get("personalColor") || "";
   const page = Math.max(1, Number(params.get("page") || 1));
 
+  const selectedSkinTypes = useMemo(
+    () => skinTypeParam.split(",").filter(Boolean),
+    [skinTypeParam],
+  );
+
+  const selectedPersonalColors = useMemo(
+    () => personalColorParam.split(",").filter(Boolean),
+    [personalColorParam],
+  );
+
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [draftSkinTypes, setDraftSkinTypes] = useState<string[]>(selectedSkinTypes);
+  const [draftPersonalColors, setDraftPersonalColors] =
+    useState<string[]>(selectedPersonalColors);
+  const [draftAiOnly, setDraftAiOnly] = useState(aiOnly);
+
+  const activeFilterCount =
+    selectedSkinTypes.length +
+    selectedPersonalColors.length +
+    (aiOnly ? 1 : 0);
+
   const topCategories = useMemo(
-    () => categories
-      .filter((c) => (c.parentId ?? null) === null && c.visible !== "N")
-      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
+    () =>
+      categories
+        .filter(
+          (category) =>
+            (category.parentId ?? null) === null && category.visible !== "N",
+        )
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
     [categories],
   );
 
-  const selectedTop = topCategories.find((c) => String(c.id ?? c.categoryId) === categoryParam);
+  const selectedTop = topCategories.find(
+    (category) =>
+      String(category.id ?? category.categoryId) === categoryParam,
+  );
+
   const subCategories = useMemo(() => {
     if (!selectedTop) return [];
+
     const topId = Number(selectedTop.id ?? selectedTop.categoryId);
+
     return categories
-      .filter((c) => Number(c.parentId) === topId && c.visible !== "N")
+      .filter(
+        (category) =>
+          Number(category.parentId) === topId && category.visible !== "N",
+      )
       .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
   }, [categories, selectedTop]);
 
   useEffect(() => {
+    setDraftSkinTypes(selectedSkinTypes);
+    setDraftPersonalColors(selectedPersonalColors);
+    setDraftAiOnly(aiOnly);
+  }, [skinTypeParam, personalColorParam, aiOnly]);
+
+  useEffect(() => {
     Promise.all([
-      fetch(`${API_BASE}/category/find_all`).then((r) => r.json()),
-      fetch(`${API_BASE}/product_color/find_all`).then((r) => r.json()),
-      fetch(`${API_BASE}/product_color_image/find_all`).then((r) => r.json()),
+      fetch(`${API_BASE}/category/find_all`).then((response) => response.json()),
+      fetch(`${API_BASE}/product_color/find_all`).then((response) =>
+        response.json(),
+      ),
+      fetch(`${API_BASE}/product_color_image/find_all`).then((response) =>
+        response.json(),
+      ),
     ])
       .then(([categoryData, colorData, imageData]) => {
         setCategories(categoryData);
@@ -123,58 +185,181 @@ export default function ProductList() {
   }, []);
 
   useEffect(() => {
-    const q = new URLSearchParams({
+    const query = new URLSearchParams({
       page: String(page - 1),
       size: String(PAGE_SIZE),
       sort,
     });
-    if (keyword.trim()) q.set("keyword", keyword.trim());
-    if (selectedTop) q.set("mainCategoryId", String(selectedTop.id ?? selectedTop.categoryId));
-    if (subParam !== "ALL") q.set("categoryId", subParam);
+
+    if (selectedTop) {
+      query.set(
+        "mainCategoryId",
+        String(selectedTop.id ?? selectedTop.categoryId),
+      );
+    }
+
+    if (subParam !== "ALL") {
+      query.set("categoryId", subParam);
+    }
+
+    if (skinTypeParam) {
+      query.set("skinType", skinTypeParam);
+    }
+
+    if (personalColorParam) {
+      query.set("personalColor", personalColorParam);
+    }
+
+    if (aiOnly) {
+      query.set("aiApplyEnabled", "Y");
+    }
 
     setLoading(true);
     setError("");
-    fetch(`${API_BASE}/product/page?${q.toString()}`)
-      .then(async (r) => {
-        if (!r.ok) throw new Error(await r.text());
-        return r.json() as Promise<PageResponse>;
+
+    fetch(`${API_BASE}/product/page?${query.toString()}`)
+      .then(async (response) => {
+        if (!response.ok) throw new Error(await response.text());
+        return response.json() as Promise<PageResponse>;
       })
       .then((data) => {
-        setProducts((data.content ?? []).filter((p) => !aiOnly || p.aiApplyEnabled === "Y"));
+        setProducts(data.content ?? []);
         setTotalPages(Math.max(1, data.totalPages ?? 1));
+        setTotalElements(data.totalElements ?? 0);
       })
       .catch(() => setError("상품 목록을 불러오지 못했습니다."))
       .finally(() => setLoading(false));
-  }, [page, sort, keyword, selectedTop, subParam, aiOnly]);
+  }, [
+    page,
+    sort,
+    selectedTop,
+    subParam,
+    aiOnly,
+    skinTypeParam,
+    personalColorParam,
+  ]);
 
   useEffect(() => {
     if (!sw || memberId <= 0) {
       setWishlist([]);
       return;
     }
+
     fetch(`${API_BASE}/wishlist/member/${memberId}`)
-      .then((r) => (r.ok ? r.json() : []))
-      .then((data) => setWishlist((Array.isArray(data) ? data : []).map((x) => Number(x.productId))))
+      .then((response) => (response.ok ? response.json() : []))
+      .then((data) =>
+        setWishlist(
+          (Array.isArray(data) ? data : []).map((item) =>
+            Number(item.productId),
+          ),
+        ),
+      )
       .catch(() => setWishlist([]));
   }, [sw, memberId]);
 
   const setQuery = (patch: Record<string, string | null>) => {
     const next = new URLSearchParams(params);
-    Object.entries(patch).forEach(([k, v]) => (v == null ? next.delete(k) : next.set(k, v)));
+
+    Object.entries(patch).forEach(([key, value]) => {
+      if (value == null) next.delete(key);
+      else next.set(key, value);
+    });
+
     if (!("page" in patch)) next.set("page", "1");
     setParams(next);
   };
 
+  const toggleDraftValue = (
+    value: string,
+    current: string[],
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+  ) => {
+    setter(
+      current.includes(value)
+        ? current.filter((item) => item !== value)
+        : [...current, value],
+    );
+  };
+
+  const openFilters = () => {
+    setDraftSkinTypes(selectedSkinTypes);
+    setDraftPersonalColors(selectedPersonalColors);
+    setDraftAiOnly(aiOnly);
+    setFilterOpen((current) => !current);
+  };
+
+  const cancelFilters = () => {
+    setDraftSkinTypes(selectedSkinTypes);
+    setDraftPersonalColors(selectedPersonalColors);
+    setDraftAiOnly(aiOnly);
+    setFilterOpen(false);
+  };
+
+  const clearFilters = () => {
+    setDraftSkinTypes([]);
+    setDraftPersonalColors([]);
+    setDraftAiOnly(false);
+  };
+
+  const applyFilters = () => {
+    setQuery({
+      skinType: draftSkinTypes.length > 0 ? draftSkinTypes.join(",") : null,
+      personalColor:
+        draftPersonalColors.length > 0
+          ? draftPersonalColors.join(",")
+          : null,
+      ai: draftAiOnly ? "Y" : null,
+    });
+    setFilterOpen(false);
+  };
+
   const productThumb = (productId: number) => {
     const productColors = colors
-      .filter((c) => c.productId === productId && c.visible !== "N")
-      .sort((a, b) => Number(b.isMain === "Y") - Number(a.isMain === "Y") || a.sortOrder - b.sortOrder);
-    const colorIds = new Set(productColors.map((c) => c.id));
-    const found = images
-      .filter((img) => colorIds.has(Number(img.productcolorId ?? img.productColorId)) && img.imageType === "THUMBNAIL")
-      .sort((a, b) => Number(b.isMain === "Y") - Number(a.isMain === "Y") || a.sortOrder - b.sortOrder)[0];
-    return imageUrl(found?.filePath);
+      .filter((color) => color.productId === productId && color.visible !== "N")
+      .sort(
+        (a, b) =>
+          Number(b.isMain === "Y") - Number(a.isMain === "Y") ||
+          a.sortOrder - b.sortOrder,
+      );
+
+    const colorIds = new Set(productColors.map((color) => color.id));
+
+    const productImages = images
+      .filter((image) =>
+        colorIds.has(Number(image.productcolorId ?? image.productColorId)),
+      )
+      .sort(
+        (a, b) =>
+          Number(b.imageType === "THUMBNAIL") -
+            Number(a.imageType === "THUMBNAIL") ||
+          Number(b.isMain === "Y") - Number(a.isMain === "Y") ||
+          a.sortOrder - b.sortOrder,
+      );
+
+    return imageUrl(productImages[0]?.filePath);
   };
+
+  const shadeThumb = (productColorId: number) => {
+    const shadeImages = images
+      .filter(
+        (image) =>
+          Number(image.productcolorId ?? image.productColorId) === productColorId,
+      )
+      .sort(
+        (a, b) =>
+          Number(b.imageType === "THUMBNAIL") -
+            Number(a.imageType === "THUMBNAIL") ||
+          Number(b.isMain === "Y") - Number(a.isMain === "Y") ||
+          a.sortOrder - b.sortOrder,
+      );
+
+    return imageUrl(shadeImages[0]?.filePath);
+  };
+
+  const getProductColors = (productId: number) =>
+    colors
+      .filter((color) => color.productId === productId && color.visible !== "N")
+      .sort((a, b) => a.sortOrder - b.sortOrder);
 
   const toggleWishlist = async (productId: number) => {
     if (!sw || memberId <= 0) {
@@ -182,102 +367,556 @@ export default function ProductList() {
       navigate("/login");
       return;
     }
+
     const liked = wishlist.includes(productId);
+
     if (liked) {
-      const res = await fetch(`${API_BASE}/wishlist/member/${memberId}/product/${productId}`, { method: "DELETE" });
-      if (res.ok) setWishlist((prev) => prev.filter((id) => id !== productId));
-    } else {
-      const res = await fetch(`${API_BASE}/wishlist/save`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ memberId, productId }),
-      });
-      if (res.ok) setWishlist((prev) => [...prev, productId]);
+      const response = await fetch(
+        `${API_BASE}/wishlist/member/${memberId}/product/${productId}`,
+        { method: "DELETE" },
+      );
+
+      if (response.ok) {
+        setWishlist((previous) =>
+          previous.filter((id) => id !== productId),
+        );
+      }
+      return;
+    }
+
+    const response = await fetch(`${API_BASE}/wishlist/save`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ memberId, productId }),
+    });
+
+    if (response.ok) {
+      setWishlist((previous) => [...previous, productId]);
     }
   };
 
   return (
     <main className="product-list-page">
-      <section className="product-page-heading">
-        <div className="product-page-heading-copy"><p>GODDESS COLLECTION</p><h1>SHOP</h1></div>
+      {/* Glossier처럼 헤더 바로 아래에 붙는 카테고리 바 */}
+      <section className="shop-filter-bar">
+        <div className="shop-filter-left">
+          <button
+            type="button"
+            className={
+              !selectedTop && categoryParam === "ALL" && subParam === "ALL"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setQuery({
+                category: null,
+                sub: null,
+              })
+            }
+          >
+            All
+          </button>
+
+          {selectedTop &&
+            subCategories.map((category) => {
+              const id = String(category.id ?? category.categoryId);
+
+              return (
+                <button
+                  type="button"
+                  key={id}
+                  className={subParam === id ? "active" : ""}
+                  onClick={() => setQuery({ sub: id })}
+                >
+                  {category.name}
+                </button>
+              );
+            })}
+
+          {!selectedTop &&
+            topCategories.map((category) => {
+              const id = String(category.id ?? category.categoryId);
+
+              return (
+                <button
+                  type="button"
+                  key={id}
+                  className={categoryParam === id ? "active" : ""}
+                  onClick={() =>
+                    setQuery({ category: id, sub: "ALL" })
+                  }
+                >
+                  {category.name}
+                </button>
+              );
+            })}
+        </div>
+
+        <div className="shop-filter-right">
+          <div className="shop-view-menu">
+            <button
+              type="button"
+              className="shop-view-trigger"
+              aria-haspopup="menu"
+            >
+              <span>View</span>
+              <strong>({viewMode === "shade" ? "Shade" : "Product"})</strong>
+            </button>
+
+            <div className="shop-view-dropdown" role="menu">
+              <button
+                type="button"
+                className={viewMode === "product" ? "active" : ""}
+                onClick={() => setQuery({ view: null })}
+              >
+                Product
+              </button>
+
+              <button
+                type="button"
+                className={viewMode === "shade" ? "active" : ""}
+                onClick={() => setQuery({ view: "shade" })}
+              >
+                Shade
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className={`shop-filter-trigger ${filterOpen ? "active" : ""}`}
+            onClick={openFilters}
+            aria-expanded={filterOpen}
+          >
+            Filters {activeFilterCount > 0 ? `(${activeFilterCount})` : "(0)"}
+          </button>
+
+          <label className="shop-sort">
+            <span>Sort</span>
+            <select
+              value={sort}
+              onChange={(event) =>
+                setQuery({ sort: event.target.value })
+              }
+            >
+              <option value="recommended">Featured</option>
+              <option value="new">Newest</option>
+              <option value="priceLow">Price: Low</option>
+              <option value="priceHigh">Price: High</option>
+            </select>
+          </label>
+
+          <span className="shop-product-count">
+            {loading ? "—" : `${totalElements}`}
+          </span>
+        </div>
       </section>
 
-      <div className="product-search-area">
-        <input
-          type="search"
-          value={keyword}
-          placeholder="상품명 또는 브랜드를 검색하세요."
-          onChange={(e) => setQuery({ keyword: e.target.value || null })}
-        />
-      </div>
+      {filterOpen && (
+        <div
+          className="shop-filter-modal-backdrop"
+          role="presentation"
+          onMouseDown={cancelFilters}
+        >
+          <section
+            className="shop-filter-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="상품 필터"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <header className="shop-filter-modal-header">
+              <h2>Filters</h2>
+              <button
+                type="button"
+                className="shop-filter-modal-close"
+                aria-label="필터 닫기"
+                onClick={cancelFilters}
+              >
+                ×
+              </button>
+            </header>
 
-      <nav className="product-main-tabs" aria-label="상품 대분류">
-        <button className={categoryParam === "ALL" ? "active" : ""} onClick={() => setQuery({ category: "ALL", sub: "ALL" })}>ALL</button>
-        {topCategories.map((c) => {
-          const id = String(c.id ?? c.categoryId);
-          return <button key={id} className={categoryParam === id ? "active" : ""} onClick={() => setQuery({ category: id, sub: "ALL" })}>{c.name}</button>;
-        })}
-      </nav>
+            <div className="shop-filter-modal-body">
+              <div className="shop-filter-group">
+                <p>Skin Type Filters</p>
 
-      {selectedTop && subCategories.length > 0 && (
-        <nav className="product-sub-tabs" aria-label="상품 소분류">
-          <button className={subParam === "ALL" ? "active" : ""} onClick={() => setQuery({ sub: "ALL" })}>전체</button>
-          {subCategories.map((c) => {
-            const id = String(c.id ?? c.categoryId);
-            return <button key={id} className={subParam === id ? "active" : ""} onClick={() => setQuery({ sub: id })}>{c.name}</button>;
-          })}
-        </nav>
+                <div className="shop-filter-chip-list">
+                  {SKIN_TYPE_FILTERS.map((filter) => (
+                    <button
+                      key={filter.value}
+                      type="button"
+                      className={
+                        draftSkinTypes.includes(filter.value) ? "selected" : ""
+                      }
+                      onClick={() =>
+                        toggleDraftValue(
+                          filter.value,
+                          draftSkinTypes,
+                          setDraftSkinTypes,
+                        )
+                      }
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="shop-filter-group">
+                <p>Personal Color Filters</p>
+
+                <div className="shop-filter-chip-list">
+                  {PERSONAL_COLOR_FILTERS.map((filter) => (
+                    <button
+                      key={filter.value}
+                      type="button"
+                      className={
+                        draftPersonalColors.includes(filter.value)
+                          ? "selected"
+                          : ""
+                      }
+                      onClick={() =>
+                        toggleDraftValue(
+                          filter.value,
+                          draftPersonalColors,
+                          setDraftPersonalColors,
+                        )
+                      }
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="shop-filter-group">
+                <p>AI Beauty</p>
+
+                <button
+                  type="button"
+                  className={`shop-filter-ai-chip ${
+                    draftAiOnly ? "selected" : ""
+                  }`}
+                  onClick={() => setDraftAiOnly((current) => !current)}
+                >
+                  AI TRY-ON AVAILABLE
+                </button>
+              </div>
+            </div>
+
+            <footer className="shop-filter-modal-footer">
+              <button
+                type="button"
+                className="shop-filter-clear"
+                onClick={clearFilters}
+              >
+                Clear all
+              </button>
+
+              <div>
+                <button
+                  type="button"
+                  className="shop-filter-cancel"
+                  onClick={cancelFilters}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  className="shop-filter-apply"
+                  onClick={applyFilters}
+                >
+                  Apply
+                </button>
+              </div>
+            </footer>
+          </section>
+        </div>
       )}
 
-      <div className="product-toolbar">
-        <label><input type="checkbox" checked={aiOnly} onChange={(e) => setQuery({ ai: e.target.checked ? "Y" : null })} /> AI 적용 가능 상품만</label>
-        <select value={sort} onChange={(e) => setQuery({ sort: e.target.value })}>
-          <option value="recommended">추천순</option>
-          <option value="new">신상품순</option>
-          <option value="priceLow">낮은 가격순</option>
-          <option value="priceHigh">높은 가격순</option>
-        </select>
-      </div>
+      {loading && (
+        <div className="product-state-message">
+          상품을 불러오는 중입니다...
+        </div>
+      )}
 
-      {loading && <div className="product-state-message">상품을 불러오는 중입니다...</div>}
-      {error && <div className="product-state-message error">{error}</div>}
-      {!loading && !error && products.length === 0 && <div className="product-state-message">조건에 맞는 상품이 없습니다.</div>}
+      {error && (
+        <div className="product-state-message error">{error}</div>
+      )}
 
-      <section className="product-grid">
-        {products.map((product) => {
-          const discount = Number(product.discount || 0);
-          const salePrice = Math.round(product.price * (1 - discount / 100));
-          const liked = wishlist.includes(product.id);
-          return (
-            <article className="product-card" key={product.id}>
-              <div className="product-image-wrapper" onClick={() => navigate(`/products/${product.id}`)}>
-                <img src={productThumb(product.id)} alt={product.name} />
-                {product.aiApplyEnabled === "Y" && <span className="product-ai-badge">AI BEAUTY</span>}
-                <button className={`product-heart ${liked ? "active" : ""}`} onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}>{liked ? "♥" : "♡"}</button>
-              </div>
-              <div className="product-information">
-                <span className="product-brand">{product.brand || "GODDESS"}</span>
-                <button className="product-name" onClick={() => navigate(`/products/${product.id}`)}>{product.name}</button>
-                <div className="product-price">
-                  {discount > 0 && <strong className="product-discount-rate">{discount}%</strong>}
-                  <strong className="product-sale-price">{salePrice.toLocaleString()}원</strong>
-                  {discount > 0 && <del className="product-original-price">{product.price.toLocaleString()}원</del>}
+      {!loading && !error && products.length === 0 && (
+        <div className="product-state-message">
+          조건에 맞는 상품이 없습니다.
+        </div>
+      )}
+
+      {!loading && !error && products.length > 0 && viewMode === "product" && (
+        <section className="product-grid">
+          {/* 첫 번째 칸: GODDESS 프로모션 타일 */}
+          <article className="shop-promo-card">
+            <div className="shop-promo-copy">
+              <small>GODDESS BEAUTY</small>
+
+              <h2>
+                TRY
+                <br />
+                BEFORE
+                <br />
+                YOU BUY.
+              </h2>
+
+              <p>
+                메이크업과 헤어를
+                <br />
+                내 얼굴에 먼저 적용해보세요.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => navigate("/beauty?mode=makeup")}
+              >
+                AI BEAUTY
+              </button>
+            </div>
+          </article>
+
+          {products.map((product) => {
+            const discount = Number(product.discount || 0);
+            const salePrice = Math.round(
+              product.price * (1 - discount / 100),
+            );
+            const liked = wishlist.includes(product.id);
+            const productColors = getProductColors(product.id);
+
+            return (
+              <article className="product-card" key={product.id}>
+                <div
+                  className="product-image-wrapper"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    navigate(`/products/${product.id}`)
+                  }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      navigate(`/products/${product.id}`);
+                    }
+                  }}
+                >
+                  <img
+                    src={productThumb(product.id)}
+                    alt={product.name}
+                  />
+
+                  {product.aiApplyEnabled === "Y" && (
+                    <button
+                      type="button"
+                      className="product-ai-badge"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        navigate(
+                          `/beauty?mode=makeup&productId=${product.id}`,
+                        );
+                      }}
+                    >
+                      AI TRY-ON
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    className={`product-heart ${
+                      liked ? "active" : ""
+                    }`}
+                    aria-label={
+                      liked
+                        ? "찜 목록에서 삭제"
+                        : "찜 목록에 추가"
+                    }
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      toggleWishlist(product.id);
+                    }}
+                  >
+                    {liked ? "♥" : "♡"}
+                  </button>
                 </div>
-                {(product.volume || product.skinType || product.personalColor) && (
-                  <small>{[product.volume, product.skinType, product.personalColor].filter(Boolean).join(" · ")}</small>
+
+                <div className="product-information">
+                  <div className="product-title-row">
+                    <button
+                      type="button"
+                      className="product-name"
+                      onClick={() =>
+                        navigate(`/products/${product.id}`)
+                      }
+                    >
+                      {product.name}
+                    </button>
+
+                    <strong className="product-price">
+                      {salePrice.toLocaleString()}원
+                    </strong>
+                  </div>
+
+                  <p className="product-subtitle">
+                    {product.description ||
+                      product.brand ||
+                      "GODDESS BEAUTY"}
+                  </p>
+
+                  {discount > 0 && (
+                    <div className="product-sale-info">
+                      <strong>{discount}%</strong>
+                      <del>
+                        {product.price.toLocaleString()}원
+                      </del>
+                    </div>
+                  )}
+
+                  {productColors.length > 0 && (
+                    <div className="product-shades">
+                      {productColors.slice(0, 8).map((color) => (
+                        <span
+                          key={`${product.id}-${color.id}`}
+                          title={color.colorName}
+                          style={{
+                            backgroundColor: color.colorCode,
+                          }}
+                        />
+                      ))}
+
+                      {productColors.length > 8 && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            navigate(`/products/${product.id}`)
+                          }
+                        >
+                          +{productColors.length - 8}
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    className="product-card-action"
+                    onClick={() =>
+                      navigate(`/products/${product.id}`)
+                    }
+                  >
+                    View product
+                  </button>
+                </div>
+              </article>
+            );
+          })}
+        </section>
+      )}
+
+      {!loading && !error && products.length > 0 && viewMode === "shade" && (
+        <section className="shade-view">
+          {products.map((product) => {
+            const discount = Number(product.discount || 0);
+            const salePrice = Math.round(
+              product.price * (1 - discount / 100),
+            );
+            const productColors = getProductColors(product.id);
+
+            return (
+              <article className="shade-product-group" key={`shade-${product.id}`}>
+                <header className="shade-product-header">
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/products/${product.id}`)}
+                  >
+                    {product.name}
+                  </button>
+                  <span>
+                    {product.description || product.brand || "GODDESS BEAUTY"}
+                  </span>
+                </header>
+
+                {productColors.length > 0 ? (
+                  <div className="shade-card-row">
+                    {productColors.map((color) => (
+                      <button
+                        type="button"
+                        className="shade-card"
+                        key={`${product.id}-shade-${color.id}`}
+                        onClick={() =>
+                          navigate(
+                            `/products/${product.id}?productColorId=${color.id}`,
+                          )
+                        }
+                      >
+                        <div className="shade-card-image">
+                          <img
+                            src={shadeThumb(color.id)}
+                            alt={`${product.name} ${color.colorName}`}
+                          />
+                        </div>
+
+                        <div className="shade-card-info">
+                          <div className="shade-card-name-row">
+                            <span
+                              className="shade-color-dot"
+                              style={{ backgroundColor: color.colorCode }}
+                            />
+                            <strong>{color.colorName}</strong>
+                          </div>
+
+                          <span>{salePrice.toLocaleString()}원</span>
+
+                          {discount > 0 && (
+                            <small>
+                              {discount}% · {product.price.toLocaleString()}원
+                            </small>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="shade-empty">
+                    등록된 색상이 없습니다.
+                  </div>
                 )}
-              </div>
-            </article>
-          );
-        })}
-      </section>
+              </article>
+            );
+          })}
+        </section>
+      )}
 
       {totalPages > 1 && (
-        <div className="product-pagination">
-          <button disabled={page <= 1} onClick={() => setQuery({ page: String(page - 1) })}>PREV</button>
-          <span>{page} / {totalPages}</span>
-          <button disabled={page >= totalPages} onClick={() => setQuery({ page: String(page + 1) })}>NEXT</button>
-        </div>
+        <nav className="product-pagination" aria-label="상품 페이지">
+          <button
+            type="button"
+            disabled={page <= 1}
+            onClick={() =>
+              setQuery({ page: String(page - 1) })
+            }
+          >
+            PREV
+          </button>
+
+          <span>
+            {page} / {totalPages}
+          </span>
+
+          <button
+            type="button"
+            disabled={page >= totalPages}
+            onClick={() =>
+              setQuery({ page: String(page + 1) })
+            }
+          >
+            NEXT
+          </button>
+        </nav>
       )}
     </main>
   );

@@ -60,8 +60,11 @@ type Product = {
   description?: string;
   price: number;
   discount?: string;
-  material?: string;
-  washing?: string;
+  usageInfo?: string;
+  productType?: string;
+  volume?: string;
+  skinType?: string;
+  personalColor?: string;
   aiApplyEnabled: string;
   status: string;
   viewCount?: number;
@@ -178,6 +181,21 @@ const AdminProductDetail = () => {
     }`;
   };
 
+  const displayStatus = (status?: string) => {
+    switch (status) {
+      case "ON_SALE":
+        return "판매중";
+      case "SOLD_OUT":
+        return "품절";
+      case "STOPPED":
+        return "판매중지";
+      case "HIDDEN":
+        return "숨김";
+      default:
+        return status || "-";
+    }
+  };
+
   const formatDate = (value?: string) => {
     if (!value) return "-";
 
@@ -251,7 +269,7 @@ const AdminProductDetail = () => {
         </div>
         <div>
           <span>판매상태</span>
-          <strong>{product.status}</strong>
+          <strong>{displayStatus(product.status)}</strong>
         </div>
         <div>
           <span>총 재고</span>
@@ -295,19 +313,33 @@ const AdminProductDetail = () => {
           </div>
           <div>
             <dt>판매 상태</dt>
-            <dd>{product.status}</dd>
+            <dd>{displayStatus(product.status)}</dd>
           </div>
           <div>
             <dt>조회수</dt>
             <dd>{(product.viewCount ?? 0).toLocaleString()}</dd>
           </div>
           <div>
-            <dt>소재</dt>
-            <dd>{product.material || "-"}</dd>
+            <dt>상품 유형</dt>
+            <dd>{product.productType || "-"}</dd>
           </div>
           <div>
-            <dt>세탁 정보</dt>
-            <dd>{product.washing || "-"}</dd>
+            <dt>용량 / 중량</dt>
+            <dd>{product.volume || "-"}</dd>
+          </div>
+          <div>
+            <dt>추천 피부 타입</dt>
+            <dd>{product.skinType || "-"}</dd>
+          </div>
+          <div>
+            <dt>추천 퍼스널컬러</dt>
+            <dd>{product.personalColor || "-"}</dd>
+          </div>
+          <div className="full">
+            <dt>사용 방법</dt>
+            <dd className="description">
+              {product.usageInfo || "등록된 사용 방법이 없습니다."}
+            </dd>
           </div>
           <div>
             <dt>등록일</dt>
@@ -401,14 +433,14 @@ const AdminProductDetail = () => {
         <div className="admin-product-detail-section-title">
           <span>04</span>
           <div>
-            <h2>옵션</h2>
+            <h2>상품 규격</h2>
             <p>상품에 등록된 옵션 정보를 확인합니다.</p>
           </div>
         </div>
 
         {sizes.length === 0 ? (
           <div className="admin-product-detail-empty">
-            등록된 옵션가 없습니다.
+            등록된 상품 규격이 없습니다.
           </div>
         ) : (
           <div className="admin-product-size-list">
@@ -427,14 +459,14 @@ const AdminProductDetail = () => {
         <div className="admin-product-detail-section-title">
           <span>05</span>
           <div>
-            <h2>옵션 및 재고</h2>
-            <p>색상과 옵션 조합별 판매 재고를 확인합니다.</p>
+            <h2>판매 옵션 및 재고</h2>
+            <p>색상과 규격 조합별 판매 재고를 확인합니다.</p>
           </div>
         </div>
 
         {options.length === 0 ? (
           <div className="admin-product-detail-empty">
-            등록된 옵션이 없습니다.
+            등록된 판매 옵션이 없습니다.
           </div>
         ) : (
           <div className="admin-product-option-table-wrap">
@@ -443,7 +475,7 @@ const AdminProductDetail = () => {
                 <tr>
                   <th>옵션 ID</th>
                   <th>색상</th>
-                  <th>옵션</th>
+                  <th>규격</th>
                   <th>추가금액</th>
                   <th>재고</th>
                   <th>노출</th>

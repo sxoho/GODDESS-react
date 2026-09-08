@@ -14,6 +14,7 @@ type Product = {
   name: string;
   price: number;
   discount?: string;
+  productType?: string;
   aiApplyEnabled: string;
   status: string;
 };
@@ -303,6 +304,21 @@ const AdminProductList = () => {
     }
   };
 
+  const displayStatus = (status?: string) => {
+    switch (status) {
+      case "ON_SALE":
+        return "판매중";
+      case "SOLD_OUT":
+        return "품절";
+      case "STOPPED":
+        return "판매중지";
+      case "HIDDEN":
+        return "숨김";
+      default:
+        return status || "-";
+    }
+  };
+
   const currentQueryString = searchParams.toString();
 
   return (
@@ -398,6 +414,7 @@ const AdminProductList = () => {
                   <th>브랜드</th>
                   <th>상품명</th>
                   <th>카테고리</th>
+                  <th>상품 유형</th>
                   <th>가격</th>
                   <th>판매상태</th>
                   <th>AI BEAUTY</th>
@@ -408,7 +425,7 @@ const AdminProductList = () => {
               <tbody>
                 {products.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="admin-product-empty">
+                    <td colSpan={9} className="admin-product-empty">
                       검색 조건에 맞는 상품이 없습니다.
                     </td>
                   </tr>
@@ -431,6 +448,7 @@ const AdminProductList = () => {
                         <strong>{product.name}</strong>
                       </td>
                       <td>{product.categoryName ?? "-"}</td>
+                      <td>{product.productType ?? "-"}</td>
                       <td>{product.price.toLocaleString()}원</td>
                       <td
                         className={
@@ -439,7 +457,7 @@ const AdminProductList = () => {
                             : ""
                         }
                       >
-                        {product.status}
+                        {displayStatus(product.status)}
                       </td>
                       <td>{product.aiApplyEnabled}</td>
                       <td>
@@ -466,7 +484,7 @@ const AdminProductList = () => {
                             onClick={(event) => {
                               event.stopPropagation();
 
-                              if (product.status === "판매중지") {
+                              if (product.status === "STOPPED") {
                                 resumeProduct(product.productId, product.name);
                               } else {
                                 deleteProduct(product.productId, product.name);

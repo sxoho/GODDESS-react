@@ -1,28 +1,883 @@
-.common-header { position: relative; z-index: 100; width: 100%; border-bottom: 1px solid #e9e9e9; background: #fff; color: #171717; }
-.common-header-inner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px; max-width: 1440px; min-height: 84px; margin: auto; padding: 0 48px; }
-.common-header-logo { font-family: Arial, sans-serif; font-size: 27px; font-weight: 750; letter-spacing: -.06em; color: #171717; text-decoration: none; white-space: nowrap; }
-.common-header-navigation { display: flex; justify-content: center; align-items: center; gap: 26px; min-width: 0; }
-.common-header-link { display: block; color: #707070; font-size: 14px; font-weight: 500; padding: 12px 0; border-bottom: 1px solid transparent; text-decoration: none; white-space: nowrap; }
-.common-header-link:hover, .common-header-link.active { color: #171717; }
-.common-header-link.active { border-bottom-color: #171717; }
-.common-header-member-menu { display: flex; align-items: center; justify-content: flex-end; gap: 16px; white-space: nowrap; }
-.common-header-member-menu a { flex-shrink: 0; font-size: 12px; color: #666; text-decoration: none; }
-.common-header-member-menu a:hover { color: #171717; }
-.common-header-signup { padding: 10px 13px; border: 1px solid #ddd; }
-.common-header-signup-hidden { display: none; }
-.common-header-admin-mode { padding: 7px 9px; border: 1px solid #ddd; }
-.common-header-login-logout { display: inline-flex; align-items: center; min-height: 38px; }
-.common-header a:focus-visible { outline: 2px solid #171717; outline-offset: 4px; }
-@media (max-width: 1200px) {
- .common-header-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 24px; padding: 22px 28px 10px; }
- .common-header-navigation { width: 100%; order: 3; justify-content: flex-start; gap: 28px; overflow-x: auto; }
- .common-header-member-menu { margin-left: auto; }
+/* =========================================
+   GODDESS HEADER
+========================================= */
+
+.goddess-header {
+  width: 100%;
+  position: relative;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  color: #111111;
+  border-bottom: 1px solid #ecebea;
 }
-@media (max-width: 650px) {
- .common-header-inner { padding: 20px 20px 8px; gap: 13px; }
- .common-header-logo { font-size: 25px; }
- .common-header-navigation { gap: 24px; }
- .common-header-link { font-size: 14px; }
- .common-header-member-menu { max-width: 100%; gap: 12px; overflow-x: auto; }
- .product-member-menu { width: 100%; justify-content: flex-start; order: 2; }
+
+/* =========================================
+   TOP HEADER
+========================================= */
+
+.goddess-header-top {
+  height: 105px;
+  position: relative;
+}
+
+.goddess-header-top-inner {
+  width: min(1800px, calc(100% - 80px));
+  height: 100%;
+  margin: 0 auto;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* =========================================
+   LEFT
+========================================= */
+
+.goddess-header-left {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+}
+
+.goddess-header-left span {
+  color: #888580;
+
+  font-size: 9px;
+  font-weight: 500;
+
+  letter-spacing: 1.8px;
+}
+
+/* =========================================
+   CENTER LOGO
+========================================= */
+
+.goddess-header-logo {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  color: #111111;
+
+  text-decoration: none;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 38px;
+  font-weight: 400;
+
+  letter-spacing: -2px;
+
+  white-space: nowrap;
+
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.goddess-header-logo:hover {
+  opacity: 0.65;
+
+  transform:
+    translate(-50%, -50%)
+    scale(0.98);
+}
+
+/* =========================================
+   RIGHT ACTIONS
+========================================= */
+
+.goddess-header-actions {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 27px;
+}
+
+.goddess-header-icon-button {
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #161616;
+
+  cursor: pointer;
+}
+
+/* ICON */
+
+.goddess-header-icon-button svg {
+  width: 20px;
+  height: 20px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.1;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  transition:
+    transform 0.25s ease;
+}
+
+.goddess-header-icon-button:hover svg {
+  transform: translateY(-2px);
+}
+
+.goddess-action-label {
+  color: #55514e;
+
+  font-size: 9px;
+
+  letter-spacing: 1.2px;
+
+  transition:
+    color 0.25s ease;
+}
+
+.goddess-header-icon-button:hover
+  .goddess-action-label {
+  color: #a36873;
+}
+
+/* =========================================
+   BOTTOM
+========================================= */
+
+.goddess-header-bottom {
+  height: 68px;
+
+  display: flex;
+  align-items: stretch;
+
+  border-top: 1px solid #f1f0ee;
+}
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+.goddess-main-nav {
+  width: min(1250px, 90%);
+
+  height: 100%;
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(6, 1fr);
+
+  align-items: stretch;
+}
+
+.goddess-nav-link {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #222222;
+
+  text-decoration: none;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  letter-spacing: 0.6px;
+
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+/* 밑줄 */
+
+.goddess-nav-link::after {
+  content: "";
+
+  width: 0;
+  height: 1px;
+
+  position: absolute;
+
+  left: 50%;
+  bottom: 16px;
+
+  background: #111111;
+
+  transform: translateX(-50%);
+
+  transition:
+    width 0.3s
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.goddess-nav-link:hover::after {
+  width: 28px;
+}
+
+.goddess-nav-link:hover {
+  color: #a56874;
+}
+
+/* ACTIVE */
+
+.goddess-nav-link.active {
+  color: #a56874;
+}
+
+.goddess-nav-link.active::after {
+  width: 28px;
+
+  background: #a56874;
+}
+
+/* =========================================
+   AI BEAUTY
+========================================= */
+
+.goddess-nav-ai {
+  font-weight: 600;
+}
+
+/*
+원하면 AI BEAUTY만 사진의 검은 검색 메뉴처럼
+강조할 수 있음.
+
+지금은 전체 디자인을 심플하게 유지하기 위해
+일반 메뉴 스타일로 맞춤.
+*/
+
+/* =========================================
+   HOVER AREA
+========================================= */
+
+.goddess-nav-link::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 7px 4px;
+
+  z-index: -1;
+
+  border-radius: 2px;
+
+  background: transparent;
+
+  transition:
+    background-color 0.3s ease;
+}
+
+.goddess-nav-link:hover::before {
+  background: #faf8f7;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1000px) {
+
+  .goddess-header-top {
+    height: 90px;
+  }
+
+  .goddess-header-top-inner {
+    width:
+      calc(
+        100% - 45px
+      );
+  }
+
+  .goddess-header-logo {
+    font-size: 31px;
+  }
+
+  .goddess-header-left span {
+    display: none;
+  }
+
+  .goddess-action-label {
+    display: none;
+  }
+
+  .goddess-header-actions {
+    gap: 18px;
+  }
+
+  .goddess-main-nav {
+    width: 100%;
+
+    padding: 0 20px;
+  }
+
+  .goddess-nav-link {
+    font-size: 10px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 720px) {
+
+  .goddess-header {
+    position: relative;
+  }
+
+  .goddess-header-top {
+    height: 78px;
+  }
+
+  .goddess-header-top-inner {
+    width:
+      calc(
+        100% - 30px
+      );
+  }
+
+  .goddess-header-logo {
+    font-size: 27px;
+
+    letter-spacing: -1px;
+  }
+
+  .goddess-header-actions {
+    gap: 13px;
+  }
+
+  .goddess-header-icon-button svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .goddess-header-bottom {
+    height: 50px;
+
+    overflow-x: auto;
+
+    scrollbar-width: none;
+  }
+
+  .goddess-header-bottom::-webkit-scrollbar {
+    display: none;
+  }
+
+  .goddess-main-nav {
+    width: max-content;
+    min-width: 100%;
+
+    padding: 0 15px;
+
+    display: flex;
+  }
+
+  .goddess-nav-link {
+    min-width: max-content;
+
+    padding: 0 20px;
+
+    font-size: 9px;
+  }
+
+  .goddess-nav-link::after {
+    bottom: 8px;
+  }
+}
+
+/* =========================================
+   MEGA MENU
+========================================= */
+
+.goddess-mega-menu {
+  width: 100%;
+
+  position: absolute;
+  top: 173px;
+  left: 0;
+
+  z-index: 999;
+
+  background: #ffffff;
+
+  border-top: 1px solid #ededed;
+  border-bottom: 1px solid #e7e7e7;
+
+  box-shadow:
+    0 12px 28px
+    rgba(0, 0, 0, 0.04);
+
+  animation:
+    megaMenuOpen
+    0.28s
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    both;
+}
+
+.goddess-mega-inner {
+  width: min(
+    1500px,
+    calc(100% - 80px)
+  );
+
+  min-height: 355px;
+
+  margin: 0 auto;
+
+  padding: 20px 0 34px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(420px, 1.5fr)
+    repeat(3, minmax(150px, 0.6fr));
+
+  gap: 40px;
+}
+
+/* =========================================
+   LEFT FEATURE
+========================================= */
+
+.mega-feature {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 20px;
+}
+
+.mega-feature-card {
+  cursor: pointer;
+}
+
+.mega-visual {
+  width: 100%;
+  aspect-ratio: 1 / 0.95;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: #eee8e5;
+
+  transition:
+    transform 0.4s ease;
+}
+
+.mega-feature-card:hover
+  .mega-visual {
+  transform:
+    translateY(-4px);
+}
+
+.mega-feature-card p {
+  margin: 15px 0 0;
+
+  color: #222;
+
+  font-size: 12px;
+
+  text-decoration: underline;
+
+  text-underline-offset: 3px;
+}
+
+/* =========================================
+   FAKE PRODUCT VISUALS
+   나중에 실제 상품 이미지로 교체 가능
+========================================= */
+
+.mega-visual span {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(
+      -50%,
+      -50%
+    );
+}
+
+/* MAKEUP */
+
+.makeup-visual {
+  background:
+    radial-gradient(
+      circle at
+        40% 30%,
+      #f7e9e4,
+      #dfc5bb
+    );
+}
+
+.makeup-visual span {
+  width: 105px;
+  height: 105px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at
+        35% 30%,
+      #f8e8e4,
+      #c9928c
+    );
+
+  box-shadow:
+    0 20px 45px
+    rgba(0, 0, 0, 0.12);
+}
+
+.cushion-visual {
+  background:
+    linear-gradient(
+      145deg,
+      #e6c7bb,
+      #f5e8e1
+    );
+}
+
+.cushion-visual span {
+  width: 130px;
+  height: 130px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #d5b59f,
+      #f1dbcc
+    );
+
+  box-shadow:
+    inset 0 0 0 2px
+      rgba(
+        255,
+        255,
+        255,
+        0.6
+      ),
+    0 18px 35px
+      rgba(
+        70,
+        40,
+        30,
+        0.15
+      );
+}
+
+.lip-visual {
+  background:
+    linear-gradient(
+      135deg,
+      #f3d3ce,
+      #e7b8b3
+    );
+}
+
+.lip-visual span {
+  width: 58px;
+  height: 170px;
+
+  border-radius:
+    25px 25px
+    10px 10px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #dda3a5 0 30%,
+      #9c585f 30% 100%
+    );
+
+  transform:
+    translate(
+      -50%,
+      -50%
+    )
+    rotate(10deg);
+
+  box-shadow:
+    0 20px 35px
+    rgba(
+      90,
+      40,
+      50,
+      0.18
+    );
+}
+
+/* SKINCARE */
+
+.skincare-visual,
+.serum-visual {
+  background:
+    linear-gradient(
+      145deg,
+      #edeae4,
+      #d9d2ca
+    );
+}
+
+.serum-visual span,
+.skincare-visual span {
+  width: 70px;
+  height: 150px;
+
+  border-radius:
+    8px 8px
+    18px 18px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #ddd0c2,
+      #a98f77
+    );
+
+  box-shadow:
+    0 20px 40px
+    rgba(
+      70,
+      60,
+      50,
+      0.15
+    );
+}
+
+.cream-visual {
+  background:
+    linear-gradient(
+      145deg,
+      #eee6df,
+      #dfd4cb
+    );
+}
+
+.cream-visual span {
+  width: 125px;
+  height: 85px;
+
+  border-radius:
+    40px 40px
+    18px 18px;
+
+  background:
+    #d2b7a5;
+
+  box-shadow:
+    0 20px 40px
+    rgba(
+      70,
+      50,
+      40,
+      0.14
+    );
+}
+
+/* HAIR */
+
+.shampoo-visual {
+  background:
+    linear-gradient(
+      145deg,
+      #dad6d0,
+      #b7ada1
+    );
+}
+
+.shampoo-visual span {
+  width: 65px;
+  height: 170px;
+
+  border-radius:
+    20px 20px
+    30px 30px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #80736c,
+      #4f4845
+    );
+}
+
+.haircolor-visual {
+  background:
+    linear-gradient(
+      135deg,
+      #d8c6c3,
+      #a57b7c
+    );
+}
+
+.haircolor-visual span {
+  width: 145px;
+  height: 145px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at
+        30% 30%,
+      #c89891,
+      #735257
+    );
+
+  box-shadow:
+    0 20px 45px
+    rgba(
+      65,
+      35,
+      40,
+      0.2
+    );
+}
+
+/* =========================================
+   TEXT COLUMNS
+========================================= */
+
+.mega-column {
+  padding-top: 4px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+}
+
+.mega-column h3 {
+  margin: 0 0 15px;
+
+  color: #171717;
+
+  font-size: 16px;
+
+  font-weight: 600;
+}
+
+.mega-column a {
+  position: relative;
+
+  padding: 6px 0;
+
+  color: #929292;
+
+  text-decoration: none;
+
+  font-size: 13px;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.mega-column a:hover {
+  color: #111;
+
+  transform:
+    translateX(4px);
+}
+
+/* =========================================
+   MENU OPEN
+========================================= */
+
+@keyframes megaMenuOpen {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (
+  max-width: 1000px
+) {
+  .goddess-mega-menu {
+    top: 158px;
+  }
+
+  .goddess-mega-inner {
+    width:
+      calc(
+        100% - 40px
+      );
+
+    grid-template-columns:
+      1.2fr
+      1fr
+      1fr;
+  }
+
+  .mega-column:last-child {
+    display: none;
+  }
+}
+
+@media (
+  max-width: 720px
+) {
+  .goddess-mega-menu {
+    display: none;
+  }
 }
