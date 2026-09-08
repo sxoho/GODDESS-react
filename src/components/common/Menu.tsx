@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { BRAND } from "../../config/brand";
 import {
   NavLink,
   useNavigate,
@@ -9,6 +8,7 @@ import "../../styles/common/Menu.css";
 
 import { useGlobalStore } from "../../store/store";
 import { axiosInstance } from "../ToolBak";
+import goddessLogo from "../../assets/logo/goddesslogo1.png";
 
 type MegaMenuKey =
   | "shop"
@@ -92,8 +92,13 @@ const Menu = () => {
           <NavLink
             to="/"
             className="goddess-header-logo"
+            aria-label="여신강림 홈으로 이동"
           >
-            {BRAND.name}
+            <img
+              src={goddessLogo}
+              alt="여신강림"
+              className="goddess-header-logo-image"
+            />
           </NavLink>
 
           {/* 오른쪽 */}

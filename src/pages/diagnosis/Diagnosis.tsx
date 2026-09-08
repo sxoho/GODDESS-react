@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGlobalStore } from "../../store/store";
 import "../../styles/diagnosis/Diagnosis.css";
 
+const API_BASE = "http://localhost:9104";
+
 type SkinType =
   | "DRY"
   | "OILY"
@@ -222,7 +224,7 @@ const createInitialScores = (): SkinScore => ({
 const Diagnosis = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { sw } = useGlobalStore();
+  const { sw, memberId } = useGlobalStore();
 
   const diagnosisType = searchParams.get("type");
 
@@ -242,6 +244,7 @@ const Diagnosis = () => {
   const [scores, setScores] = useState<SkinScore>(createInitialScores());
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [result, setResult] = useState<SkinResult | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const progress = useMemo(
     () => ((currentQuestion + 1) / questions.length) * 100,
@@ -299,10 +302,11 @@ const Diagnosis = () => {
     setScores(createInitialScores());
     setSelectedAnswer(null);
     setResult(null);
+    setSaving(false);
   };
 
-  const handleSaveResult = () => {
-    if (!result) return;
+  const handleSaveResult = async () => {
+    if (!result || saving) return;
 
     if (sw !== true) {
       alert("진단 결과를 저장하려면 로그인해주세요.");
@@ -310,9 +314,55 @@ const Diagnosis = () => {
       return;
     }
 
-    alert(
-      `${result.name} 피부 결과가 확인되었습니다.\n저장 기능은 다음 단계에서 회원 정보 API와 연결합니다.`
-    );
+    if (!memberId || memberId <= 0) {
+      alert("회원 정보를 확인할 수 없습니다. 다시 로그인해주세요.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setSaving(true);
+
+      const response = await fetch(`${API_BASE}/skin_diagnosis`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          memberId,
+          skinType: result.type,
+          dryScore: scores.DRY,
+          oilyScore: scores.OILY,
+          combinationScore: scores.COMBINATION,
+          normalScore: scores.NORMAL,
+          sensitiveScore: scores.SENSITIVE,
+          dehydratedScore: scores.DEHYDRATED,
+          resultDescription: result.summary
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || data?.success !== true) {
+        throw new Error(
+          data?.message || "피부 타입 저장에 실패했습니다."
+        );
+      }
+
+      alert(
+        `피부 자가진단 결과가 저장되었습니다.\n내 피부 타입이 ${result.name}(으)로 변경되었습니다.`
+      );
+    } catch (error) {
+      console.error("피부 자가진단 결과 저장 오류", error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "피부 타입 저장 중 오류가 발생했습니다."
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (diagnosisType !== "skin") {
@@ -386,10 +436,17 @@ const Diagnosis = () => {
 
           <div className="diagnosis-result-actions">
             <button type="button" onClick={handleRestart}>다시 진단하기</button>
-            <button type="button" className="primary" onClick={handleSaveResult}>
-              {sw === true
-                ? `내 피부 타입을 ${result.name}으로 저장`
-                : "로그인하고 결과 저장"}
+            <button
+              type="button"
+              className="primary"
+              onClick={handleSaveResult}
+              disabled={saving}
+            >
+              {saving
+                ? "저장 중..."
+                : sw === true
+                  ? `내 피부 타입을 ${result.name}으로 저장`
+                  : "로그인하고 결과 저장"}
             </button>
           </div>
         </section>

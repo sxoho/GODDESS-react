@@ -64,25 +64,27 @@
 
   transform: translate(-50%, -50%);
 
-  color: #111111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   text-decoration: none;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: 38px;
-  font-weight: 400;
-
-  letter-spacing: -2px;
-
   white-space: nowrap;
 
   transition:
     opacity 0.25s ease,
     transform 0.25s ease;
+}
+
+.goddess-header-logo-image {
+  display: block;
+
+  width: auto;
+  height: 72px;
+
+  max-width: 360px;
+
+  object-fit: contain;
 }
 
 .goddess-header-logo:hover {
@@ -323,8 +325,9 @@
       );
   }
 
-  .goddess-header-logo {
-    font-size: 31px;
+  .goddess-header-logo-image {
+    height: 60px;
+    max-width: 300px;
   }
 
   .goddess-header-left span {
@@ -373,10 +376,9 @@
       );
   }
 
-  .goddess-header-logo {
-    font-size: 27px;
-
-    letter-spacing: -1px;
+  .goddess-header-logo-image {
+    height: 50px;
+    max-width: 250px;
   }
 
   .goddess-header-actions {

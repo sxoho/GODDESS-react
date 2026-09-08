@@ -26,6 +26,48 @@ import "../../styles/member/MyPage.css";
 const API_BASE = "http://localhost:9104";
 
 
+const SKIN_TYPE_OPTIONS = [
+  { value: "", label: "선택하기" },
+  { value: "DRY", label: "건성" },
+  { value: "OILY", label: "지성" },
+  { value: "COMBINATION", label: "복합성" },
+  { value: "SENSITIVE", label: "민감성" },
+  { value: "NORMAL", label: "중성" },
+  { value: "DEHYDRATED", label: "수부지" }
+];
+
+
+const PERSONAL_COLOR_OPTIONS = [
+  { value: "", label: "선택하기" },
+  { value: "SPRING_WARM", label: "봄웜" },
+  { value: "SUMMER_COOL", label: "여름쿨" },
+  { value: "AUTUMN_WARM", label: "가을웜" },
+  { value: "WINTER_COOL", label: "겨울쿨" }
+];
+
+
+const getSkinTypeLabel = (
+  value?: string
+) => {
+
+  return SKIN_TYPE_OPTIONS.find(
+    (option) =>
+      option.value === value
+  )?.label || "선택하기";
+};
+
+
+const getPersonalColorLabel = (
+  value?: string
+) => {
+
+  return PERSONAL_COLOR_OPTIONS.find(
+    (option) =>
+      option.value === value
+  )?.label || "선택하기";
+};
+
+
 type Member = {
   id: number;
   loginId: string;
@@ -36,6 +78,8 @@ type Member = {
   zipcode?: string;
   address1?: string;
   address2?: string;
+  skinType?: string;
+  personalColor?: string;
   status: string;
   gradeId?: number;
   gradeName?: string;
@@ -136,6 +180,8 @@ type MyPageUpdateForm = {
   zipcode: string;
   address1: string;
   address2: string;
+  skinType: string;
+  personalColor: string;
 };
 
 
@@ -2223,7 +2269,9 @@ const MyPage = () => {
     nickname: "",
     zipcode: "",
     address1: "",
-    address2: ""
+    address2: "",
+    skinType: "",
+    personalColor: ""
   });
 
 
@@ -2897,7 +2945,13 @@ const MyPage = () => {
         member.address1 || "",
 
       address2:
-        member.address2 || ""
+        member.address2 || "",
+
+      skinType:
+        member.skinType || "",
+
+      personalColor:
+        member.personalColor || ""
 
     });
 
@@ -2940,7 +2994,13 @@ const MyPage = () => {
           member.address1 || "",
 
         address2:
-          member.address2 || ""
+          member.address2 || "",
+
+        skinType:
+          member.skinType || "",
+
+        personalColor:
+          member.personalColor || ""
 
       });
     }
@@ -2991,7 +3051,10 @@ const MyPage = () => {
    */
   const handleChange = (
     event:
-      React.ChangeEvent<HTMLInputElement>
+      React.ChangeEvent<
+        HTMLInputElement |
+        HTMLSelectElement
+      >
   ) => {
 
     const {
@@ -3571,7 +3634,13 @@ const MyPage = () => {
                 editForm.address1.trim(),
 
               address2:
-                editForm.address2.trim()
+                editForm.address2.trim(),
+
+              skinType:
+                editForm.skinType || null,
+
+              personalColor:
+                editForm.personalColor || null
 
             }
           );
@@ -3597,7 +3666,13 @@ const MyPage = () => {
             response.data.address1 || "",
 
           address2:
-            response.data.address2 || ""
+            response.data.address2 || "",
+
+          skinType:
+            response.data.skinType || "",
+
+          personalColor:
+            response.data.personalColor || ""
 
         });
 
@@ -4261,6 +4336,120 @@ const MyPage = () => {
                 <span>
                   {member.gradeName || "-"}
                 </span>
+
+              </div>
+
+
+              {/* 피부 타입 */}
+
+              <div className="mypage-info-row">
+
+                <span className="mypage-info-label">
+                  피부 타입
+                </span>
+
+
+                {isEditing ? (
+
+                  <select
+                    name="skinType"
+                    className="mypage-edit-input"
+                    value={
+                      editForm.skinType
+                    }
+                    onChange={
+                      handleChange
+                    }
+                  >
+
+                    {SKIN_TYPE_OPTIONS.map(
+                      (option) => (
+
+                        <option
+                          key={
+                            option.value ||
+                            "skin-empty"
+                          }
+                          value={
+                            option.value
+                          }
+                        >
+                          {option.label}
+                        </option>
+
+                      )
+                    )}
+
+                  </select>
+
+                ) : (
+
+                  <span>
+                    {
+                      getSkinTypeLabel(
+                        member.skinType
+                      )
+                    }
+                  </span>
+
+                )}
+
+              </div>
+
+
+              {/* 퍼스널 컬러 */}
+
+              <div className="mypage-info-row">
+
+                <span className="mypage-info-label">
+                  퍼스널 컬러
+                </span>
+
+
+                {isEditing ? (
+
+                  <select
+                    name="personalColor"
+                    className="mypage-edit-input"
+                    value={
+                      editForm.personalColor
+                    }
+                    onChange={
+                      handleChange
+                    }
+                  >
+
+                    {PERSONAL_COLOR_OPTIONS.map(
+                      (option) => (
+
+                        <option
+                          key={
+                            option.value ||
+                            "personal-color-empty"
+                          }
+                          value={
+                            option.value
+                          }
+                        >
+                          {option.label}
+                        </option>
+
+                      )
+                    )}
+
+                  </select>
+
+                ) : (
+
+                  <span>
+                    {
+                      getPersonalColorLabel(
+                        member.personalColor
+                      )
+                    }
+                  </span>
+
+                )}
 
               </div>
 
