@@ -70,12 +70,6 @@ type MemberPhoto = {
 };
 
 
-type MemberPhotoAiCheck = {
-  faceDetected: boolean;
-  isFront: boolean;
-  message: string;
-};
-
 
 type WishlistItem = {
   id: number;
@@ -2118,31 +2112,7 @@ const MyPage = () => {
   ] = useState(false);
 
 
-  /**
-   * 사진 AI 검사 중 여부
-   */
-  const [
-    photoChecking,
-    setPhotoChecking
-  ] = useState(false);
 
-
-  /**
-   * 사진 AI 검사 통과 여부
-   */
-  const [
-    photoCheckPassed,
-    setPhotoCheckPassed
-  ] = useState(false);
-
-
-  /**
-   * 사진 AI 검사 결과 메시지
-   */
-  const [
-    photoCheckMessage,
-    setPhotoCheckMessage
-  ] = useState("");
 
 
   /**
@@ -2999,20 +2969,6 @@ const MyPage = () => {
     );
 
 
-    setPhotoChecking(
-      false
-    );
-
-
-    setPhotoCheckPassed(
-      false
-    );
-
-
-    setPhotoCheckMessage(
-      ""
-    );
-
 
     setLoginIdChecked(
       true
@@ -3079,12 +3035,12 @@ const MyPage = () => {
   /**
    * 회원 사진 파일 선택
    *
-   * 파일을 선택하면
-   * Spring -> FastAPI를 통해
-   * 정면 얼굴 여부를 자동 검사한다.
+   * 현재는 AI 정면 판별 없이
+   * 이미지 형식과 용량만 확인한 뒤
+   * 선택한 사진을 미리보기로 표시한다.
    */
   const handlePhotoChange =
-    async (
+    (
       event:
         React.ChangeEvent<HTMLInputElement>
     ) => {
@@ -3096,20 +3052,6 @@ const MyPage = () => {
       if (!file) {
         return;
       }
-
-
-      /**
-       * 새로운 사진을 선택했으므로
-       * 이전 AI 검사 결과 초기화
-       */
-      setPhotoCheckPassed(
-        false
-      );
-
-
-      setPhotoCheckMessage(
-        ""
-      );
 
 
       /**
@@ -3199,106 +3141,8 @@ const MyPage = () => {
       setPhotoPreview(
         preview
       );
-
-
-      /**
-       * AI 사진 검사
-       */
-      const formData =
-        new FormData();
-
-
-      formData.append(
-        "file",
-        file
-      );
-
-
-      try {
-
-        setPhotoChecking(
-          true
-        );
-
-
-        setPhotoCheckMessage(
-          "AI가 얼굴 방향을 분석하는 중입니다..."
-        );
-
-
-        /**
-         * React
-         * -> Spring
-         * -> FastAPI
-         *
-         * 실제 사진 저장은 하지 않고
-         * 정면 여부만 검사한다.
-         */
-        const response =
-          await axiosInstance.post<
-            MemberPhotoAiCheck
-          >(
-            "/member_photo/check",
-            formData,
-            {
-              timeout: 30000
-            }
-          );
-
-
-        const result =
-          response.data;
-
-
-        /**
-         * 얼굴이 있고
-         * 정면일 때만 통과
-         */
-        const passed =
-          result.faceDetected === true &&
-          result.isFront === true;
-
-
-        setPhotoCheckPassed(
-          passed
-        );
-
-
-        setPhotoCheckMessage(
-          result.message ||
-          (
-            passed
-              ? "정면 얼굴 사진으로 확인되었습니다."
-              : "정면 얼굴 사진을 등록해주세요."
-          )
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          "회원 사진 AI 검사 오류:",
-          error
-        );
-
-
-        setPhotoCheckPassed(
-          false
-        );
-
-
-        setPhotoCheckMessage(
-          "사진 AI 검사 중 오류가 발생했습니다."
-        );
-
-
-      } finally {
-
-        setPhotoChecking(
-          false
-        );
-      }
     };
+
 
   /**
    * 회원 사진 등록 / 변경
@@ -3327,17 +3171,6 @@ const MyPage = () => {
         return;
       }
 
-
-      if (
-        !photoCheckPassed
-      ) {
-
-        alert(
-          "정면 얼굴 사진 확인이 완료된 사진만 등록할 수 있습니다."
-        );
-
-        return;
-      }
 
 
       const formData =
@@ -3397,15 +3230,6 @@ const MyPage = () => {
           ""
         );
 
-
-        setPhotoCheckPassed(
-          false
-        );
-
-
-        setPhotoCheckMessage(
-          ""
-        );
 
 
         alert(
@@ -4188,7 +4012,7 @@ const MyPage = () => {
 
                 <p>
                   아직 등록된 회원 사진이 없습니다.
-                  정면 얼굴 사진을 등록하면
+                  회원 사진을 등록하면
                   AI 뷰티 체험 기능에서 사용할 수 있습니다.
                 </p>
 
@@ -4502,7 +4326,7 @@ const MyPage = () => {
                       <p className="mypage-photo-guide">
 
                         AI 뷰티 체험에 사용할
-                        정면 얼굴 사진을 등록해주세요.
+                        회원 사진을 등록해주세요.
 
                         <br />
 
@@ -4524,51 +4348,15 @@ const MyPage = () => {
 
                       {selectedPhoto && (
 
-                        <>
+                        <div className="mypage-photo-selected-name">
 
-                          <div className="mypage-photo-selected-name">
+                          선택한 파일:{" "}
 
-                            선택한 파일:{" "}
+                          {
+                            selectedPhoto.name
+                          }
 
-                            {
-                              selectedPhoto.name
-                            }
-
-                          </div>
-
-
-                          {/* =========================
-                              AI 사진 검사 결과
-                          ========================= */}
-
-                          <div
-                            className={
-                              photoChecking
-                                ? "mypage-photo-ai-result checking"
-                                : photoCheckPassed
-                                  ? "mypage-photo-ai-result success"
-                                  : "mypage-photo-ai-result fail"
-                            }
-                          >
-
-                            {photoChecking && (
-
-                              <span className="mypage-photo-ai-spinner" />
-
-                            )}
-
-
-                            <span>
-
-                              {
-                                photoCheckMessage
-                              }
-
-                            </span>
-
-                          </div>
-
-                        </>
+                        </div>
 
                       )}
 
@@ -4581,8 +4369,6 @@ const MyPage = () => {
                         }
                         disabled={
                           !selectedPhoto ||
-                          photoChecking ||
-                          !photoCheckPassed ||
                           photoSaving
                         }
                       >
@@ -4592,15 +4378,11 @@ const MyPage = () => {
 
                             ? "사진 저장 중..."
 
-                            : photoChecking
+                            : memberPhoto
 
-                              ? "AI 분석 중..."
+                              ? "사진 변경하기"
 
-                              : memberPhoto
-
-                                ? "사진 변경하기"
-
-                                : "사진 등록하기"
+                              : "사진 등록하기"
                         }
 
                       </button>
