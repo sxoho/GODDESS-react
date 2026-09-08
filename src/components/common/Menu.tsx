@@ -558,16 +558,16 @@ const Menu = () => {
                     className="mega-feature-card"
                     onClick={() =>
                       navigate(
-                        "/products?category=hair&type=shampoo"
+                        "/beauty?mode=hair-style"
                       )
                     }
                   >
-                    <div className="mega-visual shampoo-visual">
+                    <div className="mega-visual hairstyle-visual">
                       <span />
                     </div>
 
                     <p>
-                      HAIR CARE
+                      TRY HAIR STYLE
                     </p>
                   </div>
 
@@ -591,37 +591,53 @@ const Menu = () => {
 
                 <div className="mega-column">
                   <h3>
-                    HAIR
+                    HAIR STYLE
                   </h3>
 
-                  <NavLink to="/products?category=hair&type=shampoo">
-                    샴푸
+                  <NavLink to="/beauty?mode=hair-style&style=short">
+                    단발
                   </NavLink>
 
-                  <NavLink to="/products?category=hair&type=conditioner">
-                    컨디셔너
+                  <NavLink to="/beauty?mode=hair-style&style=long">
+                    장발
                   </NavLink>
 
-                  <NavLink to="/products?category=hair&type=treatment">
-                    트리트먼트
+                  <NavLink to="/beauty?mode=hair-style&style=layered">
+                    레이어드
                   </NavLink>
 
-                  <NavLink to="/products?category=hair&type=essence">
-                    헤어 에센스
+                  <NavLink to="/beauty?mode=hair-style&style=wave">
+                    웨이브
+                  </NavLink>
+
+                  <NavLink to="/beauty?mode=hair-style&style=straight">
+                    스트레이트
                   </NavLink>
                 </div>
 
                 <div className="mega-column">
                   <h3>
-                    AI HAIR
+                    HAIR COLOR
                   </h3>
 
-                  <NavLink to="/beauty?mode=hair-style">
-                    헤어스타일 체험
+                  <NavLink to="/beauty?mode=hair-color&color=black">
+                    블랙
                   </NavLink>
 
-                  <NavLink to="/beauty?mode=hair-color">
-                    헤어컬러 체험
+                  <NavLink to="/beauty?mode=hair-color&color=brown">
+                    브라운
+                  </NavLink>
+
+                  <NavLink to="/beauty?mode=hair-color&color=ash-brown">
+                    애쉬브라운
+                  </NavLink>
+
+                  <NavLink to="/beauty?mode=hair-color&color=red-brown">
+                    레드브라운
+                  </NavLink>
+
+                  <NavLink to="/beauty?mode=hair-color&color=blonde">
+                    블론드
                   </NavLink>
                 </div>
               </>

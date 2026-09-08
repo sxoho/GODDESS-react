@@ -726,29 +726,48 @@
 
 /* HAIR */
 
-.shampoo-visual {
+.hairstyle-visual {
   background:
     linear-gradient(
       145deg,
-      #dad6d0,
-      #b7ada1
+      #e6ddd8,
+      #c8b6af
     );
 }
 
-.shampoo-visual span {
-  width: 65px;
-  height: 170px;
+.hairstyle-visual span {
+  width: 150px;
+  height: 185px;
 
   border-radius:
-    20px 20px
-    30px 30px;
+    50% 50%
+    44% 44%;
 
   background:
     linear-gradient(
-      to bottom,
-      #80736c,
-      #4f4845
+      145deg,
+      #6c5650,
+      #3d302d
     );
+
+  clip-path:
+    polygon(
+      18% 0%,
+      82% 0%,
+      100% 30%,
+      88% 100%,
+      62% 78%,
+      50% 100%,
+      38% 78%,
+      12% 100%,
+      0% 30%
+    );
+
+  box-shadow:
+    inset 14px 10px 24px
+      rgba(255, 255, 255, 0.08),
+    0 20px 40px
+      rgba(60, 45, 40, 0.14);
 }
 
 .haircolor-visual {
