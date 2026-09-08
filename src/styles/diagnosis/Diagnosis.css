@@ -388,7 +388,9 @@
     flex-direction: column;
   }
 
+  
   .diagnosis-result-actions button {
     width: 100%;
-  }
+  } 
+
 }
