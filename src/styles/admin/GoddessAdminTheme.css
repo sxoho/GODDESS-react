@@ -1,0 +1,202 @@
+/* =========================================================
+   GODDESS ADMIN GLOBAL THEME
+   관리자 기능은 유지하고 ONNIVER의 블랙/그레이 관리자 UI를
+   블러시 화이트 + 로즈 + 진주 포인트의 편집실 무드로 통일한다.
+========================================================= */
+
+.admin-layout main[class*="admin-"],
+.admin-layout [class$="-page"] {
+  color: var(--admin-ink);
+}
+
+/* 공통 페이지 폭 */
+.admin-layout .admin-category-page,
+.admin-layout .admin-member-page,
+.admin-layout .admin-member-detail-page,
+.admin-layout .admin-member-update-page,
+.admin-layout .admin-notice-page,
+.admin-layout .admin-review-page,
+.admin-layout .admin-qna-page,
+.admin-layout .admin-customer-qna-page,
+.admin-layout .admin-product-detail-page,
+.admin-layout .admin-product-list-page,
+.admin-layout .admin-product-form-page {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+/* 공통 헤딩 */
+.admin-layout :is(
+  .admin-category-header,
+  .admin-member-heading,
+  .admin-member-detail-heading,
+  .admin-member-update-header,
+  .admin-notice-heading,
+  .admin-notice-detail-heading,
+  .admin-review-heading,
+  .admin-qna-title,
+  .admin-customer-qna-title,
+  .admin-product-detail-header,
+  .admin-product-header,
+  .admin-form-header
+) h1 {
+  color: #302629;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -.025em;
+}
+
+.admin-layout :is(
+  .admin-category-header,
+  .admin-member-heading,
+  .admin-member-detail-heading,
+  .admin-member-update-header,
+  .admin-notice-heading,
+  .admin-review-heading,
+  .admin-product-header,
+  .admin-form-header
+) > div > p,
+.admin-layout .admin-form-header > div > p {
+  color: var(--admin-rose) !important;
+  font-size: 8px !important;
+  font-weight: 600;
+  letter-spacing: .2em !important;
+}
+
+/* 카드/섹션 */
+.admin-layout :is(
+  .admin-category-group,
+  .admin-category-tree,
+  .admin-member-category-section,
+  .admin-member-detail-section,
+  .admin-member-update-section,
+  .admin-notice-form,
+  .admin-notice-detail,
+  .admin-review-table-wrap,
+  .admin-qna-table-wrap,
+  .admin-customer-qna-table-wrap,
+  .admin-product-detail-section,
+  .admin-form-section,
+  .admin-product-table-wrap,
+  .admin-message
+) {
+  border-color: var(--admin-line) !important;
+  background: rgba(255, 253, 253, .92) !important;
+  box-shadow: 0 12px 34px rgba(94, 59, 68, .035);
+}
+
+/* 테이블 */
+.admin-layout table {
+  border-color: var(--admin-line) !important;
+}
+
+.admin-layout table th,
+.admin-layout [class*="table-head"] {
+  background: #fbf1f4 !important;
+  color: #9a7881 !important;
+  border-color: var(--admin-line) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: .04em;
+}
+
+.admin-layout table td,
+.admin-layout [class*="-row"] {
+  border-color: #f0e5e8 !important;
+}
+
+.admin-layout table tbody tr:hover {
+  background: #fff8fa;
+}
+
+/* 입력 */
+.admin-layout input,
+.admin-layout select,
+.admin-layout textarea {
+  border-color: #dfcfd4 !important;
+  background: #fffdfd !important;
+  color: #352a2e !important;
+}
+
+.admin-layout input:focus,
+.admin-layout select:focus,
+.admin-layout textarea:focus {
+  border-color: #b77d8b !important;
+  box-shadow: 0 0 0 2px rgba(183,125,139,.08);
+}
+
+.admin-layout input::placeholder,
+.admin-layout textarea::placeholder {
+  color: #b9a7ad !important;
+}
+
+/* 주요 버튼 */
+.admin-layout :is(
+  .admin-notice-create-button,
+  .admin-member-update-submit,
+  .admin-form-submit,
+  .admin-product-header > button
+) {
+  border-color: #aa7180 !important;
+  background: #aa7180 !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(142, 86, 101, .12);
+}
+
+.admin-layout :is(
+  .admin-notice-create-button,
+  .admin-member-update-submit,
+  .admin-form-submit,
+  .admin-product-header > button
+):hover {
+  border-color: #8f5966 !important;
+  background: #8f5966 !important;
+}
+
+/* 보조 버튼 */
+.admin-layout button:not(:disabled) {
+  transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+.admin-layout :is(
+  .admin-form-back,
+  .admin-outline-button,
+  .admin-form-cancel,
+  .admin-product-filter-reset,
+  .admin-member-update-back,
+  .admin-member-update-cancel,
+  .admin-notice-search-reset,
+  .admin-review-reset
+) {
+  border-color: #d7bdc4 !important;
+  background: #fffdfd !important;
+  color: #865763 !important;
+}
+
+/* 상태 / 배지 */
+.admin-layout [class*="status"],
+.admin-layout [class*="badge"],
+.admin-layout [class*="state"] {
+  border-color: #dcc4ca !important;
+}
+
+/* 모달 */
+.admin-layout [class*="modal-backdrop"] {
+  background: rgba(43, 31, 35, .42) !important;
+  backdrop-filter: blur(3px);
+}
+
+.admin-layout [class*="modal"]:not([class*="backdrop"]) {
+  border-color: #dec9cf !important;
+  background: #fffafa !important;
+  box-shadow: 0 24px 70px rgba(69, 43, 50, .16) !important;
+}
+
+/* pagination */
+.admin-layout [class*="pagination"] button.active,
+.admin-layout [class*="page-number"].active,
+.admin-layout .admin-product-pagination .pagination-number.active {
+  color: #8a5663 !important;
+  border-color: #b77d8b !important;
+}

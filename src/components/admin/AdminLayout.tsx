@@ -10,12 +10,14 @@ const AdminLayout = () => {
 
       <div className="admin-layout-main">
         <header className="admin-topbar">
-          <div>
-            <span>ADMINISTRATION</span>
+          <div className="admin-topbar-context">
+            <span className="admin-topbar-dot" />
+            <span>GODDESS BEAUTY OPERATIONS</span>
           </div>
 
           <div className="admin-user">
             <span>Administrator</span>
+            <strong>ADMIN</strong>
           </div>
         </header>
 
