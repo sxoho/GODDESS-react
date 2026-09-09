@@ -101,19 +101,39 @@ const personalColorQuestions: PersonalColorQuestion[] = [
     options: [
       {
         label: "블랙, 화이트, 로열블루",
-        scores: { WINTER_COOL: 3 }
+        scores: { WINTER_COOL: 3 },
+        colors: [
+          { name: "블랙", hex: "#111111" },
+          { name: "화이트", hex: "#F7F7F7" },
+          { name: "로열블루", hex: "#2F4FA8" }
+        ]
       },
       {
         label: "코랄, 피치, 아이보리",
-        scores: { SPRING_WARM: 3 }
+        scores: { SPRING_WARM: 3 },
+        colors: [
+          { name: "코랄", hex: "#F28C8C" },
+          { name: "피치", hex: "#F6B38E" },
+          { name: "아이보리", hex: "#FFF4D6" }
+        ]
       },
       {
         label: "라벤더, 소프트 핑크, 연한 블루",
-        scores: { SUMMER_COOL: 3 }
+        scores: { SUMMER_COOL: 3 },
+        colors: [
+          { name: "라벤더", hex: "#C7B6E6" },
+          { name: "소프트 핑크", hex: "#DFA6B7" },
+          { name: "연한 블루", hex: "#AFCBE3" }
+        ]
       },
       {
         label: "카멜, 카키, 브라운",
-        scores: { AUTUMN_WARM: 3 }
+        scores: { AUTUMN_WARM: 3 },
+        colors: [
+          { name: "카멜", hex: "#C18A52" },
+          { name: "카키", hex: "#7E7A4F" },
+          { name: "브라운", hex: "#6B4A36" }
+        ]
       }
     ]
   },
@@ -187,19 +207,35 @@ const personalColorQuestions: PersonalColorQuestion[] = [
     options: [
       {
         label: "블랙, 블루 블랙",
-        scores: { WINTER_COOL: 3 }
+        scores: { WINTER_COOL: 3 },
+        colors: [
+          { name: "블랙", hex: "#171717" },
+          { name: "블루 블랙", hex: "#1E2636" }
+        ]
       },
       {
         label: "애쉬 브라운, 그레이 브라운",
-        scores: { SUMMER_COOL: 3 }
+        scores: { SUMMER_COOL: 3 },
+        colors: [
+          { name: "애쉬 브라운", hex: "#81746D" },
+          { name: "그레이 브라운", hex: "#756D68" }
+        ]
       },
       {
         label: "밝은 브라운, 허니 브라운",
-        scores: { SPRING_WARM: 3 }
+        scores: { SPRING_WARM: 3 },
+        colors: [
+          { name: "밝은 브라운", hex: "#B8845F" },
+          { name: "허니 브라운", hex: "#C69554" }
+        ]
       },
       {
         label: "초코 브라운, 다크 브라운",
-        scores: { AUTUMN_WARM: 3 }
+        scores: { AUTUMN_WARM: 3 },
+        colors: [
+          { name: "초코 브라운", hex: "#5B3A2E" },
+          { name: "다크 브라운", hex: "#3F2C27" }
+        ]
       }
     ]
   },
@@ -256,25 +292,47 @@ const personalColorQuestions: PersonalColorQuestion[] = [
         scores: {
           WINTER_COOL: 2,
           SUMMER_COOL: 1
-        }
+        },
+        colors: [
+          { name: "화이트", hex: "#F7F7F7" },
+          { name: "블랙", hex: "#111111" },
+          { name: "그레이", hex: "#A7A7A7" },
+          { name: "네이비", hex: "#27344F" }
+        ]
       },
       {
         label: "밝은 코랄, 피치, 라이트 옐로처럼 맑고 화사한 색 계열",
-        scores: { SPRING_WARM: 2 }
+        scores: { SPRING_WARM: 2 },
+        colors: [
+          { name: "밝은 코랄", hex: "#F58F8A" },
+          { name: "피치", hex: "#F6B38E" },
+          { name: "라이트 옐로", hex: "#F6E59A" }
+        ]
       },
       {
         label: "아이보리, 베이지, 브라운, 카키 계열",
         scores: {
           AUTUMN_WARM: 2,
           SPRING_WARM: 1
-        }
+        },
+        colors: [
+          { name: "아이보리", hex: "#FFF4D6" },
+          { name: "베이지", hex: "#D8C1A5" },
+          { name: "브라운", hex: "#6B4A36" },
+          { name: "카키", hex: "#7E7A4F" }
+        ]
       },
       {
         label: "파스텔 톤의 소라색, 연핑크, 연보라 계열",
         scores: {
           SUMMER_COOL: 2,
           SPRING_WARM: 1
-        }
+        },
+        colors: [
+          { name: "소라색", hex: "#BFD6E8" },
+          { name: "연핑크", hex: "#E7B7C5" },
+          { name: "연보라", hex: "#CEC0E5" }
+        ]
       }
     ]
   },
@@ -284,19 +342,36 @@ const personalColorQuestions: PersonalColorQuestion[] = [
     options: [
       {
         label: "힘없고 흐릿한 연살구, 베이지",
-        scores: { WINTER_COOL: 2 }
+        scores: { WINTER_COOL: 2 },
+        colors: [
+          { name: "연살구", hex: "#EBC1A6" },
+          { name: "베이지", hex: "#D8C1A5" }
+        ]
       },
       {
         label: "블랙이나 묵직하고 어두운 다크 네이비",
-        scores: { SPRING_WARM: 2 }
+        scores: { SPRING_WARM: 2 },
+        colors: [
+          { name: "블랙", hex: "#111111" },
+          { name: "다크 네이비", hex: "#1F2940" }
+        ]
       },
       {
         label: "오렌지나 카키, 노란 기가 강한 브라운",
-        scores: { SUMMER_COOL: 2 }
+        scores: { SUMMER_COOL: 2 },
+        colors: [
+          { name: "오렌지", hex: "#D9793D" },
+          { name: "카키", hex: "#7E7A4F" },
+          { name: "브라운", hex: "#765039" }
+        ]
       },
       {
         label: "쨍한 핫핑크나 네온 컬러",
-        scores: { AUTUMN_WARM: 2 }
+        scores: { AUTUMN_WARM: 2 },
+        colors: [
+          { name: "핫핑크", hex: "#F22E8A" },
+          { name: "네온 핑크", hex: "#FF4FA3" }
+        ]
       }
     ]
   }
