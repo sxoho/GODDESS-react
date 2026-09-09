@@ -65,6 +65,7 @@ import CustomerQnaCreate from "./pages/customerqna/CustomerQnaCreate";
 import Wishlist from "./pages/wishlist/Wishlist";
 import Cart from "./pages/cart/Cart";
 import Order from "./pages/order/Order.tsx";
+import Payment from "./pages/payment/Payment.tsx";
 import Chat from "./pages/chat/Chat.tsx";
 
 
@@ -307,6 +308,12 @@ function App() {
               <Route
                 path="/order"
                 element={<Order />}
+              />
+
+              {/* 결제 */}
+              <Route
+                path="/payment/:orderId"
+                element={<Payment />}
               />
 
               {/* 챗봇 */}

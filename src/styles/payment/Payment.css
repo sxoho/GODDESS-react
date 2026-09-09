@@ -1,121 +1,253 @@
-/* src/styles/payment/Payment.css */
-.payment-container {
-    max-width: 600px;
-    margin: 60px auto;
-    padding: 0 20px;
-    font-family: inherit;
+.payment-page-wrapper {
+  --rose: #efe3e2;
+  --ink: #2b2929;
+  --muted: #827d7b;
+  --line: #ece9e8;
+  width: min(1280px, 100%);
+  margin: 0 auto;
+  padding: 64px 52px 90px;
+  color: var(--ink);
+  background: #fff;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.payment-title {
-    font-size: 26px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 24px;
-    text-align: center;
+.payment-page-header {
+  margin-bottom: 42px;
 }
 
-.payment-loading,
-.payment-error {
-    text-align: center;
-    padding: 60px 0;
-    font-size: 16px;
-    color: #666;
+.payment-page-header > span,
+.payment-summary-kicker {
+  display: block;
+  margin-bottom: 10px;
+  color: #938d8b;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .13em;
 }
 
-.payment-card {
-    background-color: #fff;
-    border: 1px solid #eaeaea;
-    border-radius: 12px;
-    padding: 32px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.payment-page-header h1 {
+  margin: 0;
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: .95;
+  font-weight: 500;
+  letter-spacing: -.045em;
 }
 
-.payment-order-info {
-    margin-bottom: 32px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid #eee;
+.payment-page-header p {
+  margin: 13px 0 0;
+  color: var(--muted);
+  font-size: 11px;
 }
 
-.payment-order-info h3 {
-    font-size: 18px;
-    margin-top: 0;
-    margin-bottom: 16px;
-    color: #222;
+.payment-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 64px;
+  align-items: start;
 }
 
-.payment-order-info p {
-    font-size: 15px;
-    color: #555;
-    margin: 8px 0;
+.payment-main {
+  border-top: 1px solid #2f2d2d;
 }
 
-.payment-order-info .total-amount {
-    font-size: 18px;
-    color: #1a73e8;
-    margin-top: 16px;
-}
-
-.payment-method-section h3 {
-    font-size: 18px;
-    margin-bottom: 16px;
-    color: #222;
+.payment-section-heading {
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--line);
 }
 
 .payment-methods {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: grid;
+  gap: 12px;
+  padding: 24px 0;
 }
 
-.method-label {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    transition: all 0.2s;
+.payment-method-card {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 18px 16px;
+  border: 1px solid #e4e0de;
+  background: #fff;
+  cursor: pointer;
 }
 
-.method-label:hover {
-    border-color: #aaa;
+.payment-method-card.selected {
+  border-color: #d7c4c1;
+  background: #fbf6f5;
 }
 
-.method-label.selected {
-    border-color: #1a73e8;
-    background-color: #f4f8ff;
-    font-weight: 600;
-    color: #1a73e8;
+.payment-method-card input {
+  position: absolute;
+  opacity: 0;
 }
 
-.method-label input[type="radio"] {
-    margin-right: 12px;
-    accent-color: #1a73e8;
+.method-radio {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #cfc9c7;
+  border-radius: 50%;
+  background: #fff;
 }
 
-.payment-actions {
-    margin-top: 40px;
+.payment-method-card.selected .method-radio {
+  border: 4px solid #b46478;
 }
 
-.btn-pay {
-    width: 100%;
-    background-color: #1a73e8;
-    color: #fff;
-    border: none;
-    padding: 18px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+.method-copy strong,
+.method-copy small {
+  display: block;
 }
 
-.btn-pay:hover:not(:disabled) {
-    background-color: #1557b0;
+.method-copy strong {
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
-.btn-pay:disabled {
-    background-color: #a0c3ff;
-    cursor: not-allowed;
+.method-copy small {
+  color: #918c89;
+  font-size: 9px;
+}
+
+.payment-guide {
+  margin-top: 10px;
+  padding: 18px;
+  background: var(--rose);
+  color: #665e5c;
+}
+
+.payment-guide strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+
+.payment-guide p {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.payment-summary-card {
+  position: sticky;
+  top: 28px;
+  padding: 28px;
+  border: 1px solid #e6e1df;
+  background: #fbfaf9;
+}
+
+.payment-summary-card h2 {
+  margin: 0 0 24px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.payment-summary-lines {
+  display: grid;
+  gap: 12px;
+}
+
+.payment-summary-lines > div,
+.payment-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.payment-summary-lines > div {
+  color: #777270;
+  font-size: 10px;
+}
+
+.payment-summary-lines strong {
+  color: #403d3c;
+  font-weight: 500;
+}
+
+.payment-total {
+  align-items: flex-end;
+  margin-top: 20px;
+  padding-top: 17px;
+  border-top: 1px solid #dfdad8;
+}
+
+.payment-total span {
+  font-size: 10px;
+  letter-spacing: .06em;
+}
+
+.payment-total strong {
+  font-size: 23px;
+  font-weight: 500;
+  letter-spacing: -.03em;
+}
+
+.payment-agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 22px 0 16px;
+  color: #777270;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.payment-agreement input {
+  margin: 1px 0 0;
+  accent-color: #b46478;
+}
+
+.payment-submit {
+  width: 100%;
+  min-height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: #6f6b67;
+  color: #fff;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.payment-submit:disabled {
+  background: #d9d6d4;
+  cursor: default;
+}
+
+.payment-security-note {
+  margin: 11px 0 0;
+  color: #9a9593;
+  font-size: 9px;
+  text-align: center;
+}
+
+.payment-state {
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777270;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .payment-page-wrapper {
+    padding: 42px 22px 60px;
+  }
+
+  .payment-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-summary-card {
+    position: static;
+  }
 }
