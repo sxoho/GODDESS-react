@@ -132,15 +132,17 @@ export default function ProductList() {
     (aiOnly ? 1 : 0);
 
   const topCategories = useMemo(
-    () =>
-      categories
-        .filter(
-          (category) =>
-            (category.parentId ?? null) === null && category.visible !== "N",
-        )
-        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
-    [categories],
-  );
+  () =>
+    categories
+      .filter(
+        (category) =>
+          (category.parentId ?? null) === null &&
+          category.visible !== "N" &&
+          category.name !== "헤어",
+      )
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
+  [categories],
+);
 
   const selectedTop = topCategories.find(
     (category) =>
