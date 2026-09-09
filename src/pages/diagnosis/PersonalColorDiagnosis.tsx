@@ -15,9 +15,15 @@ type PersonalColorType =
 
 type PersonalColorScore = Record<PersonalColorType, number>;
 
+type PersonalColorOptionColor = {
+  name: string;
+  hex: string;
+};
+
 type PersonalColorAnswerOption = {
   label: string;
   scores: Partial<PersonalColorScore>;
+  colors?: PersonalColorOptionColor[];
 };
 
 type PersonalColorQuestion = {
@@ -117,19 +123,38 @@ const personalColorQuestions: PersonalColorQuestion[] = [
     options: [
       {
         label: "로즈 핑크, 모브 핑크",
-        scores: { SUMMER_COOL: 3 }
+        scores: { SUMMER_COOL: 3 },
+        colors: [
+          { name: "로즈 핑크", hex: "#D98FA3" },
+          { name: "모브 핑크", hex: "#B47B91" }
+        ]
       },
       {
         label: "체리 레드, 푸시아, 와인",
-        scores: { WINTER_COOL: 3 }
+        scores: { WINTER_COOL: 3 },
+        colors: [
+          { name: "체리 레드", hex: "#B5163A" },
+          { name: "푸시아", hex: "#C62878" },
+          { name: "와인", hex: "#7D2442" }
+        ]
       },
       {
         label: "브릭, 칠리, 테라코타",
-        scores: { AUTUMN_WARM: 3 }
+        scores: { AUTUMN_WARM: 3 },
+        colors: [
+          { name: "브릭", hex: "#A6533C" },
+          { name: "칠리", hex: "#B7503B" },
+          { name: "테라코타", hex: "#C76B4E" }
+        ]
       },
       {
         label: "코랄, 살구, 오렌지 핑크",
-        scores: { SPRING_WARM: 3 }
+        scores: { SPRING_WARM: 3 },
+        colors: [
+          { name: "코랄", hex: "#F28C8C" },
+          { name: "살구", hex: "#F6B58A" },
+          { name: "오렌지 핑크", hex: "#F79A7C" }
+        ]
       }
     ]
   },
@@ -645,7 +670,35 @@ const PersonalColorDiagnosis = () => {
                 disabled={selectedAnswer !== null}
               >
                 <span>{String(index + 1).padStart(2, "0")}</span>
-                <strong>{option.label}</strong>
+
+                <div className="personal-color-option-content">
+                  {option.colors ? (
+                    <div className="personal-color-option-inline">
+                      {option.colors.map((color, colorIndex) => (
+                        <div
+                          className="personal-color-option-inline-item"
+                          key={`${option.label}-${color.name}`}
+                        >
+                          <span className="personal-color-option-name">
+                            {color.name}
+                          </span>
+
+                          <i
+                            className="personal-color-option-swatch"
+                            style={{ backgroundColor: color.hex }}
+                            aria-label={`${color.name} 색상`}
+                          />
+
+                          {colorIndex < option.colors!.length - 1 && (
+                            <span className="personal-color-option-comma">,</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <strong>{option.label}</strong>
+                  )}
+                </div>
               </button>
             ))}
           </div>
