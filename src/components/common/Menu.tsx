@@ -753,7 +753,7 @@ const Menu = () => {
                 <button
                   type="button"
                   className="diagnosis-mega-card personal"
-                  onClick={() => navigate("/diagnosis?type=personal-color")}
+                  onClick={() => navigate("/personal-color-diagnosis")}
                 >
                   <span className="diagnosis-mega-number">02</span>
                   <div>

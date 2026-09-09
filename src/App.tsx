@@ -69,9 +69,15 @@ import Chat from "./pages/chat/Chat.tsx";
 
 
 /**
- * 피부 / 퍼스널컬러 자가진단
+ * 피부 자가진단
  */
 import Diagnosis from "./pages/diagnosis/Diagnosis";
+
+
+/**
+ * 퍼스널컬러 자가진단
+ */
+import PersonalColorDiagnosis from "./pages/diagnosis/PersonalColorDiagnosis";
 
 
 /**
@@ -311,12 +317,22 @@ function App() {
 
 
               {/* =========================
-                  피부 / 퍼스널컬러 자가진단
+                  피부 자가진단
               ========================= */}
 
               <Route
                 path="/diagnosis"
                 element={<Diagnosis />}
+              />
+
+
+              {/* =========================
+                  퍼스널컬러 자가진단
+              ========================= */}
+
+              <Route
+                path="/personal-color-diagnosis"
+                element={<PersonalColorDiagnosis />}
               />
 
 

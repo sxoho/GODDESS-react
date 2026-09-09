@@ -600,7 +600,7 @@ const Home = () => {
 
               <button
                 className="analysis-start-button"
-                onClick={() => navigate("/diagnosis?type=personal-color")}
+                onClick={() => navigate("/personal-color-diagnosis")}
               >
                 퍼스널컬러 진단 시작하기
                 <span>→</span>
