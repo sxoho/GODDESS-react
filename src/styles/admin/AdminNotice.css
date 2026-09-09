@@ -988,3 +988,161 @@
 
   background: #fafafa;
 }
+
+/* =========================
+   GODDESS 관리자 공통 색상
+========================= */
+
+.admin-notice-heading {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #dfcbd1;
+}
+
+.admin-notice-heading p {
+  color: #a86d7c;
+}
+
+.admin-notice-heading h1 {
+  color: #302629;
+}
+
+
+/* 공지 등록 버튼 */
+.admin-notice-create-button {
+  border-color: #aa7180;
+  background: #aa7180;
+  color: #fff;
+}
+
+.admin-notice-create-button:hover {
+  border-color: #8e5966;
+  background: #8e5966;
+}
+
+
+/* 테이블 */
+.admin-notice-table-wrap {
+  border-color: #eadde1;
+  background: #fffdfd;
+}
+
+.admin-notice-table thead {
+  background: #fbf1f4;
+}
+
+.admin-notice-table th {
+  border-bottom-color: #eadde1;
+
+  /* 번호 / 제목 / 작성자 / 조회수 등 검정 */
+  color: #111;
+}
+
+.admin-notice-table td {
+  border-bottom-color: #f0e5e8;
+  color: #57474d;
+}
+
+.admin-notice-table tbody tr:hover td {
+  background: #fff7f9;
+}
+
+.admin-notice-title-button {
+  color: #302629;
+}
+
+
+/* 고정 상태 */
+.admin-notice-state {
+  border-color: #dfcbd1;
+  background: #fffdfd;
+  color: #9a7781;
+}
+
+.admin-notice-state.fixed.active {
+  border-color: #aa7180;
+  background: #aa7180;
+  color: #fff;
+}
+
+
+/* 공개 */
+.admin-notice-state.visible.active {
+  border-color: #d5b4bd;
+  background: #fbf1f4;
+  color: #8e5966;
+}
+
+
+/* 비공개 */
+.admin-notice-state.visible.hidden {
+  border-color: #dfcfd4;
+  background: #f8f1f3;
+  color: #9c858d;
+}
+
+
+/* 수정 / 삭제 */
+.admin-notice-actions button {
+  border-color: #dfcbd1;
+  background: #fffdfd;
+  color: #7f5a64;
+}
+
+.admin-notice-actions button:hover {
+  border-color: #b98491;
+  background: #f9e9ed;
+  color: #774954;
+}
+
+.admin-notice-actions .delete {
+  border-color: #dfcfd4;
+  color: #9a7781;
+}
+
+
+/* 등록 / 수정 화면 */
+.admin-notice-form {
+  border-top-color: #aa7180;
+}
+
+.admin-notice-form-row {
+  border-bottom-color: #f0e5e8;
+}
+
+.admin-notice-form-row > label {
+  color: #302629;
+}
+
+.admin-notice-form-row input[type="text"],
+.admin-notice-form-row input[type="url"],
+.admin-notice-form-row textarea {
+  border-color: #dfcfd4;
+  background: #fffdfd;
+  color: #57474d;
+}
+
+.admin-notice-form-row input:focus,
+.admin-notice-form-row textarea:focus {
+  border-color: #c89aa5;
+}
+
+/* 공지사항 관리 테이블 글씨 크기만 축소 */
+.admin-notice-table th {
+  font-size: 13px;
+}
+
+.admin-notice-table td {
+  font-size: 13px;
+}
+
+.admin-notice-title-button {
+  font-size: 13px;
+}
+
+.admin-notice-state {
+  font-size: 12px;
+}
+
+.admin-notice-actions button {
+  font-size: 12px;
+}

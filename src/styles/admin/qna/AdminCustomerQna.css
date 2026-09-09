@@ -2,38 +2,50 @@
   padding: 34px 38px 70px;
 }
 
+
+/* =========================
+   제목
+========================= */
+
 .admin-customer-qna-title {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 24px;
   margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #dfcbd1;
 }
 
 .admin-customer-qna-title span {
   display: block;
   margin-bottom: 7px;
-  color: #999;
+  color: #a86d7c;
   font-size: 10px;
   letter-spacing: 0.13em;
 }
 
 .admin-customer-qna-title h1 {
   margin: 0;
-  color: #222;
+  color: #302629;
   font-size: 27px;
   font-weight: 600;
 }
 
 .admin-customer-qna-title p {
   margin: 0;
-  color: #777;
+  color: #9c858d;
   font-size: 12px;
 }
 
 .admin-customer-qna-title strong {
-  color: #222;
+  color: #302629;
 }
+
+
+/* =========================
+   상태 필터 + 검색
+========================= */
 
 .admin-customer-qna-toolbar {
   display: flex;
@@ -51,19 +63,26 @@
 .admin-customer-qna-status-filter button {
   height: 36px;
   padding: 0 14px;
-  border: 1px solid #ddd;
-  background: #fff;
-  color: #777;
+  border: 1px solid #dfcfd4;
+  background: #fffdfd;
+  color: #9a7781;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 11px;
   cursor: pointer;
 }
 
+.admin-customer-qna-status-filter button:hover {
+  border-color: #bd8e9a;
+  background: #fff6f8;
+  color: #84525e;
+}
+
 .admin-customer-qna-status-filter button.active {
-  border-color: #222;
-  background: #222;
+  border-color: #aa7180;
+  background: #aa7180;
   color: #fff;
 }
+
 
 .admin-customer-qna-search {
   display: flex;
@@ -74,110 +93,164 @@
   width: 300px;
   height: 36px;
   padding: 0 11px;
-  border: 1px solid #ddd;
-  background: #fff;
+  border: 1px solid #dfcfd4;
+  background: #fffdfd;
+  color: #352a2e;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 11px;
   box-sizing: border-box;
   outline: none;
 }
 
 .admin-customer-qna-search input:focus {
-  border-color: #888;
+  border-color: #c89aa5;
+}
+
+.admin-customer-qna-search input::placeholder {
+  color: #b7a4aa;
 }
 
 .admin-customer-qna-search button {
   height: 36px;
   padding: 0 14px;
-  border: 1px solid #333;
-  background: #333;
+  border: 1px solid #aa7180;
+  background: #aa7180;
   color: #fff;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 11px;
   cursor: pointer;
 }
 
-.admin-customer-qna-table-wrap {
-  border-top: 2px solid #222;
+.admin-customer-qna-search button:hover {
+  border-color: #8e5966;
+  background: #8e5966;
 }
 
+
+/* =========================
+   고객 문의 테이블
+========================= */
+
+.admin-customer-qna-table-wrap {
+  border-top: 2px solid #aa7180;
+}
+
+
+/*
+  번호 / 상태 / 회원 / 문의 유형 /
+  제목 / 주문 번호 / 작성일
+*/
 .admin-customer-qna-table-head,
 .admin-customer-qna-row {
   display: grid;
-  grid-template-columns: 70px 100px 120px 120px minmax(220px, 1fr) 100px 150px;
+
+  grid-template-columns:
+    70px
+    100px
+    120px
+    160px
+    minmax(220px, 1fr)
+    100px
+    150px;
+
   align-items: center;
 }
 
+
 .admin-customer-qna-table-head {
-  min-height: 44px;
-  border-bottom: 1px solid #ddd;
-  background: #fafafa;
+  min-height: 48px;
+  border-bottom: 1px solid #eadde1;
+  background: #fbf1f4;
 }
 
 .admin-customer-qna-table-head span {
   color: #777;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 700;
   text-align: center;
 }
 
+
 .admin-customer-qna-row {
   width: 100%;
-  min-height: 58px;
+  min-height: 64px;
   padding: 0;
   border: 0;
-  border-bottom: 1px solid #eee;
-  background: #fff;
+  border-bottom: 1px solid #f0e5e8;
+  background: #fffdfd;
   font-family: inherit;
   cursor: pointer;
 }
 
 .admin-customer-qna-row:hover {
-  background: #fafafa;
+  background: #fff7f9;
 }
 
 .admin-customer-qna-row > span {
   min-width: 0;
   padding: 0 9px;
   color: #555;
-  font-size: 11px;
+  font-size: 12px;
   text-align: center;
   box-sizing: border-box;
 }
 
+
+/* 제목 */
 .admin-customer-qna-subject {
   overflow: hidden;
-  text-align: left !important;
+  text-align: center !important;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+
+/* =========================
+   상태 뱃지
+========================= */
+
+/* 답변대기 */
 .admin-customer-qna-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 64px;
-  height: 25px;
-  border: 1px solid #ddd;
-  color: #777;
-  font-size: 9px;
+  min-width: 68px;
+  height: 28px;
+  border: 1px solid #e0b6b6;
+  background: #fff1f1;
+  color: #b95d5d;
+  font-size: 11px;
+  font-weight: 700;
   font-style: normal;
   box-sizing: border-box;
 }
 
+
+/* 답변완료 */
 .admin-customer-qna-badge.answered {
-  border-color: #333;
-  background: #333;
-  color: #fff;
+  border-color: #83b89a;
+  background: #eaf7ef;
+  color: #337653;
 }
+
+
+/* =========================
+   메시지
+========================= */
 
 .admin-customer-qna-message {
   padding: 75px 20px;
-  border-top: 2px solid #222;
-  border-bottom: 1px solid #ddd;
-  color: #888;
+  border-top: 2px solid #aa7180;
+  border-bottom: 1px solid #eadde1;
+  color: #9c858d;
   font-size: 12px;
   text-align: center;
 }
+
+
+/* =========================
+   페이지네이션
+========================= */
 
 .admin-customer-qna-pagination {
   display: flex;
@@ -190,17 +263,23 @@
   min-width: 34px;
   height: 34px;
   padding: 0 9px;
-  border: 1px solid #ddd;
-  background: #fff;
-  color: #777;
+  border: 1px solid #dfcfd4;
+  background: #fffdfd;
+  color: #9a7781;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 11px;
   cursor: pointer;
 }
 
+.admin-customer-qna-pagination button:hover:not(:disabled) {
+  border-color: #bd8e9a;
+  background: #fff6f8;
+  color: #84525e;
+}
+
 .admin-customer-qna-pagination button.active {
-  border-color: #222;
-  background: #222;
+  border-color: #aa7180;
+  background: #aa7180;
   color: #fff;
 }
 
@@ -208,6 +287,11 @@
   opacity: 0.35;
   cursor: default;
 }
+
+
+/* =========================
+   상세 모달
+========================= */
 
 .admin-customer-qna-modal-backdrop {
   position: fixed;
@@ -226,7 +310,7 @@
   max-height: calc(100vh - 60px);
   overflow-y: auto;
   padding: 30px;
-  background: #fff;
+  background: #fffdfd;
   box-sizing: border-box;
 }
 
@@ -235,17 +319,17 @@
   justify-content: space-between;
   gap: 20px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #eadde1;
 }
 
 .admin-customer-qna-modal-head span {
-  color: #999;
+  color: #a86d7c;
   font-size: 10px;
 }
 
 .admin-customer-qna-modal-head h2 {
   margin: 7px 0 0;
-  color: #222;
+  color: #302629;
   font-size: 21px;
   font-weight: 600;
 }
@@ -254,17 +338,22 @@
   align-self: flex-start;
   border: 0;
   background: transparent;
-  color: #777;
+  color: #7f5a64;
   font-size: 27px;
   cursor: pointer;
 }
+
+
+/* =========================
+   모달 메타 정보
+========================= */
 
 .admin-customer-qna-meta {
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin: 0;
   padding: 17px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #f0e5e8;
 }
 
 .admin-customer-qna-meta div {
@@ -274,37 +363,47 @@
 }
 
 .admin-customer-qna-meta dt {
-  color: #999;
-  font-size: 10px;
+  color: #9c858d;
+  font-size: 11px;
 }
 
 .admin-customer-qna-meta dd {
   margin: 0;
-  color: #555;
-  font-size: 11px;
+  color: #57474d;
+  font-size: 12px;
 }
+
+
+/* =========================
+   문의 내용
+========================= */
 
 .admin-customer-qna-question {
   padding: 22px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #f0e5e8;
 }
 
 .admin-customer-qna-question strong,
 .admin-customer-qna-answer-box label {
   display: block;
   margin-bottom: 10px;
-  color: #333;
-  font-size: 11px;
+  color: #302629;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .admin-customer-qna-question p {
   margin: 0;
-  color: #555;
-  font-size: 12px;
+  color: #57474d;
+  font-size: 13px;
   line-height: 1.8;
   white-space: pre-wrap;
 }
+
+
+/* =========================
+   관리자 답변
+========================= */
 
 .admin-customer-qna-answer-box {
   padding-top: 22px;
@@ -314,11 +413,11 @@
   width: 100%;
   min-height: 170px;
   padding: 13px;
-  border: 1px solid #ddd;
-  background: #fafafa;
-  color: #444;
+  border: 1px solid #dfcfd4;
+  background: #fffdfd;
+  color: #57474d;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.7;
   resize: vertical;
   box-sizing: border-box;
@@ -326,16 +425,21 @@
 }
 
 .admin-customer-qna-answer-box textarea:focus {
-  border-color: #888;
+  border-color: #c89aa5;
   background: #fff;
 }
 
 .admin-customer-qna-answer-box small {
   display: block;
   margin-top: 8px;
-  color: #999;
-  font-size: 9px;
+  color: #9c858d;
+  font-size: 10px;
 }
+
+
+/* =========================
+   모달 버튼
+========================= */
 
 .admin-customer-qna-modal-actions {
   display: flex;
@@ -347,18 +451,29 @@
 .admin-customer-qna-modal-actions button {
   height: 38px;
   padding: 0 16px;
-  border: 1px solid #222;
-  background: #222;
+  border: 1px solid #aa7180;
+  background: #aa7180;
   color: #fff;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 11px;
   cursor: pointer;
 }
 
+.admin-customer-qna-modal-actions button:hover:not(:disabled) {
+  border-color: #8e5966;
+  background: #8e5966;
+}
+
 .admin-customer-qna-modal-actions button.cancel {
-  border-color: #ddd;
-  background: #fff;
-  color: #666;
+  border-color: #dfcbd1;
+  background: #fffdfd;
+  color: #7f5a64;
+}
+
+.admin-customer-qna-modal-actions button.cancel:hover:not(:disabled) {
+  border-color: #bd8e9a;
+  background: #fff6f8;
+  color: #84525e;
 }
 
 .admin-customer-qna-modal-actions button:disabled {
@@ -366,14 +481,16 @@
   cursor: default;
 }
 
-@media (max-width: 1000px) {
+
+/* =========================
+   반응형
+========================= */
+
+@media (max-width: 1100px) {
+
   .admin-customer-qna-toolbar {
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .admin-customer-qna-search input {
-    width: 100%;
   }
 
   .admin-customer-qna-search {
@@ -382,6 +499,7 @@
 
   .admin-customer-qna-search input {
     flex: 1;
+    width: 100%;
   }
 
   .admin-customer-qna-table-wrap {
@@ -390,11 +508,13 @@
 
   .admin-customer-qna-table-head,
   .admin-customer-qna-row {
-    min-width: 920px;
+    min-width: 1000px;
   }
 }
 
+
 @media (max-width: 700px) {
+
   .admin-customer-qna-page {
     padding: 24px 18px 50px;
   }

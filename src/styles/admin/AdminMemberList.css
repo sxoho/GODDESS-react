@@ -694,3 +694,250 @@
 
   cursor: default;
 }
+
+/* =========================
+   GODDESS 관리자 공통 색상
+========================= */
+
+.admin-member-heading {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #dfcbd1;
+}
+
+.admin-member-title p {
+  color: #a86d7c;
+}
+
+.admin-member-title h1 {
+  color: #302629;
+}
+
+
+/* 검색 */
+.admin-member-search-box input {
+  border-color: #dfcfd4;
+  background: #fffdfd;
+  color: #352a2e;
+}
+
+.admin-member-search-box input:focus {
+  border-color: #c89aa5;
+}
+
+.admin-member-search-box input::placeholder {
+  color: #b7a4aa;
+}
+
+.admin-member-search-icon {
+  color: #8b5966;
+}
+
+.admin-member-search-reset {
+  border-color: #dfcfd4;
+  background: #fffdfd;
+  color: #9a7781;
+}
+
+.admin-member-search-reset:hover {
+  border-color: #bd8e9a;
+  background: #fff6f8;
+  color: #84525e;
+}
+
+
+/* 테이블 */
+.admin-member-table-wrap {
+  border-color: #eadde1;
+  background: #fffdfd;
+}
+
+.admin-member-table {
+  background: #fffdfd;
+}
+
+.admin-member-table thead {
+  background: #fbf1f4;
+}
+
+.admin-member-table th {
+  border-bottom-color: #eadde1;
+
+  /* 컬럼명은 검정 */
+  color: #111;
+}
+
+.admin-member-table td {
+  border-bottom-color: #f0e5e8;
+  color: #57474d;
+}
+
+.admin-member-table tbody tr:hover td {
+  background: #fff7f9;
+}
+
+.admin-member-table td strong {
+  color: #302629;
+}
+
+
+/* 회원 상태 */
+.admin-member-status-active {
+  color: #8e5966;
+}
+
+
+/* 버튼 */
+.admin-member-actions button {
+  border-color: #dfcbd1;
+  background: #fffdfd;
+  color: #7f5a64;
+}
+
+.admin-member-actions button:hover {
+  border-color: #b98491;
+  background: #f9e9ed;
+  color: #774954;
+}
+
+/* =========================
+   회원 관리 테이블 크기 축소
+========================= */
+
+/* 테이블 헤더 */
+.admin-member-table th {
+  padding: 12px 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 테이블 내용 */
+.admin-member-table td {
+  padding: 11px 10px;
+  font-size: 13px;
+}
+
+/* 회원 아이디 / 이름 등 강조 글씨 */
+.admin-member-table td strong {
+  font-size: 13px;
+}
+
+/* 상태 글씨 */
+.admin-member-status-active {
+  font-size: 12px;
+}
+
+/* 수정 / 상세 등 버튼 */
+.admin-member-actions button {
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+/* 테이블 전체 폭이 너무 넓어 보이면 */
+.admin-member-table {
+  font-size: 13px;
+}
+
+/* 테이블을 감싸는 영역도 조금 압축 */
+.admin-member-table-wrap {
+  margin-top: 18px;
+}
+
+/* =========================
+   회원 구분 영역 크기 축소
+========================= */
+
+.admin-member-category-section {
+  margin-top: 38px;
+  padding-top: 25px;
+}
+
+.admin-member-category-header {
+  margin-bottom: 18px;
+}
+
+.admin-member-category-header p {
+  margin-bottom: 6px;
+  font-size: 11px;
+}
+
+.admin-member-category-header h2 {
+  margin-bottom: 6px;
+  font-size: 23px;
+}
+
+.admin-member-category-header span {
+  font-size: 12px;
+}
+
+
+/* 등급별 버튼 */
+.admin-member-category-buttons {
+  grid-template-columns:
+    repeat(5, minmax(130px, 1fr));
+
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.admin-member-category-buttons button {
+  height: 52px;
+  padding: 0 15px;
+
+  border-radius: 10px;
+
+  font-size: 12px;
+}
+
+.admin-member-category-buttons button strong {
+  min-width: 26px;
+  height: 26px;
+
+  padding: 0 6px;
+
+  font-size: 11px;
+}
+
+
+/* 선택 회원 목록 제목 */
+.admin-member-category-list-title {
+  padding: 16px 18px;
+}
+
+.admin-member-category-list-title h3 {
+  font-size: 17px;
+}
+
+.admin-member-category-list-title span {
+  font-size: 12px;
+}
+
+
+/* 하단 회원 구분 테이블 */
+.admin-member-category-table th {
+  padding: 12px 14px;
+
+  color: #111;
+
+  font-size: 13px;
+}
+
+.admin-member-category-table td {
+  padding: 13px 14px;
+
+  font-size: 13px;
+}
+
+.admin-member-category-table td strong {
+  font-size: 13px;
+}
+
+.admin-member-category-empty {
+  height: 85px;
+  font-size: 13px;
+}
+
+
+/* 하단 회원 아이디 링크 */
+.admin-member-detail-link {
+  font-size: 13px;
+}
