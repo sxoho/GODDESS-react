@@ -204,6 +204,9 @@ export default function ProductList() {
       query.set("categoryId", subParam);
     }
 
+    // Spring /product/page 필터와 연결
+    // 여러 값은 comma-separated 문자열로 전달된다.
+    // 예: skinType=건성,복합성 / personalColor=봄웜,여름쿨
     if (skinTypeParam) {
       query.set("skinType", skinTypeParam);
     }

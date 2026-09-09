@@ -21,7 +21,7 @@ type MegaMenuKey =
 const Menu = () => {
   const navigate = useNavigate();
 
-  const { sw, memberId } = useGlobalStore();
+  const { sw, memberId, gradeId } = useGlobalStore();
 
   const [activeMenu, setActiveMenu] =
     useState<MegaMenuKey>(null);
@@ -177,6 +177,31 @@ const Menu = () => {
                   : "LOGIN"}
               </span>
             </button>
+
+            {/* =========================
+                ADMIN
+                관리자 등급(4)에게만 노출
+            ========================= */}
+            {sw && Number(gradeId) === 4 && (
+              <button
+                type="button"
+                className="goddess-header-icon-button"
+                onClick={() => navigate("/admin/products")}
+                aria-label="관리자 페이지로 이동"
+                title="관리자 페이지"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3 19 6v5c0 4.6-2.8 8.1-7 10-4.2-1.9-7-5.4-7-10V6l7-3Z" />
+                  <path d="M9 12h6" />
+                  <path d="M12 9v6" />
+                </svg>
+
+                <span>ADMIN</span>
+              </button>
+            )}
 
             {sw && (
               <button

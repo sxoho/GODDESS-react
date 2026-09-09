@@ -145,6 +145,34 @@ type ProductOptionResponse = {
   visible: string;
 };
 
+const SKIN_TYPE_OPTIONS = [
+  "건성",
+  "지성",
+  "복합성",
+  "중성",
+  "민감성",
+] as const;
+
+const PERSONAL_COLOR_OPTIONS = [
+  "봄웜",
+  "여름쿨",
+  "가을웜",
+  "겨울쿨",
+] as const;
+
+const SKIN_TYPE_PRODUCT_TYPES = [
+  "BASE",
+  "SKINCARE",
+];
+
+const PERSONAL_COLOR_PRODUCT_TYPES = [
+  "BASE",
+  "LIP",
+  "EYE",
+  "BLUSH",
+  "BROW",
+];
+
 const AdminProductForm = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -232,6 +260,37 @@ const AdminProductForm = () => {
 
   const hasSubCategories = subCategories.length > 0;
 
+  // 상품 유형에 따라 필요한 추천 필터만 노출한다.
+  // BASE(쿠션/파운데이션 등): 피부 타입 + 퍼스널컬러
+  // SKINCARE: 피부 타입
+  // LIP/EYE/BLUSH/BROW: 퍼스널컬러
+  // 그 외: 둘 다 사용하지 않음
+  const needsSkinType = SKIN_TYPE_PRODUCT_TYPES.includes(
+    product.productType
+  );
+
+  const needsPersonalColor = PERSONAL_COLOR_PRODUCT_TYPES.includes(
+    product.productType
+  );
+
+  const selectedSkinTypes = useMemo(
+    () =>
+      product.skinType
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean),
+    [product.skinType]
+  );
+
+  const selectedPersonalColors = useMemo(
+    () =>
+      product.personalColor
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean),
+    [product.personalColor]
+  );
+
   const [colors, setColors] = useState<ProductColorForm[]>([
     {
       id: Date.now(),
@@ -268,16 +327,60 @@ const AdminProductForm = () => {
   ) => {
     const { name, value } = event.target;
 
-    setProduct((prev) => ({
-      ...prev,
-      [name]: value,
+    setProduct((prev) => {
+      const next: ProductForm = {
+        ...prev,
+        [name]: value,
 
-      // 대분류가 바뀌면 이전 하위 카테고리 선택값은 초기화.
-      // 하위 카테고리가 없는 대분류는 저장 시 대분류 ID 자체를 사용한다.
-      ...(name === "mainCategoryId"
-        ? { categoryId: "" }
-        : {}),
-    }));
+        // 대분류가 바뀌면 이전 하위 카테고리 선택값은 초기화.
+        ...(name === "mainCategoryId"
+          ? { categoryId: "" }
+          : {}),
+      };
+
+      // 상품 유형을 변경했을 때 더 이상 사용하지 않는 추천값은
+      // 화면에서만 숨기지 않고 실제 state에서도 비운다.
+      // 저장 시 빈 문자열은 null로 전송된다.
+      if (name === "productType") {
+        if (!SKIN_TYPE_PRODUCT_TYPES.includes(value)) {
+          next.skinType = "";
+        }
+
+        if (!PERSONAL_COLOR_PRODUCT_TYPES.includes(value)) {
+          next.personalColor = "";
+        }
+      }
+
+      return next;
+    });
+  };
+
+
+  /**
+   * 추천 피부 타입 / 퍼스널컬러 복수 선택
+   *
+   * DB 구조는 그대로 유지하고
+   * "건성,복합성", "봄웜,여름쿨" 형태의 문자열로 저장한다.
+   */
+  const toggleCommaValue = (
+    field: "skinType" | "personalColor",
+    value: string
+  ) => {
+    setProduct((prev) => {
+      const currentValues = (prev[field] ?? "")
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+      const nextValues = currentValues.includes(value)
+        ? currentValues.filter((item) => item !== value)
+        : [...currentValues, value];
+
+      return {
+        ...prev,
+        [field]: nextValues.join(","),
+      };
+    });
   };
 
   /**
@@ -1524,7 +1627,6 @@ const AdminProductForm = () => {
               <option value="BROW">브로우</option>
               <option value="SKINCARE">스킨케어</option>
               <option value="HAIR">헤어</option>
-              <option value="BODY">바디</option>
               <option value="FRAGRANCE">향수</option>
               <option value="TOOL">뷰티소품</option>
             </select>
@@ -1541,27 +1643,74 @@ const AdminProductForm = () => {
             />
           </div>
 
-          <div className="admin-form-field">
-            <label>추천 피부 타입</label>
-            <input
-              type="text"
-              name="skinType"
-              value={product.skinType}
-              onChange={handleProductChange}
-              placeholder="예: 건성, 복합성, 민감성"
-            />
-          </div>
+          {/* ==========================================
+              상품 유형별 추천 필터
+              - BASE: 피부 타입 + 퍼스널컬러
+              - SKINCARE: 피부 타입
+              - LIP/EYE/BLUSH/BROW: 퍼스널컬러
+              - 그 외: 표시하지 않음
+          ========================================== */}
 
-          <div className="admin-form-field">
-            <label>추천 퍼스널컬러</label>
-            <input
-              type="text"
-              name="personalColor"
-              value={product.personalColor}
-              onChange={handleProductChange}
-              placeholder="예: 봄웜, 여름쿨"
-            />
-          </div>
+          {needsSkinType && (
+            <div className="admin-form-field">
+              <label>추천 피부 타입</label>
+
+              <div className="admin-recommend-check-list">
+                {SKIN_TYPE_OPTIONS.map((skinType) => (
+                  <label
+                    className="admin-recommend-check"
+                    key={skinType}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedSkinTypes.includes(skinType)}
+                      onChange={() =>
+                        toggleCommaValue("skinType", skinType)
+                      }
+                    />
+
+                    <span>{skinType}</span>
+                  </label>
+                ))}
+              </div>
+
+              <p>
+                해당 상품에 맞는 피부 타입을 복수 선택할 수 있습니다.
+              </p>
+            </div>
+          )}
+
+          {needsPersonalColor && (
+            <div className="admin-form-field">
+              <label>추천 퍼스널컬러</label>
+
+              <div className="admin-recommend-check-list">
+                {PERSONAL_COLOR_OPTIONS.map((personalColor) => (
+                  <label
+                    className="admin-recommend-check"
+                    key={personalColor}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedPersonalColors.includes(personalColor)}
+                      onChange={() =>
+                        toggleCommaValue(
+                          "personalColor",
+                          personalColor
+                        )
+                      }
+                    />
+
+                    <span>{personalColor}</span>
+                  </label>
+                ))}
+              </div>
+
+              <p>
+                해당 상품에 맞는 퍼스널컬러를 복수 선택할 수 있습니다.
+              </p>
+            </div>
+          )}
 
           <div className="admin-form-field full">
             <label>사용 방법</label>

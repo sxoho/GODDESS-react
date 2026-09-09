@@ -423,3 +423,41 @@
     grid-template-columns: 100px 1fr 60px;
   }
 }
+
+.admin-recommend-check-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.admin-recommend-check {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid #e4dadd;
+  background: #fffafb;
+  color: #332b2e;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.admin-recommend-check:hover {
+  border-color: #cfa5af;
+  background: #fff5f7;
+}
+
+.admin-recommend-check input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #ac6b78;
+}
+
+.admin-recommend-check:has(input:checked) {
+  border-color: #b9808d;
+  background: #f8e8ec;
+  color: #80515c;
+}

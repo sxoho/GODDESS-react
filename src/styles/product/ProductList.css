@@ -8,7 +8,23 @@
   --shop-text: #111111;
   --shop-muted: #6e6e6e;
   --shop-line: #d9d9d9;
-  --shop-bar: #eeeeee;
+
+  /* =========================================
+     ★ PRODUCT LIST 메뉴 배경색 수정하는 곳 ★
+
+     현재: 아주 연한 핑크
+     --shop-bar: #fff7f9;
+
+     조금 더 핑크:
+     --shop-bar: #fdf3f6;
+
+     완전 흰색:
+     --shop-bar: #ffffff;
+
+     아래 한 줄의 색상값만 직접 바꿔가면서 확인하면 됩니다.
+  ========================================= */
+  --shop-bar: #fff7f9;
+
   --shop-rose: #ac6b78;
 
   min-height: 100vh;
@@ -49,8 +65,9 @@
 
   padding: 0 20px;
 
+  /* ★ 배경색은 위의 --shop-bar 변수에서 수정 ★ */
   background: var(--shop-bar);
-  border-bottom: 1px solid #e4e4e4;
+  border-bottom: 1px solid #eadfe2;
 
   position: sticky;
   top: 0;
@@ -79,10 +96,16 @@
 .shop-filter-left button {
   flex: 0 0 auto;
 
-  padding: 16px 0 14px;
+  /* =========================================
+     ★ PRODUCT LIST CATEGORY MENU
+     진주 스타일 적용 부분
+     오른쪽 View / Filters / Sort에는 영향 없음
+  ========================================= */
+  position: relative;
+
+  padding: 16px 0 17px;
 
   border: 0;
-  border-bottom: 1px solid transparent;
 
   background: transparent;
 
@@ -94,11 +117,85 @@
   font-weight: 500;
 
   white-space: nowrap;
+
+  transition:
+    color 0.18s ease;
 }
 
-.shop-filter-left button:hover,
+
+/* hover 시 글자만 아주 살짝 로즈톤 */
+.shop-filter-left button:hover {
+  color: #9f6774;
+}
+
+
+/* =========================================
+   선택 / hover 밑줄
+========================================= */
+
+.shop-filter-left button::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  bottom: 10px;
+
+  width: 0;
+  height: 1px;
+
+  background: #c7929f;
+
+  transform: translateX(-50%);
+
+  transition:
+    width 0.2s ease;
+}
+
+
+.shop-filter-left button:hover::after,
+.shop-filter-left button.active::after {
+  width: 100%;
+}
+
+
+/* =========================================
+   ★ 선택 메뉴 아래 작은 진주 ★
+========================================= */
+
+.shop-filter-left button.active::before {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  bottom: 3px;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  transform: translateX(-50%);
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #ffffff 0%,
+      #ffffff 18%,
+      #ead7dc 48%,
+      #c7929f 100%
+    );
+
+  box-shadow:
+    0 1px 2px rgba(112, 74, 84, 0.22);
+}
+
+
+/* 선택된 메뉴 글씨는 검정 유지 */
 .shop-filter-left button.active {
-  border-bottom-color: #111;
+  color: #111;
+  font-weight: 500;
 }
 
 .shop-filter-right {
@@ -1168,139 +1265,373 @@
 
 /* =========================================
    FILTER MODAL
+   GODDESS STYLE - ORIGINAL SHAPE + PEARL POINT
+   기존 각진 모양 유지
+   둥근 모서리 없음
+   진주 / 연핑크 포인트만 추가
 ========================================= */
 
 .shop-filter-modal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 2000;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding: 24px;
-  background: rgba(0, 0, 0, 0.56);
+
+  /* ★ FILTER 뒤 어두운 배경 투명도 수정하는 곳 ★ */
+  background: rgba(0, 0, 0, 0.50);
 }
+
+
+/* =========================================
+   FILTER MODAL BOX
+========================================= */
 
 .shop-filter-modal {
   width: min(870px, calc(100vw - 48px));
   max-height: calc(100vh - 48px);
+
   overflow: auto;
-  background: #fff;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+
+  /* =========================================
+     ★ FILTER 창 배경색 수정하는 곳 ★
+
+     현재: 거의 흰색에 가까운 연핑크
+     background: #fffafb;
+
+     완전 흰색:
+     background: #ffffff;
+
+     조금 더 핑크:
+     background: #fff6f8;
+  ========================================= */
+  background: #fffafb;
+
+  /* 기존처럼 각진 형태 유지 */
+  border: 1px solid #e7dde0;
+
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.16);
 }
+
+
+/* =========================================
+   FILTER MODAL HEADER
+========================================= */
 
 .shop-filter-modal-header {
   min-height: 52px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 0 14px;
-  border-bottom: 1px solid #e5e5e5;
+
+  border-bottom: 1px solid #eadfe2;
+
+  /* 아주 연한 핑크만 살짝 */
+  background: #fff8fa;
 }
+
 
 .shop-filter-modal-header h2 {
   margin: 0;
+
+  position: relative;
+
+  padding-left: 14px;
+
+  color: #211b1d;
+
   font-size: 16px;
   font-weight: 500;
 }
 
+
+/* ★ Filters 제목 옆 작은 진주 포인트 ★ */
+.shop-filter-modal-header h2::before {
+  content: "";
+
+  width: 7px;
+  height: 7px;
+
+  position: absolute;
+
+  left: 0;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #ffffff 0%,
+      #ffffff 20%,
+      #eddce1 48%,
+      #c99aa5 100%
+    );
+
+  box-shadow:
+    0 1px 2px rgba(112, 74, 84, 0.20);
+}
+
+
 .shop-filter-modal-close {
   width: 34px;
   height: 34px;
+
   border: 0;
+
   background: transparent;
+
   color: #111;
+
   cursor: pointer;
+
   font-size: 24px;
   line-height: 1;
+
+  transition:
+    color 0.18s ease,
+    background 0.18s ease;
 }
+
+
+.shop-filter-modal-close:hover {
+  color: #9f6774;
+
+  background: #fff0f4;
+}
+
+
+/* =========================================
+   FILTER MODAL BODY
+========================================= */
 
 .shop-filter-modal-body {
   padding: 26px 14px 18px;
+
+  background: #fffafb;
 }
+
 
 .shop-filter-modal .shop-filter-group {
   margin-bottom: 36px;
 }
 
+
 .shop-filter-modal .shop-filter-group > p {
   margin: 0 0 14px;
+
   color: #111;
+
   font-size: 16px;
   font-weight: 500;
 }
 
+
+/* =========================================
+   FILTER CHIP LIST
+   기존 각진 모양 유지
+========================================= */
+
 .shop-filter-modal .shop-filter-chip-list {
   display: flex;
   flex-wrap: wrap;
+
   gap: 3px;
 }
+
 
 .shop-filter-modal .shop-filter-chip-list button,
 .shop-filter-modal .shop-filter-ai-chip {
   min-height: 42px;
+
+  position: relative;
+
   padding: 0 17px;
+
+  /* 기존처럼 각진 사각형 */
   border: 1px solid transparent;
+
   background: #efefef;
+
   color: #111;
+
   cursor: pointer;
+
   font-size: 14px;
   font-style: italic;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
+
 
 .shop-filter-modal .shop-filter-chip-list button:hover,
 .shop-filter-modal .shop-filter-ai-chip:hover {
-  background: #e6e6e6;
+  background: #f3e8eb;
+
+  border-color: #e2cfd4;
 }
+
+
+/* =========================================
+   ★ 선택된 필터
+   기존 검정 선택 스타일 대신
+   로즈핑크 + 작은 진주만 추가
+========================================= */
 
 .shop-filter-modal .shop-filter-chip-list button.selected,
 .shop-filter-modal .shop-filter-ai-chip.selected {
-  border-color: #111;
-  background: #111;
-  color: #fff;
+  padding-left: 29px;
+
+  border-color: #b97d8b;
+
+  background: #f4dfe4;
+
+  color: #7f4e5a;
+
+  font-weight: 600;
 }
+
+
+/* ★ 선택된 항목 왼쪽 작은 진주 ★ */
+.shop-filter-modal .shop-filter-chip-list button.selected::before,
+.shop-filter-modal .shop-filter-ai-chip.selected::before {
+  content: "";
+
+  width: 7px;
+  height: 7px;
+
+  position: absolute;
+
+  left: 12px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #ffffff 0%,
+      #ffffff 20%,
+      #ead7dc 48%,
+      #c7929f 100%
+    );
+
+  box-shadow:
+    0 1px 2px rgba(112, 74, 84, 0.20);
+}
+
+
+/* =========================================
+   FILTER MODAL FOOTER
+   기존 모양 그대로 유지
+========================================= */
 
 .shop-filter-modal-footer {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+
   gap: 18px;
+
   padding: 0 14px 20px;
+
+  background: #fffafb;
 }
+
 
 .shop-filter-modal-footer > div {
   display: flex;
   align-items: center;
+
   gap: 14px;
 }
+
 
 .shop-filter-modal .shop-filter-clear,
 .shop-filter-modal .shop-filter-cancel,
 .shop-filter-modal .shop-filter-apply {
   min-width: 94px;
   min-height: 50px;
+
   padding: 0 18px;
+
+  /* 기존 각진 버튼 */
   border: 0;
   border-bottom: 1px solid #111;
+
   background: transparent;
+
   color: #111;
+
   cursor: pointer;
+
   font-size: 15px;
+
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
 }
 
-.shop-filter-modal .shop-filter-apply {
-  border-right: 1px solid #111;
+
+.shop-filter-modal .shop-filter-clear:hover,
+.shop-filter-modal .shop-filter-cancel:hover {
+  color: #9f6774;
+
+  border-bottom-color: #9f6774;
+
+  background: #fff4f7;
 }
+
+
+/* Apply는 기존 구조 유지 + 로즈 포인트 */
+.shop-filter-modal .shop-filter-apply {
+  border-right: 1px solid #b77b8a;
+  border-bottom-color: #b77b8a;
+
+  color: #9a6270;
+}
+
+
+.shop-filter-modal .shop-filter-apply:hover {
+  background: #b77b8a;
+
+  color: #fff;
+}
+
+
+/* =========================================
+   FILTER MODAL RESPONSIVE
+========================================= */
 
 @media (max-width: 760px) {
   .shop-filter-modal-backdrop {
     align-items: flex-end;
+
     padding: 0;
   }
 
   .shop-filter-modal {
     width: 100%;
     max-height: 82vh;
+
+    /* 모바일도 둥글게 만들지 않음 */
+    border-radius: 0;
   }
 
   .shop-filter-modal-body {
@@ -1312,6 +1643,7 @@
   }
 }
 
+
 @media (max-width: 520px) {
   .shop-filter-modal .shop-filter-chip-list button,
   .shop-filter-modal .shop-filter-ai-chip {
@@ -1320,6 +1652,7 @@
 
   .shop-filter-modal-footer {
     align-items: stretch;
+
     flex-direction: column;
   }
 
