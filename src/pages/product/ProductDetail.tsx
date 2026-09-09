@@ -175,7 +175,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { sw, memberId } = useGlobalStore();
+  const { sw, memberId, loginId } = useGlobalStore();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [colors, setColors] = useState<ProductColor[]>([]);
@@ -1338,14 +1338,14 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = async () => {
-    if (!sw || memberId <= 0) {
+    if (!sw || !loginId) {
       window.alert("로그인 후 장바구니를 이용할 수 있습니다.");
       navigate("/login");
       return;
     }
 
     if (cartSelections.length === 0) {
-      window.alert("색상과 사이즈를 선택해주세요.");
+      window.alert("색상과 규격을 선택해주세요.");
       return;
     }
 
@@ -1353,9 +1353,8 @@ const ProductDetail = () => {
       await Promise.all(
         cartSelections.map((item) =>
           addCartItem({
-            memberId,
             productOptionId: item.optionId,
-                        quantity: item.quantity,
+            quantity: item.quantity,
           }),
         ),
       );
@@ -1369,7 +1368,7 @@ const ProductDetail = () => {
 
   const handleBuyNow = () => {
     if (!selectedColor || !selectedSizeId || !selectedOption) {
-      window.alert("색상과 사이즈를 선택해주세요.");
+      window.alert("색상과 규격을 선택해주세요.");
       return;
     }
 
@@ -2410,9 +2409,9 @@ const ProductDetail = () => {
               <small>SELECTED OPTION</small>
 
               <strong>
-                {selectedColor?.colorName}
-                {" / "}
-                {selectedSize?.sizeName}
+                {cartSelections.length === 1
+                  ? `${cartSelections[0].colorName} / ${cartSelections[0].sizeName} · ${cartSelections[0].quantity}개`
+                  : `선택 옵션 ${cartSelections.length}개`}
               </strong>
             </div>
 
