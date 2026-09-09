@@ -100,6 +100,7 @@ const Menu = () => {
        * 토큰 키도 함께 정리
        */
       [
+        "jwt",
         "accessToken",
         "refreshToken",
         "token",
