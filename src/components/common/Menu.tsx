@@ -21,7 +21,7 @@ type MegaMenuKey =
 const Menu = () => {
   const navigate = useNavigate();
 
-  const { sw } = useGlobalStore();
+  const { sw, memberId } = useGlobalStore();
 
   const [activeMenu, setActiveMenu] =
     useState<MegaMenuKey>(null);
@@ -42,19 +42,63 @@ const Menu = () => {
     }
 
     try {
-      // Spring AuthController: POST /api/auth/logout
-      await axiosInstance.post("/api/auth/logout");
+      /**
+       * 로그인 내역의 로그아웃 일시 저장
+       *
+       * Spring LoginHistoryController:
+       * PUT /login-history/logout/{memberId}
+       */
+      if (memberId) {
+        try {
+          await axiosInstance.put(
+            `/login-history/logout/${memberId}`
+          );
+        } catch (historyError) {
+          /**
+           * 로그인 내역 저장이 실패하더라도
+           * 실제 로그아웃 처리는 계속 진행한다.
+           */
+          console.error(
+            "로그아웃 일시 저장 오류",
+            historyError
+          );
+        }
+      }
+
+      /**
+       * 실제 인증 로그아웃 처리
+       *
+       * Spring AuthController:
+       * POST /api/auth/logout
+       */
+      await axiosInstance.post(
+        "/api/auth/logout"
+      );
+
     } catch (error) {
-      // 서버 로그아웃 요청이 실패해도 브라우저 로그인 상태는 정리한다.
-      console.error("로그아웃 API 오류", error);
+      /**
+       * 서버 로그아웃 요청이 실패해도
+       * 브라우저 로그인 상태는 정리한다.
+       */
+      console.error(
+        "로그아웃 API 오류",
+        error
+      );
+
     } finally {
-      // 현재 프로젝트에서 사용 중인 Zustand 로그인 상태 초기화
+      /**
+       * 현재 프로젝트에서 사용 중인
+       * Zustand 로그인 상태 초기화
+       */
       useGlobalStore.setState({
         sw: false,
         memberId: 0,
       });
 
-      // 기존 인증 구현에서 사용할 수 있는 토큰 키도 함께 정리
+      /**
+       * 기존 인증 구현에서 사용할 수 있는
+       * 토큰 키도 함께 정리
+       */
       [
         "accessToken",
         "refreshToken",
@@ -65,7 +109,12 @@ const Menu = () => {
         sessionStorage.removeItem(key);
       });
 
-      navigate("/", { replace: true });
+      navigate(
+        "/",
+        {
+          replace: true
+        }
+      );
     }
   };
 
