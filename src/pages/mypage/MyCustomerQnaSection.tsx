@@ -4,13 +4,8 @@ import {
   useState
 } from "react";
 
-import {
-  useNavigate
-} from "react-router-dom";
-
-import {
-  axiosInstance
-} from "../../components/ToolBak";
+import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../components/ToolBak";
 
 
 type CustomerQna = {
@@ -33,9 +28,6 @@ type CustomerQnaPageResponse = {
   totalPages: number;
   totalElements: number;
   number: number;
-  size: number;
-  first: boolean;
-  last: boolean;
 };
 
 
@@ -53,66 +45,78 @@ type CustomerQnaAiSummaryResponse = {
 };
 
 
-/**
- * 고객 문의 유형 한글 표시
- */
+/* =========================
+   문의 유형
+========================= */
+
+const CATEGORY_OPTIONS = [
+  {
+    value: "ACCOUNT",
+    label: "회원 / 로그인"
+  },
+  {
+    value: "ORDER",
+    label: "주문 / 결제"
+  },
+  {
+    value: "DELIVERY",
+    label: "배송 / 반품"
+  },
+  {
+    value: "DIAGNOSIS",
+    label: "피부 · 퍼스널컬러 진단"
+  },
+  {
+    value: "AI_BEAUTY",
+    label: "AI BEAUTY"
+  },
+  {
+    value: "SERVICE",
+    label: "서비스 이용"
+  },
+  {
+    value: "ETC",
+    label: "기타 문의"
+  }
+];
+
+
 const getCategoryLabel = (
   category?: string
-) => {
-  const value =
-    (category || "").toUpperCase();
-
-  const labels: Record<string, string> = {
-    GENERAL: "일반 문의",
-    ORDER: "주문 문의",
-    DELIVERY: "배송 문의",
-    CANCEL: "주문 취소 문의",
-    RETURN: "반품 문의",
-    EXCHANGE: "교환 문의",
-    PAYMENT: "결제 문의",
-    ETC: "기타 문의"
-  };
-
-  return labels[value] || category || "-";
-};
+) =>
+  CATEGORY_OPTIONS.find(
+    (item) =>
+      item.value ===
+      (category || "").toUpperCase()
+  )?.label || category || "-";
 
 
-/**
- * 고객 문의 상태 한글 표시
- */
 const getStatusLabel = (
   status?: string
-) => {
-  return status === "ANSWERED"
+) =>
+  status === "ANSWERED"
     ? "답변완료"
     : "답변대기";
-};
 
 
-/**
- * 날짜 표시
- */
 const formatDateTime = (
   date?: string | null
-) => {
-  if (!date) {
-    return "-";
-  }
-
-  return date
-    .replace("T", " ")
-    .substring(0, 16);
-};
+) =>
+  date
+    ? date.replace("T", " ").substring(0, 16)
+    : "-";
 
 
-/**
- * 마이페이지 고객 문의 목록
- */
+/* =========================
+   마이페이지 고객 문의
+========================= */
+
 const MyCustomerQnaSection = ({
   memberId
 }: {
   memberId: number;
 }) => {
+
   const navigate = useNavigate();
 
   const [items, setItems] =
@@ -140,7 +144,7 @@ const MyCustomerQnaSection = ({
     useState<number | null>(null);
 
   const [editCategory, setEditCategory] =
-    useState("GENERAL");
+    useState("ACCOUNT");
 
   const [editOrderId, setEditOrderId] =
     useState("");
@@ -155,25 +159,32 @@ const MyCustomerQnaSection = ({
     useState(false);
 
 
-  /**
-   * 고객 문의 AI 요약
-   */
+  /* =========================
+     AI 문의 요약
+  ========================= */
+
   const [aiSummary, setAiSummary] =
     useState("");
 
-  const [aiSummaryLoading, setAiSummaryLoading] =
-    useState(false);
+  const [
+    aiSummaryLoading,
+    setAiSummaryLoading
+  ] = useState(false);
 
-  const [aiSummaryError, setAiSummaryError] =
-    useState("");
+  const [
+    aiSummaryError,
+    setAiSummaryError
+  ] = useState("");
 
 
-  /**
-   * 고객 문의 목록 조회
-   */
+  /* =========================
+     문의 목록 조회
+  ========================= */
+
   const loadItems = async (
     targetPage = page
   ) => {
+
     try {
       setLoading(true);
       setError("");
@@ -189,26 +200,32 @@ const MyCustomerQnaSection = ({
           }
         );
 
+
+      const data =
+        response.data;
+
+
       setItems(
-        response.data.content || []
+        data.content || []
       );
 
       setPage(
-        response.data.number ?? targetPage
+        data.number ?? targetPage
       );
 
       setTotalPages(
-        response.data.totalPages ?? 0
+        data.totalPages ?? 0
       );
 
       setTotalElements(
-        response.data.totalElements ?? 0
+        data.totalElements ?? 0
       );
 
-    } catch (requestError) {
+    } catch (error) {
+
       console.error(
         "고객 문의 조회 오류:",
-        requestError
+        error
       );
 
       setError(
@@ -216,15 +233,18 @@ const MyCustomerQnaSection = ({
       );
 
     } finally {
+
       setLoading(false);
     }
   };
 
 
-  /**
-   * 고객 문의 AI 분석 요약 조회
-   */
+  /* =========================
+     AI 문의 요약 조회
+  ========================= */
+
   const loadAiSummary = async () => {
+
     try {
       setAiSummaryLoading(true);
       setAiSummaryError("");
@@ -241,10 +261,11 @@ const MyCustomerQnaSection = ({
         response.data.result || ""
       );
 
-    } catch (requestError) {
+    } catch (error) {
+
       console.error(
         "고객 문의 AI 요약 조회 오류:",
-        requestError
+        error
       );
 
       setAiSummaryError(
@@ -252,12 +273,14 @@ const MyCustomerQnaSection = ({
       );
 
     } finally {
+
       setAiSummaryLoading(false);
     }
   };
 
 
   useEffect(() => {
+
     if (!memberId) {
       return;
     }
@@ -268,12 +291,14 @@ const MyCustomerQnaSection = ({
   }, [memberId]);
 
 
-  /**
-   * 페이지 변경
-   */
+  /* =========================
+     페이지 변경
+  ========================= */
+
   const changePage = async (
     nextPage: number
   ) => {
+
     if (
       nextPage < 0 ||
       nextPage >= totalPages ||
@@ -282,108 +307,172 @@ const MyCustomerQnaSection = ({
       return;
     }
 
+
     setOpenedId(null);
     setEditingId(null);
 
-    await loadItems(nextPage);
+    await loadItems(
+      nextPage
+    );
   };
 
 
-  /**
-   * 문의 상세 열기 / 닫기
-   */
+  /* =========================
+     상세 열기
+  ========================= */
+
   const toggleOpen = (
     id: number
   ) => {
+
     setOpenedId(
       openedId === id
         ? null
         : id
     );
 
-    if (editingId !== id) {
+    if (
+      editingId !== id
+    ) {
       setEditingId(null);
     }
   };
 
 
-  /**
-   * 수정 시작
-   */
+  /* =========================
+     수정 시작
+  ========================= */
+
   const startEdit = (
     item: CustomerQna
   ) => {
-    if (item.status !== "WAITING") {
+
+    if (
+      item.status !== "WAITING"
+    ) {
+
       alert(
         "답변이 완료된 문의는 수정할 수 없습니다."
       );
+
       return;
     }
 
-    setOpenedId(item.id);
-    setEditingId(item.id);
-    setEditCategory(item.category || "GENERAL");
+
+    setOpenedId(
+      item.id
+    );
+
+    setEditingId(
+      item.id
+    );
+
+    setEditCategory(
+      item.category || "ACCOUNT"
+    );
+
     setEditOrderId(
       item.orderId
         ? String(item.orderId)
         : ""
     );
-    setEditTitle(item.title);
-    setEditContent(item.content);
+
+    setEditTitle(
+      item.title
+    );
+
+    setEditContent(
+      item.content
+    );
   };
 
 
-  /**
-   * 수정 취소
-   */
   const cancelEdit = () => {
+
     setEditingId(null);
-    setEditCategory("GENERAL");
+    setEditCategory("ACCOUNT");
     setEditOrderId("");
     setEditTitle("");
     setEditContent("");
   };
 
 
-  /**
-   * 고객 문의 수정
-   */
+  /* =========================
+     문의 수정
+  ========================= */
+
   const updateItem = async (
     item: CustomerQna
   ) => {
-    if (!editTitle.trim()) {
-      alert("문의 제목을 입력해주세요.");
+
+    const title =
+      editTitle.trim();
+
+    const content =
+      editContent.trim();
+
+
+    if (!title) {
+      alert(
+        "문의 제목을 입력해주세요."
+      );
       return;
     }
 
-    if (!editContent.trim()) {
-      alert("문의 내용을 입력해주세요.");
+
+    if (!content) {
+      alert(
+        "문의 내용을 입력해주세요."
+      );
       return;
     }
 
-    let parsedOrderId: number | null = null;
 
-    if (editOrderId.trim() !== "") {
-      const value = Number(editOrderId);
+    let orderId:
+      number | null = null;
 
-      if (!Number.isInteger(value) || value <= 0) {
+
+    if (
+      editOrderId.trim()
+    ) {
+
+      const value =
+        Number(editOrderId);
+
+
+      if (
+        !Number.isInteger(value) ||
+        value <= 0
+      ) {
+
         alert(
           "관련 주문 번호를 올바르게 입력해주세요."
         );
+
         return;
       }
 
-      parsedOrderId = value;
+
+      orderId =
+        value;
     }
+
 
     const requestData:
       CustomerQnaUpdateRequest = {
+
         memberId,
-        category: editCategory,
-        orderId: parsedOrderId,
-        title: editTitle.trim(),
-        content: editContent.trim()
+
+        category:
+          editCategory,
+
+        orderId,
+
+        title,
+
+        content
       };
+
 
     try {
       setSaving(true);
@@ -393,47 +482,56 @@ const MyCustomerQnaSection = ({
         requestData
       );
 
-      alert("고객 문의가 수정되었습니다.");
+      alert(
+        "고객 문의가 수정되었습니다."
+      );
 
       cancelEdit();
 
-      await loadItems(page);
+      await loadItems(
+        page
+      );
 
-      /**
-       * 문의 내용이 수정되었으므로
-       * AI 분석도 다시 갱신
-       */
       await loadAiSummary();
 
-    } catch (requestError: any) {
+    } catch (error: any) {
+
       console.error(
         "고객 문의 수정 오류:",
-        requestError
+        error
       );
 
       alert(
-        requestError?.response?.data?.message ||
+        error?.response?.data?.message ||
         "고객 문의 수정 중 오류가 발생했습니다."
       );
 
     } finally {
+
       setSaving(false);
     }
   };
 
 
-  /**
-   * 고객 문의 삭제
-   */
+  /* =========================
+     문의 삭제
+  ========================= */
+
   const deleteItem = async (
     item: CustomerQna
   ) => {
-    if (item.status !== "WAITING") {
+
+    if (
+      item.status !== "WAITING"
+    ) {
+
       alert(
         "답변이 완료된 문의는 삭제할 수 없습니다."
       );
+
       return;
     }
+
 
     if (
       !window.confirm(
@@ -443,37 +541,45 @@ const MyCustomerQnaSection = ({
       return;
     }
 
+
     try {
+
       await axiosInstance.delete(
         `/customer_qna/${item.id}/member/${memberId}`
       );
 
-      alert("고객 문의가 삭제되었습니다.");
+
+      alert(
+        "고객 문의가 삭제되었습니다."
+      );
+
 
       setOpenedId(null);
       setEditingId(null);
 
+
       const nextPage =
-        items.length === 1 && page > 0
+        items.length === 1 &&
+        page > 0
           ? page - 1
           : page;
 
-      await loadItems(nextPage);
 
-      /**
-       * 문의가 삭제되었으므로
-       * AI 분석도 다시 갱신
-       */
+      await loadItems(
+        nextPage
+      );
+
       await loadAiSummary();
 
-    } catch (requestError: any) {
+    } catch (error: any) {
+
       console.error(
         "고객 문의 삭제 오류:",
-        requestError
+        error
       );
 
       alert(
-        requestError?.response?.data?.message ||
+        error?.response?.data?.message ||
         "고객 문의 삭제 중 오류가 발생했습니다."
       );
     }
@@ -483,13 +589,18 @@ const MyCustomerQnaSection = ({
   return (
     <div className="mypage-customer-qna">
 
-      {/* 고객 문의 AI 분석 */}
+      {/* =========================
+          AI 문의 분석
+      ========================= */}
+
       <div className="mypage-customer-qna-ai">
 
         <div className="mypage-customer-qna-ai-title">
+
           <span>
             AI
           </span>
+
 
           <div>
             <strong>
@@ -500,73 +611,107 @@ const MyCustomerQnaSection = ({
               최근 고객 문의 내역을 분석한 요약입니다.
             </p>
           </div>
+
         </div>
 
 
         <div className="mypage-customer-qna-ai-content">
 
           {aiSummaryLoading ? (
-          <div className="mypage-customer-qna-ai-loading">
-            <span className="mypage-customer-qna-ai-spinner"></span>
 
-            <p>
-              AI가 고객 문의를 분석하고 있습니다.
-            </p>
-          </div>
+            <div className="mypage-customer-qna-ai-loading">
+
+              <span className="mypage-customer-qna-ai-spinner" />
+
+              <p>
+                AI가 고객 문의를 분석하고 있습니다.
+              </p>
+
+            </div>
 
           ) : aiSummaryError ? (
+
             <p className="error">
               {aiSummaryError}
             </p>
 
           ) : aiSummary ? (
+
             <p>
               {aiSummary}
             </p>
 
           ) : (
+
             <p>
               분석할 고객 문의 내역이 없습니다.
             </p>
+
           )}
 
         </div>
+
       </div>
 
 
-      {/* 고객 문의 상단 */}
+      {/* =========================
+          상단
+      ========================= */}
+
       <div className="mypage-customer-qna-top">
+
         <p>
-          총 <strong>{totalElements}</strong>건의 고객 문의가 있습니다.
+          총{" "}
+          <strong>
+            {totalElements}
+          </strong>
+          건의 고객 문의가 있습니다.
         </p>
+
 
         <button
           type="button"
-          onClick={() => navigate("/customer_qna")}
+          onClick={() =>
+            navigate(
+              "/customer_qna"
+            )
+          }
         >
           고객 문의하기
         </button>
+
       </div>
 
+
+      {/* =========================
+          목록
+      ========================= */}
+
       {loading ? (
+
         <div className="mypage-customer-qna-message">
           고객 문의를 불러오는 중입니다.
         </div>
 
       ) : error ? (
+
         <div className="mypage-customer-qna-message">
           {error}
         </div>
 
       ) : items.length === 0 ? (
+
         <div className="mypage-customer-qna-empty">
           아직 등록한 고객 문의가 없습니다.
         </div>
 
       ) : (
+
         <>
           <div className="mypage-customer-qna-table-wrap">
+
             <table className="mypage-customer-qna-table">
+
               <thead>
                 <tr>
                   <th>상태</th>
@@ -577,259 +722,466 @@ const MyCustomerQnaSection = ({
                 </tr>
               </thead>
 
+
               <tbody>
-                {items.map((item) => {
-                  const opened =
-                    openedId === item.id;
 
-                  return (
-                    <Fragment key={item.id}>
-                      <tr
-                        className="mypage-customer-qna-row"
-                        onClick={() => toggleOpen(item.id)}
+                {items.map(
+                  (item) => {
+
+                    const opened =
+                      openedId === item.id;
+
+
+                    return (
+
+                      <Fragment
+                        key={
+                          item.id
+                        }
                       >
-                        <td>
-                          <span
-                            className={`mypage-customer-qna-status ${
-                              item.status === "ANSWERED"
-                                ? "answered"
-                                : "waiting"
-                            }`}
-                          >
-                            {getStatusLabel(item.status)}
-                          </span>
-                        </td>
 
-                        <td>
-                          {getCategoryLabel(item.category)}
-                        </td>
+                        {/* 목록 행 */}
+                        <tr
+                          className="mypage-customer-qna-row"
+                          onClick={() =>
+                            toggleOpen(
+                              item.id
+                            )
+                          }
+                        >
 
-                        <td className="mypage-customer-qna-title">
-                          {item.title}
-                        </td>
+                          <td>
 
-                        <td>
-                          {item.orderId || "-"}
-                        </td>
-
-                        <td>
-                          {formatDateTime(item.createdAt)}
-                        </td>
-                      </tr>
-
-                      {opened && (
-                        <tr className="mypage-customer-qna-detail-row">
-                          <td colSpan={5}>
-                            <div className="mypage-customer-qna-detail">
-
-                              {editingId === item.id ? (
-                                <div className="mypage-customer-qna-edit">
-
-                                  <div className="mypage-customer-qna-edit-row">
-                                    <label>
-                                      문의 유형
-                                    </label>
-
-                                    <select
-                                      value={editCategory}
-                                      onChange={(event) =>
-                                        setEditCategory(event.target.value)
-                                      }
-                                    >
-                                      <option value="GENERAL">일반 문의</option>
-                                      <option value="ORDER">주문 문의</option>
-                                      <option value="DELIVERY">배송 문의</option>
-                                      <option value="CANCEL">주문 취소 문의</option>
-                                      <option value="RETURN">반품 문의</option>
-                                      <option value="EXCHANGE">교환 문의</option>
-                                      <option value="PAYMENT">결제 문의</option>
-                                      <option value="ETC">기타 문의</option>
-                                    </select>
-                                  </div>
-
-                                  <div className="mypage-customer-qna-edit-row">
-                                    <label>
-                                      관련 주문 번호
-                                    </label>
-
-                                    <input
-                                      type="number"
-                                      min="1"
-                                      value={editOrderId}
-                                      onChange={(event) =>
-                                        setEditOrderId(event.target.value)
-                                      }
-                                      placeholder="선택 입력"
-                                    />
-                                  </div>
-
-                                  <div className="mypage-customer-qna-edit-row">
-                                    <label>
-                                      제목
-                                    </label>
-
-                                    <input
-                                      type="text"
-                                      maxLength={255}
-                                      value={editTitle}
-                                      onChange={(event) =>
-                                        setEditTitle(event.target.value)
-                                      }
-                                    />
-                                  </div>
-
-                                  <div className="mypage-customer-qna-edit-row content">
-                                    <label>
-                                      내용
-                                    </label>
-
-                                    <textarea
-                                      value={editContent}
-                                      onChange={(event) =>
-                                        setEditContent(event.target.value)
-                                      }
-                                    />
-                                  </div>
-
-                                  <div className="mypage-customer-qna-edit-actions">
-                                    <button
-                                      type="button"
-                                      onClick={() => updateItem(item)}
-                                      disabled={saving}
-                                    >
-                                      {saving ? "수정 중..." : "수정 완료"}
-                                    </button>
-
-                                    <button
-                                      type="button"
-                                      className="cancel"
-                                      onClick={cancelEdit}
-                                      disabled={saving}
-                                    >
-                                      취소
-                                    </button>
-                                  </div>
-                                </div>
-
-                              ) : (
-                                <>
-                                  <div className="mypage-customer-qna-question">
-                                    <strong>
-                                      Q.
-                                    </strong>
-
-                                    <p>
-                                      {item.content}
-                                    </p>
-                                  </div>
-
-                                  <div
-                                    className={`mypage-customer-qna-answer ${
-                                      item.status === "ANSWERED"
-                                        ? "answered"
-                                        : "waiting"
-                                    }`}
-                                  >
-                                    <strong>
-                                      A.
-                                    </strong>
-
-                                    {item.status === "ANSWERED" && item.answer ? (
-                                      <div>
-                                        <p>
-                                          {item.answer}
-                                        </p>
-
-                                        <span>
-                                          답변일 {formatDateTime(item.answerDate)}
-                                        </span>
-                                      </div>
-                                    ) : (
-                                      <p>
-                                        관리자 답변을 기다리고 있습니다.
-                                      </p>
-                                    )}
-                                  </div>
-
-                                  {item.status === "WAITING" && (
-                                    <div className="mypage-customer-qna-actions">
-                                      <button
-                                        type="button"
-                                        onClick={(event) => {
-                                          event.stopPropagation();
-                                          startEdit(item);
-                                        }}
-                                      >
-                                        수정
-                                      </button>
-
-                                      <button
-                                        type="button"
-                                        className="delete"
-                                        onClick={(event) => {
-                                          event.stopPropagation();
-                                          deleteItem(item);
-                                        }}
-                                      >
-                                        삭제
-                                      </button>
-                                    </div>
-                                  )}
-                                </>
+                            <span
+                              className={`mypage-customer-qna-status ${
+                                item.status === "ANSWERED"
+                                  ? "answered"
+                                  : "waiting"
+                              }`}
+                            >
+                              {getStatusLabel(
+                                item.status
                               )}
+                            </span>
 
-                            </div>
                           </td>
+
+
+                          <td>
+                            {getCategoryLabel(
+                              item.category
+                            )}
+                          </td>
+
+
+                          <td className="mypage-customer-qna-title">
+                            {item.title}
+                          </td>
+
+
+                          <td>
+                            {item.orderId || "-"}
+                          </td>
+
+
+                          <td>
+                            {formatDateTime(
+                              item.createdAt
+                            )}
+                          </td>
+
                         </tr>
-                      )}
-                    </Fragment>
-                  );
-                })}
+
+
+                        {/* 상세 */}
+                        {opened && (
+
+                          <tr className="mypage-customer-qna-detail-row">
+
+                            <td colSpan={5}>
+
+                              <div className="mypage-customer-qna-detail">
+
+                                {editingId === item.id ? (
+
+                                  /* =========================
+                                      수정
+                                  ========================= */
+
+                                  <div className="mypage-customer-qna-edit">
+
+
+                                    <div className="mypage-customer-qna-edit-row">
+
+                                      <label>
+                                        문의 유형
+                                      </label>
+
+
+                                      <select
+                                        value={
+                                          editCategory
+                                        }
+                                        onChange={
+                                          (event) =>
+                                            setEditCategory(
+                                              event.target.value
+                                            )
+                                        }
+                                      >
+
+                                        {
+                                          CATEGORY_OPTIONS.map(
+                                            (option) => (
+
+                                              <option
+                                                key={
+                                                  option.value
+                                                }
+                                                value={
+                                                  option.value
+                                                }
+                                              >
+                                                {
+                                                  option.label
+                                                }
+                                              </option>
+
+                                            )
+                                          )
+                                        }
+
+                                      </select>
+
+                                    </div>
+
+
+                                    <div className="mypage-customer-qna-edit-row">
+
+                                      <label>
+                                        관련 주문 번호
+                                      </label>
+
+
+                                      <input
+                                        type="number"
+                                        min="1"
+                                        value={
+                                          editOrderId
+                                        }
+                                        onChange={
+                                          (event) =>
+                                            setEditOrderId(
+                                              event.target.value
+                                            )
+                                        }
+                                        placeholder="선택 입력"
+                                      />
+
+                                    </div>
+
+
+                                    <div className="mypage-customer-qna-edit-row">
+
+                                      <label>
+                                        제목
+                                      </label>
+
+
+                                      <input
+                                        type="text"
+                                        maxLength={
+                                          255
+                                        }
+                                        value={
+                                          editTitle
+                                        }
+                                        onChange={
+                                          (event) =>
+                                            setEditTitle(
+                                              event.target.value
+                                            )
+                                        }
+                                      />
+
+                                    </div>
+
+
+                                    <div className="mypage-customer-qna-edit-row content">
+
+                                      <label>
+                                        내용
+                                      </label>
+
+
+                                      <textarea
+                                        value={
+                                          editContent
+                                        }
+                                        onChange={
+                                          (event) =>
+                                            setEditContent(
+                                              event.target.value
+                                            )
+                                        }
+                                      />
+
+                                    </div>
+
+
+                                    <div className="mypage-customer-qna-edit-actions">
+
+                                      <button
+                                        type="button"
+                                        disabled={
+                                          saving
+                                        }
+                                        onClick={() =>
+                                          updateItem(
+                                            item
+                                          )
+                                        }
+                                      >
+                                        {
+                                          saving
+                                            ? "수정 중..."
+                                            : "수정 완료"
+                                        }
+                                      </button>
+
+
+                                      <button
+                                        type="button"
+                                        className="cancel"
+                                        disabled={
+                                          saving
+                                        }
+                                        onClick={
+                                          cancelEdit
+                                        }
+                                      >
+                                        취소
+                                      </button>
+
+                                    </div>
+
+                                  </div>
+
+                                ) : (
+
+                                  /* =========================
+                                      상세 내용
+                                  ========================= */
+
+                                  <>
+
+                                    <div className="mypage-customer-qna-question">
+
+                                      <strong>
+                                        Q.
+                                      </strong>
+
+                                      <p>
+                                        {item.content}
+                                      </p>
+
+                                    </div>
+
+
+                                    <div
+                                      className={`mypage-customer-qna-answer ${
+                                        item.status === "ANSWERED"
+                                          ? "answered"
+                                          : "waiting"
+                                      }`}
+                                    >
+
+                                      <strong>
+                                        A.
+                                      </strong>
+
+
+                                      {
+                                        item.status === "ANSWERED" &&
+                                        item.answer
+                                          ? (
+
+                                            <div>
+
+                                              <p>
+                                                {item.answer}
+                                              </p>
+
+                                              <span>
+                                                답변일{" "}
+                                                {
+                                                  formatDateTime(
+                                                    item.answerDate
+                                                  )
+                                                }
+                                              </span>
+
+                                            </div>
+
+                                          ) : (
+
+                                            <p>
+                                              관리자 답변을 기다리고 있습니다.
+                                            </p>
+
+                                          )
+                                      }
+
+                                    </div>
+
+
+                                    {item.status === "WAITING" && (
+
+                                      <div className="mypage-customer-qna-actions">
+
+                                        <button
+                                          type="button"
+                                          onClick={
+                                            (event) => {
+                                              event.stopPropagation();
+
+                                              startEdit(
+                                                item
+                                              );
+                                            }
+                                          }
+                                        >
+                                          수정
+                                        </button>
+
+
+                                        <button
+                                          type="button"
+                                          className="delete"
+                                          onClick={
+                                            (event) => {
+                                              event.stopPropagation();
+
+                                              deleteItem(
+                                                item
+                                              );
+                                            }
+                                          }
+                                        >
+                                          삭제
+                                        </button>
+
+                                      </div>
+
+                                    )}
+
+                                  </>
+
+                                )}
+
+                              </div>
+
+                            </td>
+
+                          </tr>
+
+                        )}
+
+                      </Fragment>
+                    );
+                  }
+                )}
+
               </tbody>
+
             </table>
+
           </div>
 
+
+          {/* =========================
+              페이지네이션
+          ========================= */}
+
           {totalPages > 1 && (
+
             <div className="mypage-customer-qna-pagination">
+
               <button
                 type="button"
-                disabled={page === 0}
-                onClick={() => changePage(page - 1)}
+                disabled={
+                  page === 0
+                }
+                onClick={() =>
+                  changePage(
+                    page - 1
+                  )
+                }
               >
                 ‹
               </button>
 
-              {Array.from(
-                { length: totalPages },
-                (_, index) => (
-                  <button
-                    type="button"
-                    key={index}
-                    className={
-                      page === index
-                        ? "active"
-                        : ""
-                    }
-                    onClick={() => changePage(index)}
-                  >
-                    {index + 1}
-                  </button>
+
+              {
+                Array.from(
+                  {
+                    length:
+                      totalPages
+                  },
+                  (_, index) => (
+
+                    <button
+                      type="button"
+                      key={
+                        index
+                      }
+                      className={
+                        page === index
+                          ? "active"
+                          : ""
+                      }
+                      onClick={() =>
+                        changePage(
+                          index
+                        )
+                      }
+                    >
+                      {
+                        index + 1
+                      }
+                    </button>
+
+                  )
                 )
-              )}
+              }
+
 
               <button
                 type="button"
-                disabled={page >= totalPages - 1}
-                onClick={() => changePage(page + 1)}
+                disabled={
+                  page >=
+                  totalPages - 1
+                }
+                onClick={() =>
+                  changePage(
+                    page + 1
+                  )
+                }
               >
                 ›
               </button>
+
             </div>
+
           )}
+
         </>
+
       )}
+
     </div>
   );
 };
+
 
 export default MyCustomerQnaSection;

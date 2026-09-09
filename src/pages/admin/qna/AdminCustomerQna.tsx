@@ -1,12 +1,7 @@
-import {
-  useEffect,
-  useState
-} from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 
-import {
-  axiosInstance
-} from "../../../components/ToolBak";
+import { axiosInstance } from "../../../components/ToolBak";
 
 import "../../../styles/admin/qna/AdminCustomerQna.css";
 
@@ -31,55 +26,67 @@ type CustomerQnaPageResponse = {
   totalPages: number;
   totalElements: number;
   number: number;
-  size: number;
-  first: boolean;
-  last: boolean;
 };
+
+
+type StatusType =
+  | "ALL"
+  | "WAITING"
+  | "ANSWERED";
+
+
+const CATEGORY_LABELS: Record<string, string> = {
+  ACCOUNT: "회원 / 로그인",
+  ORDER: "주문 / 결제",
+  DELIVERY: "배송 / 반품",
+  DIAGNOSIS: "피부 · 퍼스널컬러 진단",
+  AI_BEAUTY: "AI BEAUTY",
+  SERVICE: "서비스 이용",
+  ETC: "기타 문의"
+};
+
+
+const STATUS_OPTIONS: {
+  value: StatusType;
+  label: string;
+}[] = [
+  { value: "ALL", label: "전체" },
+  { value: "WAITING", label: "답변대기" },
+  { value: "ANSWERED", label: "답변완료" }
+];
 
 
 const getCategoryLabel = (
   category?: string
-) => {
-  const value =
-    (category || "").toUpperCase();
+) =>
+  CATEGORY_LABELS[
+    (category || "").toUpperCase()
+  ] || category || "-";
 
-  const labels: Record<string, string> = {
-    GENERAL: "일반 문의",
-    ORDER: "주문 문의",
-    DELIVERY: "배송 문의",
-    CANCEL: "주문 취소 문의",
-    RETURN: "반품 문의",
-    EXCHANGE: "교환 문의",
-    PAYMENT: "결제 문의",
-    ETC: "기타 문의"
-  };
 
-  return labels[value] || category || "-";
-};
+const getStatusLabel = (
+  status?: string
+) =>
+  status === "ANSWERED"
+    ? "답변완료"
+    : "답변대기";
 
 
 const formatDateTime = (
   date?: string | null
-) => {
-  if (!date) {
-    return "-";
-  }
-
-  return date
-    .replace("T", " ")
-    .substring(0, 16);
-};
+) =>
+  date
+    ? date.replace("T", " ").substring(0, 16)
+    : "-";
 
 
-/**
- * 관리자 고객 문의 관리
- */
 const AdminCustomerQna = () => {
+
   const [items, setItems] =
     useState<CustomerQna[]>([]);
 
   const [status, setStatus] =
-    useState<"ALL" | "WAITING" | "ANSWERED">("ALL");
+    useState<StatusType>("ALL");
 
   const [keyword, setKeyword] =
     useState("");
@@ -112,14 +119,12 @@ const AdminCustomerQna = () => {
     useState(false);
 
 
-  /**
-   * 관리자 고객 문의 목록 조회
-   */
   const loadItems = async (
     targetPage = page,
     targetStatus = status,
     targetKeyword = searchKeyword
   ) => {
+
     try {
       setLoading(true);
       setError("");
@@ -136,32 +141,37 @@ const AdminCustomerQna = () => {
                   ? undefined
                   : targetStatus,
               keyword:
-                targetKeyword.trim() ||
-                undefined
+                targetKeyword.trim() || undefined
             }
           }
         );
 
+
+      const data =
+        response.data;
+
+
       setItems(
-        response.data.content || []
+        data.content || []
       );
 
       setPage(
-        response.data.number ?? targetPage
+        data.number ?? targetPage
       );
 
       setTotalPages(
-        response.data.totalPages ?? 0
+        data.totalPages ?? 0
       );
 
       setTotalElements(
-        response.data.totalElements ?? 0
+        data.totalElements ?? 0
       );
 
-    } catch (requestError) {
+    } catch (error) {
+
       console.error(
         "관리자 고객 문의 조회 오류:",
-        requestError
+        error
       );
 
       setError(
@@ -169,29 +179,39 @@ const AdminCustomerQna = () => {
       );
 
     } finally {
+
       setLoading(false);
     }
   };
 
 
   useEffect(() => {
-    loadItems(0, status, searchKeyword);
+
+    loadItems(
+      0,
+      status,
+      searchKeyword
+    );
+
   }, [status]);
 
 
-  /**
-   * 검색
-   */
   const handleSearch = async (
     event: FormEvent<HTMLFormElement>
   ) => {
+
     event.preventDefault();
 
     const nextKeyword =
       keyword.trim();
 
-    setSearchKeyword(nextKeyword);
+
+    setSearchKeyword(
+      nextKeyword
+    );
+
     setPage(0);
+
 
     await loadItems(
       0,
@@ -201,25 +221,31 @@ const AdminCustomerQna = () => {
   };
 
 
-  /**
-   * 문의 상세 조회
-   */
   const openDetail = async (
     id: number
   ) => {
+
     try {
+
       const response =
         await axiosInstance.get<CustomerQna>(
           `/customer_qna/admin/${id}`
         );
 
-      setSelected(response.data);
-      setAnswer(response.data.answer || "");
 
-    } catch (requestError) {
+      setSelected(
+        response.data
+      );
+
+      setAnswer(
+        response.data.answer || ""
+      );
+
+    } catch (error) {
+
       console.error(
         "관리자 고객 문의 상세 조회 오류:",
-        requestError
+        error
       );
 
       alert(
@@ -229,10 +255,8 @@ const AdminCustomerQna = () => {
   };
 
 
-  /**
-   * 모달 닫기
-   */
   const closeDetail = () => {
+
     if (answerSaving) {
       return;
     }
@@ -242,34 +266,53 @@ const AdminCustomerQna = () => {
   };
 
 
-  /**
-   * 관리자 답변 등록 / 수정
-   */
   const saveAnswer = async () => {
+
     if (!selected) {
       return;
     }
 
-    if (!answer.trim()) {
-      alert("답변 내용을 입력해주세요.");
+
+    const trimmedAnswer =
+      answer.trim();
+
+
+    if (!trimmedAnswer) {
+
+      alert(
+        "답변 내용을 입력해주세요."
+      );
+
       return;
     }
 
+
     try {
       setAnswerSaving(true);
+
 
       const response =
         await axiosInstance.put<CustomerQna>(
           `/customer_qna/admin/${selected.id}/answer`,
           {
-            answer: answer.trim()
+            answer: trimmedAnswer
           }
         );
 
-      setSelected(response.data);
-      setAnswer(response.data.answer || "");
 
-      alert("고객 문의 답변이 저장되었습니다.");
+      setSelected(
+        response.data
+      );
+
+      setAnswer(
+        response.data.answer || ""
+      );
+
+
+      alert(
+        "고객 문의 답변이 저장되었습니다."
+      );
+
 
       await loadItems(
         page,
@@ -277,29 +320,29 @@ const AdminCustomerQna = () => {
         searchKeyword
       );
 
-    } catch (requestError: any) {
+    } catch (error: any) {
+
       console.error(
         "관리자 고객 문의 답변 오류:",
-        requestError
+        error
       );
 
       alert(
-        requestError?.response?.data?.message ||
+        error?.response?.data?.message ||
         "고객 문의 답변 저장 중 오류가 발생했습니다."
       );
 
     } finally {
+
       setAnswerSaving(false);
     }
   };
 
 
-  /**
-   * 페이지 변경
-   */
-  const changePage = async (
+  const changePage = (
     nextPage: number
   ) => {
+
     if (
       nextPage < 0 ||
       nextPage >= totalPages ||
@@ -308,7 +351,8 @@ const AdminCustomerQna = () => {
       return;
     }
 
-    await loadItems(
+
+    loadItems(
       nextPage,
       status,
       searchKeyword
@@ -318,89 +362,106 @@ const AdminCustomerQna = () => {
 
   return (
     <div className="admin-customer-qna-page">
-      {/* =========================
-          제목
-      ========================= */}
+
       <div className="admin-customer-qna-title">
+
         <div>
-          <span>CUSTOMER Q&A</span>
-          <h1>고객 문의 관리</h1>
+          <span>
+            CUSTOMER Q&A
+          </span>
+
+          <h1>
+            고객 문의 관리
+          </h1>
         </div>
+
 
         <p>
           총 <strong>{totalElements}</strong>건
         </p>
+
       </div>
 
-      {/* =========================
-          상태 필터 + 검색
-      ========================= */}
+
       <div className="admin-customer-qna-toolbar">
+
         <div className="admin-customer-qna-status-filter">
-          <button
-            type="button"
-            className={status === "ALL" ? "active" : ""}
-            onClick={() => setStatus("ALL")}
-          >
-            전체
-          </button>
 
-          <button
-            type="button"
-            className={status === "WAITING" ? "active" : ""}
-            onClick={() => setStatus("WAITING")}
-          >
-            답변대기
-          </button>
+          {STATUS_OPTIONS.map(
+            (option) => (
 
-          <button
-            type="button"
-            className={status === "ANSWERED" ? "active" : ""}
-            onClick={() => setStatus("ANSWERED")}
-          >
-            답변완료
-          </button>
+              <button
+                key={option.value}
+                type="button"
+                className={
+                  status === option.value
+                    ? "active"
+                    : ""
+                }
+                onClick={() =>
+                  setStatus(
+                    option.value
+                  )
+                }
+              >
+                {option.label}
+              </button>
+
+            )
+          )}
+
         </div>
+
 
         <form
           className="admin-customer-qna-search"
           onSubmit={handleSearch}
         >
+
           <input
             type="text"
             value={keyword}
-            onChange={(event) =>
-              setKeyword(event.target.value)
+            onChange={
+              (event) =>
+                setKeyword(
+                  event.target.value
+                )
             }
             placeholder="제목, 내용, 문의 유형, 회원 닉네임 검색"
           />
 
+
           <button type="submit">
             검색
           </button>
+
         </form>
+
       </div>
 
-      {/* =========================
-          문의 목록
-      ========================= */}
+
       {loading ? (
+
         <div className="admin-customer-qna-message">
           고객 문의를 불러오는 중입니다.
         </div>
 
       ) : error ? (
+
         <div className="admin-customer-qna-message">
           {error}
         </div>
 
       ) : items.length === 0 ? (
+
         <div className="admin-customer-qna-message">
           조건에 맞는 고객 문의가 없습니다.
         </div>
 
       ) : (
+
         <div className="admin-customer-qna-table-wrap">
+
           <div className="admin-customer-qna-table-head">
             <span>번호</span>
             <span>상태</span>
@@ -411,110 +472,170 @@ const AdminCustomerQna = () => {
             <span>작성일</span>
           </div>
 
-          {items.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className="admin-customer-qna-row"
-              onClick={() => openDetail(item.id)}
-            >
-              <span>{item.id}</span>
 
-              <span>
-                <i
-                  className={`admin-customer-qna-badge ${
-                    item.status === "ANSWERED"
-                      ? "answered"
-                      : "waiting"
-                  }`}
-                >
-                  {item.status === "ANSWERED"
-                    ? "답변완료"
-                    : "답변대기"}
-                </i>
-              </span>
+          {items.map(
+            (item) => (
 
-              <span>
-                {item.memberNickname || `회원 ${item.memberId}`}
-              </span>
+              <button
+                key={item.id}
+                type="button"
+                className="admin-customer-qna-row"
+                onClick={() =>
+                  openDetail(
+                    item.id
+                  )
+                }
+              >
 
-              <span>
-                {getCategoryLabel(item.category)}
-              </span>
+                <span>
+                  {item.id}
+                </span>
 
-              <span className="admin-customer-qna-subject">
-                {item.title}
-              </span>
 
-              <span>
-                {item.orderId || "-"}
-              </span>
+                <span>
 
-              <span>
-                {formatDateTime(item.createdAt)}
-              </span>
-            </button>
-          ))}
+                  <i
+                    className={`admin-customer-qna-badge ${
+                      item.status === "ANSWERED"
+                        ? "answered"
+                        : "waiting"
+                    }`}
+                  >
+                    {getStatusLabel(item.status)}
+                  </i>
+
+                </span>
+
+
+                <span>
+                  {
+                    item.memberNickname ||
+                    `회원 ${item.memberId}`
+                  }
+                </span>
+
+
+                <span>
+                  {getCategoryLabel(item.category)}
+                </span>
+
+
+                <span className="admin-customer-qna-subject">
+                  {item.title}
+                </span>
+
+
+                <span>
+                  {item.orderId || "-"}
+                </span>
+
+
+                <span>
+                  {formatDateTime(item.createdAt)}
+                </span>
+
+              </button>
+
+            )
+          )}
+
         </div>
+
       )}
 
-      {/* =========================
-          페이징
-      ========================= */}
+
       {totalPages > 1 && (
+
         <div className="admin-customer-qna-pagination">
+
           <button
             type="button"
             disabled={page === 0}
-            onClick={() => changePage(page - 1)}
+            onClick={() =>
+              changePage(
+                page - 1
+              )
+            }
           >
             이전
           </button>
 
+
           {Array.from(
             { length: totalPages },
             (_, index) => (
+
               <button
-                type="button"
                 key={index}
-                className={page === index ? "active" : ""}
-                onClick={() => changePage(index)}
+                type="button"
+                className={
+                  page === index
+                    ? "active"
+                    : ""
+                }
+                onClick={() =>
+                  changePage(index)
+                }
               >
                 {index + 1}
               </button>
+
             )
           )}
 
+
           <button
             type="button"
-            disabled={page >= totalPages - 1}
-            onClick={() => changePage(page + 1)}
+            disabled={
+              page >= totalPages - 1
+            }
+            onClick={() =>
+              changePage(
+                page + 1
+              )
+            }
           >
             다음
           </button>
+
         </div>
+
       )}
 
-      {/* =========================
-          문의 상세 / 답변 모달
-      ========================= */}
+
       {selected && (
+
         <div
           className="admin-customer-qna-modal-backdrop"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              closeDetail();
+          onMouseDown={
+            (event) => {
+
+              if (
+                event.target ===
+                event.currentTarget
+              ) {
+                closeDetail();
+              }
             }
-          }}
+          }
         >
+
           <section className="admin-customer-qna-modal">
+
             <div className="admin-customer-qna-modal-head">
+
               <div>
+
                 <span>
                   CUSTOMER Q&A #{selected.id}
                 </span>
-                <h2>{selected.title}</h2>
+
+                <h2>
+                  {selected.title}
+                </h2>
+
               </div>
+
 
               <button
                 type="button"
@@ -522,73 +643,127 @@ const AdminCustomerQna = () => {
               >
                 ×
               </button>
+
             </div>
 
+
             <dl className="admin-customer-qna-meta">
+
               <div>
                 <dt>회원</dt>
+
                 <dd>
-                  {selected.memberNickname || `회원 ${selected.memberId}`}
+                  {
+                    selected.memberNickname ||
+                    `회원 ${selected.memberId}`
+                  }
                 </dd>
               </div>
+
 
               <div>
                 <dt>문의 유형</dt>
-                <dd>{getCategoryLabel(selected.category)}</dd>
-              </div>
 
-              <div>
-                <dt>주문 번호</dt>
-                <dd>{selected.orderId || "-"}</dd>
-              </div>
-
-              <div>
-                <dt>작성일</dt>
-                <dd>{formatDateTime(selected.createdAt)}</dd>
-              </div>
-
-              <div>
-                <dt>상태</dt>
                 <dd>
-                  {selected.status === "ANSWERED"
-                    ? "답변완료"
-                    : "답변대기"}
+                  {getCategoryLabel(
+                    selected.category
+                  )}
                 </dd>
               </div>
 
+
+              <div>
+                <dt>주문 번호</dt>
+
+                <dd>
+                  {selected.orderId || "-"}
+                </dd>
+              </div>
+
+
+              <div>
+                <dt>작성일</dt>
+
+                <dd>
+                  {formatDateTime(
+                    selected.createdAt
+                  )}
+                </dd>
+              </div>
+
+
+              <div>
+                <dt>상태</dt>
+
+                <dd>
+                  {getStatusLabel(
+                    selected.status
+                  )}
+                </dd>
+              </div>
+
+
               <div>
                 <dt>답변일</dt>
-                <dd>{formatDateTime(selected.answerDate)}</dd>
+
+                <dd>
+                  {formatDateTime(
+                    selected.answerDate
+                  )}
+                </dd>
               </div>
+
             </dl>
 
+
             <div className="admin-customer-qna-question">
-              <strong>문의 내용</strong>
-              <p>{selected.content}</p>
+
+              <strong>
+                문의 내용
+              </strong>
+
+              <p>
+                {selected.content}
+              </p>
+
             </div>
 
+
             <div className="admin-customer-qna-answer-box">
-              <label htmlFor="admin-customer-qna-answer">
+
+              <label
+                htmlFor="admin-customer-qna-answer"
+              >
                 관리자 답변
               </label>
+
 
               <textarea
                 id="admin-customer-qna-answer"
                 value={answer}
-                onChange={(event) =>
-                  setAnswer(event.target.value)
+                onChange={
+                  (event) =>
+                    setAnswer(
+                      event.target.value
+                    )
                 }
                 placeholder="고객에게 전달할 답변을 입력해주세요."
               />
 
+
               {selected.status === "ANSWERED" && (
+
                 <small>
                   기존 답변을 수정한 뒤 다시 저장할 수 있습니다.
                 </small>
+
               )}
+
             </div>
 
+
             <div className="admin-customer-qna-modal-actions">
+
               <button
                 type="button"
                 className="cancel"
@@ -598,23 +773,32 @@ const AdminCustomerQna = () => {
                 닫기
               </button>
 
+
               <button
                 type="button"
                 onClick={saveAnswer}
                 disabled={answerSaving}
               >
-                {answerSaving
-                  ? "저장 중..."
-                  : selected.status === "ANSWERED"
-                    ? "답변 수정"
-                    : "답변 등록"}
+                {
+                  answerSaving
+                    ? "저장 중..."
+                    : selected.status === "ANSWERED"
+                      ? "답변 수정"
+                      : "답변 등록"
+                }
               </button>
+
             </div>
+
           </section>
+
         </div>
+
       )}
+
     </div>
   );
 };
+
 
 export default AdminCustomerQna;
