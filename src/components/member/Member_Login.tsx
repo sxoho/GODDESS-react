@@ -140,6 +140,13 @@ const Member_Login = () => {
 
       sessionStorage.setItem("jwt", data.accessToken);
 
+      if (data.refreshToken) {
+        sessionStorage.setItem(
+          "refreshToken",
+          data.refreshToken
+        );
+      }
+
       /**
        * 로그인 성공 후
        * 아이디 / 비밀번호 저장

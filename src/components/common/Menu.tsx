@@ -70,10 +70,22 @@ const Menu = () => {
        *
        * Spring AuthController:
        * POST /api/auth/logout
+       *
+       * Refresh Token을 Request Body로 전달
        */
-      await axiosInstance.post(
-        "/api/auth/logout"
-      );
+      const refreshToken =
+        sessionStorage.getItem(
+          "refreshToken"
+        );
+
+      if (refreshToken) {
+        await axiosInstance.post(
+          "/api/auth/logout",
+          {
+            refreshToken,
+          }
+        );
+      }
 
     } catch (error) {
       /**
