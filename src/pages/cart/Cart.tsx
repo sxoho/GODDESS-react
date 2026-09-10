@@ -1,17 +1,17 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   deleteCartItem,
   getCartItems,
   updateCartQuantity,
   type CartResponse,
-} from '../../api/cartApi';
-import { useGlobalStore } from '../../store/store';
-import { getSpringApiUrl } from '../../components/ToolBak';
+} from "../../api/cartApi";
+import { useGlobalStore } from "../../store/store";
+import { getSpringApiUrl } from "../../components/ToolBak";
 
-import '../../styles/cart/Cart.css';
+import "../../styles/cart/Cart.css";
 
 type CartItem = CartResponse & {
   optionName: string;
@@ -21,19 +21,19 @@ type CartItem = CartResponse & {
 const Icon = ({
   name,
 }: {
-  name: 'bag' | 'truck' | 'shield' | 'trash' | 'arrow' | 'check';
+  name: "bag" | "truck" | "shield" | "trash" | "arrow" | "check";
 }) => {
   const common = {
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    stroke: 'currentColor',
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
     strokeWidth: 1.6,
-    strokeLinecap: 'round' as const,
-    strokeLinejoin: 'round' as const,
-    'aria-hidden': true,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
   };
 
-  if (name === 'bag') {
+  if (name === "bag") {
     return (
       <svg {...common}>
         <path d="M5 8h14l-1 12H6L5 8Z" />
@@ -42,7 +42,7 @@ const Icon = ({
     );
   }
 
-  if (name === 'truck') {
+  if (name === "truck") {
     return (
       <svg {...common}>
         <path d="M3 6h11v10H3z" />
@@ -53,7 +53,7 @@ const Icon = ({
     );
   }
 
-  if (name === 'shield') {
+  if (name === "shield") {
     return (
       <svg {...common}>
         <path d="M12 3 19 6v5c0 4.5-2.7 8-7 10-4.3-2-7-5.5-7-10V6l7-3Z" />
@@ -62,7 +62,7 @@ const Icon = ({
     );
   }
 
-  if (name === 'trash') {
+  if (name === "trash") {
     return (
       <svg {...common}>
         <path d="M4 7h16" />
@@ -73,7 +73,7 @@ const Icon = ({
     );
   }
 
-  if (name === 'check') {
+  if (name === "check") {
     return (
       <svg {...common}>
         <path d="m5 12 4 4L19 6" />
@@ -90,14 +90,14 @@ const Icon = ({
 };
 
 const getImageUrl = (filePath?: string | null) => {
-  if (!filePath) return '';
+  if (!filePath) return "";
 
-  if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+  if (filePath.startsWith("http://") || filePath.startsWith("https://")) {
     return filePath;
   }
 
   const apiBase = getSpringApiUrl();
-  return `${apiBase}${filePath.startsWith('/') ? filePath : `/${filePath}`}`;
+  return `${apiBase}${filePath.startsWith("/") ? filePath : `/${filePath}`}`;
 };
 
 const Cart: React.FC = () => {
@@ -105,7 +105,7 @@ const Cart: React.FC = () => {
   const queryClient = useQueryClient();
   const { loginId, sw } = useGlobalStore();
 
-  const cartQueryKey = ['cartItems', loginId] as const;
+  const cartQueryKey = ["cartItems", loginId] as const;
 
   const {
     data: fetchedCartItems = [],
@@ -130,10 +130,10 @@ const Cart: React.FC = () => {
 
         return {
           ...item,
-          brand: item.brand?.trim() || 'GODDESS',
+          brand: item.brand?.trim() || "GODDESS",
           optionName: [item.colorName, item.variantName]
             .filter(Boolean)
-            .join(' / '),
+            .join(" / "),
           discountPrice,
         };
       }),
@@ -159,8 +159,8 @@ const Cart: React.FC = () => {
       );
     },
     onError: (error) => {
-      console.error('장바구니 수량 변경 실패:', error);
-      alert('수량을 변경하지 못했습니다. 재고를 확인해주세요.');
+      console.error("장바구니 수량 변경 실패:", error);
+      alert("수량을 변경하지 못했습니다. 재고를 확인해주세요.");
     },
   });
 
@@ -178,8 +178,8 @@ const Cart: React.FC = () => {
       });
     },
     onError: (error) => {
-      console.error('장바구니 삭제 실패:', error);
-      alert('상품 삭제에 실패했습니다. 다시 시도해주세요.');
+      console.error("장바구니 삭제 실패:", error);
+      alert("상품 삭제에 실패했습니다. 다시 시도해주세요.");
     },
   });
 
@@ -196,8 +196,8 @@ const Cart: React.FC = () => {
       setUnselectedIds(new Set());
     },
     onError: (error) => {
-      console.error('선택 상품 삭제 실패:', error);
-      alert('선택 상품 삭제에 실패했습니다. 다시 시도해주세요.');
+      console.error("선택 상품 삭제 실패:", error);
+      alert("선택 상품 삭제에 실패했습니다. 다시 시도해주세요.");
     },
   });
 
@@ -227,13 +227,13 @@ const Cart: React.FC = () => {
   };
 
   const handleRemoveSingle = (cartId: number) => {
-    if (!window.confirm('해당 상품을 장바구니에서 삭제하시겠습니까?')) return;
+    if (!window.confirm("해당 상품을 장바구니에서 삭제하시겠습니까?")) return;
     deleteMutation.mutate(cartId);
   };
 
   const handleRemoveSelected = () => {
     if (selectedIds.size === 0) {
-      alert('삭제할 상품을 선택해주세요.');
+      alert("삭제할 상품을 선택해주세요.");
       return;
     }
 
@@ -268,14 +268,14 @@ const Cart: React.FC = () => {
 
   const handleCheckout = () => {
     if (selectedItems.length === 0) {
-      alert('주문할 상품을 선택해주세요.');
+      alert("주문할 상품을 선택해주세요.");
       return;
     }
 
     const unavailable = selectedItems.find(
       (item) =>
-        item.productStatus !== 'ON_SALE' ||
-        item.optionVisible !== 'Y' ||
+        item.productStatus !== "ON_SALE" ||
+        item.optionVisible !== "Y" ||
         item.stock < item.quantity,
     );
 
@@ -287,7 +287,7 @@ const Cart: React.FC = () => {
       return;
     }
 
-    navigate('/order', {
+    navigate("/order", {
       state: {
         orderItems: selectedItems.map((item) => ({
           ...item,
@@ -315,7 +315,7 @@ const Cart: React.FC = () => {
           <p className="cart-empty-kicker">YOUR BAG</p>
           <h1>로그인이 필요합니다.</h1>
           <p>로그인 후 장바구니에 담아둔 상품을 확인해보세요.</p>
-          <button type="button" onClick={() => navigate('/login')}>
+          <button type="button" onClick={() => navigate("/login")}>
             로그인하기 <Icon name="arrow" />
           </button>
         </div>
@@ -351,7 +351,7 @@ const Cart: React.FC = () => {
           <button
             type="button"
             className="continue-shopping-top"
-            onClick={() => navigate('/products')}
+            onClick={() => navigate("/products")}
           >
             계속 쇼핑하기 <Icon name="arrow" />
           </button>
@@ -365,7 +365,7 @@ const Cart: React.FC = () => {
             <p className="cart-empty-kicker">YOUR BAG IS EMPTY</p>
             <h2>장바구니가 비어 있습니다.</h2>
             <p>마음에 드는 뷰티 상품을 천천히 담아보세요.</p>
-            <button type="button" onClick={() => navigate('/products')}>
+            <button type="button" onClick={() => navigate("/products")}>
               상품 보러가기 <Icon name="arrow" />
             </button>
           </section>
@@ -379,9 +379,7 @@ const Cart: React.FC = () => {
                     cartItems.length > 0 &&
                     selectedIds.size === cartItems.length
                   }
-                  onChange={(event) =>
-                    handleSelectAll(event.target.checked)
-                  }
+                  onChange={(event) => handleSelectAll(event.target.checked)}
                 />
                 <span className="custom-checkbox">
                   <Icon name="check" />
@@ -416,22 +414,20 @@ const Cart: React.FC = () => {
             <section className="cart-product-list">
               {cartItems.map((item) => {
                 const isSelected = selectedIds.has(item.id);
-                const originalUnitPrice =
-                  item.price + (item.addPrice || 0);
+                const originalUnitPrice = item.price + (item.addPrice || 0);
                 const discountRate = Number(item.discount || 0);
-                const itemTotalPrice =
-                  item.discountPrice * item.quantity;
+                const itemTotalPrice = item.discountPrice * item.quantity;
                 const itemTotalOriginalPrice =
                   originalUnitPrice * item.quantity;
                 const unavailable =
-                  item.productStatus !== 'ON_SALE' ||
-                  item.optionVisible !== 'Y' ||
+                  item.productStatus !== "ON_SALE" ||
+                  item.optionVisible !== "Y" ||
                   item.stock <= 0;
 
                 return (
                   <article
                     className={`cart-product-row ${
-                      !isSelected ? 'is-unselected' : ''
+                      !isSelected ? "is-unselected" : ""
                     }`}
                     key={item.id}
                   >
@@ -441,10 +437,7 @@ const Cart: React.FC = () => {
                         checked={isSelected}
                         disabled={unavailable}
                         onChange={(event) =>
-                          handleSelectItem(
-                            item.id,
-                            event.target.checked,
-                          )
+                          handleSelectItem(item.id, event.target.checked)
                         }
                       />
                       <span className="custom-checkbox">
@@ -452,46 +445,41 @@ const Cart: React.FC = () => {
                       </span>
                     </label>
 
-                    <button
-                      type="button"
-                      className="cart-product-image-button"
-                      onClick={() =>
-                        navigate(`/products/${item.productId}`)
-                      }
-                    >
-                      {item.filePath ? (
-                        <img
-                          src={getImageUrl(item.filePath)}
-                          alt={item.productName}
-                          className="cart-product-image"
-                        />
-                      ) : (
-                        <span className="item-image-placeholder">
-                          NO IMAGE
-                        </span>
-                      )}
+                    <div className="cart-product-image-wrap">
+                      <button
+                        type="button"
+                        className="cart-product-image-button"
+                        onClick={() => navigate(`/products/${item.productId}`)}
+                      >
+                        {item.filePath ? (
+                          <img
+                            src={getImageUrl(item.filePath)}
+                            alt={item.productName}
+                            className="cart-product-image"
+                          />
+                        ) : (
+                          <span className="item-image-placeholder">
+                            NO IMAGE
+                          </span>
+                        )}
+                      </button>
 
                       <button
                         type="button"
                         className="row-remove-button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleRemoveSingle(item.id);
-                        }}
+                        onClick={() => handleRemoveSingle(item.id)}
                         aria-label="상품 삭제"
                       >
                         ×
                       </button>
-                    </button>
+                    </div>
 
                     <div className="cart-product-info">
                       <span className="item-brand">{item.brand}</span>
                       <button
                         type="button"
                         className="item-name"
-                        onClick={() =>
-                          navigate(`/products/${item.productId}`)
-                        }
+                        onClick={() => navigate(`/products/${item.productId}`)}
                       >
                         {item.productName}
                       </button>
@@ -504,12 +492,8 @@ const Cart: React.FC = () => {
 
                     <div className="cart-option-cell">
                       <small>COLOR / SIZE</small>
-                      <strong>
-                        {item.optionName || '기본 옵션'}
-                      </strong>
-                      <span>
-                        재고 {item.stock.toLocaleString()}개
-                      </span>
+                      <strong>{item.optionName || "기본 옵션"}</strong>
+                      <span>재고 {item.stock.toLocaleString()}개</span>
                     </div>
 
                     <div className="cart-quantity-cell">
@@ -543,17 +527,11 @@ const Cart: React.FC = () => {
 
                     <div className="cart-price-cell">
                       <small>PRICE</small>
-                      <strong>
-                        {itemTotalPrice.toLocaleString()}원
-                      </strong>
+                      <strong>{itemTotalPrice.toLocaleString()}원</strong>
                       {discountRate > 0 && (
                         <>
-                          <span className="discount-rate">
-                            {discountRate}%
-                          </span>
-                          <del>
-                            {itemTotalOriginalPrice.toLocaleString()}원
-                          </del>
+                          <span className="discount-rate">{discountRate}%</span>
+                          <del>{itemTotalOriginalPrice.toLocaleString()}원</del>
                         </>
                       )}
                     </div>
@@ -568,22 +546,20 @@ const Cart: React.FC = () => {
                   <Icon name="truck" />
                   <span>
                     {remainingForFreeShipping === 0
-                      ? '무료배송 조건을 충족했어요.'
+                      ? "무료배송 조건을 충족했어요."
                       : `${remainingForFreeShipping.toLocaleString()}원 더 담으면 무료배송이에요.`}
                   </span>
                 </div>
                 <p>
-                  * 배송비, 할인 및 최종 결제 금액은 주문 단계에서
-                  다시 확인됩니다.
+                  * 배송비, 할인 및 최종 결제 금액은 주문 단계에서 다시
+                  확인됩니다.
                 </p>
               </div>
 
               <div className="cart-total-panel">
                 <div className="summary-row">
                   <span>상품 금액</span>
-                  <strong>
-                    {totalOriginal.toLocaleString()}원
-                  </strong>
+                  <strong>{totalOriginal.toLocaleString()}원</strong>
                 </div>
                 <div className="summary-row">
                   <span>상품 할인</span>
@@ -595,16 +571,14 @@ const Cart: React.FC = () => {
                   <span>배송비</span>
                   <strong>
                     {shippingFee === 0
-                      ? '무료'
+                      ? "무료"
                       : `${shippingFee.toLocaleString()}원`}
                   </strong>
                 </div>
 
                 <div className="summary-total-row">
                   <span>TOTAL</span>
-                  <strong>
-                    {finalPrice.toLocaleString()}원
-                  </strong>
+                  <strong>{finalPrice.toLocaleString()}원</strong>
                 </div>
 
                 <button
@@ -631,9 +605,7 @@ const Cart: React.FC = () => {
 
             <footer className="cart-brand-footer cart-brand-footer-reference">
               <div className="cart-footer-newsletter">
-                <span className="cart-footer-kicker">
-                  JOIN GODDESS BEAUTY
-                </span>
+                <span className="cart-footer-kicker">JOIN GODDESS BEAUTY</span>
                 <p>
                   Discover beauty tips, AI try-on and curated recommendations
                   made for you.
@@ -650,38 +622,38 @@ const Cart: React.FC = () => {
               <div className="cart-footer-menu-group">
                 <div className="cart-footer-menu-column">
                   <small>NAVIGATE</small>
-                  <button type="button" onClick={() => navigate('/products')}>
+                  <button type="button" onClick={() => navigate("/products")}>
                     Shop
                   </button>
-                  <button type="button" onClick={() => navigate('/beauty')}>
+                  <button type="button" onClick={() => navigate("/beauty")}>
                     AI Beauty
                   </button>
-                  <button type="button" onClick={() => navigate('/diagnosis')}>
+                  <button type="button" onClick={() => navigate("/diagnosis")}>
                     Diagnosis
                   </button>
-                  <button type="button" onClick={() => navigate('/mypage')}>
+                  <button type="button" onClick={() => navigate("/mypage")}>
                     My Page
                   </button>
-                  <button type="button" onClick={() => navigate('/wishlist')}>
+                  <button type="button" onClick={() => navigate("/wishlist")}>
                     Wishlist
                   </button>
                 </div>
 
                 <div className="cart-footer-menu-column">
                   <small>OFFICIAL</small>
-                  <button type="button" onClick={() => navigate('/')}>
+                  <button type="button" onClick={() => navigate("/")}>
                     About GODDESS
                   </button>
-                  <button type="button" onClick={() => navigate('/notice')}>
+                  <button type="button" onClick={() => navigate("/notice")}>
                     Notice
                   </button>
-                  <button type="button" onClick={() => navigate('/faq')}>
+                  <button type="button" onClick={() => navigate("/faq")}>
                     FAQ
                   </button>
-                  <button type="button" onClick={() => navigate('/terms')}>
+                  <button type="button" onClick={() => navigate("/terms")}>
                     Terms
                   </button>
-                  <button type="button" onClick={() => navigate('/privacy')}>
+                  <button type="button" onClick={() => navigate("/privacy")}>
                     Privacy
                   </button>
                 </div>
@@ -689,19 +661,17 @@ const Cart: React.FC = () => {
                 <div className="cart-footer-menu-column cart-footer-support-column">
                   <small>SUPPORT</small>
                   <p>We're here M-F 9am - 5pm.</p>
-                  <a href="mailto:help@goddess.com">
-                    help@goddess.com
-                  </a>
-                  <button type="button" onClick={() => navigate('/qna')}>
+                  <a href="mailto:help@goddess.com">help@goddess.com</a>
+                  <button type="button" onClick={() => navigate("/qna")}>
                     Customer Service
                   </button>
                   <button
                     type="button"
-                    onClick={() => navigate('/shipping-returns')}
+                    onClick={() => navigate("/shipping-returns")}
                   >
                     Shipping &amp; Returns
                   </button>
-                  <button type="button" onClick={() => navigate('/qna')}>
+                  <button type="button" onClick={() => navigate("/qna")}>
                     Contact Us
                   </button>
                 </div>

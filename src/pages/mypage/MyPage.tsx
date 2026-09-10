@@ -21,6 +21,7 @@ import {
 import MyCustomerQnaSection from "./MyCustomerQnaSection";
 
 import "../../styles/member/MyPage.css";
+import "../../styles/member/MyPageOrder.css";
 
 
 const API_BASE = "http://localhost:9104";
@@ -196,6 +197,33 @@ type MyOrder = {
   status: string;
   createdAt?: string;
   cancelDate?: string | null;
+
+  /**
+   * 마이페이지 주문 카드 표시용
+   * DB에 새로 저장하는 값이 아니라 기존 상품/색상/이미지 API로 조합한다.
+   */
+  imageUrl?: string;
+  productId?: number;
+  firstProductName?: string;
+  firstColorName?: string | null;
+  firstVariantName?: string | null;
+};
+
+
+type MyOrderDetailPreview = {
+  id: number;
+  productOptionId?: number;
+  productName: string;
+  colorName?: string | null;
+  variantName?: string | null;
+  price: number;
+  quantity: number;
+};
+
+
+type MyOrderDetailResponse = {
+  id: number;
+  orderDetails?: MyOrderDetailPreview[];
 };
 
 
@@ -2928,6 +2956,37 @@ const MyPage = () => {
   /**
    * 주문 내역 조회
    */
+  const getOrderProductImageUrl = (
+    filePath?: string
+  ) => {
+
+    if (!filePath) {
+      return "";
+    }
+
+
+    if (
+      filePath.startsWith("http://") ||
+      filePath.startsWith("https://")
+    ) {
+      return filePath;
+    }
+
+
+    return `${API_BASE}${
+      filePath.startsWith("/")
+        ? filePath
+        : `/${filePath}`
+    }`;
+  };
+
+
+  /**
+   * 주문 내역 + 실제 상품 대표 이미지 조회
+   *
+   * 주문 상세의 첫 상품명/색상명을 기준으로
+   * PRODUCT → PRODUCT_COLOR → PRODUCT_COLOR_IMAGE를 연결한다.
+   */
   const loadMyOrders = async () => {
 
     if (
@@ -2949,22 +3008,266 @@ const MyPage = () => {
       );
 
 
-      const response =
-        await axiosInstance.get<{
+      const [
+        orderResponse,
+        productResponse,
+        colorResponse,
+        imageResponse
+      ] = await Promise.all([
+
+        axiosInstance.get<{
           success: boolean;
           data: MyOrder[];
           message?: string;
         }>(
           "/api/commerce/orders/my"
+        ),
+
+        axiosInstance.get<Product[]>(
+          "/product/find_all"
+        ),
+
+        axiosInstance.get<ProductColor[]>(
+          "/product_color/find_all"
+        ),
+
+        axiosInstance.get<ProductImage[]>(
+          "/product_color_image/find_all"
+        )
+
+      ]);
+
+
+      const orders =
+        Array.isArray(
+          orderResponse.data?.data
+        )
+          ? orderResponse.data.data
+          : [];
+
+
+      const products =
+        productResponse.data ?? [];
+
+
+      const colors =
+        (colorResponse.data ?? [])
+          .map(
+            (color) => ({
+              ...color,
+              id:
+                color.id ??
+                0
+            })
+          );
+
+
+      const images =
+        (imageResponse.data ?? [])
+          .map(
+            (image) => ({
+              ...image,
+              productColorId:
+                image.productColorId ??
+                0
+            })
+          );
+
+
+      /**
+       * 각 주문의 첫 상품 정보를 주문 상세 API에서 조회한다.
+       * 여러 상품 주문은 대표 첫 상품 이미지만 카드에 표시한다.
+       */
+      const orderViewItems =
+        await Promise.all(
+
+          orders.map(
+            async (order) => {
+
+              try {
+
+                const detailResponse =
+                  await axiosInstance.get<{
+                    success: boolean;
+                    data: MyOrderDetailResponse;
+                    message?: string;
+                  }>(
+                    `/api/commerce/orders/${order.id}`
+                  );
+
+
+                const firstDetail =
+                  detailResponse.data?.data
+                    ?.orderDetails?.[0];
+
+
+                if (!firstDetail) {
+                  return order;
+                }
+
+
+                const product =
+                  products.find(
+                    (item) =>
+                      item.name ===
+                      firstDetail.productName
+                  );
+
+
+                if (!product) {
+
+                  return {
+                    ...order,
+
+                    firstProductName:
+                      firstDetail.productName,
+
+                    firstColorName:
+                      firstDetail.colorName,
+
+                    firstVariantName:
+                      firstDetail.variantName
+                  };
+                }
+
+
+                const productId =
+                  product.productId ??
+                  product.id ??
+                  0;
+
+
+                const productColors =
+                  colors
+                    .filter(
+                      (color) =>
+                        color.productId ===
+                          productId &&
+                        color.visible !== "N"
+                    )
+                    .sort(
+                      (a, b) =>
+                        (a.sortOrder ?? 0) -
+                        (b.sortOrder ?? 0)
+                    );
+
+
+                /**
+                 * 실제 주문 색상이 있으면 같은 색상을 우선 사용.
+                 * 찾지 못하면 상품의 대표 색상을 사용한다.
+                 */
+                const targetColor =
+                  productColors.find(
+                    (color) =>
+                      firstDetail.colorName &&
+                      color.colorName ===
+                        firstDetail.colorName
+                  ) ??
+                  productColors.find(
+                    (color) =>
+                      color.isMain === "Y"
+                  ) ??
+                  productColors[0];
+
+
+                const targetColorId =
+                  targetColor?.id ??
+                  0;
+
+
+                const productImages =
+                  images
+                    .filter(
+                      (image) =>
+                        image.productColorId ===
+                          targetColorId
+                    )
+                    .sort(
+                      (a, b) => {
+
+                        const aMain =
+                          a.isMain === "Y"
+                            ? 0
+                            : a.imageType ===
+                                "THUMBNAIL"
+                              ? 1
+                              : a.imageType ===
+                                  "MAIN"
+                                ? 2
+                                : 3;
+
+                        const bMain =
+                          b.isMain === "Y"
+                            ? 0
+                            : b.imageType ===
+                                "THUMBNAIL"
+                              ? 1
+                              : b.imageType ===
+                                  "MAIN"
+                                ? 2
+                                : 3;
+
+
+                        if (
+                          aMain !== bMain
+                        ) {
+                          return aMain - bMain;
+                        }
+
+
+                        return (
+                          (a.sortOrder ?? 0) -
+                          (b.sortOrder ?? 0)
+                        );
+                      }
+                    );
+
+
+                const imageUrl =
+                  getOrderProductImageUrl(
+                    productImages[0]?.filePath
+                  );
+
+
+                return {
+                  ...order,
+
+                  imageUrl,
+
+                  productId,
+
+                  firstProductName:
+                    firstDetail.productName,
+
+                  firstColorName:
+                    firstDetail.colorName,
+
+                  firstVariantName:
+                    firstDetail.variantName
+                };
+
+
+              } catch (detailError) {
+
+                console.error(
+                  `주문 ${order.id} 상품 이미지 조회 오류:`,
+                  detailError
+                );
+
+
+                /**
+                 * 이미지 조회 실패가 전체 주문내역 조회 실패로 이어지지 않도록
+                 * 주문 기본정보는 그대로 표시한다.
+                 */
+                return order;
+              }
+            }
+          )
         );
 
 
       setOrderItems(
-        Array.isArray(
-          response.data?.data
-        )
-          ? response.data.data
-          : []
+        orderViewItems
       );
 
 
@@ -5362,113 +5665,213 @@ const MyPage = () => {
 
           ) : orderItems.length === 0 ? (
 
-            <div className="mypage-menu-ready">
-              아직 주문 내역이 없습니다.
+            <div className="mypage-order-empty">
+
+              <p>
+                아직 주문 내역이 없습니다.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => navigate("/products")}
+              >
+                SHOP NOW
+              </button>
+
             </div>
 
           ) : (
 
-            <div className="mypage-qna-table-wrap">
+            <div className="mypage-order-list">
 
-              <table className="mypage-qna-table">
-
-                <thead>
-
-                  <tr>
-
-                    <th>
-                      주문번호
-                    </th>
-
-                    <th>
-                      주문상품
-                    </th>
-
-                    <th className="mypage-qna-center">
-                      주문일자
-                    </th>
-
-                    <th className="mypage-qna-center">
-                      주문상태
-                    </th>
-
-                    <th className="mypage-qna-center">
-                      결제금액
-                    </th>
-
-                    <th className="mypage-qna-center">
-                      상세
-                    </th>
-
-                  </tr>
-
-                </thead>
+              <div className="mypage-order-summary-line">
+                <span>
+                  총 {orderItems.length}건의 주문이 있습니다.
+                </span>
+              </div>
 
 
-                <tbody>
+              {orderItems.map(
+                (order) => (
 
-                  {orderItems.map(
-                    (order) => (
+                  <article
+                    key={order.id}
+                    className="mypage-order-card"
+                  >
 
-                      <tr
-                        key={order.id}
-                        className="mypage-qna-row"
-                      >
+                    <div className="mypage-order-card-head">
 
-                        <td>
-                          #{order.id}
-                        </td>
+                      <div className="mypage-order-date-wrap">
 
-
-                        <td>
-                          {order.orderName}
-                        </td>
-
-
-                        <td className="mypage-qna-center">
+                        <strong className="mypage-order-date">
                           {formatDate(order.createdAt)}
-                        </td>
+                        </strong>
+
+                        <span className="mypage-order-number">
+                          ORDER #{order.id}
+                        </span>
+
+                      </div>
 
 
-                        <td className="mypage-qna-center">
+                      <button
+                        type="button"
+                        className="mypage-order-detail-link"
+                        onClick={
+                          () =>
+                            navigate(
+                              `/mypage/orders/${order.id}`
+                            )
+                        }
+                      >
+                        주문상세
+                        <span aria-hidden="true">→</span>
+                      </button>
 
-                          <strong>
-                            {getOrderStatusLabel(order.status)}
+                    </div>
+
+
+                    <div className="mypage-order-card-body">
+
+                      <div className="mypage-order-status-area">
+
+                        <span className="mypage-order-status-kicker">
+                          STATUS
+                        </span>
+
+                        <strong
+                          className={
+                            `mypage-order-status mypage-order-status-${order.status.toLowerCase()}`
+                          }
+                        >
+                          {getOrderStatusLabel(order.status)}
+                        </strong>
+
+                      </div>
+
+
+                      <div className="mypage-order-product-area">
+
+                        <button
+                          type="button"
+                          className="mypage-order-product-image"
+                          onClick={
+                            () => {
+
+                              if (
+                                order.productId
+                              ) {
+                                navigate(
+                                  `/products/${order.productId}`
+                                );
+                              }
+                            }
+                          }
+                          disabled={
+                            !order.productId
+                          }
+                          aria-label="주문 상품 상세로 이동"
+                        >
+
+                          {order.imageUrl ? (
+
+                            <img
+                              src={order.imageUrl}
+                              alt={
+                                order.firstProductName ||
+                                order.orderName
+                              }
+                            />
+
+                          ) : (
+
+                            <span>
+                              NO IMAGE
+                            </span>
+
+                          )}
+
+                        </button>
+
+
+                        <div className="mypage-order-product-copy">
+
+                          <span className="mypage-order-brand">
+                            GODDESS BEAUTY
+                          </span>
+
+                          <strong className="mypage-order-product-name">
+                            {order.orderName}
                           </strong>
 
-                        </td>
+
+                          {(order.firstColorName ||
+                            order.firstVariantName) && (
+
+                            <p className="mypage-order-option">
+                              {
+                                [
+                                  order.firstColorName,
+                                  order.firstVariantName
+                                ]
+                                  .filter(Boolean)
+                                  .join(" · ")
+                              }
+                            </p>
+
+                          )}
 
 
-                        <td className="mypage-qna-center">
+                          <div className="mypage-order-price-meta">
+                            <span>상품금액 {order.productTotal.toLocaleString()}원</span>
+                            <span>배송비 {order.deliveryFee === 0 ? "무료" : `${order.deliveryFee.toLocaleString()}원`}</span>
+                            {order.discount > 0 && (
+                              <span>할인 -{order.discount.toLocaleString()}원</span>
+                            )}
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+                      <div className="mypage-order-total-area">
+
+                        <span>PAYMENT TOTAL</span>
+
+                        <strong>
                           {order.total.toLocaleString()}원
-                        </td>
+                        </strong>
+
+                      </div>
+
+                    </div>
 
 
-                        <td className="mypage-qna-center">
+                    <div className="mypage-order-card-foot">
 
-                          <button
-                            type="button"
-                            className="mypage-wishlist-more-button"
-                            onClick={
-                              () =>
-                                navigate(
-                                  `/mypage/orders/${order.id}`
-                                )
-                            }
-                          >
-                            상세보기
-                          </button>
+                      <p>
+                        주문 및 배송 상세 정보는 주문상세에서 확인할 수 있습니다.
+                      </p>
 
-                        </td>
+                      <button
+                        type="button"
+                        onClick={
+                          () =>
+                            navigate(
+                              `/mypage/orders/${order.id}`
+                            )
+                        }
+                      >
+                        VIEW DETAIL
+                      </button>
 
-                      </tr>
+                    </div>
 
-                    )
-                  )}
+                  </article>
 
-                </tbody>
-
-              </table>
+                )
+              )}
 
             </div>
 

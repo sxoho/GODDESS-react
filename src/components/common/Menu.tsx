@@ -117,6 +117,7 @@ const Menu = () => {
         "refreshToken",
         "token",
         "jwtToken",
+        "jwt",
       ].forEach((key) => {
         localStorage.removeItem(key);
         sessionStorage.removeItem(key);
