@@ -1043,19 +1043,6 @@ const ProductDetail = () => {
       }));
   }, [sizes, availableOptions]);
 
-  const selectedOption = useMemo(() => {
-    if (!selectedColor || !selectedSizeId) return null;
-
-    return (
-      options.find(
-        (option) =>
-          option.productColorId === selectedColor.productcolorId &&
-          option.productSizeId === selectedSizeId &&
-          option.visible === "Y",
-      ) ?? null
-    );
-  }, [options, selectedColor, selectedSizeId]);
-
   const isOptionSelected = (optionId: number) =>
     cartSelections.some((item) => item.optionId === optionId);
 
@@ -1373,14 +1360,14 @@ const ProductDetail = () => {
     }
   };
 
-  const handleBuyNow = async () => {
+  const handleBuyNow = () => {
     if (!sw || !loginId) {
       window.alert("로그인 후 구매할 수 있습니다.");
       navigate("/login");
       return;
     }
 
-    if (cartSelections.length === 0) {
+    if (!product || cartSelections.length === 0) {
       window.alert("색상과 규격을 선택해주세요.");
       return;
     }
@@ -1396,101 +1383,87 @@ const ProductDetail = () => {
       return;
     }
 
-    try {
-      /*
-       * BUY NOW
-       * - 현재 상품 상세에서 선택한 옵션/수량만 장바구니 API에 등록
-       * - 등록 결과로 반환된 cartId만 주문 페이지에 전달
-       * - 기존 장바구니의 다른 상품들은 orderItems에 포함하지 않음
-       */
-      const buyNowCartItems = await Promise.all(
-        cartSelections.map((item) =>
-          addCartItem({
-            productOptionId: item.optionId,
-            quantity: item.quantity,
-          }),
-        ),
+    /*
+     * BUY NOW는 장바구니와 완전히 분리한다.
+     * - addCartItem() 호출 안 함
+     * - CART의 기존 상품/수량 조회 안 함
+     * - 현재 상세페이지에서 선택한 옵션/수량만 주문 페이지로 전달
+     */
+    const orderItems = cartSelections.map((item) => {
+      const option = options.find(
+        (currentOption) => currentOption.id === item.optionId,
       );
 
-      const orderItems = buyNowCartItems.map((cartItem) => {
-        const originalUnitPrice =
-          cartItem.price + (cartItem.addPrice || 0);
+      const originalUnitPrice =
+        product.price + (item.addPrice || 0);
 
-        const itemDiscountRate =
-          Number(cartItem.discount || 0);
+      const itemDiscountPrice =
+        discountedPrice + (item.addPrice || 0);
 
-        const itemDiscountPrice =
-          cartItem.discountPrice ??
-          Math.round(
-            originalUnitPrice *
-              (1 - itemDiscountRate / 100),
-          );
+      return {
+        id: item.optionId,
+        cartId: undefined,
+        productOptionId: item.optionId,
+        productId: product.productId,
+        brand: product.brand ?? "GODDESS",
+        productName: product.name,
+        colorName: item.colorName,
+        variantName: item.sizeName,
+        sizeName: item.sizeName,
+        optionName: `${item.colorName} / ${item.sizeName}`,
+        price: product.price,
+        discount: product.discount ?? 0,
+        addPrice: item.addPrice || 0,
+        discountPrice: itemDiscountPrice,
+        stock: option?.stock ?? item.stock,
+        quantity: item.quantity,
+        productStatus: product.status,
+        optionVisible: option?.visible ?? "Y",
+        filePath: currentGalleryItem?.imageUrl ?? null,
+        originalUnitPrice,
+      };
+    });
 
-        return {
-          ...cartItem,
-          cartId: cartItem.id,
-          discountPrice: itemDiscountPrice,
-          sizeName: cartItem.variantName,
-          optionName:
-            cartItem.optionName ||
-            [
-              cartItem.colorName,
-              cartItem.variantName,
-            ]
-              .filter(Boolean)
-              .join(" / "),
-        };
-      });
+    const totalOriginal = orderItems.reduce(
+      (sum, item) =>
+        sum +
+        (item.price + (item.addPrice || 0)) *
+          item.quantity,
+      0,
+    );
 
-      const totalOriginal = orderItems.reduce(
-        (sum, item) =>
-          sum +
-          (item.price + (item.addPrice || 0)) *
-            item.quantity,
-        0,
-      );
+    const totalProductPrice = orderItems.reduce(
+      (sum, item) =>
+        sum +
+        item.discountPrice * item.quantity,
+      0,
+    );
 
-      const totalProductPrice = orderItems.reduce(
-        (sum, item) =>
-          sum +
-          (item.discountPrice ?? 0) *
-            item.quantity,
-        0,
-      );
+    const totalDiscount =
+      totalOriginal - totalProductPrice;
 
-      const totalDiscount =
-        totalOriginal - totalProductPrice;
+    const shippingFee =
+      totalProductPrice >= 50000 ? 0 : 3000;
 
-      const shippingFee =
-        totalProductPrice >= 50000
-          ? 0
-          : 3000;
+    const finalPrice =
+      totalProductPrice + shippingFee;
 
-      const finalPrice =
-        totalProductPrice + shippingFee;
-
-      navigate("/order", {
-        state: {
-          orderItems,
-          paymentSummary: {
-            totalOriginal,
-            totalDiscount,
-            shippingFee,
-            finalPrice,
-          },
-          buyNow: true,
+    navigate("/order", {
+      state: {
+        buyNow: true,
+        buyNowItems: cartSelections.map((item) => ({
+          productOptionId: item.optionId,
+          quantity: item.quantity,
+        })),
+        orderItems,
+        paymentSummary: {
+          totalOriginal,
+          totalDiscount,
+          shippingFee,
+          finalPrice,
         },
-      });
-    } catch (error) {
-      console.error(
-        "바로 구매 처리 오류",
-        error,
-      );
-
-      window.alert(
-        "구매 상품을 준비하지 못했습니다.",
-      );
-    }
+      },
+    });
   };
 
   if (loading) {

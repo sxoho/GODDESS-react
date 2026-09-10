@@ -2929,6 +2929,9 @@ const MyPage = () => {
   ) => {
 
     switch (status) {
+      case "PAYMENT_WAITING":
+        return "결제대기";
+
       case "ORDERED":
         return "주문완료";
 

@@ -3,6 +3,7 @@
   --ink: #2b2929;
   --muted: #827d7b;
   --line: #ece9e8;
+
   width: min(1280px, 100%);
   margin: 0 auto;
   padding: 64px 52px 90px;
@@ -214,11 +215,39 @@
   cursor: pointer;
   font-size: 10px;
   font-weight: 500;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.payment-submit:hover {
+  background: #b46478;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(180, 100, 120, 0.16);
+}
+
+.payment-submit:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 .payment-submit:disabled {
   background: #d9d6d4;
-  cursor: default;
+  color: #fff;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.payment-submit:disabled:hover {
+  background: #d9d6d4;
+  color: #fff;
+  transform: none;
+  box-shadow: none;
 }
 
 .payment-security-note {

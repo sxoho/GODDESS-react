@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { getSpringApiUrl } from '../../components/ToolBak';
+import { axiosInstance, getSpringApiUrl } from '../../components/ToolBak';
+import { useGlobalStore } from '../../store/store';
 import { useCreateOrder } from '../../features/useOrder';
 
 import '../../styles/order/Order.css';
+import '../../styles/order/OrderShipping.css';
 
 interface OrderItem {
   id?: number;
@@ -57,10 +59,78 @@ const getImageUrl = (filePath?: string | null) => {
   return `${base}${filePath.startsWith('/') ? filePath : `/${filePath}`}`;
 };
 
+
+interface MemberShippingProfile {
+  id?: number;
+  name?: string;
+  tel?: string;
+  zipcode?: string;
+  address1?: string;
+  address2?: string;
+}
+
+interface ShippingFormData {
+  recipient: string;
+  tel: string;
+  zipcode: string;
+  address1: string;
+  address2: string;
+  request: string;
+}
+
+const EMPTY_SHIPPING: ShippingFormData = {
+  recipient: '',
+  tel: '',
+  zipcode: '',
+  address1: '',
+  address2: '',
+  request: '',
+};
+
+const readShippingStorage = (
+  key: string,
+): ShippingFormData | null => {
+  try {
+    const raw = sessionStorage.getItem(key) ?? localStorage.getItem(key);
+
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as Partial<ShippingFormData>;
+
+    return {
+      recipient: parsed.recipient ?? '',
+      tel: parsed.tel ?? '',
+      zipcode: parsed.zipcode ?? '',
+      address1: parsed.address1 ?? '',
+      address2: parsed.address2 ?? '',
+      request: parsed.request ?? '',
+    };
+  } catch {
+    return null;
+  }
+};
+
 const Order: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const createOrderMutation = useCreateOrder();
+  const { memberId, loginId } = useGlobalStore();
+
+  const shippingOwnerKey =
+    loginId || (memberId > 0 ? String(memberId) : 'guest');
+
+  const shippingDraftKey =
+    `goddessCheckoutShippingDraft:${shippingOwnerKey}`;
+
+  const defaultShippingKey =
+    `goddessDefaultShipping:${shippingOwnerKey}`;
+
+  const initialShipping =
+    readShippingStorage(shippingDraftKey) ??
+    readShippingStorage(defaultShippingKey) ??
+    EMPTY_SHIPPING;
 
   const state = location.state as OrderLocationState | undefined;
 
@@ -100,12 +170,15 @@ const Order: React.FC = () => {
       );
   }, [isBuyNow, state?.buyNowItems, orderItems]);
 
-  const [recipient, setRecipient] = useState('');
-  const [tel, setTel] = useState('');
-  const [zipcode, setZipcode] = useState('');
-  const [address1, setAddress1] = useState('');
-  const [address2, setAddress2] = useState('');
-  const [request, setRequest] = useState('');
+  const [recipient, setRecipient] = useState(initialShipping.recipient);
+  const [tel, setTel] = useState(initialShipping.tel);
+  const [zipcode, setZipcode] = useState(initialShipping.zipcode);
+  const [address1, setAddress1] = useState(initialShipping.address1);
+  const [address2, setAddress2] = useState(initialShipping.address2);
+  const [request, setRequest] = useState(initialShipping.request);
+  const [sameAsMemberInfo, setSameAsMemberInfo] = useState(false);
+  const [saveAsDefault, setSaveAsDefault] = useState(false);
+  const [memberInfoLoading, setMemberInfoLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
 
   const cartIds = useMemo(() => {
@@ -144,6 +217,95 @@ const Order: React.FC = () => {
   ) {
     return null;
   }
+
+  /*
+   * 배송지 작성 중 값은 sessionStorage에 자동 저장한다.
+   * 새로고침하거나 결제 화면에서 뒤로 돌아와도 그대로 복원된다.
+   */
+  useEffect(() => {
+    const draft: ShippingFormData = {
+      recipient,
+      tel,
+      zipcode,
+      address1,
+      address2,
+      request,
+    };
+
+    sessionStorage.setItem(
+      shippingDraftKey,
+      JSON.stringify(draft),
+    );
+  }, [
+    recipient,
+    tel,
+    zipcode,
+    address1,
+    address2,
+    request,
+    shippingDraftKey,
+  ]);
+
+  const handleSameAsMemberInfo = async (
+    checked: boolean,
+  ) => {
+    setSameAsMemberInfo(checked);
+
+    if (!checked) {
+      setRecipient('');
+      setTel('');
+      setZipcode('');
+      setAddress1('');
+      setAddress2('');
+      setRequest('');
+      return;
+    }
+
+    if (!memberId || memberId <= 0) {
+      alert('회원 기본정보를 확인할 수 없습니다.');
+      setSameAsMemberInfo(false);
+      return;
+    }
+
+    try {
+      setMemberInfoLoading(true);
+
+      const response =
+        await axiosInstance.get<MemberShippingProfile>(
+          `/mypage/${memberId}`,
+        );
+
+      const member = response.data;
+
+      setRecipient(member.name ?? '');
+      setTel(member.tel ?? '');
+      setZipcode(member.zipcode ?? '');
+      setAddress1(member.address1 ?? '');
+      setAddress2(member.address2 ?? '');
+    } catch (error) {
+      console.error('회원 기본정보 조회 실패:', error);
+      alert('회원 기본정보를 불러오지 못했습니다.');
+      setSameAsMemberInfo(false);
+    } finally {
+      setMemberInfoLoading(false);
+    }
+  };
+
+  const loadSavedDefaultShipping = () => {
+    const saved = readShippingStorage(defaultShippingKey);
+
+    if (!saved) {
+      alert('저장된 기본 배송지가 없습니다.');
+      return;
+    }
+
+    setRecipient(saved.recipient);
+    setTel(saved.tel);
+    setZipcode(saved.zipcode);
+    setAddress1(saved.address1);
+    setAddress2(saved.address2);
+    setRequest(saved.request);
+  };
 
   const totalOriginal = paymentSummary.totalOriginal ?? 0;
   const totalDiscount = paymentSummary.totalDiscount ?? 0;
@@ -194,15 +356,36 @@ const Order: React.FC = () => {
       return;
     }
 
-    createOrderMutation.mutate({
-      cartIds: isBuyNow ? undefined : cartIds,
-      buyNowItems: isBuyNow ? buyNowItems : undefined,
+    const shippingData: ShippingFormData = {
       recipient: recipient.trim(),
       tel: tel.trim(),
       zipcode: zipcode.trim(),
       address1: address1.trim(),
       address2: address2.trim(),
       request: request.trim(),
+    };
+
+    /*
+     * 체크한 경우 다음 주문에서도 사용할 수 있도록 기본 배송지로 저장.
+     * 작성 중 데이터(sessionStorage)는 결제 화면에서 뒤로 돌아올 수 있으므로
+     * 결제 단계 이동 시에는 지우지 않는다.
+     */
+    if (saveAsDefault) {
+      localStorage.setItem(
+        defaultShippingKey,
+        JSON.stringify(shippingData),
+      );
+    }
+
+    sessionStorage.setItem(
+      shippingDraftKey,
+      JSON.stringify(shippingData),
+    );
+
+    createOrderMutation.mutate({
+      cartIds: isBuyNow ? undefined : cartIds,
+      buyNowItems: isBuyNow ? buyNowItems : undefined,
+      ...shippingData,
     });
   };
 
@@ -284,12 +467,56 @@ const Order: React.FC = () => {
               <small>배송지 입력</small>
             </div>
 
+            <div className="order-shipping-options">
+              <label className="order-shipping-check">
+                <input
+                  type="checkbox"
+                  checked={sameAsMemberInfo}
+                  disabled={memberInfoLoading}
+                  onChange={(e) =>
+                    void handleSameAsMemberInfo(e.target.checked)
+                  }
+                />
+                <span className="order-shipping-checkbox-ui" />
+                <span className="order-shipping-check-label">
+                  {memberInfoLoading
+                    ? '기본정보 불러오는 중...'
+                    : '회원 기본정보와 동일'}
+                </span>
+              </label>
+
+              <label className="order-shipping-check">
+                <input
+                  type="checkbox"
+                  checked={saveAsDefault}
+                  onChange={(e) =>
+                    setSaveAsDefault(e.target.checked)
+                  }
+                />
+                <span className="order-shipping-checkbox-ui" />
+                <span className="order-shipping-check-label">
+                  이 배송지를 기본 배송지로 저장
+                </span>
+              </label>
+
+              <button
+                type="button"
+                className="order-saved-shipping-button"
+                onClick={loadSavedDefaultShipping}
+              >
+                저장된 배송지 불러오기
+              </button>
+            </div>
+
             <div className="order-form-grid">
               <label>
                 <span>받으시는 분 *</span>
                 <input
                   value={recipient}
-                  onChange={(e) => setRecipient(e.target.value)}
+                  onChange={(e) => {
+                    setRecipient(e.target.value);
+                    setSameAsMemberInfo(false);
+                  }}
                 />
               </label>
 
@@ -298,7 +525,10 @@ const Order: React.FC = () => {
                 <input
                   type="tel"
                   value={tel}
-                  onChange={(e) => setTel(e.target.value)}
+                  onChange={(e) => {
+                    setTel(e.target.value);
+                    setSameAsMemberInfo(false);
+                  }}
                   placeholder="010-0000-0000"
                 />
               </label>
@@ -307,7 +537,10 @@ const Order: React.FC = () => {
                 <span>우편번호 *</span>
                 <input
                   value={zipcode}
-                  onChange={(e) => setZipcode(e.target.value)}
+                  onChange={(e) => {
+                    setZipcode(e.target.value);
+                    setSameAsMemberInfo(false);
+                  }}
                 />
               </label>
 
@@ -315,7 +548,10 @@ const Order: React.FC = () => {
                 <span>기본 주소 *</span>
                 <input
                   value={address1}
-                  onChange={(e) => setAddress1(e.target.value)}
+                  onChange={(e) => {
+                    setAddress1(e.target.value);
+                    setSameAsMemberInfo(false);
+                  }}
                 />
               </label>
 
@@ -323,7 +559,10 @@ const Order: React.FC = () => {
                 <span>상세 주소 *</span>
                 <input
                   value={address2}
-                  onChange={(e) => setAddress2(e.target.value)}
+                  onChange={(e) => {
+                    setAddress2(e.target.value);
+                    setSameAsMemberInfo(false);
+                  }}
                 />
               </label>
 

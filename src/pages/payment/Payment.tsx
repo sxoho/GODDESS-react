@@ -1,26 +1,79 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useApprovePayment, useOrderInfo } from '../../features/usePayment';
-import '../../styles/payment/Payment.css';
+import {
+  useApprovePayment,
+  useOrderInfo,
+} from '../../features/usePayment';
 
-type PaymentMethod = 'CARD' | 'TRANSFER' | 'KAKAOPAY';
+import '../../styles/payment/Payment.css';
+import '../../styles/payment/PaymentMethodCards.css';
+
+type PaymentMethod =
+  | 'CARD'
+  | 'TRANSFER'
+  | 'KAKAOPAY'
+  | 'TOSSPAY'
+  | 'NAVERPAY';
 
 const methods: Array<{
   value: PaymentMethod;
   title: string;
   description: string;
+  logo?: string;
+  logoAlt?: string;
+  iconText?: string;
 }> = [
-  { value: 'CARD', title: '신용 / 체크카드', description: '국내 발급 카드 결제' },
-  { value: 'TRANSFER', title: '실시간 계좌이체', description: '계좌에서 바로 결제' },
-  { value: 'KAKAOPAY', title: '카카오페이', description: '간편결제 시뮬레이션' },
+  {
+    value: 'CARD',
+    title: '신용 / 체크카드',
+    description: '국내 발급 카드 결제',
+    iconText: '▱',
+  },
+  {
+    value: 'KAKAOPAY',
+    title: '카카오페이',
+    description: '간편결제 시뮬레이션',
+    logo: '/images/payment/kakaopay.png',
+    logoAlt: '카카오페이',
+  },
+  {
+    value: 'NAVERPAY',
+    title: '네이버페이',
+    description: '간편결제 시뮬레이션',
+    logo: '/images/payment/naverpay.png',
+    logoAlt: '네이버페이',
+  },
+  {
+    value: 'TOSSPAY',
+    title: '토스페이',
+    description: '간편결제 시뮬레이션',
+    logo: '/images/payment/tosspay.png',
+    logoAlt: '토스페이',
+  },
+  {
+    value: 'TRANSFER',
+    title: '실시간 계좌이체',
+    description: '계좌에서 바로 결제',
+    iconText: '⇄',
+  },
 ];
 
 const Payment: React.FC = () => {
-  const { orderId } = useParams<{ orderId: string }>();
-  const parsedOrderId = Number(orderId);
+  const { orderId } =
+    useParams<{ orderId: string }>();
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CARD');
-  const [agreed, setAgreed] = useState(false);
+  const parsedOrderId =
+    Number(orderId);
+
+  const [
+    paymentMethod,
+    setPaymentMethod,
+  ] = useState<PaymentMethod>('CARD');
+
+  const [
+    agreed,
+    setAgreed,
+  ] = useState(false);
 
   const {
     data: orderInfo,
@@ -28,30 +81,35 @@ const Payment: React.FC = () => {
     isError,
   } = useOrderInfo(parsedOrderId);
 
-  const approvePaymentMutation = useApprovePayment();
+  const approvePaymentMutation =
+    useApprovePayment();
 
   const handlePayment = () => {
     if (!orderInfo) {
       return;
     }
 
-    /*
-     * DB CK_ORDERS_STATUS 기준
-     * 결제 전 주문 상태는 ORDERED
-     */
-    if (orderInfo.status !== 'ORDERED') {
-      alert('현재 결제할 수 없는 주문입니다.');
+    if (
+      orderInfo.status !==
+      'PAYMENT_WAITING'
+    ) {
+      alert(
+        '현재 결제할 수 없는 주문입니다.',
+      );
       return;
     }
 
     if (!agreed) {
-      alert('결제 진행에 동의해주세요.');
+      alert(
+        '결제 진행에 동의해주세요.',
+      );
       return;
     }
 
-    const approved = window.confirm(
-      `[가상 결제창] ${orderInfo.total.toLocaleString()}원을 결제하시겠습니까?`,
-    );
+    const approved =
+      window.confirm(
+        `[가상 결제창] ${orderInfo.total.toLocaleString()}원을 결제하시겠습니까?`,
+      );
 
     if (!approved) {
       return;
@@ -61,7 +119,8 @@ const Payment: React.FC = () => {
       orderId: parsedOrderId,
       paymentMethod,
       amount: orderInfo.total,
-      approvalNo: `GODDESS_MOCK_${Date.now()}`,
+      approvalNo:
+        `GODDESS_MOCK_${Date.now()}`,
     });
   };
 
@@ -73,7 +132,10 @@ const Payment: React.FC = () => {
     );
   }
 
-  if (isError || !orderInfo) {
+  if (
+    isError ||
+    !orderInfo
+  ) {
     return (
       <main className="payment-state">
         주문 정보를 찾을 수 없습니다.
@@ -84,8 +146,14 @@ const Payment: React.FC = () => {
   return (
     <main className="payment-page-wrapper">
       <header className="payment-page-header">
-        <span>GODDESS SECURE PAYMENT</span>
-        <h1>PAYMENT</h1>
+        <span>
+          GODDESS SECURE PAYMENT
+        </span>
+
+        <h1>
+          PAYMENT
+        </h1>
+
         <p>
           실제 PG 결제 대신 프로젝트용 승인 시뮬레이션으로 처리됩니다.
         </p>
@@ -94,38 +162,85 @@ const Payment: React.FC = () => {
       <div className="payment-layout">
         <section className="payment-main">
           <div className="payment-section-heading">
-            <span>01</span>
-            <h2>Payment method</h2>
+            <span>
+              01
+            </span>
+
+            <h2>
+              Payment method
+            </h2>
           </div>
 
-          <div className="payment-methods">
-            {methods.map((method) => (
-              <label
-                key={method.value}
-                className={`payment-method-card ${
-                  paymentMethod === method.value ? 'selected' : ''
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value={method.value}
-                  checked={paymentMethod === method.value}
-                  onChange={() => setPaymentMethod(method.value)}
-                />
+          <p className="payment-method-guide">
+            결제 방법을 선택하세요.
+          </p>
 
-                <span className="method-radio" />
+          <div className="payment-method-grid">
+            {methods.map(
+              (method) => (
+                <label
+                  key={method.value}
+                  className={
+                    `payment-method-tile ${
+                      paymentMethod ===
+                      method.value
+                        ? 'selected'
+                        : ''
+                    }`
+                  }
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={method.value}
+                    checked={
+                      paymentMethod ===
+                      method.value
+                    }
+                    onChange={() =>
+                      setPaymentMethod(
+                        method.value,
+                      )
+                    }
+                  />
 
-                <span className="method-copy">
-                  <strong>{method.title}</strong>
-                  <small>{method.description}</small>
-                </span>
-              </label>
-            ))}
+                  <span className="payment-method-selected-mark">
+                    ✓
+                  </span>
+
+                  <span className="payment-method-visual">
+                    {method.logo ? (
+                      <img
+                        src={method.logo}
+                        alt={
+                          method.logoAlt ??
+                          method.title
+                        }
+                      />
+                    ) : (
+                      <span className="payment-method-fallback-icon">
+                        {method.iconText}
+                      </span>
+                    )}
+                  </span>
+
+                  <strong>
+                    {method.title}
+                  </strong>
+
+                  <small>
+                    {method.description}
+                  </small>
+                </label>
+              ),
+            )}
           </div>
 
           <div className="payment-guide">
-            <strong>PROJECT PAYMENT</strong>
+            <strong>
+              PROJECT PAYMENT
+            </strong>
+
             <p>
               포트폴리오용 프로젝트이므로 실제 카드 정보는 입력하지 않습니다.
               결제 버튼을 누르면 승인 번호를 가상 생성하고 PAYMENT 테이블에
@@ -139,25 +254,36 @@ const Payment: React.FC = () => {
             ORDER #{orderInfo.id}
           </span>
 
-          <h2>{orderInfo.orderName}</h2>
+          <h2>
+            {orderInfo.orderName}
+          </h2>
 
           <div className="payment-summary-lines">
             <div>
-              <span>상품 금액</span>
+              <span>
+                상품 금액
+              </span>
+
               <strong>
                 {orderInfo.productTotal.toLocaleString()}원
               </strong>
             </div>
 
             <div>
-              <span>할인</span>
+              <span>
+                할인
+              </span>
+
               <strong>
                 -{orderInfo.discount.toLocaleString()}원
               </strong>
             </div>
 
             <div>
-              <span>배송비</span>
+              <span>
+                배송비
+              </span>
+
               <strong>
                 {orderInfo.deliveryFee === 0
                   ? '무료'
@@ -167,7 +293,10 @@ const Payment: React.FC = () => {
           </div>
 
           <div className="payment-total">
-            <span>TOTAL</span>
+            <span>
+              TOTAL
+            </span>
+
             <strong>
               {orderInfo.total.toLocaleString()}원
             </strong>
@@ -177,8 +306,11 @@ const Payment: React.FC = () => {
             <input
               type="checkbox"
               checked={agreed}
-              onChange={(event) =>
-                setAgreed(event.target.checked)
+              onChange={
+                (event) =>
+                  setAgreed(
+                    event.target.checked,
+                  )
               }
             />
 
@@ -192,8 +324,7 @@ const Payment: React.FC = () => {
             className="payment-submit"
             onClick={handlePayment}
             disabled={
-              approvePaymentMutation.isPending ||
-              orderInfo.status !== 'ORDERED'
+              approvePaymentMutation.isPending
             }
           >
             {approvePaymentMutation.isPending
