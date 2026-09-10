@@ -1,0 +1,254 @@
+.order-detail-page {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #2a2929;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.order-detail-shell {
+  width: min(1380px, 100%);
+  margin: 0 auto;
+  padding: 58px 56px 100px;
+}
+
+.order-detail-back {
+  margin-bottom: 36px;
+  padding: 0 0 5px;
+  border: 0;
+  border-bottom: 1px solid #d7d1ce;
+  background: transparent;
+  color: #6d6866;
+  cursor: pointer;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.order-detail-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  padding-bottom: 38px;
+  border-bottom: 1px solid #e9e6e4;
+}
+
+.order-detail-header span {
+  display: block;
+  margin-bottom: 11px;
+  color: #918c8a;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.order-detail-header h1 {
+  margin: 0;
+  font-size: clamp(36px, 5vw, 62px);
+  line-height: 0.95;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+}
+
+.order-detail-status-block {
+  text-align: right;
+}
+
+.order-detail-status-block small {
+  display: block;
+  margin-bottom: 7px;
+  color: #9b9694;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+}
+
+.order-detail-status-block strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.order-detail-section {
+  padding: 42px 0 0;
+}
+
+.order-detail-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 20px;
+}
+
+.order-detail-section-heading span {
+  color: #a9a3a0;
+  font-size: 9px;
+}
+
+.order-detail-section-heading h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.order-detail-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px 160px;
+  gap: 25px;
+  align-items: center;
+  min-height: 110px;
+  padding: 22px 0;
+  border-top: 1px solid #ece9e8;
+}
+
+.order-detail-item:last-child {
+  border-bottom: 1px solid #ece9e8;
+}
+
+.order-detail-item-kicker {
+  display: block;
+  margin-bottom: 7px;
+  color: #999492;
+  font-size: 9px;
+  letter-spacing: 0.07em;
+}
+
+.order-detail-item-main strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.order-detail-item-main p {
+  margin: 7px 0 0;
+  color: #8e8987;
+  font-size: 10px;
+}
+
+.order-detail-item small {
+  display: block;
+  margin-bottom: 6px;
+  color: #9b9694;
+  font-size: 8px;
+  letter-spacing: 0.07em;
+}
+
+.order-detail-item > div:not(.order-detail-item-main) strong {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.order-detail-item-price {
+  text-align: right;
+}
+
+.order-detail-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  padding: 44px 0;
+}
+
+.order-detail-info-card {
+  padding: 28px;
+  background: #faf9f8;
+}
+
+.order-detail-info-card dl {
+  margin: 0;
+}
+
+.order-detail-info-card dl > div {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 22px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e8e4e2;
+}
+
+.order-detail-info-card dl > div:last-child {
+  border-bottom: 0;
+}
+
+.order-detail-info-card dt {
+  color: #96918f;
+  font-size: 9px;
+}
+
+.order-detail-info-card dd {
+  margin: 0;
+  color: #474341;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.order-detail-muted {
+  margin: 0;
+  color: #9a9593;
+  font-size: 10px;
+}
+
+.order-detail-summary {
+  width: min(420px, 100%);
+  margin-left: auto;
+  padding-top: 24px;
+  border-top: 1px solid #dad5d2;
+}
+
+.order-detail-summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+  padding: 7px 0;
+  color: #777270;
+  font-size: 10px;
+}
+
+.order-detail-summary strong {
+  color: #403d3b;
+  font-weight: 500;
+}
+
+.order-detail-summary-total {
+  margin-top: 8px;
+  padding-top: 15px !important;
+  border-top: 1px solid #dfd9d6;
+}
+
+.order-detail-summary-total strong {
+  font-size: 21px;
+  letter-spacing: -0.03em;
+}
+
+.order-detail-state {
+  min-height: 620px;
+  display: grid;
+  place-items: center;
+  color: #777270;
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .order-detail-shell {
+    padding: 42px 18px 70px;
+  }
+
+  .order-detail-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .order-detail-status-block {
+    text-align: left;
+  }
+
+  .order-detail-item {
+    grid-template-columns: 1fr;
+  }
+
+  .order-detail-item-price {
+    text-align: left;
+  }
+
+  .order-detail-info-grid {
+    grid-template-columns: 1fr;
+  }
+}

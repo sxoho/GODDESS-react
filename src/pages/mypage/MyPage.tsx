@@ -185,6 +185,20 @@ type MyPageUpdateForm = {
 };
 
 
+type MyOrder = {
+  id: number;
+  memberId?: number;
+  orderName: string;
+  productTotal: number;
+  deliveryFee: number;
+  discount: number;
+  total: number;
+  status: string;
+  createdAt?: string;
+  cancelDate?: string | null;
+};
+
+
 
 type ProductQna = {
   id: number;
@@ -2250,6 +2264,27 @@ const MyPage = () => {
 
 
   /**
+   * 주문 내역
+   */
+  const [
+    orderItems,
+    setOrderItems
+  ] = useState<MyOrder[]>([]);
+
+
+  const [
+    orderLoading,
+    setOrderLoading
+  ] = useState(false);
+
+
+  const [
+    orderError,
+    setOrderError
+  ] = useState("");
+
+
+  /**
    * 수정 모드
    */
   const [
@@ -2829,25 +2864,155 @@ const MyPage = () => {
       }
     } catch {}
 
-    /**
-     * [임시 처리]
-     * 현재 Spring Boot에 아래 주문 조회 API가 아직 구현되어 있지 않음.
-     *
-     * GET /api/commerce/orders/my?loginId=...
-     *
-     * 존재하지 않는 API를 호출하면
-     * NoResourceFoundException / 500 오류가 반복되므로
-     * 주문 API가 구현될 때까지 주문 개수는 0으로 표시한다.
-     *
-     * 주문 조회 API 구현 후 아래 코드를 제거하고
-     * 실제 주문 개수 조회 로직으로 교체할 것.
-     */
-    next.order = 0;
+    try {
+      const response =
+        await axiosInstance.get<{
+          success: boolean;
+          data: MyOrder[];
+          message?: string;
+        }>(
+          "/api/commerce/orders/my"
+        );
+
+      next.order =
+        Array.isArray(response.data?.data)
+          ? response.data.data.length
+          : 0;
+    } catch (error) {
+      console.error(
+        "마이페이지 주문 개수 조회 오류:",
+        error
+      );
+
+      next.order = 0;
+    }
 
     // 현재 Spring에는 BEAUTY_SAVE 조회 Controller가 아직 없어 AI BEAUTY 카운트는 0으로 둡니다.
 
     setDashboardCounts(next);
   };
+
+
+  /**
+   * 주문 상태 한글 표시
+   */
+  const getOrderStatusLabel = (
+    status?: string
+  ) => {
+
+    switch (status) {
+      case "ORDERED":
+        return "주문완료";
+
+      case "PAID":
+        return "결제완료";
+
+      case "PREPARING":
+        return "상품준비중";
+
+      case "SHIPPING":
+        return "배송중";
+
+      case "DELIVERED":
+        return "배송완료";
+
+      case "CANCELLED":
+        return "주문취소";
+
+      default:
+        return status || "-";
+    }
+  };
+
+
+  /**
+   * 주문 내역 조회
+   */
+  const loadMyOrders = async () => {
+
+    if (
+      !memberId ||
+      sw !== true
+    ) {
+      return;
+    }
+
+
+    try {
+
+      setOrderLoading(
+        true
+      );
+
+      setOrderError(
+        ""
+      );
+
+
+      const response =
+        await axiosInstance.get<{
+          success: boolean;
+          data: MyOrder[];
+          message?: string;
+        }>(
+          "/api/commerce/orders/my"
+        );
+
+
+      setOrderItems(
+        Array.isArray(
+          response.data?.data
+        )
+          ? response.data.data
+          : []
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "마이페이지 주문 내역 조회 오류:",
+        error
+      );
+
+
+      setOrderItems(
+        []
+      );
+
+
+      setOrderError(
+        "주문 내역을 불러오는 중 오류가 발생했습니다."
+      );
+
+
+    } finally {
+
+      setOrderLoading(
+        false
+      );
+    }
+  };
+
+
+  useEffect(() => {
+
+    if (
+      activeMenu !== "order" ||
+      !memberId ||
+      sw !== true
+    ) {
+      return;
+    }
+
+
+    void loadMyOrders();
+
+  }, [
+    activeMenu,
+    memberId,
+    sw
+  ]);
 
 
 /**
@@ -5183,11 +5348,131 @@ const MyPage = () => {
           </div>
 
 
-          <div className="mypage-menu-ready">
+          {orderLoading ? (
 
-            주문 내역 기능은 준비 중입니다.
+            <div className="mypage-menu-ready">
+              주문 내역을 불러오는 중입니다.
+            </div>
 
-          </div>
+          ) : orderError ? (
+
+            <div className="mypage-menu-ready">
+              {orderError}
+            </div>
+
+          ) : orderItems.length === 0 ? (
+
+            <div className="mypage-menu-ready">
+              아직 주문 내역이 없습니다.
+            </div>
+
+          ) : (
+
+            <div className="mypage-qna-table-wrap">
+
+              <table className="mypage-qna-table">
+
+                <thead>
+
+                  <tr>
+
+                    <th>
+                      주문번호
+                    </th>
+
+                    <th>
+                      주문상품
+                    </th>
+
+                    <th className="mypage-qna-center">
+                      주문일자
+                    </th>
+
+                    <th className="mypage-qna-center">
+                      주문상태
+                    </th>
+
+                    <th className="mypage-qna-center">
+                      결제금액
+                    </th>
+
+                    <th className="mypage-qna-center">
+                      상세
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                  {orderItems.map(
+                    (order) => (
+
+                      <tr
+                        key={order.id}
+                        className="mypage-qna-row"
+                      >
+
+                        <td>
+                          #{order.id}
+                        </td>
+
+
+                        <td>
+                          {order.orderName}
+                        </td>
+
+
+                        <td className="mypage-qna-center">
+                          {formatDate(order.createdAt)}
+                        </td>
+
+
+                        <td className="mypage-qna-center">
+
+                          <strong>
+                            {getOrderStatusLabel(order.status)}
+                          </strong>
+
+                        </td>
+
+
+                        <td className="mypage-qna-center">
+                          {order.total.toLocaleString()}원
+                        </td>
+
+
+                        <td className="mypage-qna-center">
+
+                          <button
+                            type="button"
+                            className="mypage-wishlist-more-button"
+                            onClick={
+                              () =>
+                                navigate(
+                                  `/mypage/orders/${order.id}`
+                                )
+                            }
+                          >
+                            상세보기
+                          </button>
+
+                        </td>
+
+                      </tr>
+
+                    )
+                  )}
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          )}
 
         </section>
       )}
