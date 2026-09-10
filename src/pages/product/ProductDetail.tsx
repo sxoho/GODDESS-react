@@ -1366,18 +1366,124 @@ const ProductDetail = () => {
     }
   };
 
-  const handleBuyNow = () => {
-    if (!selectedColor || !selectedSizeId || !selectedOption) {
+  const handleBuyNow = async () => {
+    if (!sw || !loginId) {
+      window.alert("로그인 후 구매할 수 있습니다.");
+      navigate("/login");
+      return;
+    }
+
+    if (cartSelections.length === 0) {
       window.alert("색상과 규격을 선택해주세요.");
       return;
     }
 
-    if (selectedOption.stock <= 0) {
-      window.alert("품절된 옵션입니다.");
+    const invalidSelection = cartSelections.find(
+      (item) => item.stock <= 0 || item.quantity > item.stock,
+    );
+
+    if (invalidSelection) {
+      window.alert(
+        `${invalidSelection.colorName} / ${invalidSelection.sizeName} 옵션의 재고를 확인해주세요.`,
+      );
       return;
     }
 
-    navigate("/order");
+    try {
+      /*
+       * BUY NOW
+       * - 현재 상품 상세에서 선택한 옵션/수량만 장바구니 API에 등록
+       * - 등록 결과로 반환된 cartId만 주문 페이지에 전달
+       * - 기존 장바구니의 다른 상품들은 orderItems에 포함하지 않음
+       */
+      const buyNowCartItems = await Promise.all(
+        cartSelections.map((item) =>
+          addCartItem({
+            productOptionId: item.optionId,
+            quantity: item.quantity,
+          }),
+        ),
+      );
+
+      const orderItems = buyNowCartItems.map((cartItem) => {
+        const originalUnitPrice =
+          cartItem.price + (cartItem.addPrice || 0);
+
+        const itemDiscountRate =
+          Number(cartItem.discount || 0);
+
+        const itemDiscountPrice =
+          cartItem.discountPrice ??
+          Math.round(
+            originalUnitPrice *
+              (1 - itemDiscountRate / 100),
+          );
+
+        return {
+          ...cartItem,
+          cartId: cartItem.id,
+          discountPrice: itemDiscountPrice,
+          sizeName: cartItem.variantName,
+          optionName:
+            cartItem.optionName ||
+            [
+              cartItem.colorName,
+              cartItem.variantName,
+            ]
+              .filter(Boolean)
+              .join(" / "),
+        };
+      });
+
+      const totalOriginal = orderItems.reduce(
+        (sum, item) =>
+          sum +
+          (item.price + (item.addPrice || 0)) *
+            item.quantity,
+        0,
+      );
+
+      const totalProductPrice = orderItems.reduce(
+        (sum, item) =>
+          sum +
+          (item.discountPrice ?? 0) *
+            item.quantity,
+        0,
+      );
+
+      const totalDiscount =
+        totalOriginal - totalProductPrice;
+
+      const shippingFee =
+        totalProductPrice >= 50000
+          ? 0
+          : 3000;
+
+      const finalPrice =
+        totalProductPrice + shippingFee;
+
+      navigate("/order", {
+        state: {
+          orderItems,
+          paymentSummary: {
+            totalOriginal,
+            totalDiscount,
+            shippingFee,
+            finalPrice,
+          },
+          buyNow: true,
+        },
+      });
+    } catch (error) {
+      console.error(
+        "바로 구매 처리 오류",
+        error,
+      );
+
+      window.alert(
+        "구매 상품을 준비하지 못했습니다.",
+      );
+    }
   };
 
   if (loading) {
