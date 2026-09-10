@@ -40,7 +40,7 @@ const methods: Array<{
     value: 'NAVERPAY',
     title: '네이버페이',
     description: '간편결제 시뮬레이션',
-    logo: '/images/payment/naverpay.png',
+    logo: '/images/payment/naverpay.svg',
     logoAlt: '네이버페이',
   },
   {
@@ -208,7 +208,13 @@ const Payment: React.FC = () => {
                     ✓
                   </span>
 
-                  <span className="payment-method-visual">
+                  <span
+                    className={`payment-method-visual ${
+                      method.value === 'TOSSPAY'
+                        ? 'tosspay'
+                        : ''
+                    }`}
+                  >
                     {method.logo ? (
                       <img
                         src={method.logo}

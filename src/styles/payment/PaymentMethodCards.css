@@ -114,3 +114,11 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+.payment-method-visual.tosspay img {
+  width: 170px;
+  max-width: 170px;
+  max-height: 60px;
+  object-fit: contain;
+}

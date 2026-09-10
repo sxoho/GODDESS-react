@@ -126,7 +126,9 @@ const OrderHistory: React.FC = () => {
 
                 <div>
                   <small>STATUS</small>
-                  <span className={`order-status status-${order.status.toLowerCase()}`}>
+                  <span
+                    className={`order-status status-${order.status.toLowerCase()}`}
+                  >
                     {statusLabel(order.status)}
                   </span>
                 </div>
@@ -139,11 +141,18 @@ const OrderHistory: React.FC = () => {
                 <button
                   type="button"
                   className="order-history-detail-button"
-                  onClick={() =>
-                    navigate(`/mypage/orders/${order.id}`)
-                  }
+                  onClick={() => {
+                    if (order.status === "PAYMENT_WAITING") {
+                      navigate(`/payment/${order.id}`);
+                      return;
+                    }
+
+                    navigate(`/mypage/orders/${order.id}`);
+                  }}
                 >
-                  DETAIL
+                  {order.status === "PAYMENT_WAITING"
+                    ? "PAY NOW"
+                    : "DETAIL"}
                 </button>
               </article>
             ))}

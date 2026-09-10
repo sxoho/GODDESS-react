@@ -5720,14 +5720,18 @@ const MyPage = () => {
                       <button
                         type="button"
                         className="mypage-order-detail-link"
-                        onClick={
-                          () =>
-                            navigate(
-                              `/mypage/orders/${order.id}`
-                            )
-                        }
+                        onClick={() => {
+                          if (order.status === "PAYMENT_WAITING") {
+                            navigate(`/payment/${order.id}`);
+                            return;
+                          }
+
+                          navigate(`/mypage/orders/${order.id}`);
+                        }}
                       >
-                        주문상세
+                        {order.status === "PAYMENT_WAITING"
+                          ? "결제하기"
+                          : "주문상세"}
                         <span aria-hidden="true">→</span>
                       </button>
 
@@ -5854,19 +5858,25 @@ const MyPage = () => {
                     <div className="mypage-order-card-foot">
 
                       <p>
-                        주문 및 배송 상세 정보는 주문상세에서 확인할 수 있습니다.
+                        {order.status === "PAYMENT_WAITING"
+                          ? "결제가 완료되지 않은 주문입니다. 결제를 이어서 진행해주세요."
+                          : "주문 및 배송 상세 정보는 주문상세에서 확인할 수 있습니다."}
                       </p>
 
                       <button
                         type="button"
-                        onClick={
-                          () =>
-                            navigate(
-                              `/mypage/orders/${order.id}`
-                            )
-                        }
+                        onClick={() => {
+                          if (order.status === "PAYMENT_WAITING") {
+                            navigate(`/payment/${order.id}`);
+                            return;
+                          }
+
+                          navigate(`/mypage/orders/${order.id}`);
+                        }}
                       >
-                        VIEW DETAIL
+                        {order.status === "PAYMENT_WAITING"
+                          ? "PAY NOW"
+                          : "VIEW DETAIL"}
                       </button>
 
                     </div>
