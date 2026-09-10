@@ -191,21 +191,18 @@
 
 /* 공개 */
 .admin-notice-state.visible.active {
-  border-color: #99c7a6;
-
-  background: #edf7f0;
-
-  color: #317044;
+  border-color: #e7a3a3;
+  background: #fff0f0;
+  color: #c74f4f;
+  font-weight: 700;
 }
-
 
 /* 비공개 */
 .admin-notice-state.visible.hidden {
-  border-color: #e2b8b8;
-
-  background: #fbefef;
-
-  color: #a35555;
+  border-color: #9fc7ad;
+  background: #eef8f1;
+  color: #3f7f57;
+  font-weight: 700;
 }
 
 .admin-notice-state:hover {
