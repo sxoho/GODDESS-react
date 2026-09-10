@@ -1359,6 +1359,13 @@ const ProductDetail = () => {
         ),
       );
 
+      /*
+       * 장바구니 담기 성공 후 상세페이지 선택 상태를 초기화한다.
+       * 같은 상세페이지에서 바로 BUY NOW를 눌렀을 때
+       * 방금 장바구니에 담은 수량이 그대로 남아있는 혼동을 방지한다.
+       */
+      setCartSelections([]);
+      setSelectedSizeId(null);
       setCartModalOpen(true);
     } catch (error) {
       console.error("장바구니 등록 오류", error);

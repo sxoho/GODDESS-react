@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+
 import { getSpringApiUrl } from '../../components/ToolBak';
 import { useCreateOrder } from '../../features/useOrder';
+
 import '../../styles/order/Order.css';
 
 interface OrderItem {
@@ -13,6 +15,7 @@ interface OrderItem {
   brandName?: string;
   productName: string;
   colorName?: string;
+  variantName?: string;
   sizeName?: string;
   optionName?: string;
   price: number;
@@ -23,6 +26,11 @@ interface OrderItem {
   filePath?: string | null;
 }
 
+interface BuyNowItem {
+  productOptionId: number;
+  quantity: number;
+}
+
 interface PaymentSummary {
   totalOriginal: number;
   totalDiscount: number;
@@ -30,10 +38,22 @@ interface PaymentSummary {
   finalPrice: number;
 }
 
+interface OrderLocationState {
+  buyNow?: boolean;
+  buyNowItems?: BuyNowItem[];
+  orderItems?: OrderItem[];
+  paymentSummary?: PaymentSummary;
+}
+
 const getImageUrl = (filePath?: string | null) => {
   if (!filePath) return '';
-  if (/^https?:\/\//.test(filePath)) return filePath;
+
+  if (/^https?:\/\//.test(filePath)) {
+    return filePath;
+  }
+
   const base = getSpringApiUrl();
+
   return `${base}${filePath.startsWith('/') ? filePath : `/${filePath}`}`;
 };
 
@@ -42,15 +62,43 @@ const Order: React.FC = () => {
   const navigate = useNavigate();
   const createOrderMutation = useCreateOrder();
 
-  const state = location.state as
-    | {
-        orderItems?: OrderItem[];
-        paymentSummary?: PaymentSummary;
-      }
-    | undefined;
+  const state = location.state as OrderLocationState | undefined;
 
+  const isBuyNow = state?.buyNow === true;
   const orderItems = state?.orderItems ?? [];
   const paymentSummary = state?.paymentSummary;
+
+  /*
+   * BUY NOW 데이터는 location.state.buyNowItems를 우선 사용하고,
+   * 혹시 이전 ProductDetail 코드에서 buyNowItems가 빠졌더라도
+   * orderItems의 productOptionId + quantity로 복구한다.
+   */
+  const buyNowItems = useMemo<BuyNowItem[]>(() => {
+    if (!isBuyNow) {
+      return [];
+    }
+
+    if (state?.buyNowItems && state.buyNowItems.length > 0) {
+      return state.buyNowItems;
+    }
+
+    return orderItems
+      .map((item) => ({
+        productOptionId:
+          item.productOptionId ??
+          (
+            typeof item.id === 'number' && !item.cartId
+              ? item.id
+              : 0
+          ),
+        quantity: item.quantity,
+      }))
+      .filter(
+        (item) =>
+          item.productOptionId > 0 &&
+          item.quantity > 0,
+      );
+  }, [isBuyNow, state?.buyNowItems, orderItems]);
 
   const [recipient, setRecipient] = useState('');
   const [tel, setTel] = useState('');
@@ -60,39 +108,83 @@ const Order: React.FC = () => {
   const [request, setRequest] = useState('');
   const [agreed, setAgreed] = useState(false);
 
+  const cartIds = useMemo(() => {
+    if (isBuyNow) {
+      return [];
+    }
+
+    return orderItems
+      .map((item) => item.cartId)
+      .filter((id): id is number => typeof id === 'number');
+  }, [isBuyNow, orderItems]);
+
   useEffect(() => {
     if (orderItems.length === 0 || !paymentSummary) {
       alert('주문할 상품 정보가 없습니다.');
       navigate('/cart', { replace: true });
+      return;
     }
-  }, [orderItems.length, paymentSummary, navigate]);
 
-  const cartIds = useMemo(
-    () =>
-      orderItems
-        .map((item) => item.cartId ?? item.id)
-        .filter((id): id is number => typeof id === 'number'),
-    [orderItems],
-  );
+    if (isBuyNow && buyNowItems.length === 0) {
+      alert('바로구매 상품 정보가 없습니다.');
+      navigate(-1);
+    }
+  }, [
+    orderItems.length,
+    paymentSummary,
+    isBuyNow,
+    buyNowItems.length,
+    navigate,
+  ]);
 
-  if (orderItems.length === 0 || !paymentSummary) return null;
+  if (
+    orderItems.length === 0 ||
+    !paymentSummary ||
+    (isBuyNow && buyNowItems.length === 0)
+  ) {
+    return null;
+  }
 
   const totalOriginal = paymentSummary.totalOriginal ?? 0;
   const totalDiscount = paymentSummary.totalDiscount ?? 0;
   const netProductTotal = totalOriginal - totalDiscount;
+
   const shippingFee =
-    paymentSummary.shippingFee ?? (netProductTotal >= 50000 ? 0 : 3000);
+    paymentSummary.shippingFee ??
+    (netProductTotal >= 50000 ? 0 : 3000);
+
   const finalPrice = netProductTotal + shippingFee;
 
   const submitOrder = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (cartIds.length !== orderItems.length) {
+    if (!isBuyNow && cartIds.length !== orderItems.length) {
       alert('장바구니 상품 정보가 올바르지 않습니다.');
       return;
     }
 
-    if (!recipient.trim() || !tel.trim() || !zipcode.trim() || !address1.trim() || !address2.trim()) {
+    if (
+      isBuyNow &&
+      (
+        buyNowItems.length === 0 ||
+        buyNowItems.some(
+          (item) =>
+            !item.productOptionId ||
+            item.quantity < 1,
+        )
+      )
+    ) {
+      alert('바로구매 상품 정보가 올바르지 않습니다.');
+      return;
+    }
+
+    if (
+      !recipient.trim() ||
+      !tel.trim() ||
+      !zipcode.trim() ||
+      !address1.trim() ||
+      !address2.trim()
+    ) {
       alert('배송지 필수 정보를 모두 입력해주세요.');
       return;
     }
@@ -103,7 +195,8 @@ const Order: React.FC = () => {
     }
 
     createOrderMutation.mutate({
-      cartIds,
+      cartIds: isBuyNow ? undefined : cartIds,
+      buyNowItems: isBuyNow ? buyNowItems : undefined,
       recipient: recipient.trim(),
       tel: tel.trim(),
       zipcode: zipcode.trim(),
@@ -132,18 +225,33 @@ const Order: React.FC = () => {
 
             <div className="order-items-container">
               {orderItems.map((item, index) => {
-                const key = item.cartId ?? item.id ?? index;
+                const key =
+                  item.cartId ??
+                  item.productOptionId ??
+                  item.id ??
+                  index;
+
                 const unitPrice =
-                  item.discountPrice ?? item.price + (item.addPrice ?? 0);
+                  item.discountPrice ??
+                  item.price + (item.addPrice ?? 0);
+
                 const option =
                   item.optionName ||
-                  [item.colorName, item.sizeName].filter(Boolean).join(' / ');
+                  [
+                    item.colorName,
+                    item.variantName ?? item.sizeName,
+                  ]
+                    .filter(Boolean)
+                    .join(' / ');
 
                 return (
                   <article className="order-item-row" key={key}>
                     <div className="item-thumb">
                       {item.filePath ? (
-                        <img src={getImageUrl(item.filePath)} alt={item.productName} />
+                        <img
+                          src={getImageUrl(item.filePath)}
+                          alt={item.productName}
+                        />
                       ) : (
                         <span>NO IMAGE</span>
                       )}
@@ -159,7 +267,9 @@ const Order: React.FC = () => {
 
                     <div className="item-price-qty">
                       <span>{item.quantity}개</span>
-                      <strong>{(unitPrice * item.quantity).toLocaleString()}원</strong>
+                      <strong>
+                        {(unitPrice * item.quantity).toLocaleString()}원
+                      </strong>
                     </div>
                   </article>
                 );
@@ -177,7 +287,10 @@ const Order: React.FC = () => {
             <div className="order-form-grid">
               <label>
                 <span>받으시는 분 *</span>
-                <input value={recipient} onChange={(e) => setRecipient(e.target.value)} />
+                <input
+                  value={recipient}
+                  onChange={(e) => setRecipient(e.target.value)}
+                />
               </label>
 
               <label>
@@ -192,17 +305,26 @@ const Order: React.FC = () => {
 
               <label>
                 <span>우편번호 *</span>
-                <input value={zipcode} onChange={(e) => setZipcode(e.target.value)} />
+                <input
+                  value={zipcode}
+                  onChange={(e) => setZipcode(e.target.value)}
+                />
               </label>
 
               <label className="full-width">
                 <span>기본 주소 *</span>
-                <input value={address1} onChange={(e) => setAddress1(e.target.value)} />
+                <input
+                  value={address1}
+                  onChange={(e) => setAddress1(e.target.value)}
+                />
               </label>
 
               <label className="full-width">
                 <span>상세 주소 *</span>
-                <input value={address2} onChange={(e) => setAddress2(e.target.value)} />
+                <input
+                  value={address2}
+                  onChange={(e) => setAddress2(e.target.value)}
+                />
               </label>
 
               <label className="full-width">
@@ -226,13 +348,19 @@ const Order: React.FC = () => {
               <span>상품 금액</span>
               <strong>{totalOriginal.toLocaleString()}원</strong>
             </div>
+
             <div className="summary-row">
               <span>상품 할인</span>
               <strong>-{totalDiscount.toLocaleString()}원</strong>
             </div>
+
             <div className="summary-row">
               <span>배송비</span>
-              <strong>{shippingFee === 0 ? '무료' : `${shippingFee.toLocaleString()}원`}</strong>
+              <strong>
+                {shippingFee === 0
+                  ? '무료'
+                  : `${shippingFee.toLocaleString()}원`}
+              </strong>
             </div>
 
             <div className="summary-total">
@@ -254,10 +382,16 @@ const Order: React.FC = () => {
               className="btn-pay"
               disabled={createOrderMutation.isPending}
             >
-              {createOrderMutation.isPending ? '주문 생성 중...' : '결제 단계로 이동'}
+              {createOrderMutation.isPending
+                ? '주문 생성 중...'
+                : '결제 단계로 이동'}
             </button>
 
-            <button type="button" className="back-cart" onClick={() => navigate('/cart')}>
+            <button
+              type="button"
+              className="back-cart"
+              onClick={() => navigate('/cart')}
+            >
               장바구니로 돌아가기
             </button>
           </div>

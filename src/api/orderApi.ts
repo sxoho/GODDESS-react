@@ -7,8 +7,14 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface BuyNowItemRequest {
+  productOptionId: number;
+  quantity: number;
+}
+
 export interface OrderCreateRequest {
-  cartIds: number[];
+  cartIds?: number[];
+  buyNowItems?: BuyNowItemRequest[];
   recipient: string;
   tel: string;
   zipcode: string;
@@ -53,10 +59,14 @@ export const createOrder = async (
     '/api/commerce/orders',
     data,
   );
+
   return response.data.data;
 };
 
-const normalizeOrder = (order: Omit<OrderResponse, 'orderId' | 'totalAmount'> & Partial<Pick<OrderResponse, 'orderId' | 'totalAmount'>>): OrderResponse => ({
+const normalizeOrder = (
+  order: Omit<OrderResponse, 'orderId' | 'totalAmount'> &
+    Partial<Pick<OrderResponse, 'orderId' | 'totalAmount'>>,
+): OrderResponse => ({
   ...order,
   orderId: order.orderId ?? order.id,
   totalAmount: order.totalAmount ?? order.total,
@@ -71,17 +81,24 @@ export const getMyOrders = async (): Promise<OrderResponse[]> => {
   const response = await axiosInstance.get<ApiResponse<OrderResponse[]>>(
     '/api/commerce/orders/my',
   );
+
   return response.data.data.map((order) => normalizeOrder(order));
 };
 
-export const getOrder = async (orderId: number): Promise<OrderResponse> => {
+export const getOrder = async (
+  orderId: number,
+): Promise<OrderResponse> => {
   const response = await axiosInstance.get<ApiResponse<OrderResponse>>(
     `/api/commerce/orders/${orderId}`,
   );
+
   return normalizeOrder(response.data.data);
 };
 
-export const getOrderDetails = async (orderId: number): Promise<OrderDetailResponse[]> => {
+export const getOrderDetails = async (
+  orderId: number,
+): Promise<OrderDetailResponse[]> => {
   const order = await getOrder(orderId);
+
   return order.orderDetails;
 };
