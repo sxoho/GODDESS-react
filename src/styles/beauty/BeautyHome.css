@@ -1,29 +1,356 @@
-.gd-beauty { max-width: 1440px; margin: auto; padding: 28px 5% 85px; color: #171719; }
-.gd-beauty-top { display: flex; justify-content: space-between; gap: 14px; font-size: 12px; letter-spacing: .1em; border-bottom: 1px solid #ddd; padding-bottom: 20px; }
-.gd-beauty-top > span:last-child { color: #171717; }
-.gd-beauty-heading { text-align: left; padding: 40px 0 32px; }
-.gd-beauty-heading > p { font-size: 12px; letter-spacing: .12em; }
-.gd-beauty-heading h1 { font-size: 32px; font-weight: 650; line-height: 1.4; letter-spacing: -.035em; margin: 0 0 14px; }
-.gd-beauty-heading h1 em { color: #171717; }
-.gd-beauty-heading > span { font-size: 16px; color: #666; }
-.gd-beauty-layout { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #e5e5e5; }
-.gd-beauty-image { position: relative; min-height: 570px; background: #f8e8ed; }
-.gd-beauty-image img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
-.gd-beauty-image > span { position: absolute; bottom: 0; left: 0; width: 100%; padding: 48px 25px 25px; color: #fff; font-size: 14px; letter-spacing: .1em; background: linear-gradient(transparent, #26101b88); }
-.gd-beauty-panel { background: #fafafa; min-width: 0; }
-.gd-beauty-tabs { display: flex; border-bottom: 1px solid #e5e5e5; }
-.gd-beauty-tabs button { flex: 1; padding: 23px 8px; color: #706069; font-size: 14px; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; }
-.gd-beauty-tabs button[aria-pressed="true"] { color: #171717; border-bottom-color: #171717; background: #f0f0f0; font-weight: 600; }
-.gd-beauty-panel-body { padding: 40px 9%; }
-.gd-beauty-overline { font-size: 12px; letter-spacing: .08em; color: #777; }
-.gd-beauty-panel h2 { font-weight: 500; font-size: 26px; letter-spacing: -.04em; margin: 25px 0; }
-.gd-beauty-description { font-size: 16px; line-height: 1.9; word-break: keep-all; color: #666; }
-.gd-beauty-options { display: flex; flex-wrap: wrap; gap: 9px; margin: 24px 0; }
-.gd-beauty-options li { border: 1px solid #ddd; padding: 9px 12px; font-size: 14px; }
-.gd-beauty-status { padding-top: 24px; margin-top: 30px; border-top: 1px solid #ddd; }
-.gd-beauty-status strong { font-size: 18px; font-weight: 500; }
-.gd-beauty-status p { font-size: 14px; line-height: 1.85; color: #777; }
-.gd-beauty-shop { display: flex; width: 100%; justify-content: space-between; padding: 17px 20px; background: #171719; color: #fff; font-size: 14px; margin-top: 25px; cursor: pointer; }
-.gd-beauty-shop:hover { background: #171717; }
-.gd-beauty button:focus-visible { outline: 3px solid #171717; outline-offset: 4px; }
-@media (max-width: 750px) { .gd-beauty { padding-bottom: 50px; } .gd-beauty-heading { padding: 35px 0; } .gd-beauty-layout { grid-template-columns: 1fr; } .gd-beauty-image { min-height: 0; aspect-ratio: 1 / 1; } .gd-beauty-panel-body { padding: 28px 7%; } }
+.gd-beauty {
+  max-width: 1440px;
+  margin: auto;
+  padding: 10px 5% 85px;
+  color: #171719;
+}
+
+.gd-beauty-heading {
+  text-align: left;
+  padding: 24px 0 32px;
+}
+
+.gd-beauty-heading > p {
+  font-size: 12px;
+  letter-spacing: .12em;
+}
+
+.gd-beauty-heading h1 {
+  font-size: 32px;
+  font-weight: 650;
+  line-height: 1.4;
+  letter-spacing: -.035em;
+  margin: 0 0 14px;
+}
+
+.gd-beauty-heading h1 em {
+  color: #171717;
+}
+
+.gd-beauty-heading > span {
+  font-size: 16px;
+  color: #666;
+}
+
+.gd-beauty-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid #e5e5e5;
+}
+
+.gd-beauty-image {
+  position: relative;
+  min-height: 570px;
+  background: #f8e8ed;
+}
+
+.gd-beauty-image img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gd-beauty-image > span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 48px 25px 25px;
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: .1em;
+  background: linear-gradient(
+    transparent,
+    #26101b88
+  );
+}
+
+.gd-beauty-panel {
+  background: #fafafa;
+  min-width: 0;
+}
+
+.gd-beauty-tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.gd-beauty-tabs button {
+  flex: 1;
+  padding: 23px 8px;
+  color: #706069;
+  font-size: 14px;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.gd-beauty-tabs button[aria-pressed="true"] {
+  color: #171717;
+  border-bottom-color: #171717;
+  background: #f0f0f0;
+  font-weight: 600;
+}
+
+.gd-beauty-panel-body {
+  padding: 40px 9%;
+}
+
+.gd-beauty-overline {
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: #777;
+}
+
+.gd-beauty-panel h2 {
+  font-weight: 500;
+  font-size: 26px;
+  letter-spacing: -.04em;
+  margin: 25px 0;
+}
+
+.gd-beauty-description {
+  font-size: 16px;
+  line-height: 1.9;
+  word-break: keep-all;
+  color: #666;
+}
+
+.gd-beauty-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 24px 0;
+}
+
+.gd-beauty-options li {
+  border: 1px solid #ddd;
+  padding: 9px 12px;
+  font-size: 14px;
+}
+
+.gd-beauty-status {
+  padding-top: 24px;
+  margin-top: 30px;
+  border-top: 1px solid #ddd;
+}
+
+.gd-beauty-status strong {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.gd-beauty-status p {
+  font-size: 14px;
+  line-height: 1.85;
+  color: #777;
+}
+
+.gd-beauty-shop {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 17px 20px;
+  background: #171719;
+  color: #fff;
+  font-size: 14px;
+  margin-top: 25px;
+  cursor: pointer;
+}
+
+.gd-beauty-shop:hover {
+  background: #171717;
+}
+
+.gd-beauty button:focus-visible {
+  outline: 3px solid #171717;
+  outline-offset: 4px;
+}
+
+
+/* =========================================================
+   AI BEAUTY 전체 2단 레이아웃
+========================================================= */
+
+.gd-beauty-page-layout {
+  display: grid;
+  grid-template-columns:
+    210px
+    minmax(0, 1fr);
+  gap: 34px;
+  align-items: start;
+}
+
+
+/* =========================================================
+   AI BEAUTY 왼쪽 사이드바
+========================================================= */
+
+.gd-beauty-sidebar {
+  position: sticky;
+  top: 100px;
+  min-width: 0;
+  padding-right: 24px;
+  border-right: 1px solid #e5e5e5;
+}
+
+.gd-beauty-sidebar-title {
+  padding: 8px 0 24px;
+  border-bottom: 1px solid #222222;
+}
+
+.gd-beauty-sidebar-title span {
+  display: block;
+  margin-bottom: 8px;
+  color: #999999;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+}
+
+.gd-beauty-sidebar-title strong {
+  display: block;
+  color: #222222;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+
+/* =========================================================
+   사이드바 메뉴
+========================================================= */
+
+.gd-beauty-sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  padding-top: 18px;
+}
+
+.gd-beauty-sidebar-menu button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 8px 14px 0;
+  border: 0;
+  background: transparent;
+  color: #777777;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gd-beauty-sidebar-menu button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -25px;
+  width: 2px;
+  height: 100%;
+  background: transparent;
+}
+
+.gd-beauty-sidebar-menu button:hover {
+  color: #111111;
+}
+
+.gd-beauty-sidebar-menu button:hover::after {
+  background: #222222;
+}
+
+.gd-beauty-sidebar-menu button span {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.gd-beauty-sidebar-menu button small {
+  color: #aaaaaa;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   오른쪽 본문
+========================================================= */
+
+.gd-beauty-main {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   반응형
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .gd-beauty-page-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gd-beauty-sidebar {
+    position: static;
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  .gd-beauty-sidebar-menu {
+    display: grid;
+    grid-template-columns:
+      repeat(3, 1fr);
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .gd-beauty-sidebar-menu button {
+    padding:
+      14px
+      10px;
+  }
+
+  .gd-beauty-sidebar-menu button::after {
+    top: auto;
+    right: auto;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+  }
+
+}
+
+@media (max-width: 750px) {
+
+  .gd-beauty {
+    padding:
+      0
+      5%
+      50px;
+  }
+
+  .gd-beauty-heading {
+    padding:
+      20px
+      0
+      28px;
+  }
+
+  .gd-beauty-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gd-beauty-image {
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+  }
+
+  .gd-beauty-panel-body {
+    padding: 28px 7%;
+  }
+
+}

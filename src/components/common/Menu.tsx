@@ -16,6 +16,7 @@ type MegaMenuKey =
   | "skincare"
   | "hair"
   | "diagnosis"
+  | "beauty"
   | null;
 
 const Menu = () => {
@@ -323,7 +324,7 @@ const Menu = () => {
             to="/beauty"
             className="goddess-nav-link"
             onMouseEnter={() =>
-              setActiveMenu(null)
+              setActiveMenu("beauty")
             }
           >
             AI BEAUTY
@@ -777,6 +778,92 @@ const Menu = () => {
                   </div>
                   <b>→</b>
                 </button>
+              </div>
+            )}
+
+            {/* =====================
+                AI BEAUTY
+            ====================== */}
+            {activeMenu === "beauty" && (
+              <div className="beauty-mega">
+
+                <div className="beauty-mega-heading">
+                  <span>EXPERIENCE AI BEAUTY</span>
+
+                  <h3>
+                    나만의 뷰티 스타일을
+                    <br />
+                    직접 경험해보세요.
+                  </h3>
+
+                  <p className="beauty-mega-heading-description">
+                    등록한 회원 사진을 바탕으로 메이크업, 헤어스타일,
+                    헤어컬러를 미리 적용하고 나에게 어울리는 스타일을
+                    찾아보세요.
+                  </p>
+
+                  <div className="beauty-mega-benefit">
+                    <span>FREE 3 TIMES / MONTH</span>
+                    <p>
+                      매월 3회 무료로 AI 뷰티 체험을 이용할 수 있어요.
+                      <br />
+                      Premium 구독 시 월 이용 횟수 제한 없이 자유롭게 체험해보세요.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="beauty-mega-card experience"
+                  onClick={() => navigate("/beauty")}
+                >
+                  <div className="beauty-mega-visual beauty-experience-visual" aria-hidden="true">
+                    <span className="beauty-orb beauty-orb-one" />
+                    <span className="beauty-orb beauty-orb-two" />
+                    <span className="beauty-orb beauty-orb-three" />
+                    <span className="beauty-visual-label">TRY YOUR LOOK</span>
+                  </div>
+
+                  <div className="beauty-mega-card-bottom">
+                    <span className="beauty-mega-card-number">01</span>
+
+                    <div className="beauty-mega-card-copy">
+                      <small>AI BEAUTY EXPERIENCE</small>
+                      <strong>AI 뷰티 체험</strong>
+                      <p>메이크업 · 헤어스타일 · 헤어컬러</p>
+                    </div>
+
+                    <b aria-hidden="true">→</b>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  className="beauty-mega-card saved"
+                  onClick={() => navigate("/beauty?view=saved")}
+                >
+                  <div className="beauty-mega-visual beauty-saved-visual" aria-hidden="true">
+                    <span className="beauty-save-card beauty-save-card-back" />
+                    <span className="beauty-save-card beauty-save-card-middle" />
+                    <span className="beauty-save-card beauty-save-card-front">
+                      <i />
+                    </span>
+                    <span className="beauty-visual-label">MY BEAUTY ARCHIVE</span>
+                  </div>
+
+                  <div className="beauty-mega-card-bottom">
+                    <span className="beauty-mega-card-number">02</span>
+
+                    <div className="beauty-mega-card-copy">
+                      <small>MY BEAUTY</small>
+                      <strong>나의 이용 내역</strong>
+                      <p>저장한 AI 뷰티 결과와 스타일 다시보기</p>
+                    </div>
+
+                    <b aria-hidden="true">→</b>
+                  </div>
+                </button>
+
               </div>
             )}
 

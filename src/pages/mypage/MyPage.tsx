@@ -115,6 +115,29 @@ type MemberPhoto = {
 };
 
 
+/**
+ * 회원 사진 AI 검사 결과
+ *
+ * Spring:
+ * POST /member_photo/check
+ *
+ * FastAPI 11501:
+ * POST /member_photo_check
+ */
+type PhotoAiCheckResult = {
+  faceDetected: boolean;
+  isFront: boolean;
+  faceCenterOffset?: number | null;
+  brightness?: number | null;
+  isTooDark: boolean;
+  isTooBright: boolean;
+  blurScore?: number | null;
+  isBlurred: boolean;
+  valid: boolean;
+  message: string;
+};
+
+
 
 type WishlistItem = {
   id: number;
@@ -2141,6 +2164,29 @@ const MyPage = () => {
 
 
   /**
+   * 회원 사진 선택 input
+   * - galleryPhotoInputRef : PC/모바일 갤러리에서 사진 선택
+   * - cameraPhotoInputRef  : 모바일 전면 카메라 촬영
+   */
+  const galleryPhotoInputRef =
+    useRef<HTMLInputElement | null>(null);
+
+
+  const cameraPhotoInputRef =
+    useRef<HTMLInputElement | null>(null);
+
+
+  /**
+   * 사진 AI 검사 요청 번호
+   *
+   * 사용자가 사진을 빠르게 연속 선택했을 때
+   * 이전 검사 응답이 최신 사진 결과를 덮어쓰지 않도록 한다.
+   */
+  const photoCheckRequestId =
+    useRef(0);
+
+
+  /**
    * 회원 정보
    */
   const [
@@ -2198,6 +2244,35 @@ const MyPage = () => {
     photoSaving,
     setPhotoSaving
   ] = useState(false);
+
+
+  /**
+   * 회원 사진 AI 검사 중 여부
+   */
+  const [
+    photoChecking,
+    setPhotoChecking
+  ] = useState(false);
+
+
+  /**
+   * 회원 사진 AI 검사 결과
+   */
+  const [
+    photoAiResult,
+    setPhotoAiResult
+  ] = useState<PhotoAiCheckResult | null>(
+    null
+  );
+
+
+  /**
+   * 회원 사진 AI 검사 오류 안내
+   */
+  const [
+    photoAiError,
+    setPhotoAiError
+  ] = useState("");
 
 
 
@@ -3437,6 +3512,24 @@ const MyPage = () => {
     );
 
 
+    /**
+     * 수정 모드 진입 시 이전 사진 검사 상태 초기화
+     */
+    photoCheckRequestId.current += 1;
+
+    setPhotoAiResult(
+      null
+    );
+
+    setPhotoAiError(
+      ""
+    );
+
+    setPhotoChecking(
+      false
+    );
+
+
     setIsEditing(
       true
     );
@@ -3497,6 +3590,21 @@ const MyPage = () => {
 
     setPhotoPreview(
       ""
+    );
+
+
+    photoCheckRequestId.current += 1;
+
+    setPhotoAiResult(
+      null
+    );
+
+    setPhotoAiError(
+      ""
+    );
+
+    setPhotoChecking(
+      false
     );
 
 
@@ -3567,20 +3675,38 @@ const MyPage = () => {
 
 
   /**
-   * 회원 사진 파일 선택
+   * 회원 사진 선택 / 카메라 촬영 공통 처리
    *
-   * 현재는 AI 정면 판별 없이
-   * 이미지 형식과 용량만 확인한 뒤
-   * 선택한 사진을 미리보기로 표시한다.
+   * 처리 순서:
+   *
+   * 1. 이미지 형식 검사
+   * 2. 10MB 용량 검사
+   * 3. 미리보기 표시
+   * 4. Spring /member_photo/check 호출
+   * 5. H200 FastAPI 11501 AI 검사
+   * 6. 검사 결과를 화면에 표시
+   *
+   * AI 검사 통과(valid=true)한 사진만
+   * 실제 사진 등록 / 변경 버튼을 활성화한다.
    */
   const handlePhotoChange =
-    (
+    async (
       event:
         React.ChangeEvent<HTMLInputElement>
     ) => {
 
       const file =
         event.target.files?.[0];
+
+
+      /**
+       * 같은 파일을 다시 선택해도
+       * onChange가 발생하도록 input 값은 즉시 초기화한다.
+       *
+       * File 객체 자체는 아래 file 변수에 보관되어 있다.
+       */
+      event.target.value =
+        "";
 
 
       if (!file) {
@@ -3607,11 +3733,6 @@ const MyPage = () => {
           "JPG, JPEG, PNG 이미지 파일만 등록할 수 있습니다."
         );
 
-
-        event.target.value =
-          "";
-
-
         return;
       }
 
@@ -3632,13 +3753,32 @@ const MyPage = () => {
           "사진은 10MB 이하만 등록할 수 있습니다."
         );
 
-
-        event.target.value =
-          "";
-
-
         return;
       }
+
+
+      /**
+       * 새로운 검사 요청 번호 생성
+       *
+       * 사진을 연속 선택할 경우 이전 응답은 무시한다.
+       */
+      const requestId =
+        photoCheckRequestId.current + 1;
+
+      photoCheckRequestId.current =
+        requestId;
+
+
+      /**
+       * 이전 AI 검사 결과 초기화
+       */
+      setPhotoAiResult(
+        null
+      );
+
+      setPhotoAiError(
+        ""
+      );
 
 
       /**
@@ -3663,8 +3803,7 @@ const MyPage = () => {
 
 
       /**
-       * 서버 업로드 전
-       * 브라우저에서 바로 미리보기
+       * 브라우저 미리보기
        */
       const preview =
         URL.createObjectURL(
@@ -3675,6 +3814,137 @@ const MyPage = () => {
       setPhotoPreview(
         preview
       );
+
+
+      /**
+       * AI 검사 요청 데이터
+       */
+      const formData =
+        new FormData();
+
+
+      formData.append(
+        "file",
+        file
+      );
+
+
+      try {
+
+        setPhotoChecking(
+          true
+        );
+
+
+        /**
+         * React
+         * → Spring /member_photo/check
+         * → H200 FastAPI 11501
+         */
+        const response =
+          await axiosInstance.post<
+            PhotoAiCheckResult
+          >(
+            "/member_photo/check",
+            formData
+          );
+
+
+        /**
+         * 이미 다른 사진을 선택했다면
+         * 이전 요청의 결과는 반영하지 않는다.
+         */
+        if (
+          requestId !==
+          photoCheckRequestId.current
+        ) {
+          return;
+        }
+
+
+        setPhotoAiResult(
+          response.data
+        );
+
+
+      } catch (error) {
+
+        if (
+          requestId !==
+          photoCheckRequestId.current
+        ) {
+          return;
+        }
+
+
+        console.error(
+          "회원 사진 AI 검사 오류:",
+          error
+        );
+
+
+        /**
+         * Axios 응답에 서버 메시지가 있으면 우선 사용한다.
+         */
+        const errorData =
+          (
+            error as {
+              response?: {
+                data?: {
+                  message?: string;
+                  error?: string;
+                } | string;
+              };
+            }
+          )?.response?.data;
+
+
+        let errorMessage =
+          "사진 AI 검사 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+
+
+        if (
+          typeof errorData === "string" &&
+          errorData.trim()
+        ) {
+
+          errorMessage =
+            errorData;
+
+        } else if (
+          errorData &&
+          typeof errorData === "object"
+        ) {
+
+          errorMessage =
+            errorData.message ||
+            errorData.error ||
+            errorMessage;
+        }
+
+
+        setPhotoAiResult(
+          null
+        );
+
+
+        setPhotoAiError(
+          errorMessage
+        );
+
+
+      } finally {
+
+        if (
+          requestId ===
+          photoCheckRequestId.current
+        ) {
+
+          setPhotoChecking(
+            false
+          );
+        }
+      }
     };
 
 
@@ -3700,6 +3970,33 @@ const MyPage = () => {
 
         alert(
           "등록할 사진을 선택해주세요."
+        );
+
+        return;
+      }
+
+
+      if (
+        photoChecking
+      ) {
+
+        alert(
+          "사진 AI 검사가 진행 중입니다."
+        );
+
+        return;
+      }
+
+
+      if (
+        !photoAiResult ||
+        !photoAiResult.valid
+      ) {
+
+        alert(
+          photoAiResult?.message ||
+          photoAiError ||
+          "AI 사진 검사를 통과한 사진만 등록할 수 있습니다."
         );
 
         return;
@@ -3762,6 +4059,21 @@ const MyPage = () => {
 
         setPhotoPreview(
           ""
+        );
+
+
+        photoCheckRequestId.current += 1;
+
+        setPhotoAiResult(
+          null
+        );
+
+        setPhotoAiError(
+          ""
+        );
+
+        setPhotoChecking(
+          false
         );
 
 
@@ -4552,7 +4864,7 @@ const MyPage = () => {
               <div>
 
                 <strong>
-                  AI BEAUTY을 준비해보세요
+                  AI BEAUTY를 준비해보세요
                 </strong>
 
 
@@ -4984,26 +5296,96 @@ const MyPage = () => {
 
 
                       <p className="mypage-photo-guide">
-
-                        AI 뷰티 체험에 사용할
-                        회원 사진을 등록해주세요.
+                        AI 뷰티 체험에 사용할 회원 사진을 등록해주세요.
 
                         <br />
 
-                        JPG, JPEG, PNG /
-                        최대 10MB
+                        정면을 바라보고 얼굴 전체가 잘 보이는 사진을 권장합니다.
 
+                        <br />
+
+                        조명이 너무 밝거나 어둡지 않은 사진을 사용해주세요.
+
+                        <br />
+
+                        과도한 필터나 보정이 적용된 사진은
+                        실제 AI 뷰티 결과와 차이가 발생할 수 있습니다.
+
+                        <br />
+
+                        JPG, JPEG, PNG / 최대 10MB
                       </p>
 
 
-                      <input
-                        type="file"
-                        accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-                        onChange={
-                          handlePhotoChange
-                        }
-                        className="mypage-photo-file-input"
-                      />
+                      <div className="mypage-photo-source-actions">
+
+                        {/* 갤러리 / 파일 선택 */}
+                        <input
+                          ref={
+                            galleryPhotoInputRef
+                          }
+                          type="file"
+                          accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                          onChange={
+                            handlePhotoChange
+                          }
+                          className="mypage-photo-file-input"
+                          style={{
+                            display: "none"
+                          }}
+                        />
+
+
+                        {/* 모바일 전면 카메라 촬영 */}
+                        <input
+                          ref={
+                            cameraPhotoInputRef
+                          }
+                          type="file"
+                          accept="image/jpeg,image/png"
+                          capture="user"
+                          onChange={
+                            handlePhotoChange
+                          }
+                          className="mypage-photo-file-input"
+                          style={{
+                            display: "none"
+                          }}
+                        />
+
+
+                        <button
+                          type="button"
+                          className="mypage-check-button"
+                          onClick={
+                            () =>
+                              galleryPhotoInputRef.current?.click()
+                          }
+                          disabled={
+                            photoSaving ||
+                            photoChecking
+                          }
+                        >
+                          사진 선택
+                        </button>
+
+
+                        <button
+                          type="button"
+                          className="mypage-check-button"
+                          onClick={
+                            () =>
+                              cameraPhotoInputRef.current?.click()
+                          }
+                          disabled={
+                            photoSaving ||
+                            photoChecking
+                          }
+                        >
+                          카메라로 촬영
+                        </button>
+
+                      </div>
 
 
                       {selectedPhoto && (
@@ -5021,6 +5403,130 @@ const MyPage = () => {
                       )}
 
 
+                      {photoChecking && (
+
+                        <div className="mypage-photo-ai-result checking">
+
+                          <strong>
+                            AI 사진 검사 중...
+                          </strong>
+
+                          <p>
+                            얼굴 방향, 밝기, 선명도를 확인하고 있습니다.
+                          </p>
+
+                        </div>
+
+                      )}
+
+
+                      {!photoChecking &&
+                        photoAiResult && (
+
+                        <div
+                          className={
+                            photoAiResult.valid
+                              ? "mypage-photo-ai-result success"
+                              : "mypage-photo-ai-result fail"
+                          }
+                        >
+
+                          <div className="mypage-photo-ai-result-title">
+
+                            <strong>
+                              AI 사진 검사 결과
+                            </strong>
+
+                          </div>
+
+
+                          <p className="mypage-photo-ai-message">
+                            {
+                              photoAiResult.message
+                            }
+                          </p>
+
+
+                          {!photoAiResult.valid && (
+
+                            <div className="mypage-photo-ai-result-inline">
+
+                              <span>
+                                얼굴 검출{" "}
+                                <strong>
+                                  {
+                                    photoAiResult.faceDetected
+                                      ? "정상"
+                                      : "확인 필요"
+                                  }
+                                </strong>
+                              </span>
+
+
+                              <span>
+                                정면 여부{" "}
+                                <strong>
+                                  {
+                                    photoAiResult.isFront
+                                      ? "정상"
+                                      : "확인 필요"
+                                  }
+                                </strong>
+                              </span>
+
+
+                              <span>
+                                밝기{" "}
+                                <strong>
+                                  {
+                                    photoAiResult.isTooDark
+                                      ? "너무 어두움"
+                                      : photoAiResult.isTooBright
+                                        ? "너무 밝음"
+                                        : "정상"
+                                  }
+                                </strong>
+                              </span>
+
+
+                              <span>
+                                선명도{" "}
+                                <strong>
+                                  {
+                                    photoAiResult.isBlurred
+                                      ? "흐림"
+                                      : "정상"
+                                  }
+                                </strong>
+                              </span>
+
+                            </div>
+
+                          )}
+
+                        </div>
+
+                      )}
+
+
+                      {!photoChecking &&
+                        photoAiError && (
+
+                        <div className="mypage-photo-ai-result fail">
+
+                          <strong>
+                            AI 사진 검사를 완료하지 못했습니다.
+                          </strong>
+
+                          <p className="mypage-photo-ai-message">
+                            {photoAiError}
+                          </p>
+
+                        </div>
+
+                      )}
+
+
                       <button
                         type="button"
                         className="mypage-photo-upload-button"
@@ -5029,20 +5535,26 @@ const MyPage = () => {
                         }
                         disabled={
                           !selectedPhoto ||
-                          photoSaving
+                          photoSaving ||
+                          photoChecking ||
+                          !photoAiResult?.valid
                         }
                       >
 
                         {
-                          photoSaving
+                          photoChecking
 
-                            ? "사진 저장 중..."
+                            ? "AI 검사 중..."
 
-                            : memberPhoto
+                            : photoSaving
 
-                              ? "사진 변경하기"
+                              ? "사진 저장 중..."
 
-                              : "사진 등록하기"
+                              : memberPhoto
+
+                                ? "사진 변경하기"
+
+                                : "사진 등록하기"
                         }
 
                       </button>
@@ -5211,7 +5723,8 @@ const MyPage = () => {
                     }
                     disabled={
                       saving ||
-                      photoSaving
+                      photoSaving ||
+                      photoChecking
                     }
                   >
                     취소
@@ -5226,7 +5739,8 @@ const MyPage = () => {
                     }
                     disabled={
                       saving ||
-                      photoSaving
+                      photoSaving ||
+                      photoChecking
                     }
                   >
 

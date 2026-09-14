@@ -2543,70 +2543,6 @@
 }
 
 /* =========================================================
-   회원 사진 AI 검사
-========================================================= */
-
-.mypage-photo-ai-result {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  margin-top: 12px;
-
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-
-/* AI 검사 중 */
-.mypage-photo-ai-result.checking {
-  color: #666666;
-}
-
-
-/* 정면 사진 검사 성공 */
-.mypage-photo-ai-result.success {
-  color: #2f6f44;
-  font-weight: 600;
-}
-
-
-/* 정면 사진 검사 실패 */
-.mypage-photo-ai-result.fail {
-  color: #a94442;
-}
-
-
-/* AI 검사 로딩 */
-.mypage-photo-ai-spinner {
-  width: 14px;
-  height: 14px;
-
-  border: 2px solid #dddddd;
-  border-top-color: #222222;
-  border-radius: 50%;
-
-  flex-shrink: 0;
-
-  animation:
-    memberPhotoAiSpin
-    0.8s
-    linear
-    infinite;
-}
-
-
-@keyframes memberPhotoAiSpin {
-
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-/* =========================================================
    MY PAGE DASHBOARD
    - 기존 상단 탭은 유지
    - MY PAGE 진입 시 개인정보 대신 쇼핑 대시보드 노출
@@ -3439,5 +3375,217 @@
 
   .mypage-dashboard-menu > button {
     min-height: 132px;
+  }
+}
+
+.mypage-photo-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.mypage-photo-input-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.mypage-photo-source-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* =========================================================
+   회원 사진 AI 검사 결과 - FINAL
+========================================================= */
+
+.mypage-photo-ai-result {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 15px 16px;
+  box-sizing: border-box;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+/* AI 검사 중 */
+.mypage-photo-ai-result.checking {
+  border: 1px solid #d7d7d7;
+  background: #fafafa;
+  color: #555555;
+}
+
+
+/* AI 검사 성공 */
+.mypage-photo-ai-result.success {
+  border: 1px solid #9fb8a5;
+  background: #f7fbf8;
+}
+
+
+/* AI 검사 실패 */
+.mypage-photo-ai-result.fail {
+  border: 1px solid #d6aaa7;
+  background: #fff8f7;
+}
+
+
+/* =========================================================
+   검사 결과 제목
+========================================================= */
+
+.mypage-photo-ai-result-title {
+  display: block;
+  width: 100%;
+
+  margin: 0 0 8px;
+  padding: 0;
+}
+
+
+.mypage-photo-ai-result-title strong {
+  display: block;
+
+  margin: 0;
+  padding: 0;
+
+  white-space: nowrap;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+/* 성공 제목 */
+.mypage-photo-ai-result.success
+.mypage-photo-ai-result-title strong {
+  color: #1f6b3a;
+}
+
+
+/* 실패 제목 */
+.mypage-photo-ai-result.fail
+.mypage-photo-ai-result-title strong {
+  color: #b43a32;
+}
+
+
+/* =========================================================
+   AI 안내 메시지
+========================================================= */
+
+.mypage-photo-ai-message {
+  display: block;
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  color: #222222;
+
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+
+  word-break: keep-all;
+}
+
+
+/* =========================================================
+   검사 실패 시 세부 결과
+   예:
+   얼굴 검출 정상  정면 여부 확인 필요  밝기 정상  선명도 정상
+========================================================= */
+
+.mypage-photo-ai-result-inline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  width: 100%;
+
+  margin-top: 10px;
+
+  gap: 6px 16px;
+
+  color: #444444;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+.mypage-photo-ai-result-inline span {
+  display: inline-block;
+
+  color: #444444;
+
+  white-space: nowrap;
+}
+
+
+.mypage-photo-ai-result-inline strong {
+  margin-left: 3px;
+
+  color: #222222;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   AI 검사 중 표시
+========================================================= */
+
+.mypage-photo-ai-spinner {
+  width: 14px;
+  height: 14px;
+
+  border: 2px solid #dddddd;
+  border-top-color: #222222;
+  border-radius: 50%;
+
+  flex-shrink: 0;
+
+  animation:
+    memberPhotoAiSpin
+    0.8s
+    linear
+    infinite;
+}
+
+
+@keyframes memberPhotoAiSpin {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   회원 사진 AI 검사 반응형
+========================================================= */
+
+@media (max-width: 640px) {
+
+  .mypage-photo-ai-result {
+    padding: 14px;
+  }
+
+
+  .mypage-photo-ai-result-inline {
+    gap: 4px 10px;
   }
 }
