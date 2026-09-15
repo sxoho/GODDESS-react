@@ -19,18 +19,21 @@ export const useApprovePayment = () => {
 
   return useMutation({
     mutationFn: (data: PaymentApprovalRequest) => approvePayment(data),
-    onSuccess: async (payment) => {
-      await queryClient.invalidateQueries({ queryKey: ['cartItems'] });
-      await queryClient.invalidateQueries({ queryKey: ['myOrders'] });
 
-      navigate('/mypage', {
+    onSuccess: async (payment) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['cartItems'] }),
+        queryClient.invalidateQueries({ queryKey: ['myOrders'] }),
+        queryClient.invalidateQueries({
+          queryKey: ['payment-order', payment.orderId],
+        }),
+      ]);
+
+      navigate(`/payment/${payment.orderId}/complete`, {
         replace: true,
-        state: {
-          paymentCompleted: true,
-          orderId: payment.orderId,
-        },
       });
     },
+
     onError: (error) => {
       console.error('결제 승인 실패:', error);
       alert('결제 처리에 실패했습니다. 다시 시도해주세요.');

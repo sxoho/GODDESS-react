@@ -60,6 +60,7 @@ import Order from "./pages/order/Order.tsx";
 import OrderHistory from "./pages/order/OrderHistory";
 import OrderDetail from "./pages/order/OrderDetail";
 import Payment from "./pages/payment/Payment.tsx";
+import PaymentComplete from "./pages/payment/PaymentComplete";
 import Chat from "./pages/chat/Chat.tsx";
 
 /**
@@ -225,6 +226,7 @@ function App() {
 
               {/* 결제 */}
               <Route path="/payment/:orderId" element={<Payment />} />
+              <Route path="/payment/:orderId/complete" element={<PaymentComplete />}/>
 
               {/* 챗봇 */}
               <Route path="/chat" element={<Chat />} />
