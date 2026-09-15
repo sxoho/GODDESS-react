@@ -22,6 +22,7 @@ import Member_FindPassword from "./components/member/Member_FindPassword";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminCategory from "./pages/admin/category/AdminCategory";
+import AdminOrderList from "./pages/admin/order/AdminOrderList";
 import AdminProductList from "./pages/admin/product/AdminProductList";
 import AdminProductForm from "./pages/admin/product/AdminProductForm";
 import AdminProductDetail from "./pages/admin/product/AdminProductDetail";
@@ -115,6 +116,9 @@ function App() {
 
             {/* 관리자 카테고리 */}
             <Route path="categories" element={<AdminCategory />} />
+
+            {/* 관리자 주문 / 배송 */}
+            <Route path="orders" element={<AdminOrderList />} />
 
             {/* =========================
                 관리자 회원

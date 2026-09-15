@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
+  cancelOrder,
   getMyOrderDetail,
   type OrderDetailItem,
 } from "../../api/orderHistoryApi";
@@ -63,6 +64,12 @@ const statusLabel = (status?: string) => {
     case "PREPARING":
       return "상품준비중";
 
+    case "SHIPPED":
+      return "배송시작";
+
+    case "CANCEL_REQUESTED":
+      return "취소요청";
+
     case "SHIPPING":
       return "배송중";
 
@@ -87,6 +94,12 @@ const paymentMethodLabel = (method?: string) => {
 
     case "KAKAOPAY":
       return "카카오페이";
+
+    case "TOSSPAY":
+      return "토스페이";
+
+    case "NAVERPAY":
+      return "네이버페이";
 
     default:
       return method || "-";
@@ -199,6 +212,7 @@ const maskAddress = (address1?: string | null, address2?: string | null) => {
 
 const OrderDetail: React.FC = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { orderId } = useParams<{
     orderId: string;
@@ -349,6 +363,65 @@ const OrderDetail: React.FC = () => {
     void loadOrderItemImages();
   }, [order]);
 
+  const cancelMutation = useMutation({
+    mutationFn: () => cancelOrder(parsedOrderId),
+    onSuccess: async (nextStatus) => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["myOrderDetail", parsedOrderId],
+        }),
+        queryClient.invalidateQueries({ queryKey: ["myOrders"] }),
+        queryClient.invalidateQueries({
+          queryKey: ["payment-order", parsedOrderId],
+        }),
+      ]);
+
+      alert(
+        nextStatus === "CANCEL_REQUESTED"
+          ? "취소 요청이 접수되었습니다. 관리자 확인 후 처리됩니다."
+          : "주문이 취소되었습니다.",
+      );
+    },
+    onError: (error) => {
+      console.error("주문 취소 오류:", error);
+      alert("현재 주문 상태에서는 취소할 수 없습니다.");
+    },
+  });
+
+  const handleCancelOrder = () => {
+    if (!order) return;
+
+    const message =
+      order.status === "PAYMENT_WAITING"
+        ? "결제대기 주문을 취소하시겠습니까?"
+        : order.status === "PAID"
+          ? "결제를 취소하시겠습니까? 결제 취소 후 재고가 복구됩니다."
+          : order.status === "PREPARING"
+            ? "상품준비중 주문의 취소를 요청하시겠습니까? 관리자 확인 후 처리됩니다."
+            : "";
+
+    if (!message || !window.confirm(message)) return;
+    cancelMutation.mutate();
+  };
+
+  const deliveryStep = (() => {
+    switch (order?.status) {
+      case "PAID":
+        return 1;
+      case "PREPARING":
+      case "CANCEL_REQUESTED":
+        return 2;
+      case "SHIPPED":
+        return 3;
+      case "SHIPPING":
+        return 4;
+      case "DELIVERED":
+        return 5;
+      default:
+        return 0;
+    }
+  })();
+
   const displayItems = useMemo(
     () =>
       orderItemViews.length > 0 ? orderItemViews : (order?.orderDetails ?? []),
@@ -399,6 +472,34 @@ const OrderDetail: React.FC = () => {
             <strong>{statusLabel(order.status)}</strong>
           </div>
         </header>
+
+        {order.status !== "CANCELLED" && order.status !== "PAYMENT_WAITING" && (
+          <section className="order-detail-progress">
+            {[
+              [1, "결제완료"],
+              [2, "상품준비중"],
+              [3, "배송시작"],
+              [4, "배송중"],
+              [5, "배송완료"],
+            ].map(([step, label]) => (
+              <div
+                key={String(step)}
+                className={`order-detail-progress-step ${
+                  deliveryStep >= Number(step) ? "active" : ""
+                }`}
+              >
+                <span>0{step}</span>
+                <strong>{label}</strong>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {order.status === "CANCELLED" && (
+          <div className="order-detail-cancelled-notice">
+            취소된 주문입니다.
+          </div>
+        )}
 
         <section className="order-detail-section">
           <div className="order-detail-section-heading">
@@ -548,6 +649,29 @@ const OrderDetail: React.FC = () => {
                   <dd>{statusLabel(order.delivery.status)}</dd>
                 </div>
 
+                {(order.delivery.company || order.delivery.trackingNo) && (
+                  <div>
+                    <dt>배송정보</dt>
+                    <dd>
+                      {order.delivery.company || "-"} / {order.delivery.trackingNo || "-"}
+                    </dd>
+                  </div>
+                )}
+
+                {order.delivery.shippingDate && (
+                  <div>
+                    <dt>배송시작일</dt>
+                    <dd>{formatDate(order.delivery.shippingDate)}</dd>
+                  </div>
+                )}
+
+                {order.delivery.completeDate && (
+                  <div>
+                    <dt>배송완료일</dt>
+                    <dd>{formatDate(order.delivery.completeDate)}</dd>
+                  </div>
+                )}
+
                 <div>
                   <dt>배송요청</dt>
 
@@ -559,6 +683,49 @@ const OrderDetail: React.FC = () => {
             )}
           </section>
         </div>
+
+        {["PAYMENT_WAITING", "PAID", "PREPARING"].includes(order.status) && (
+          <section className="order-detail-cancel-area">
+            <div>
+              <strong>
+                {order.status === "PAYMENT_WAITING"
+                  ? "결제 전 주문입니다."
+                  : order.status === "PAID"
+                    ? "결제완료 후 상품 준비 전 단계입니다."
+                    : "상품 준비가 시작된 주문입니다."}
+              </strong>
+              <p>
+                {order.status === "PREPARING"
+                  ? "취소 요청은 관리자 확인 후 처리됩니다."
+                  : "지금 취소하면 바로 취소 처리됩니다."}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleCancelOrder}
+              disabled={cancelMutation.isPending}
+            >
+              {cancelMutation.isPending
+                ? "처리 중..."
+                : order.status === "PREPARING"
+                  ? "취소 요청"
+                  : order.status === "PAID"
+                    ? "결제 취소"
+                    : "주문 취소"}
+            </button>
+          </section>
+        )}
+
+        {order.status === "CANCEL_REQUESTED" && (
+          <section className="order-detail-cancel-area order-detail-cancel-requested">
+            <div>
+              <strong>취소 요청이 접수되었습니다.</strong>
+              <p>관리자 확인 후 승인 또는 거절됩니다.</p>
+            </div>
+            <span>처리 대기중</span>
+          </section>
+        )}
 
         <section className="order-detail-summary">
           <div>

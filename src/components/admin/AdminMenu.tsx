@@ -73,10 +73,10 @@ const AdminMenu = () => {
             <AdminIcon name="grid" />
             <span>카테고리</span>
           </NavLink>
-          <button type="button" disabled>
+          <NavLink to="/admin/orders" className={({ isActive }) => (isActive ? "active" : "")}>
             <AdminIcon name="order" />
             <span>주문 관리</span>
-          </button>
+          </NavLink>
         </div>
 
         <div className="admin-nav-group">

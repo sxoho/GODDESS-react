@@ -345,3 +345,59 @@
     padding: 24px 20px;
   }
 }
+
+
+/* =========================================================
+   ORDER FLOW / CANCEL
+========================================================= */
+.order-detail-progress {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 34px;
+  border: 1px solid #eee9e7;
+  background: #fff;
+}
+
+.order-detail-progress-step {
+  position: relative;
+  min-height: 88px;
+  padding: 20px 18px;
+  border-right: 1px solid #eee9e7;
+  color: #aaa4a1;
+}
+
+.order-detail-progress-step:last-child { border-right: 0; }
+.order-detail-progress-step span { display:block; margin-bottom:9px; font-size:9px; letter-spacing:.12em; }
+.order-detail-progress-step strong { font-size:12px; font-weight:500; }
+.order-detail-progress-step.active { background:#fbf6f7; color:#b46478; }
+.order-detail-progress-step.active::after {
+  content:""; position:absolute; right:15px; bottom:14px; width:6px; height:6px;
+  border-radius:50%; background:#b46478;
+}
+
+.order-detail-cancelled-notice {
+  margin-top:34px; padding:18px 22px; border:1px solid #e4dada;
+  background:#fbf7f7; color:#9d7676; font-size:12px; text-align:center;
+}
+
+.order-detail-cancel-area {
+  display:flex; align-items:center; justify-content:space-between; gap:28px;
+  margin:12px 0 40px; padding:24px 26px; border:1px solid #eee9e7; background:#faf9f8;
+}
+.order-detail-cancel-area strong { display:block; margin-bottom:7px; color:#4a4542; font-size:13px; font-weight:600; }
+.order-detail-cancel-area p { margin:0; color:#99928f; font-size:11px; }
+.order-detail-cancel-area button {
+  min-width:118px; min-height:40px; padding:0 18px; border:1px solid #b46478;
+  border-radius:999px; background:#fff; color:#b46478; cursor:pointer; font-size:10px; font-weight:500;
+}
+.order-detail-cancel-area button:hover { background:#b46478; color:#fff; }
+.order-detail-cancel-area button:disabled { opacity:.55; cursor:not-allowed; }
+.order-detail-cancel-requested { border-color:#e4d8dc; background:#fbf6f7; }
+.order-detail-cancel-requested > span { color:#b46478; font-size:11px; font-weight:600; }
+
+@media (max-width: 760px) {
+  .order-detail-progress { grid-template-columns:1fr; }
+  .order-detail-progress-step { border-right:0; border-bottom:1px solid #eee9e7; min-height:64px; }
+  .order-detail-cancel-area { align-items:stretch; flex-direction:column; }
+  .order-detail-cancel-area button { width:100%; }
+}

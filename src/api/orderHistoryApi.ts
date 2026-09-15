@@ -43,6 +43,10 @@ export type DeliveryInfo = {
   address2?: string | null;
   request?: string | null;
   status: string;
+  company?: string | null;
+  trackingNo?: string | null;
+  shippingDate?: string | null;
+  completeDate?: string | null;
   createdAt?: string;
 };
 
@@ -81,6 +85,17 @@ export const getMyOrderDetail = async (
 ): Promise<OrderHistoryDetail> => {
   const response = await axiosInstance.get<ApiResponse<OrderHistoryDetail>>(
     `/api/commerce/orders/${orderId}`
+  );
+
+  return response.data.data;
+};
+
+
+export const cancelOrder = async (
+  orderId: number
+): Promise<string> => {
+  const response = await axiosInstance.patch<ApiResponse<string>>(
+    `/api/commerce/orders/${orderId}/cancel`
   );
 
   return response.data.data;

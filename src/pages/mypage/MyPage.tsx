@@ -3016,6 +3016,12 @@ const MyPage = () => {
       case "PREPARING":
         return "상품준비중";
 
+      case "SHIPPED":
+        return "배송시작";
+
+      case "CANCEL_REQUESTED":
+        return "취소요청";
+
       case "SHIPPING":
         return "배송중";
 
