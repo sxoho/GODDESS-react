@@ -3,6 +3,8 @@ import {
   NavLink,
   useNavigate,
 } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getCartItems } from "../../api/cartApi";
 
 import "../../styles/common/Menu.css";
 
@@ -22,10 +24,16 @@ type MegaMenuKey =
 const Menu = () => {
   const navigate = useNavigate();
 
-  const { sw, memberId, gradeId } = useGlobalStore();
+  const { sw, memberId, gradeId, loginId } = useGlobalStore();
 
   const [activeMenu, setActiveMenu] =
     useState<MegaMenuKey>(null);
+
+  const { data: cartItems = [] } = useQuery({
+    queryKey: ["cartItems", loginId],
+    queryFn: getCartItems,
+    enabled: Boolean(sw && loginId),
+  });
 
   const goUserPage = () => {
     if (sw === true) {
@@ -241,18 +249,28 @@ const Menu = () => {
             {/* CART */}
             <button
               type="button"
-              className="goddess-header-icon-button"
+              className="goddess-header-icon-button goddess-cart-button"
               onClick={() =>
                 navigate("/cart")
               }
             >
-              <svg
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path d="M6.5 8h11l1 13h-13l1-13Z" />
-                <path d="M9 9V6a3 3 0 0 1 6 0v3" />
-              </svg>
+              <span className="goddess-cart-icon-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M6.5 8h11l1 13h-13l1-13Z" />
+                  <path d="M9 9V6a3 3 0 0 1 6 0v3" />
+                </svg>
+
+                {sw && cartItems.length > 0 && (
+                  <span className="goddess-cart-count">
+                    {cartItems.length > 99
+                      ? "99+"
+                      : cartItems.length}
+                  </span>
+                )}
+              </span>
 
               <span>
                 BAG

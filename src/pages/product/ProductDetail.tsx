@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 import "../../styles/product/ProductDetail.css";
 import { useGlobalStore } from "../../store/store";
@@ -173,6 +174,7 @@ type ProductQnaPageResponse = {
 
 const ProductDetail = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { productId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const { sw, memberId, loginId } = useGlobalStore();
@@ -1345,6 +1347,10 @@ const ProductDetail = () => {
           }),
         ),
       );
+
+      await queryClient.invalidateQueries({
+        queryKey: ["cartItems", loginId],
+      });
 
       /*
        * 장바구니 담기 성공 후 상세페이지 선택 상태를 초기화한다.

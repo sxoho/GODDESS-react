@@ -1564,3 +1564,32 @@
   }
 
 }
+
+.goddess-cart-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.goddess-cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+  background: #111;
+  color: #fff;
+
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+}
