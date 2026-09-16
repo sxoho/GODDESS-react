@@ -11,6 +11,7 @@ type IconName =
   | "message"
   | "help"
   | "notice"
+  | "mail"
   | "shop"
   | "logout";
 
@@ -25,6 +26,7 @@ const AdminIcon = ({ name }: { name: IconName }) => {
     message: <><path d="M4 5h16v12H9l-5 4z"/><path d="M8 9h8M8 13h5"/></>,
     help: <><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 1 1 4.7 1.6c-1.3 1-2.2 1.5-2.2 3"/><path d="M12 17h.01"/></>,
     notice: <><path d="M5 12h3l7-5v10l-7-5H5z"/><path d="m15 10 4-2v8l-4-2"/></>,
+    mail: <><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m5 7 7 6 7-6"/></>,
     shop: <><path d="M5 8h14l-1 12H6z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></>,
     logout: <><path d="M10 4H5v16h5"/><path d="M14 8l4 4-4 4M8 12h10"/></>,
   };
@@ -96,6 +98,15 @@ const AdminMenu = () => {
           <NavLink to="/admin/customer-qna" className={({ isActive }) => (isActive ? "active" : "")}>
             <AdminIcon name="help" />
             <span>고객 문의</span>
+          </NavLink>
+        </div>
+
+
+        <div className="admin-nav-group">
+          <span className="admin-nav-label">COMMUNICATION</span>
+          <NavLink to="/admin/mail" className={({ isActive }) => (isActive ? "active" : "")}>
+            <AdminIcon name="mail" />
+            <span>메일 발송</span>
           </NavLink>
         </div>
 

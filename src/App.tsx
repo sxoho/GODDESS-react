@@ -32,6 +32,7 @@ import AdminProductReview from "./pages/admin/AdminProductReview";
 import AdminMemberList from "./pages/admin/member/AdminMemberList";
 import AdminMemberDetail from "./pages/admin/member/AdminMemberDetail";
 import AdminMemberUpdate from "./pages/admin/member/AdminMemberUpdate";
+import AdminMail from "./pages/admin/mail/AdminMail";
 
 /**
  * 관리자 공지사항
@@ -156,6 +157,12 @@ function App() {
             ========================= */}
 
             <Route path="reviews" element={<AdminProductReview />} />
+
+            {/* =========================
+                관리자 메일 발송
+            ========================= */}
+
+            <Route path="mail" element={<AdminMail />} />
 
             {/* =========================
                 관리자 공지사항
