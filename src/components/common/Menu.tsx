@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   NavLink,
+  useLocation,
   useNavigate,
 } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -23,11 +24,25 @@ type MegaMenuKey =
 
 const Menu = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { sw, memberId, gradeId, loginId } = useGlobalStore();
 
   const [activeMenu, setActiveMenu] =
     useState<MegaMenuKey>(null);
+
+  /**
+   * 페이지 경로 또는 쿼리스트링이 변경되면
+   * 열려 있던 메가메뉴를 자동으로 닫는다.
+   *
+   * 예:
+   * BEAUTY CHECK → 피부 타입 진단 클릭
+   * AI BEAUTY → AI 뷰티 체험 클릭
+   * SHOP / MAKEUP / HAIR 등의 메뉴 이동
+   */
+  useEffect(() => {
+    setActiveMenu(null);
+  }, [location.pathname, location.search]);
 
   const { data: cartItems = [] } = useQuery({
     queryKey: ["cartItems", loginId],
@@ -284,7 +299,10 @@ const Menu = () => {
           MAIN NAV
       ========================= */}
       <div className="goddess-header-bottom">
-        <nav className="goddess-main-nav">
+        <nav
+          className="goddess-main-nav"
+          onClick={() => setActiveMenu(null)}
+        >
 
           <NavLink
             to="/products"
@@ -361,6 +379,9 @@ const Menu = () => {
             setActiveMenu(
               activeMenu
             )
+          }
+          onClick={() =>
+            setActiveMenu(null)
           }
         >
           <div className="goddess-mega-inner">
