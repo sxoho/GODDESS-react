@@ -730,6 +730,73 @@ const ProductDetail = () => {
   };
 
   /**
+   * AI 리뷰 요약은 길어져도 화면이 커지지 않도록
+   * 최대 3개의 핵심 포인트만 화면에 표시한다.
+   *
+   * FastAPI가 줄바꿈/불릿/제목:내용 형식으로 응답하면 우선 활용하고,
+   * 한 문단으로 길게 응답해도 문장 단위로 나눠 최대 3개까지만 보여준다.
+   */
+  const aiSummaryItems = useMemo(() => {
+    const raw = (reviewAiSummary || "").trim();
+
+    if (
+      !raw ||
+      raw === "아직 요약할 리뷰가 없습니다." ||
+      raw === "AI 리뷰 요약을 불러오지 못했습니다."
+    ) {
+      return [];
+    }
+
+    const clean = (value: string) =>
+      value
+        .replace(/\*\*/g, "")
+        .replace(/^#{1,6}\s*/, "")
+        .replace(/^[-•○●▪︎◦*]\s*/, "")
+        .replace(/^\d+[.)]\s*/, "")
+        .trim();
+
+    let blocks = raw
+      .split(/\n+/)
+      .map(clean)
+      .filter(Boolean);
+
+    // LLM이 한 문단으로 길게 응답한 경우 문장 기준으로 분리
+    if (blocks.length <= 1) {
+      blocks = raw
+        .split(/(?<=[.!?。])\s+/)
+        .map(clean)
+        .filter(Boolean);
+    }
+
+    const truncate = (value: string, max: number) =>
+      value.length > max ? `${value.slice(0, max).trim()}…` : value;
+
+    return blocks.slice(0, 3).map((block, index) => {
+      const colonMatch = block.match(/^(.{2,30}?)[：:]\s*(.+)$/);
+      const dashMatch = block.match(/^(.{2,30}?)\s[-–—]\s(.+)$/);
+
+      if (colonMatch) {
+        return {
+          title: truncate(colonMatch[1].trim(), 28),
+          body: truncate(colonMatch[2].trim(), 105),
+        };
+      }
+
+      if (dashMatch) {
+        return {
+          title: truncate(dashMatch[1].trim(), 28),
+          body: truncate(dashMatch[2].trim(), 105),
+        };
+      }
+
+      return {
+        title: `리뷰 포인트 ${index + 1}`,
+        body: truncate(block, 105),
+      };
+    });
+  }, [reviewAiSummary]);
+
+  /**
    * 상품 문의 서버 페이징 조회
    */
   const loadProductQna = async (page = qnaPage) => {
@@ -1910,7 +1977,7 @@ const ProductDetail = () => {
             <section className="product-review-section">
               <div className="product-review-header">
                 <div>
-                  <p className="product-review-eyebrow">PRODUCT REVIEW</p>
+                  <p className="product-review-eyebrow">GODDESS REVIEW</p>
 
                   <div className="product-review-title-row">
                     <h2>상품리뷰</h2>
@@ -1918,7 +1985,7 @@ const ProductDetail = () => {
                     <strong>{reviewTotalElements}건</strong>
                   </div>
 
-                  <span>상품을 사용해본 경험과 만족도를 공유해주세요.</span>
+                  <span>직접 사용해본 색감과 발림성, 지속력에 대한 경험을 공유해주세요.</span>
                 </div>
 
                 <button
@@ -1931,43 +1998,86 @@ const ProductDetail = () => {
               </div>
 
               <div className="product-review-summary">
-                <div className="product-review-summary-score">
-                  <strong>{reviewSummary.averageRating.toFixed(1)}</strong>
-
-                  <span className="product-review-summary-stars">
-                    {renderStars(reviewSummary.averageRating)}
-                  </span>
-
-                  <small>{reviewSummary.reviewCount}개의 리뷰</small>
-                </div>
-
-                <div className="product-review-summary-copy">
-                  <div className="product-review-ai-heading">
-                    <span className="product-review-ai-mark">✦</span>
+                <div className="product-review-summary-head">
+                  <div className="product-review-summary-score-block">
+                    <span className="product-review-summary-big-star">★</span>
 
                     <div>
-                      <strong>AI REVIEW SUMMARY</strong>
+                      <strong>{reviewSummary.averageRating.toFixed(1)}</strong>
 
-                      <small>구매자 리뷰를 AI가 분석했어요</small>
+                      <small>
+                        평균 별점 · 총 리뷰 {reviewSummary.reviewCount.toLocaleString()}개
+                      </small>
                     </div>
                   </div>
 
-                  {reviewAiLoading ? (
-                    <div className="product-review-ai-loading">
-                      <span className="product-review-ai-spinner" />
+                  <div className="product-review-summary-title-group">
+                    <p>GODDESS AI REVIEW</p>
 
-                      <span>AI가 리뷰를 요약하고 있습니다.</span>
+                    <h3>
+                      리뷰 핵심 요약
+                      <span>Beta</span>
+                    </h3>
+                  </div>
+                </div>
+
+                {reviewAiLoading ? (
+                  <div className="product-review-ai-mail-loading">
+                    <div className="product-review-ai-loading-symbol">
+                      <span>✦</span>
                     </div>
-                  ) : (
-                    <p className="product-review-ai-summary-text">
+
+                    <div className="product-review-ai-loading-copy">
+                      <strong>리뷰를 읽고 있어요</strong>
+
+                      <p>
+                        GODDESS AI가 구매자 리뷰에서 반복되는 의견을
+                        정리하고 있습니다.
+                      </p>
+
+                      <div className="product-review-ai-loading-line">
+                        <i />
+                      </div>
+
+                      <div className="product-review-ai-loading-step">
+                        <span className="active">READ</span>
+                        <span>ANALYZE</span>
+                        <span>SUMMARY</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : aiSummaryItems.length > 0 ? (
+                  <div className="product-review-ai-result">
+                    <div className="product-review-ai-result-title">
+                      <span>AI SUMMARY</span>
+                      <p>최근 리뷰에서 반복적으로 언급된 핵심 의견이에요.</p>
+                    </div>
+
+                    <ol className="product-review-ai-list">
+                      {aiSummaryItems.map((item, index) => (
+                        <li key={`${item.title}-${index}`}>
+                          <div className="product-review-ai-item-head">
+                            <span className="product-review-ai-index">
+                              0{index + 1}
+                            </span>
+
+                            <strong>{item.title}</strong>
+                          </div>
+
+                          <p title={item.body}>{item.body}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                ) : (
+                  <div className="product-review-ai-empty">
+                    <span>✦</span>
+
+                    <p>
                       {reviewAiSummary || "아직 요약할 리뷰가 없습니다."}
                     </p>
-                  )}
-
-                  <span className="product-review-ai-generated">
-                    AI GENERATED
-                  </span>
-                </div>
+                  </div>
+                )}
               </div>
 
               {reviewFormOpen && (
@@ -2030,23 +2140,22 @@ const ProductDetail = () => {
                     <textarea
                       value={reviewContent}
                       onChange={(event) => setReviewContent(event.target.value)}
-                      placeholder="상품의 핏, 색상, 소재 등에 대한 리뷰를 남겨주세요."
+                      placeholder="색상, 발림성, 밀착력, 지속력, 피부 표현 등 사용 후기를 자유롭게 남겨주세요."
                       rows={7}
                     />
                   </label>
 
                   <div className="product-review-beauty-guide">
-                    <span>AI BEAUTY</span>
+                    <span>BEAUTY REVIEW</span>
 
                     <p>
-                      AI 피팅 결과 첨부는 피팅 기능 연동 후 사용할 수 있습니다.
+                      사용한 컬러와 포토 리뷰 기능은 추후 구매 옵션과 함께 연결됩니다.
                     </p>
                   </div>
 
                   <div className="product-review-form-bottom">
                     <p>
-                      주문·AI 피팅 기능 완성 후 구매 내역과 피팅 결과가
-                      연결됩니다.
+                      실제 구매 옵션과 리뷰를 연결하는 기능은 추후 적용됩니다.
                     </p>
 
                     <button
@@ -2128,7 +2237,7 @@ const ProductDetail = () => {
 
                               <img
                                 src={getReviewImageUrl(review.beautyImageUrl)}
-                                alt="AI 피팅 리뷰 이미지"
+                                alt="뷰티 리뷰 이미지"
                               />
                             </div>
                           )}
