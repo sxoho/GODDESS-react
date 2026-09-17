@@ -5,6 +5,11 @@
   color: #171719;
 }
 
+
+/* =========================================
+   TITLE
+========================================= */
+
 .gd-beauty-heading {
   text-align: left;
   padding: 24px 0 32px;
@@ -31,6 +36,11 @@
   font-size: 16px;
   color: #666;
 }
+
+
+/* =========================================
+   기존 START 화면
+========================================= */
 
 .gd-beauty-layout {
   display: grid;
@@ -60,10 +70,12 @@
   color: #fff;
   font-size: 14px;
   letter-spacing: .1em;
-  background: linear-gradient(
-    transparent,
-    #26101b88
-  );
+
+  background:
+    linear-gradient(
+      transparent,
+      #26101b88
+    );
 }
 
 .gd-beauty-panel {
@@ -78,18 +90,31 @@
 
 .gd-beauty-tabs button {
   flex: 1;
+
   padding: 23px 8px;
+
+  border: 0;
+  border-bottom:
+    2px solid transparent;
+
   color: #706069;
+
   font-size: 14px;
+
   background: transparent;
+
   cursor: pointer;
-  border-bottom: 2px solid transparent;
 }
 
 .gd-beauty-tabs button[aria-pressed="true"] {
   color: #171717;
-  border-bottom-color: #171717;
-  background: #f0f0f0;
+
+  border-bottom-color:
+    #171717;
+
+  background:
+    #f0f0f0;
+
   font-weight: 600;
 }
 
@@ -120,20 +145,29 @@
 .gd-beauty-options {
   display: flex;
   flex-wrap: wrap;
+
   gap: 9px;
+
   margin: 24px 0;
+  padding: 0;
+
+  list-style: none;
 }
 
 .gd-beauty-options li {
   border: 1px solid #ddd;
+
   padding: 9px 12px;
+
   font-size: 14px;
 }
 
 .gd-beauty-status {
   padding-top: 24px;
   margin-top: 30px;
-  border-top: 1px solid #ddd;
+
+  border-top:
+    1px solid #ddd;
 }
 
 .gd-beauty-status strong {
@@ -149,208 +183,1685 @@
 
 .gd-beauty-shop {
   display: flex;
+
   width: 100%;
-  justify-content: space-between;
-  padding: 17px 20px;
-  background: #171719;
+
+  justify-content:
+    space-between;
+
+  padding:
+    17px 20px;
+
+  border: 0;
+
+  background:
+    #171719;
+
   color: #fff;
+
   font-size: 14px;
+
   margin-top: 25px;
+
   cursor: pointer;
 }
 
 .gd-beauty-shop:hover {
-  background: #171717;
+  background:
+    #333033;
 }
 
 .gd-beauty button:focus-visible {
-  outline: 3px solid #171717;
-  outline-offset: 4px;
+  outline:
+    3px solid #b88391;
+
+  outline-offset:
+    4px;
 }
 
 
-/* =========================================================
-   AI BEAUTY 전체 2단 레이아웃
-========================================================= */
+/* =========================================
+   전체 2단 레이아웃
+========================================= */
 
 .gd-beauty-page-layout {
   display: grid;
+
   grid-template-columns:
     210px
     minmax(0, 1fr);
+
   gap: 34px;
+
   align-items: start;
 }
 
 
-/* =========================================================
-   AI BEAUTY 왼쪽 사이드바
-========================================================= */
+/* =========================================
+   왼쪽 사이드바
+========================================= */
 
 .gd-beauty-sidebar {
   position: sticky;
+
   top: 100px;
+
   min-width: 0;
+
   padding-right: 24px;
-  border-right: 1px solid #e5e5e5;
+
+  border-right:
+    1px solid #e5e5e5;
 }
 
 .gd-beauty-sidebar-title {
-  padding: 8px 0 24px;
-  border-bottom: 1px solid #222222;
+  padding:
+    8px 0 24px;
+
+  border-bottom:
+    1px solid #222;
 }
 
 .gd-beauty-sidebar-title span {
   display: block;
+
   margin-bottom: 8px;
-  color: #999999;
+
+  color: #b26f7a;
+
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.15em;
+  font-weight: 700;
+
+  letter-spacing:
+    .15em;
 }
 
 .gd-beauty-sidebar-title strong {
   display: block;
-  color: #222222;
+
+  color: #222;
+
   font-size: 22px;
   font-weight: 600;
-  letter-spacing: -0.03em;
+
+  letter-spacing:
+    -.03em;
 }
 
 
-/* =========================================================
+/* =========================================
    사이드바 메뉴
-========================================================= */
+========================================= */
 
 .gd-beauty-sidebar-menu {
   display: flex;
-  flex-direction: column;
-  padding-top: 18px;
+
+  flex-direction:
+    column;
+
+  padding-top:
+    18px;
 }
 
 .gd-beauty-sidebar-menu button {
   position: relative;
+
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+
+  flex-direction:
+    column;
+
+  align-items:
+    flex-start;
+
   gap: 4px;
+
   width: 100%;
-  padding: 14px 8px 14px 0;
+
+  padding:
+    15px 8px 15px 0;
+
   border: 0;
-  background: transparent;
-  color: #777777;
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
+
+  background:
+    transparent;
+
+  color: #777;
+
+  font-family:
+    inherit;
+
+  text-align:
+    left;
+
+  cursor:
+    pointer;
+
+  transition:
+    color .2s ease,
+    padding-left .2s ease;
 }
 
 .gd-beauty-sidebar-menu button::after {
   content: "";
-  position: absolute;
+
+  position:
+    absolute;
+
   top: 0;
   right: -25px;
+
   width: 2px;
   height: 100%;
-  background: transparent;
+
+  background:
+    transparent;
+
+  transition:
+    background .2s ease;
 }
 
 .gd-beauty-sidebar-menu button:hover {
-  color: #111111;
+  color: #111;
+
+  padding-left:
+    4px;
 }
 
 .gd-beauty-sidebar-menu button:hover::after {
-  background: #222222;
+  background:
+    #d6a8b0;
+}
+
+.gd-beauty-sidebar-menu button.active {
+  color: #171719;
+}
+
+.gd-beauty-sidebar-menu button.active::after {
+  background:
+    #a96f7a;
 }
 
 .gd-beauty-sidebar-menu button span {
   font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-weight: 650;
+
+  letter-spacing:
+    .06em;
 }
 
 .gd-beauty-sidebar-menu button small {
-  color: #aaaaaa;
+  color: #aaa;
+
   font-size: 11px;
   font-weight: 400;
 }
 
+.gd-beauty-sidebar-menu button.active small {
+  color: #8c6c72;
+}
 
-/* =========================================================
+
+/* =========================================
    오른쪽 본문
-========================================================= */
+========================================= */
 
 .gd-beauty-main {
   min-width: 0;
 }
 
 
-/* =========================================================
-   반응형
-========================================================= */
+/* =========================================
+   START - 사진 미등록 안내
+========================================= */
+
+.gd-beauty-photo-alert {
+  display: flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap: 30px;
+
+  margin-bottom:
+    22px;
+
+  padding:
+    22px 26px;
+
+  border:
+    1px solid #ead9dd;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fffafa,
+      #fbf0f3
+    );
+}
+
+.gd-beauty-photo-alert > div {
+  min-width: 0;
+}
+
+.gd-beauty-photo-alert > div > span {
+  display: block;
+
+  margin-bottom:
+    6px;
+
+  color: #b26f7a;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing:
+    .15em;
+}
+
+.gd-beauty-photo-alert strong {
+  display: block;
+
+  color: #282124;
+
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.gd-beauty-photo-alert p {
+  margin:
+    7px 0 0;
+
+  color: #8f8588;
+
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.gd-beauty-photo-alert button {
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items:
+    center;
+
+  gap: 30px;
+
+  padding:
+    13px 17px;
+
+  border:
+    1px solid #b8848f;
+
+  background:
+    #fff;
+
+  color:
+    #8f5964;
+
+  font-size:
+    11px;
+
+  cursor:
+    pointer;
+}
+
+.gd-beauty-photo-alert button:hover {
+  background:
+    #b8848f;
+
+  color:
+    #fff;
+}
+
+
+/* =========================================
+   MY PHOTO
+========================================= */
+
+.gd-photo-page {
+  min-height:
+    570px;
+
+  border:
+    1px solid #e7e1e2;
+
+  background:
+    #fff;
+}
+
+.gd-photo-page-head {
+  padding:
+    32px 36px 28px;
+
+  border-bottom:
+    1px solid #eee7e8;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fffdfd,
+      #fff8fa
+    );
+}
+
+.gd-photo-page-head > span {
+  display: block;
+
+  margin-bottom:
+    10px;
+
+  color:
+    #b26f7a;
+
+  font-size:
+    9px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    .16em;
+}
+
+.gd-photo-page-head h2 {
+  margin: 0;
+
+  color:
+    #211d1e;
+
+  font-size:
+    26px;
+
+  font-weight:
+    600;
+
+  letter-spacing:
+    -.035em;
+}
+
+.gd-photo-page-head p {
+  max-width:
+    650px;
+
+  margin:
+    12px 0 0;
+
+  color:
+    #888083;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.8;
+
+  word-break:
+    keep-all;
+}
+
+
+/* =========================================
+   PHOTO LOADING
+========================================= */
+
+.gd-photo-loading {
+  display: flex;
+
+  min-height:
+    420px;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  color:
+    #999;
+
+  font-size:
+    13px;
+}
+
+
+/* =========================================
+   PHOTO EDITOR
+========================================= */
+
+.gd-photo-editor {
+  display: grid;
+
+  grid-template-columns:
+    minmax(330px, .9fr)
+    minmax(360px, 1.1fr);
+
+  min-height:
+    500px;
+}
+
+.gd-photo-editor-preview {
+  display: flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-height:
+    500px;
+
+  padding:
+    36px;
+
+  border-right:
+    1px solid #eee7e8;
+
+  background:
+    #fbf5f6;
+}
+
+.gd-photo-editor-preview img {
+  display: block;
+
+  width: 100%;
+  max-width: 430px;
+
+  height:
+    430px;
+
+  object-fit:
+    cover;
+
+  object-position:
+    center;
+
+  background:
+    #eee;
+}
+
+.gd-photo-empty-visual {
+  display: flex;
+
+  flex-direction:
+    column;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  width:
+    min(100%, 410px);
+
+  aspect-ratio:
+    1 / 1;
+
+  border:
+    1px solid #eadcdf;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fffafa,
+      #f5e7ea
+    );
+}
+
+.gd-photo-empty-visual > span {
+  color:
+    #c89ba4;
+
+  font-size:
+    38px;
+
+  line-height:
+    1;
+}
+
+.gd-photo-empty-visual strong {
+  margin-top:
+    17px;
+
+  color:
+    #9e7b82;
+
+  font-size:
+    11px;
+
+  letter-spacing:
+    .15em;
+}
+
+.gd-photo-empty-visual small {
+  margin-top:
+    7px;
+
+  color:
+    #aaa0a2;
+
+  font-size:
+    11px;
+}
+
+
+/* =========================================
+   PHOTO INFO
+========================================= */
+
+.gd-photo-editor-info {
+  padding:
+    36px 40px;
+
+  background:
+    #fff;
+}
+
+.gd-photo-empty-title {
+  margin-bottom:
+    26px;
+
+  padding-bottom:
+    24px;
+
+  border-bottom:
+    1px solid #eee7e8;
+}
+
+.gd-photo-empty-title strong {
+  display: block;
+
+  color:
+    #231f20;
+
+  font-size:
+    20px;
+
+  font-weight:
+    600;
+}
+
+.gd-photo-empty-title p {
+  margin:
+    9px 0 0;
+
+  color:
+    #8f8789;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.7;
+}
+
+.gd-photo-guide > span {
+  display: block;
+
+  margin-bottom:
+    7px;
+
+  color:
+    #b26f7a;
+
+  font-size:
+    9px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    .14em;
+}
+
+.gd-photo-guide h3 {
+  margin:
+    0 0 13px;
+
+  color:
+    #272223;
+
+  font-size:
+    17px;
+
+  font-weight:
+    600;
+}
+
+.gd-photo-guide ul {
+  display: grid;
+
+  gap: 7px;
+
+  margin:
+    0;
+
+  padding:
+    0;
+
+  list-style:
+    none;
+}
+
+.gd-photo-guide li {
+  position:
+    relative;
+
+  padding-left:
+    15px;
+
+  color:
+    #8a8284;
+
+  font-size:
+    11px;
+
+  line-height:
+    1.6;
+}
+
+.gd-photo-guide li::before {
+  content: "·";
+
+  position:
+    absolute;
+
+  left: 2px;
+
+  color:
+    #b26f7a;
+}
+
+
+/* =========================================
+   PHOTO SELECT BUTTON
+========================================= */
+
+.gd-photo-hidden-input {
+  display:
+    none;
+}
+
+.gd-photo-source-actions {
+  display: flex;
+
+  flex-wrap:
+    wrap;
+
+  gap: 10px;
+
+  margin-top:
+    26px;
+}
+
+.gd-photo-source-button {
+  flex: 1;
+
+  min-width:
+    140px;
+
+  padding:
+    13px 15px;
+
+  border:
+    1px solid #262123;
+
+  background:
+    #fff;
+
+  color:
+    #262123;
+
+  font-family:
+    inherit;
+
+  font-size:
+    11px;
+
+  cursor:
+    pointer;
+
+  transition:
+    background .2s ease,
+    color .2s ease;
+}
+
+.gd-photo-source-button:hover {
+  background:
+    #262123;
+
+  color:
+    #fff;
+}
+
+.gd-photo-source-button.camera {
+  border-color:
+    #d2a7af;
+
+  color:
+    #9e6872;
+}
+
+.gd-photo-source-button.camera:hover {
+  background:
+    #b9838e;
+
+  border-color:
+    #b9838e;
+
+  color:
+    #fff;
+}
+
+
+/* =========================================
+   SELECTED FILE
+========================================= */
+
+.gd-photo-selected-file {
+  margin-top:
+    15px;
+
+  padding:
+    12px 14px;
+
+  background:
+    #faf7f7;
+}
+
+.gd-photo-selected-file span {
+  display: block;
+
+  margin-bottom:
+    4px;
+
+  color:
+    #b26f7a;
+
+  font-size:
+    8px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    .13em;
+}
+
+.gd-photo-selected-file strong {
+  display:
+    block;
+
+  overflow:
+    hidden;
+
+  color:
+    #666;
+
+  font-size:
+    11px;
+
+  font-weight:
+    500;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+}
+
+
+/* =========================================
+   AI PHOTO CHECK
+========================================= */
+
+.gd-photo-ai-check {
+  margin-top:
+    17px;
+
+  padding:
+    16px 17px;
+
+  border:
+    1px solid #eee;
+}
+
+.gd-photo-ai-check > span {
+  display: block;
+
+  margin-bottom:
+    6px;
+
+  font-size:
+    8px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    .14em;
+}
+
+.gd-photo-ai-check strong {
+  display:
+    block;
+
+  font-size:
+    13px;
+
+  font-weight:
+    600;
+}
+
+.gd-photo-ai-check p {
+  margin:
+    7px 0 0;
+
+  color:
+    #777;
+
+  font-size:
+    11px;
+
+  line-height:
+    1.65;
+}
+
+.gd-photo-ai-check.checking {
+  background:
+    #fafafa;
+
+  border-color:
+    #e7e7e7;
+}
+
+.gd-photo-ai-check.checking > span {
+  color:
+    #999;
+}
+
+.gd-photo-ai-check.success {
+  background:
+    #f8fbf8;
+
+  border-color:
+    #d9e7dc;
+}
+
+.gd-photo-ai-check.success > span,
+.gd-photo-ai-check.success strong {
+  color:
+    #55745d;
+}
+
+.gd-photo-ai-check.fail {
+  background:
+    #fff9f9;
+
+  border-color:
+    #ead5d8;
+}
+
+.gd-photo-ai-check.fail > span {
+  color:
+    #b26f7a;
+}
+
+.gd-photo-ai-detail {
+  display: flex;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    8px 13px;
+
+  margin-top:
+    12px;
+
+  padding-top:
+    11px;
+
+  border-top:
+    1px solid rgba(
+      178,
+      111,
+      122,
+      .14
+    );
+}
+
+.gd-photo-ai-detail span {
+  color:
+    #827a7c;
+
+  font-size:
+    10px;
+}
+
+.gd-photo-ai-detail b {
+  color:
+    #383234;
+
+  font-weight:
+    600;
+}
+
+
+/* =========================================
+   SAVE BUTTON
+========================================= */
+
+.gd-photo-editor-actions {
+  display:
+    flex;
+
+  gap:
+    10px;
+
+  margin-top:
+    22px;
+}
+
+.gd-photo-save-button,
+.gd-photo-cancel-button {
+  min-height:
+    45px;
+
+  padding:
+    0 20px;
+
+  border:
+    0;
+
+  font-family:
+    inherit;
+
+  font-size:
+    11px;
+
+  cursor:
+    pointer;
+}
+
+.gd-photo-save-button {
+  flex: 1;
+
+  background:
+    #211e1f;
+
+  color:
+    #fff;
+}
+
+.gd-photo-save-button:hover:not(:disabled) {
+  background:
+    #9d6872;
+}
+
+.gd-photo-save-button:disabled {
+  background:
+    #ddd8d9;
+
+  color:
+    #aaa;
+
+  cursor:
+    not-allowed;
+}
+
+.gd-photo-cancel-button {
+  background:
+    #f3eff0;
+
+  color:
+    #736b6d;
+}
+
+
+/* =========================================
+   CURRENT PHOTO
+========================================= */
+
+.gd-photo-current {
+  display: grid;
+
+  grid-template-columns:
+    minmax(340px, 1fr)
+    minmax(360px, 1fr);
+
+  min-height:
+    500px;
+}
+
+.gd-photo-current-image {
+  display: flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  padding:
+    36px;
+
+  border-right:
+    1px solid #eee7e8;
+
+  background:
+    #f8eff1;
+}
+
+.gd-photo-current-image img {
+  display: block;
+
+  width:
+    min(100%, 440px);
+
+  height:
+    440px;
+
+  object-fit:
+    cover;
+
+  object-position:
+    center;
+
+  background:
+    #eee;
+}
+
+.gd-photo-current-info {
+  display: flex;
+
+  flex-direction:
+    column;
+
+  justify-content:
+    center;
+
+  padding:
+    44px 46px;
+}
+
+.gd-photo-current-overline {
+  color:
+    #b26f7a;
+
+  font-size:
+    9px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    .15em;
+}
+
+.gd-photo-current-info h3 {
+  margin:
+    11px 0 13px;
+
+  color:
+    #272223;
+
+  font-size:
+    25px;
+
+  font-weight:
+    600;
+
+  letter-spacing:
+    -.03em;
+}
+
+.gd-photo-available {
+  display: flex;
+
+  align-items:
+    center;
+
+  gap:
+    7px;
+
+  width:
+    fit-content;
+
+  padding:
+    7px 10px;
+
+  background:
+    #f1f7f2;
+
+  color:
+    #52705a;
+
+  font-size:
+    10px;
+
+  font-weight:
+    600;
+}
+
+.gd-photo-available > span {
+  width:
+    6px;
+
+  height:
+    6px;
+
+  border-radius:
+    50%;
+
+  background:
+    #63846b;
+}
+
+.gd-photo-current-description {
+  max-width:
+    440px;
+
+  margin:
+    20px 0 0;
+
+  color:
+    #847d7f;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.8;
+
+  word-break:
+    keep-all;
+}
+
+.gd-photo-meta {
+  margin:
+    27px 0 0;
+
+  border-top:
+    1px solid #ede8e9;
+
+  border-bottom:
+    1px solid #ede8e9;
+}
+
+.gd-photo-meta > div {
+  display:
+    grid;
+
+  grid-template-columns:
+    90px 1fr;
+
+  gap:
+    15px;
+
+  padding:
+    12px 0;
+
+  border-bottom:
+    1px solid #f2eded;
+}
+
+.gd-photo-meta > div:last-child {
+  border-bottom:
+    0;
+}
+
+.gd-photo-meta dt {
+  color:
+    #aaa1a3;
+
+  font-size:
+    10px;
+}
+
+.gd-photo-meta dd {
+  overflow:
+    hidden;
+
+  margin:
+    0;
+
+  color:
+    #494345;
+
+  font-size:
+    10px;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+}
+
+.gd-photo-current-actions {
+  display:
+    grid;
+
+  grid-template-columns:
+    1fr 1.25fr;
+
+  gap:
+    10px;
+
+  margin-top:
+    28px;
+}
+
+.gd-photo-edit-button,
+.gd-photo-start-button {
+  min-height:
+    48px;
+
+  padding:
+    0 18px;
+
+  font-family:
+    inherit;
+
+  font-size:
+    11px;
+
+  cursor:
+    pointer;
+}
+
+.gd-photo-edit-button {
+  border:
+    1px solid #262123;
+
+  background:
+    #fff;
+
+  color:
+    #262123;
+}
+
+.gd-photo-edit-button:hover {
+  background:
+    #f7f3f4;
+}
+
+.gd-photo-start-button {
+  display: flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  border: 0;
+
+  background:
+    #211e1f;
+
+  color:
+    #fff;
+}
+
+.gd-photo-start-button:hover {
+  background:
+    #9d6872;
+}
+
+
+/* =========================================
+   LOGIN
+========================================= */
+
+.gd-photo-login {
+  display: flex;
+
+  min-height:
+    420px;
+
+  flex-direction:
+    column;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  padding:
+    40px;
+
+  text-align:
+    center;
+}
+
+.gd-photo-login-icon {
+  color:
+    #c698a1;
+
+  font-size:
+    36px;
+}
+
+.gd-photo-login strong {
+  margin-top:
+    14px;
+
+  color:
+    #282224;
+
+  font-size:
+    18px;
+}
+
+.gd-photo-login p {
+  margin:
+    10px 0 22px;
+
+  color:
+    #999;
+
+  font-size:
+    11px;
+
+  line-height:
+    1.7;
+}
+
+.gd-photo-login button {
+  padding:
+    13px 30px;
+
+  border: 0;
+
+  background:
+    #211e1f;
+
+  color:
+    #fff;
+
+  font-size:
+    11px;
+
+  cursor:
+    pointer;
+}
+
+
+/* =========================================
+   SAVED / MEMBERSHIP 임시 화면
+========================================= */
+
+.gd-beauty-placeholder {
+  min-height:
+    570px;
+
+  padding:
+    38px 40px;
+
+  border:
+    1px solid #e7e1e2;
+
+  background:
+    #fff;
+}
+
+.gd-beauty-placeholder > span {
+  color:
+    #b26f7a;
+
+  font-size:
+    9px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    .15em;
+}
+
+.gd-beauty-placeholder h2 {
+  margin:
+    10px 0;
+
+  font-size:
+    26px;
+
+  font-weight:
+    600;
+}
+
+.gd-beauty-placeholder > p {
+  color:
+    #888;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.7;
+}
+
+.gd-beauty-placeholder-box {
+  margin-top:
+    32px;
+
+  padding:
+    35px;
+
+  border:
+    1px solid #eadfe1;
+
+  background:
+    #fff9fa;
+}
+
+.gd-beauty-placeholder-box strong {
+  font-size:
+    18px;
+}
+
+.gd-beauty-placeholder-box p {
+  margin:
+    10px 0 0;
+
+  color:
+    #888;
+
+  font-size:
+    11px;
+
+  line-height:
+    1.7;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1000px) {
+
+  .gd-photo-editor,
+  .gd-photo-current {
+    grid-template-columns:
+      1fr;
+  }
+
+  .gd-photo-editor-preview,
+  .gd-photo-current-image {
+    border-right:
+      0;
+
+    border-bottom:
+      1px solid #eee7e8;
+  }
+
+}
+
 
 @media (max-width: 900px) {
 
   .gd-beauty-page-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns:
+      1fr;
   }
 
   .gd-beauty-sidebar {
-    position: static;
-    padding-right: 0;
-    border-right: 0;
+    position:
+      static;
+
+    padding-right:
+      0;
+
+    border-right:
+      0;
   }
 
   .gd-beauty-sidebar-menu {
-    display: grid;
+    display:
+      grid;
+
     grid-template-columns:
-      repeat(3, 1fr);
-    border-bottom: 1px solid #dddddd;
+      repeat(
+        4,
+        1fr
+      );
+
+    border-bottom:
+      1px solid #ddd;
   }
 
   .gd-beauty-sidebar-menu button {
     padding:
-      14px
-      10px;
+      14px 10px;
   }
 
   .gd-beauty-sidebar-menu button::after {
-    top: auto;
-    right: auto;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 2px;
+    top:
+      auto;
+
+    right:
+      auto;
+
+    bottom:
+      -1px;
+
+    left:
+      0;
+
+    width:
+      100%;
+
+    height:
+      2px;
   }
 
 }
+
 
 @media (max-width: 750px) {
 
   .gd-beauty {
     padding:
-      0
-      5%
-      50px;
+      0 5% 50px;
   }
 
   .gd-beauty-heading {
     padding:
-      20px
-      0
-      28px;
+      20px 0 28px;
   }
 
   .gd-beauty-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns:
+      1fr;
   }
 
   .gd-beauty-image {
-    min-height: 0;
-    aspect-ratio: 1 / 1;
+    min-height:
+      0;
+
+    aspect-ratio:
+      1 / 1;
   }
 
   .gd-beauty-panel-body {
-    padding: 28px 7%;
+    padding:
+      28px 7%;
+  }
+
+  .gd-beauty-photo-alert {
+    flex-direction:
+      column;
+
+    align-items:
+      stretch;
+  }
+
+  .gd-photo-page-head {
+    padding:
+      26px 22px;
+  }
+
+  .gd-photo-page-head h2 {
+    font-size:
+      22px;
+  }
+
+  .gd-photo-editor-preview,
+  .gd-photo-current-image {
+    min-height:
+      auto;
+
+    padding:
+      22px;
+  }
+
+  .gd-photo-editor-preview img,
+  .gd-photo-current-image img {
+    height:
+      auto;
+
+    aspect-ratio:
+      1 / 1;
+  }
+
+  .gd-photo-editor-info,
+  .gd-photo-current-info {
+    padding:
+      28px 24px;
+  }
+
+  .gd-photo-source-actions {
+    flex-direction:
+      column;
+  }
+
+  .gd-photo-current-actions {
+    grid-template-columns:
+      1fr;
+  }
+
+}
+
+
+@media (max-width: 560px) {
+
+  .gd-beauty-sidebar-menu {
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
   }
 
 }
