@@ -22,6 +22,34 @@ const PERSONAL_COLOR_FILTERS = [
   { value: "겨울쿨", label: "Winter Cool" },
 ];
 
+// Menu.tsx에서 사용하는 영문 query 값을 실제 CATEGORY 이름과 연결한다.
+const TOP_CATEGORY_MAP: Record<string, string> = {
+  makeup: "메이크업",
+  skincare: "스킨케어",
+  hair: "헤어",
+};
+
+const SUB_CATEGORY_MAP: Record<string, string> = {
+  foundation: "파운데이션",
+  cushion: "쿠션",
+  blusher: "블러셔",
+  powder: "파우더",
+  concealer: "컨실러",
+  lipstick: "립스틱",
+  lipbalm: "립밤",
+  "lip-tint": "립틴트",
+  "lip-gloss": "립글로스",
+  "lip-liner": "립라이너",
+  mascara: "마스카라",
+  eyeshadow: "아이 팔레트",
+  eyeliner: "아이라이너",
+  toner: "토너",
+  serum: "세럼",
+  cream: "크림",
+  mask: "마스크",
+  cleanser: "클렌저",
+};
+
 type Category = {
   id?: number;
   categoryId?: number;
@@ -103,6 +131,7 @@ export default function ProductList() {
 
   const categoryParam = params.get("category") || "ALL";
   const subParam = params.get("sub") || "ALL";
+  const typeParam = params.get("type") || "";
   const sort = params.get("sort") || "recommended";
   const viewMode = params.get("view") === "shade" ? "shade" : "product";
   const aiOnly = params.get("ai") === "Y";
@@ -132,22 +161,26 @@ export default function ProductList() {
     (aiOnly ? 1 : 0);
 
   const topCategories = useMemo(
-  () =>
-    categories
-      .filter(
-        (category) =>
-          (category.parentId ?? null) === null &&
-          category.visible !== "N" &&
-          category.name !== "헤어",
-      )
-      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
-  [categories],
-);
-
-  const selectedTop = topCategories.find(
-    (category) =>
-      String(category.id ?? category.categoryId) === categoryParam,
+    () =>
+      categories
+        .filter(
+          (category) =>
+            (category.parentId ?? null) === null &&
+            category.visible !== "N",
+        )
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
+    [categories],
   );
+
+  const selectedTop = topCategories.find((category) => {
+    const categoryId = String(category.id ?? category.categoryId);
+    const mappedName = TOP_CATEGORY_MAP[categoryParam.toLowerCase()];
+
+    return (
+      categoryId === categoryParam ||
+      category.name === mappedName
+    );
+  });
 
   const subCategories = useMemo(() => {
     if (!selectedTop) return [];
@@ -161,6 +194,17 @@ export default function ProductList() {
       )
       .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
   }, [categories, selectedTop]);
+
+  const selectedTypeCategory = useMemo(() => {
+    if (!typeParam) return undefined;
+
+    const categoryName = SUB_CATEGORY_MAP[typeParam.toLowerCase()];
+    if (!categoryName) return undefined;
+
+    return subCategories.find(
+      (category) => category.name === categoryName,
+    );
+  }, [subCategories, typeParam]);
 
   useEffect(() => {
     setDraftSkinTypes(selectedSkinTypes);
@@ -202,6 +246,11 @@ export default function ProductList() {
 
     if (subParam !== "ALL" && !Number.isNaN(Number(subParam))) {
       query.set("categoryId", subParam);
+    } else if (selectedTypeCategory) {
+      query.set(
+        "categoryId",
+        String(selectedTypeCategory.id ?? selectedTypeCategory.categoryId),
+      );
     }
 
     // Spring /product/page 필터와 연결
@@ -239,6 +288,8 @@ export default function ProductList() {
     sort,
     selectedTop,
     subParam,
+    typeParam,
+    selectedTypeCategory,
     aiOnly,
     skinTypeParam,
     personalColorParam,
@@ -416,6 +467,7 @@ export default function ProductList() {
               setQuery({
                 category: null,
                 sub: null,
+                type: null,
               })
             }
           >
@@ -430,8 +482,17 @@ export default function ProductList() {
                 <button
                   type="button"
                   key={id}
-                  className={subParam === id ? "active" : ""}
-                  onClick={() => setQuery({ sub: id })}
+                  className={
+                    subParam === id ||
+                    String(
+                      selectedTypeCategory?.id ??
+                        selectedTypeCategory?.categoryId ??
+                        "",
+                    ) === id
+                      ? "active"
+                      : ""
+                  }
+                  onClick={() => setQuery({ sub: id, type: null })}
                 >
                   {category.name}
                 </button>
@@ -448,7 +509,7 @@ export default function ProductList() {
                   key={id}
                   className={categoryParam === id ? "active" : ""}
                   onClick={() =>
-                    setQuery({ category: id, sub: "ALL" })
+                    setQuery({ category: id, sub: "ALL", type: null })
                   }
                 >
                   {category.name}
