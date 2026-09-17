@@ -1,123 +1,141 @@
-// src/components/order/ReturnRequestModal.tsx
-import React, { useState, useRef } from 'react';
-import { useRequestReturn } from '../../features/useReturn';
-import '../../styles/order/ReturnRequestModal.css';
+import React, { useEffect, useState } from "react";
+import { useRequestReturn } from "../../features/useReturn";
+import "../../styles/order/ReturnRequestModal.css";
 
 interface ReturnRequestModalProps {
-    orderId: number;
-    isOpen: boolean;
-    onClose: () => void;
+  orderDetailId: number;
+  productName: string;
+  optionText?: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmitted?: () => void;
 }
 
-const ReturnRequestModal: React.FC<ReturnRequestModalProps> = ({ orderId, isOpen, onClose }) => {
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [reasonCategory, setReasonCategory] = useState<string>('단순 변심');
-    const [detailReason, setDetailReason] = useState<string>('');
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+const REASON_OPTIONS = [
+  { value: "CHANGE_MIND", label: "단순 변심" },
+  { value: "DEFECT", label: "상품 파손 / 불량" },
+  { value: "WRONG_DELIVERY", label: "오배송" },
+  { value: "OTHER", label: "기타" },
+];
 
-    // 모달을 닫는 콜백을 넘겨 훅 초기화
-    const { mutate: submitReturn, isPending } = useRequestReturn(onClose);
+const ReturnRequestModal: React.FC<ReturnRequestModalProps> = ({
+  orderDetailId,
+  productName,
+  optionText,
+  isOpen,
+  onClose,
+  onSubmitted,
+}) => {
+  const [reasonType, setReasonType] = useState("CHANGE_MIND");
+  const [reason, setReason] = useState("");
 
-    if (!isOpen) return null;
+  const { mutate: submitReturn, isPending } = useRequestReturn(() => {
+    onSubmitted?.();
+    onClose();
+  });
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setSelectedImage(file);
-        }
-    };
+  useEffect(() => {
+    if (isOpen) {
+      setReasonType("CHANGE_MIND");
+      setReason("");
+    }
+  }, [isOpen, orderDetailId]);
 
-    const handleSubmit = (e: React.SyntheticEvent) => {
-        e.preventDefault();
+  if (!isOpen) {
+    return null;
+  }
 
-        if (!detailReason.trim()) {
-            alert('상세 반품 사유를 입력해주세요.');
-            return;
-        }
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
 
-        const formData = new FormData();
-        formData.append('orderId', orderId.toString());
-        formData.append('reasonCategory', reasonCategory);
-        formData.append('detailReason', detailReason);
+    if (!reason.trim()) {
+      alert("상세 반품 사유를 입력해주세요.");
+      return;
+    }
 
-        // 테스트용 하드코딩 회원 데이터 (JWT 주석 해제 시 제거)
-        formData.append('loginId', 'testUser');
+    submitReturn({
+      orderDetailId,
+      reasonType,
+      reason: reason.trim(),
+    });
+  };
 
-        if (selectedImage) {
-            formData.append('file', selectedImage); // 증빙 사진
-        }
+  return (
+    <div className="return-modal-overlay" onMouseDown={onClose}>
+      <section
+        className="return-modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-label="반품 요청"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <header className="return-modal-header">
+          <div>
+            <small>RETURN REQUEST</small>
+            <h3>반품 요청</h3>
+          </div>
 
-        submitReturn(formData);
-    };
+          <button type="button" className="btn-close" onClick={onClose}>
+            ×
+          </button>
+        </header>
 
-    return (
-        <div className="return-modal-overlay" onClick={onClose}>
-            <div className="return-modal-content" onClick={(e) => e.stopPropagation()}>
-                <div className="return-modal-header">
-                    <h3>반품 신청</h3>
-                    <button className="btn-close" onClick={onClose}>&times;</button>
-                </div>
-
-                <form className="return-form" onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>주문 번호</label>
-                        <input type="text" value={orderId} readOnly className="readonly-input" />
-                    </div>
-
-                    <div className="form-group">
-                        <label>반품 사유 선택</label>
-                        <select value={reasonCategory} onChange={(e) => setReasonCategory(e.target.value)}>
-                            <option value="단순 변심">단순 변심 (사이즈/색상 불만)</option>
-                            <option value="상품 불량">상품 파손 및 불량</option>
-                            <option value="오배송">다른 상품이 배송됨</option>
-                            <option value="기타">기타</option>
-                        </select>
-                    </div>
-
-                    <div className="form-group">
-                        <label>상세 사유</label>
-                        <textarea
-                            rows={4}
-                            placeholder="반품하시려는 상세한 이유를 적어주세요."
-                            value={detailReason}
-                            onChange={(e) => setDetailReason(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>증빙 사진 첨부 (선택)</label>
-                        <div className="file-upload-wrapper">
-                            <input
-                                type="file"
-                                accept="image/*"
-                                ref={fileInputRef}
-                                onChange={handleImageChange}
-                                style={{ display: 'none' }}
-                            />
-                            <button
-                                type="button"
-                                className="btn-upload"
-                                onClick={() => fileInputRef.current?.click()}
-                            >
-                                사진 선택
-                            </button>
-                            <span className="file-name">
-                                {selectedImage ? selectedImage.name : '선택된 파일 없음'}
-                            </span>
-                        </div>
-                        <small className="file-hint">* 상품 불량 및 파손의 경우 사진을 첨부해주시면 처리가 빠릅니다.</small>
-                    </div>
-
-                    <div className="return-actions">
-                        <button type="button" className="btn-cancel" onClick={onClose} disabled={isPending}>취소</button>
-                        <button type="submit" className="btn-submit" disabled={isPending}>
-                            {isPending ? '처리 중...' : '반품 신청 완료'}
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <div className="return-product-summary">
+          <span>ORDER ITEM #{orderDetailId}</span>
+          <strong>{productName}</strong>
+          {optionText && <p>{optionText}</p>}
         </div>
-    );
+
+        <form className="return-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="return-reason-type">반품 사유</label>
+            <select
+              id="return-reason-type"
+              value={reasonType}
+              onChange={(event) => setReasonType(event.target.value)}
+            >
+              {REASON_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="return-reason">상세 사유</label>
+            <textarea
+              id="return-reason"
+              rows={5}
+              maxLength={1000}
+              placeholder="반품을 요청하는 이유를 자세히 입력해주세요."
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+            />
+            <small className="return-character-count">{reason.length} / 1000</small>
+          </div>
+
+          <p className="return-notice">
+            반품 요청은 배송완료된 상품만 가능하며, 접수 후 관리자가 승인 또는 거절합니다.
+          </p>
+
+          <div className="return-actions">
+            <button
+              type="button"
+              className="btn-cancel"
+              onClick={onClose}
+              disabled={isPending}
+            >
+              취소
+            </button>
+            <button type="submit" className="btn-submit" disabled={isPending}>
+              {isPending ? "접수 중..." : "반품 요청 접수"}
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  );
 };
 
 export default ReturnRequestModal;

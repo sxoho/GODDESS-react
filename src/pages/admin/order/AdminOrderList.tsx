@@ -1,4 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  getAdminReturnRequests,
+  processReturnRequest,
+  type ReturnResponse,
+} from "../../../api/returnApi";
 import { axiosInstance } from "../../../components/ToolBak";
 import "../../../styles/admin/AdminOrderList.css";
 
@@ -42,6 +48,26 @@ const statusLabel = (status: string) => {
   }
 };
 
+const returnStatusLabel = (status: string) => {
+  switch (status) {
+    case "PENDING": return "처리 대기";
+    case "APPROVED": return "반품 승인";
+    case "REJECTED": return "반품 거절";
+    case "COMPLETED": return "반품 완료";
+    default: return status;
+  }
+};
+
+const returnReasonLabel = (reasonType: string) => {
+  switch (reasonType) {
+    case "CHANGE_MIND": return "단순 변심";
+    case "DEFECT": return "상품 파손 / 불량";
+    case "WRONG_DELIVERY": return "오배송";
+    case "OTHER": return "기타";
+    default: return reasonType;
+  }
+};
+
 const nextStatus = (status: string) => {
   switch (status) {
     case "PAID": return "PREPARING";
@@ -52,11 +78,35 @@ const nextStatus = (status: string) => {
   }
 };
 
+const formatDate = (value?: string) => {
+  if (!value) return "-";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+};
+
 const AdminOrderList = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [returns, setReturns] = useState<ReturnResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [returnLoading, setReturnLoading] = useState(true);
   const [changingId, setChangingId] = useState<number | null>(null);
+  const [processingReturnId, setProcessingReturnId] = useState<number | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<Record<number, string>>({});
+
+  const pendingReturnCount = useMemo(
+    () => returns.filter((item) => item.status === "PENDING").length,
+    [returns],
+  );
 
   const loadOrders = async () => {
     try {
@@ -73,7 +123,21 @@ const AdminOrderList = () => {
     }
   };
 
-  useEffect(() => { void loadOrders(); }, []);
+  const loadReturns = async () => {
+    try {
+      setReturnLoading(true);
+      setReturns(await getAdminReturnRequests());
+    } catch (error) {
+      console.error("관리자 반품 요청 조회 오류:", error);
+      setReturns([]);
+    } finally {
+      setReturnLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void Promise.all([loadOrders(), loadReturns()]);
+  }, []);
 
   const changeStatus = async (order: AdminOrder) => {
     const next = nextStatus(order.status);
@@ -123,6 +187,61 @@ const AdminOrderList = () => {
     } finally {
       setChangingId(null);
     }
+  };
+
+  const handleReturnProcess = async (
+    item: ReturnResponse,
+    action: "APPROVED" | "REJECTED",
+  ) => {
+    const isApprove = action === "APPROVED";
+    const defaultRefund = item.price * item.quantity;
+    const message = isApprove
+      ? `${item.productName} 반품 요청을 승인하시겠습니까?\n예정 환불금액: ${defaultRefund.toLocaleString()}원`
+      : `${item.productName} 반품 요청을 거절하시겠습니까?`;
+
+    if (!window.confirm(message)) return;
+
+    try {
+      setProcessingReturnId(item.id);
+      await processReturnRequest(
+        item.id,
+        action,
+        isApprove ? defaultRefund : 0,
+      );
+      alert(isApprove ? "반품 요청을 승인했습니다." : "반품 요청을 거절했습니다.");
+      await loadReturns();
+    } catch (error) {
+      console.error("반품 요청 처리 오류:", error);
+      alert("반품 요청 처리에 실패했습니다.");
+    } finally {
+      setProcessingReturnId(null);
+    }
+  };
+
+  const openReturnMail = (item: ReturnResponse) => {
+    const approved = item.status === "APPROVED";
+    const resultText = approved ? "승인" : "거절";
+    const refundText = approved && item.refundAmount != null
+      ? `\n예정 환불 금액: ${item.refundAmount.toLocaleString()}원`
+      : "";
+
+    navigate("/admin/mail", {
+      state: {
+        returnMail: {
+          to: item.memberEmail,
+          title: `[GODDESS] 반품 요청 ${resultText} 안내`,
+          content:
+            `${item.memberName} 고객님, 안녕하세요.\n\n` +
+            `요청하신 반품 건의 처리 결과를 안내드립니다.\n\n` +
+            `주문번호: #${item.orderId}\n` +
+            `상품명: ${item.productName}\n` +
+            `반품 사유: ${returnReasonLabel(item.reasonType)}\n` +
+            `처리 결과: ${resultText}${refundText}\n\n` +
+            `추가 문의사항이 있으시면 GODDESS 고객센터로 문의해주세요.\n` +
+            `감사합니다.`,
+        },
+      },
+    });
   };
 
   if (loading) {
@@ -198,6 +317,99 @@ const AdminOrderList = () => {
           );
         })}
       </div>
+
+      <section className="admin-return-section">
+        <header className="admin-return-header">
+          <div>
+            <p>RETURN MANAGEMENT</p>
+            <h2>반품 요청 관리</h2>
+          </div>
+          <span>처리 대기 {pendingReturnCount}건</span>
+        </header>
+
+        {returnLoading ? (
+          <div className="admin-return-empty">반품 요청을 불러오는 중입니다.</div>
+        ) : returns.length === 0 ? (
+          <div className="admin-return-empty">접수된 반품 요청이 없습니다.</div>
+        ) : (
+          <div className="admin-return-list">
+            {returns.map((item) => (
+              <article key={item.id} className="admin-return-card">
+                <div className="admin-return-main">
+                  <div>
+                    <small>RETURN #{item.id} · ORDER #{item.orderId}</small>
+                    <strong>{item.productName}</strong>
+                    <p>
+                      {[item.colorName, item.variantName].filter(Boolean).join(" · ") || "옵션 없음"}
+                      {` · ${item.quantity}개`}
+                    </p>
+                  </div>
+
+                  <div>
+                    <small>CUSTOMER</small>
+                    <strong>{item.memberName}</strong>
+                    <p>{item.memberEmail}</p>
+                  </div>
+
+                  <div>
+                    <small>REASON</small>
+                    <strong>{returnReasonLabel(item.reasonType)}</strong>
+                    <p>{item.reason || "상세 사유 없음"}</p>
+                  </div>
+
+                  <div>
+                    <small>REQUESTED</small>
+                    <strong>{formatDate(item.createdAt)}</strong>
+                    <p className={`admin-return-status status-${item.status.toLowerCase()}`}>
+                      {returnStatusLabel(item.status)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="admin-return-actions">
+                  {item.status === "PENDING" ? (
+                    <>
+                      <button
+                        type="button"
+                        disabled={processingReturnId === item.id}
+                        onClick={() => void handleReturnProcess(item, "APPROVED")}
+                      >
+                        반품 승인
+                      </button>
+                      <button
+                        type="button"
+                        className="secondary"
+                        disabled={processingReturnId === item.id}
+                        onClick={() => void handleReturnProcess(item, "REJECTED")}
+                      >
+                        반품 거절
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span>
+                        {returnStatusLabel(item.status)}
+                        {item.status === "APPROVED" && item.refundAmount != null
+                          ? ` · ${item.refundAmount.toLocaleString()}원`
+                          : ""}
+                      </span>
+                      {(item.status === "APPROVED" || item.status === "REJECTED") && (
+                        <button
+                          type="button"
+                          className="mail"
+                          onClick={() => openReturnMail(item)}
+                        >
+                          메일 작성
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
     </main>
   );
 };

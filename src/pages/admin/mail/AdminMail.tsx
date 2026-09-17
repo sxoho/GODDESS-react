@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 import { axiosInstance } from "../../../components/ToolBak";
@@ -22,7 +23,16 @@ const LANGUAGE_OPTIONS = [
   { value: "스페인어", label: "Español · 스페인어" },
 ];
 
+type AdminMailLocationState = {
+  returnMail?: {
+    to?: string;
+    title?: string;
+    content?: string;
+  };
+};
+
 const AdminMail = () => {
+  const location = useLocation();
   const [to, setTo] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -30,6 +40,20 @@ const AdminMail = () => {
   const [translated, setTranslated] = useState<TranslateResult | null>(null);
   const [translating, setTranslating] = useState(false);
   const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    const state = location.state as AdminMailLocationState | null;
+    const returnMail = state?.returnMail;
+
+    if (!returnMail) {
+      return;
+    }
+
+    setTo(returnMail.to ?? "");
+    setTitle(returnMail.title ?? "");
+    setContent(returnMail.content ?? "");
+    setTranslated(null);
+  }, [location.key, location.state]);
 
   const canTranslate = useMemo(
     () => title.trim().length > 0 && content.trim().length > 0,

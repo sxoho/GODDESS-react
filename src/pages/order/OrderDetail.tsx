@@ -9,8 +9,13 @@ import {
   getMyOrderDetail,
   type OrderDetailItem,
 } from "../../api/orderHistoryApi";
+import {
+  getMyReturnRequests,
+  type ReturnResponse,
+} from "../../api/returnApi";
 
 import { axiosInstance } from "../../components/ToolBak";
+import ReturnRequestModal from "../../components/order/ReturnRequestModal";
 
 import "../../styles/order/OrderDetail.css";
 
@@ -51,6 +56,22 @@ type OrderItemView = OrderDetailItem & {
 };
 
 type ReviewTarget = OrderItemView;
+type ReturnTarget = OrderItemView;
+
+const returnStatusLabel = (status?: string) => {
+  switch (status) {
+    case "PENDING":
+      return "반품 요청중";
+    case "APPROVED":
+      return "반품 승인";
+    case "REJECTED":
+      return "반품 거절";
+    case "COMPLETED":
+      return "반품 완료";
+    default:
+      return status || "-";
+  }
+};
 
 const statusLabel = (status?: string) => {
   switch (status) {
@@ -246,6 +267,23 @@ const OrderDetail: React.FC = () => {
   const [reviewContent, setReviewContent] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewSaving, setReviewSaving] = useState(false);
+  const [returnTarget, setReturnTarget] = useState<ReturnTarget | null>(null);
+
+  const {
+    data: returnRequests = [],
+    refetch: refetchReturnRequests,
+  } = useQuery<ReturnResponse[]>({
+    queryKey: ["myReturnRequests"],
+    queryFn: getMyReturnRequests,
+  });
+
+  const returnByOrderDetail = useMemo(
+    () =>
+      Object.fromEntries(
+        returnRequests.map((item) => [item.orderDetailId, item]),
+      ) as Record<number, ReturnResponse>,
+    [returnRequests],
+  );
 
   /**
    * 주문 상품의 실제 상품/색상/이미지 연결
@@ -608,6 +646,9 @@ const OrderDetail: React.FC = () => {
               const viewItem = item as OrderItemView;
               const isReviewed = Boolean(reviewedOrderDetails[item.id]);
               const canWriteReview = order.status === "DELIVERED";
+              const returnRequest = returnByOrderDetail[item.id];
+              const canRequestReturn =
+                order.status === "DELIVERED" && !returnRequest;
 
               return (
                 <article key={item.id} className="order-detail-item">
@@ -661,21 +702,38 @@ const OrderDetail: React.FC = () => {
 
                   <div className="order-detail-review-action">
                     {canWriteReview ? (
-                      <button
-                        type="button"
-                        className={isReviewed ? "completed" : ""}
-                        disabled={isReviewed}
-                        onClick={() => {
-                          setReviewTarget(viewItem);
-                          setReviewTitle("");
-                          setReviewContent("");
-                          setReviewRating(5);
-                        }}
-                      >
-                        {isReviewed ? "리뷰 작성 완료" : "리뷰 작성"}
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          className={isReviewed ? "completed" : ""}
+                          disabled={isReviewed}
+                          onClick={() => {
+                            setReviewTarget(viewItem);
+                            setReviewTitle("");
+                            setReviewContent("");
+                            setReviewRating(5);
+                          }}
+                        >
+                          {isReviewed ? "리뷰 작성 완료" : "리뷰 작성"}
+                        </button>
+
+                        {returnRequest ? (
+                          <span className={`order-detail-return-status status-${returnRequest.status.toLowerCase()}`}>
+                            {returnStatusLabel(returnRequest.status)}
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="return-button"
+                            disabled={!canRequestReturn}
+                            onClick={() => setReturnTarget(viewItem)}
+                          >
+                            반품 요청
+                          </button>
+                        )}
+                      </>
                     ) : (
-                      <span>배송완료 후 작성 가능</span>
+                      <span>배송완료 후 리뷰/반품 가능</span>
                     )}
                   </div>
                 </article>
@@ -917,6 +975,23 @@ const OrderDetail: React.FC = () => {
             </div>
             <span>처리 대기중</span>
           </section>
+        )}
+
+        {returnTarget && (
+          <ReturnRequestModal
+            orderDetailId={returnTarget.id}
+            productName={returnTarget.productName}
+            optionText={
+              [returnTarget.colorName, returnTarget.variantName]
+                .filter(Boolean)
+                .join(" · ") || undefined
+            }
+            isOpen={Boolean(returnTarget)}
+            onClose={() => setReturnTarget(null)}
+            onSubmitted={() => {
+              void refetchReturnRequests();
+            }}
+          />
         )}
 
         <section className="order-detail-summary">

@@ -39,3 +39,177 @@
   .admin-order-shipping-form select { width:100%; }
   .admin-order-shipping-info { flex-direction:column; gap:8px; }
 }
+
+/* =========================================
+   RETURN MANAGEMENT
+========================================= */
+.admin-return-section {
+  margin-top: 64px;
+  padding-top: 34px;
+  border-top: 1px solid #dfd6d3;
+}
+
+.admin-return-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+.admin-return-header p {
+  margin: 0 0 6px;
+  color: #b46478;
+  font-size: 10px;
+  letter-spacing: .14em;
+}
+
+.admin-return-header h2 {
+  margin: 0;
+  color: #3f3a38;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -.035em;
+}
+
+.admin-return-header > span {
+  color: #8f8884;
+  font-size: 11px;
+}
+
+.admin-return-list {
+  border-top: 1px solid #eee8e6;
+}
+
+.admin-return-card {
+  padding: 22px 0;
+  border-bottom: 1px solid #eee8e6;
+}
+
+.admin-return-main {
+  display: grid;
+  grid-template-columns: minmax(230px, 1.25fr) minmax(170px, .8fr) minmax(240px, 1.2fr) minmax(170px, .8fr);
+  gap: 24px;
+}
+
+.admin-return-main small {
+  display: block;
+  margin-bottom: 7px;
+  color: #aaa19f;
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+
+.admin-return-main strong {
+  display: block;
+  color: #40383b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-return-main p {
+  margin: 5px 0 0;
+  color: #8f8387;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.admin-return-status {
+  font-weight: 700;
+}
+
+.admin-return-status.status-pending { color: #a56b4f; }
+.admin-return-status.status-approved { color: #7c5d82; }
+.admin-return-status.status-rejected { color: #9f5e65; }
+.admin-return-status.status-completed { color: #667c70; }
+
+.admin-return-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.admin-return-actions button {
+  min-width: 118px;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid #b46478;
+  border-radius: 999px;
+  background: #fff;
+  color: #b46478;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.admin-return-actions button:hover:not(:disabled) {
+  background: #b46478;
+  color: #fff;
+}
+
+.admin-return-actions button.secondary {
+  border-color: #d5ceca;
+  color: #756f6c;
+}
+
+.admin-return-actions button.secondary:hover:not(:disabled) {
+  background: #f4f0ef;
+  color: #554f4c;
+}
+
+.admin-return-actions button.mail {
+  background: #493e42;
+  border-color: #493e42;
+  color: #fff;
+}
+
+.admin-return-actions button.mail:hover:not(:disabled) {
+  background: #2f282b;
+}
+
+.admin-return-actions button:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
+.admin-return-actions > span {
+  margin-right: 8px;
+  color: #7d7175;
+  font-size: 11px;
+}
+
+.admin-return-empty {
+  padding: 46px 0;
+  border-top: 1px solid #eee8e6;
+  border-bottom: 1px solid #eee8e6;
+  color: #99908d;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .admin-return-main {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-return-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-return-main {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-return-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-return-actions button {
+    width: 100%;
+  }
+}

@@ -9,7 +9,7 @@ import '../../styles/order/MyOrderHistory.css';
 
 const MyOrderHistory: React.FC = () => {
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
-    const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
+    const [returnTarget, setReturnTarget] = useState<{ orderDetailId: number; productName: string; optionText?: string } | null>(null);
 
     // 내 주문 목록 불러오기
     const { data: orders, isLoading: isOrdersLoading } = useQuery({
@@ -73,6 +73,19 @@ const MyOrderHistory: React.FC = () => {
                                                 <div className="detail-item-price">
                                                     <span>{item.quantity}개</span>
                                                     <strong>{(item.price * item.quantity).toLocaleString()}원</strong>
+                                                    {deliveryInfo?.status === 'DELIVERED' && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn-return-request"
+                                                            onClick={() => setReturnTarget({
+                                                                orderDetailId: item.orderDetailId,
+                                                                productName: item.productName,
+                                                                optionText: [item.colorName, item.sizeName].filter(Boolean).join(' / '),
+                                                            })}
+                                                        >
+                                                            반품 요청
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </li>
                                         ))}
@@ -112,13 +125,6 @@ const MyOrderHistory: React.FC = () => {
                                             </div>
                                         </div>
 
-                                        {deliveryInfo.status === 'DELIVERED' && (
-                                            <div className="delivery-actions">
-                                                <button className="btn-return-request" onClick={() => setIsReturnModalOpen(true)}>
-                                                    반품 신청하기
-                                                </button>
-                                            </div>
-                                        )}
                                     </>
                                 )}
                             </div>
@@ -128,12 +134,13 @@ const MyOrderHistory: React.FC = () => {
                 </div>
             </div>
 
-            {/* 반품 신청 모달 */}
-            {selectedOrderId && (
+            {returnTarget && (
                 <ReturnRequestModal
-                    orderId={selectedOrderId}
-                    isOpen={isReturnModalOpen}
-                    onClose={() => setIsReturnModalOpen(false)}
+                    orderDetailId={returnTarget.orderDetailId}
+                    productName={returnTarget.productName}
+                    optionText={returnTarget.optionText}
+                    isOpen={Boolean(returnTarget)}
+                    onClose={() => setReturnTarget(null)}
                 />
             )}
         </div>

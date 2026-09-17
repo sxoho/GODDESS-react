@@ -657,3 +657,39 @@
     width: 100%;
   }
 }
+
+/* 반품 요청 버튼 / 상태 */
+.order-detail-review-action {
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.order-detail-review-action button.return-button {
+  border-color: #c8b8bd;
+  color: #74666b;
+}
+
+.order-detail-review-action button.return-button:hover:not(:disabled) {
+  background: #74666b;
+  color: #fff;
+}
+
+.order-detail-return-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 118px;
+  min-height: 38px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border: 1px solid #ddd3d6;
+  background: #f8f4f5;
+  color: #84767b;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.order-detail-return-status.status-approved { color: #7c5d82; }
+.order-detail-return-status.status-rejected { color: #9f5e65; }
+.order-detail-return-status.status-completed { color: #667c70; }
