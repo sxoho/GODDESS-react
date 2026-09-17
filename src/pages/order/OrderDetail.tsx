@@ -50,6 +50,8 @@ type OrderItemView = OrderDetailItem & {
   brand?: string;
 };
 
+type ReviewTarget = OrderItemView;
+
 const statusLabel = (status?: string) => {
   switch (status) {
     case "PAYMENT_WAITING":
@@ -236,6 +238,15 @@ const OrderDetail: React.FC = () => {
 
   const [imageLoading, setImageLoading] = useState(false);
 
+  const [reviewedOrderDetails, setReviewedOrderDetails] = useState<
+    Record<number, boolean>
+  >({});
+  const [reviewTarget, setReviewTarget] = useState<ReviewTarget | null>(null);
+  const [reviewTitle, setReviewTitle] = useState("");
+  const [reviewContent, setReviewContent] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewSaving, setReviewSaving] = useState(false);
+
   /**
    * 주문 상품의 실제 상품/색상/이미지 연결
    *
@@ -362,6 +373,90 @@ const OrderDetail: React.FC = () => {
 
     void loadOrderItemImages();
   }, [order]);
+
+  /**
+   * 각 주문상품의 리뷰 작성 여부 확인
+   */
+  useEffect(() => {
+    if (!order?.orderDetails?.length) {
+      setReviewedOrderDetails({});
+      return;
+    }
+
+    const loadReviewStatus = async () => {
+      const entries = await Promise.all(
+        order.orderDetails.map(async (item) => {
+          try {
+            const response = await axiosInstance.get<boolean>(
+              `/product_review/order-detail/${item.id}/exists`,
+            );
+
+            return [item.id, Boolean(response.data)] as const;
+          } catch (error) {
+            console.error(
+              `리뷰 작성 여부 조회 오류 - orderDetailId: ${item.id}`,
+              error,
+            );
+
+            return [item.id, false] as const;
+          }
+        }),
+      );
+
+      setReviewedOrderDetails(Object.fromEntries(entries));
+    };
+
+    void loadReviewStatus();
+  }, [order]);
+
+  const resetReviewForm = () => {
+    setReviewTarget(null);
+    setReviewTitle("");
+    setReviewContent("");
+    setReviewRating(5);
+  };
+
+  const handleSaveReview = async () => {
+    if (!order || !reviewTarget) {
+      return;
+    }
+
+    if (!reviewTitle.trim()) {
+      alert("리뷰 제목을 입력해주세요.");
+      return;
+    }
+
+    if (!reviewContent.trim()) {
+      alert("리뷰 내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      setReviewSaving(true);
+
+      await axiosInstance.post("/product_review/save", {
+        memberId: order.memberId,
+        orderDetailId: reviewTarget.id,
+        beautySaveId: null,
+        title: reviewTitle.trim(),
+        content: reviewContent.trim(),
+        rating: reviewRating,
+      });
+
+      setReviewedOrderDetails((current) => ({
+        ...current,
+        [reviewTarget.id]: true,
+      }));
+
+      alert("리뷰가 등록되었습니다.");
+      resetReviewForm();
+    } catch (error) {
+      console.error("리뷰 등록 오류:", error);
+      alert("리뷰 등록 중 오류가 발생했습니다.");
+    } finally {
+      setReviewSaving(false);
+    }
+  };
 
   const cancelMutation = useMutation({
     mutationFn: () => cancelOrder(parsedOrderId),
@@ -511,6 +606,8 @@ const OrderDetail: React.FC = () => {
           <div className="order-detail-items">
             {displayItems.map((item) => {
               const viewItem = item as OrderItemView;
+              const isReviewed = Boolean(reviewedOrderDetails[item.id]);
+              const canWriteReview = order.status === "DELIVERED";
 
               return (
                 <article key={item.id} className="order-detail-item">
@@ -561,10 +658,105 @@ const OrderDetail: React.FC = () => {
                       {(item.price * item.quantity).toLocaleString()}원
                     </strong>
                   </div>
+
+                  <div className="order-detail-review-action">
+                    {canWriteReview ? (
+                      <button
+                        type="button"
+                        className={isReviewed ? "completed" : ""}
+                        disabled={isReviewed}
+                        onClick={() => {
+                          setReviewTarget(viewItem);
+                          setReviewTitle("");
+                          setReviewContent("");
+                          setReviewRating(5);
+                        }}
+                      >
+                        {isReviewed ? "리뷰 작성 완료" : "리뷰 작성"}
+                      </button>
+                    ) : (
+                      <span>배송완료 후 작성 가능</span>
+                    )}
+                  </div>
                 </article>
               );
             })}
           </div>
+
+          {reviewTarget && (
+            <div className="order-detail-review-form">
+              <div className="order-detail-review-form-head">
+                <div>
+                  <span>WRITE REVIEW</span>
+                  <strong>{reviewTarget.productName}</strong>
+                  <p>
+                    {[reviewTarget.colorName, reviewTarget.variantName]
+                      .filter(Boolean)
+                      .join(" · ") || "구매 옵션 없음"}
+                  </p>
+                </div>
+
+                <button type="button" onClick={resetReviewForm}>
+                  닫기
+                </button>
+              </div>
+
+              <div className="order-detail-review-rating">
+                <span>별점</span>
+
+                <div>
+                  {Array.from({ length: 5 }, (_, index) => index + 1).map(
+                    (score) => (
+                      <button
+                        key={score}
+                        type="button"
+                        className={score <= reviewRating ? "active" : ""}
+                        onClick={() => setReviewRating(score)}
+                        aria-label={`${score}점`}
+                      >
+                        ★
+                      </button>
+                    ),
+                  )}
+
+                  <strong>{reviewRating}.0</strong>
+                </div>
+              </div>
+
+              <label>
+                <span>제목</span>
+                <input
+                  type="text"
+                  maxLength={200}
+                  value={reviewTitle}
+                  onChange={(event) => setReviewTitle(event.target.value)}
+                  placeholder="리뷰 제목을 입력해주세요."
+                />
+              </label>
+
+              <label>
+                <span>내용</span>
+                <textarea
+                  rows={6}
+                  value={reviewContent}
+                  onChange={(event) => setReviewContent(event.target.value)}
+                  placeholder="색상, 발림성, 지속력 등 실제 사용 후기를 남겨주세요."
+                />
+              </label>
+
+              <div className="order-detail-review-form-bottom">
+                <p>구매한 상품과 색상·옵션 정보가 리뷰에 자동으로 연결됩니다.</p>
+
+                <button
+                  type="button"
+                  disabled={reviewSaving}
+                  onClick={() => void handleSaveReview()}
+                >
+                  {reviewSaving ? "등록 중..." : "리뷰 등록"}
+                </button>
+              </div>
+            </div>
+          )}
         </section>
 
         <div className="order-detail-info-grid">

@@ -3589,3 +3589,10 @@
     gap: 4px 10px;
   }
 }
+
+.mypage-review-purchased-option {
+  margin: 5px 0 9px;
+  color: #8f7d82;
+  font-size: 10px;
+  font-weight: 600;
+}

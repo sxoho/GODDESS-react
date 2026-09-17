@@ -285,6 +285,8 @@ type ProductReview = {
   orderDetailId?: number | null;
   productId: number;
   productName: string;
+  colorName?: string | null;
+  variantName?: string | null;
   beautySaveId?: number | null;
   beautyImageUrl?: string | null;
 
@@ -956,6 +958,14 @@ const MyProductReviewSection = ({
                     <div className="mypage-review-product">
                       {review.productName}
                     </div>
+
+                    {(review.colorName || review.variantName) && (
+                      <div className="mypage-review-purchased-option">
+                        구매 옵션 · {[review.colorName, review.variantName]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </div>
+                    )}
 
 
                     <div className="mypage-review-title-row">

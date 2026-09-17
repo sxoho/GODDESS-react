@@ -119,6 +119,8 @@ type ProductReview = {
   memberNickname: string;
   productId: number;
   productName: string;
+  colorName?: string | null;
+  variantName?: string | null;
   beautySaveId?: number | null;
   beautyImageUrl?: string | null;
   title: string;
@@ -218,12 +220,6 @@ const ProductDetail = () => {
   const [reviewList, setReviewList] = useState<ProductReview[]>([]);
   const [reviewLoading, setReviewLoading] = useState(false);
   const [reviewError, setReviewError] = useState("");
-  const [reviewFormOpen, setReviewFormOpen] = useState(false);
-  const [reviewTitle, setReviewTitle] = useState("");
-  const [reviewContent, setReviewContent] = useState("");
-  const [reviewRating, setReviewRating] = useState(5);
-  const [reviewSaving, setReviewSaving] = useState(false);
-  const [editingReviewId, setEditingReviewId] = useState<number | null>(null);
   const [reviewTotalPages, setReviewTotalPages] = useState(0);
   const [reviewTotalElements, setReviewTotalElements] = useState(0);
   const [reviewSummary, setReviewSummary] = useState<ProductReviewSummary>({
@@ -536,171 +532,6 @@ const ProductDetail = () => {
     }
   }, [activeTab, productId, reviewPage]);
 
-  const resetReviewForm = () => {
-    setReviewTitle("");
-    setReviewContent("");
-    setReviewRating(5);
-    setEditingReviewId(null);
-  };
-
-  const handleOpenReviewForm = () => {
-    if (!sw || memberId <= 0) {
-      window.alert("로그인 후 상품 리뷰를 작성할 수 있습니다.");
-      navigate("/login");
-      return;
-    }
-
-    resetReviewForm();
-    setReviewFormOpen(true);
-  };
-
-  const handleSaveReview = async () => {
-    if (!product) return;
-
-    if (!sw || memberId <= 0) {
-      window.alert("로그인 후 상품 리뷰를 작성할 수 있습니다.");
-      return;
-    }
-
-    if (!reviewTitle.trim()) {
-      window.alert("리뷰 제목을 입력해주세요.");
-      return;
-    }
-
-    if (!reviewContent.trim()) {
-      window.alert("리뷰 내용을 입력해주세요.");
-      return;
-    }
-
-    try {
-      setReviewSaving(true);
-
-      const isEdit = editingReviewId !== null;
-
-      const response = await fetch(
-        isEdit
-          ? `${API_BASE}/product_review/${editingReviewId}`
-          : `${API_BASE}/product_review/save`,
-        {
-          method: isEdit ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(
-            isEdit
-              ? {
-                  memberId,
-                  beautySaveId: null,
-                  title: reviewTitle.trim(),
-                  content: reviewContent.trim(),
-                  rating: reviewRating,
-                }
-              : {
-                  memberId,
-                  orderDetailId: null,
-                  productId: product.productId,
-                  beautySaveId: null,
-                  title: reviewTitle.trim(),
-                  content: reviewContent.trim(),
-                  rating: reviewRating,
-                },
-          ),
-        },
-      );
-
-      if (!response.ok) {
-        const message = await response.text();
-
-        throw new Error(
-          message ||
-            (isEdit
-              ? "리뷰 수정에 실패했습니다."
-              : "리뷰 등록에 실패했습니다."),
-        );
-      }
-
-      window.alert(
-        isEdit ? "리뷰가 수정되었습니다." : "리뷰가 등록되었습니다.",
-      );
-
-      resetReviewForm();
-      setReviewFormOpen(false);
-
-      changeReviewPage(0);
-
-      await loadProductReviews(0);
-      await loadReviewSummary();
-      await loadReviewAiSummary();
-    } catch (e) {
-      console.error("상품 리뷰 저장 오류", e);
-
-      window.alert(
-        e instanceof Error
-          ? e.message
-          : "상품 리뷰 저장 중 오류가 발생했습니다.",
-      );
-    } finally {
-      setReviewSaving(false);
-    }
-  };
-
-  const handleEditReview = (review: ProductReview) => {
-    if (review.memberId !== memberId) {
-      window.alert("본인이 작성한 리뷰만 수정할 수 있습니다.");
-      return;
-    }
-
-    setEditingReviewId(review.id);
-    setReviewTitle(review.title);
-    setReviewContent(review.content);
-    setReviewRating(review.rating);
-    setReviewFormOpen(true);
-  };
-
-  const handleDeleteReview = async (review: ProductReview) => {
-    if (review.memberId !== memberId) {
-      window.alert("본인이 작성한 리뷰만 삭제할 수 있습니다.");
-      return;
-    }
-
-    if (!window.confirm("상품 리뷰를 삭제할까요?")) {
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `${API_BASE}/product_review/${review.id}/member/${memberId}`,
-        {
-          method: "DELETE",
-        },
-      );
-
-      if (!response.ok) {
-        const message = await response.text();
-
-        throw new Error(message || "리뷰 삭제에 실패했습니다.");
-      }
-
-      const nextPage =
-        reviewList.length === 1 && reviewPage > 0 ? reviewPage - 1 : reviewPage;
-
-      changeReviewPage(nextPage, true);
-
-      await loadProductReviews(nextPage);
-
-      await loadReviewSummary();
-      await loadReviewAiSummary();
-    } catch (e) {
-      console.error("상품 리뷰 삭제 오류", e);
-
-      window.alert(
-        e instanceof Error
-          ? e.message
-          : "상품 리뷰 삭제 중 오류가 발생했습니다.",
-      );
-    }
-  };
-
   const formatReviewDate = (value?: string | null) => {
     if (!value) return "-";
 
@@ -755,21 +586,46 @@ const ProductDetail = () => {
         .replace(/^\d+[.)]\s*/, "")
         .trim();
 
-    let blocks = raw
+    const truncate = (value: string, max: number) =>
+      value.length > max ? `${value.slice(0, max).trim()}…` : value;
+
+    const rawLines = raw
       .split(/\n+/)
-      .map(clean)
+      .map((line) => line.trim())
       .filter(Boolean);
 
-    // LLM이 한 문단으로 길게 응답한 경우 문장 기준으로 분리
+    const pairedItems: Array<{ title: string; body: string }> = [];
+
+    for (let i = 0; i < rawLines.length && pairedItems.length < 3; i += 1) {
+      const line = rawLines[i];
+
+      if (/^[-•○●▪︎◦*]\s*/.test(line)) {
+        const titleLine = clean(line);
+        const nextLine = rawLines[i + 1];
+
+        if (nextLine && !/^[-•○●▪︎◦*]\s*/.test(nextLine)) {
+          pairedItems.push({
+            title: truncate(titleLine, 28),
+            body: truncate(clean(nextLine), 105),
+          });
+          i += 1;
+          continue;
+        }
+      }
+    }
+
+    if (pairedItems.length > 0) {
+      return pairedItems;
+    }
+
+    let blocks = rawLines.map(clean).filter(Boolean);
+
     if (blocks.length <= 1) {
       blocks = raw
         .split(/(?<=[.!?。])\s+/)
         .map(clean)
         .filter(Boolean);
     }
-
-    const truncate = (value: string, max: number) =>
-      value.length > max ? `${value.slice(0, max).trim()}…` : value;
 
     return blocks.slice(0, 3).map((block, index) => {
       const colonMatch = block.match(/^(.{2,30}?)[：:]\s*(.+)$/);
@@ -1988,13 +1844,6 @@ const ProductDetail = () => {
                   <span>직접 사용해본 색감과 발림성, 지속력에 대한 경험을 공유해주세요.</span>
                 </div>
 
-                <button
-                  type="button"
-                  className="product-review-write-button"
-                  onClick={handleOpenReviewForm}
-                >
-                  리뷰 작성
-                </button>
               </div>
 
               <div className="product-review-summary">
@@ -2080,99 +1929,6 @@ const ProductDetail = () => {
                 )}
               </div>
 
-              {reviewFormOpen && (
-                <div className="product-review-form">
-                  <div className="product-review-form-title">
-                    <strong>
-                      {editingReviewId !== null
-                        ? "리뷰 수정"
-                        : "상품 리뷰 작성"}
-                    </strong>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setReviewFormOpen(false);
-                        resetReviewForm();
-                      }}
-                    >
-                      닫기
-                    </button>
-                  </div>
-
-                  <div className="product-review-rating-field">
-                    <span>별점</span>
-
-                    <div className="product-review-rating-buttons">
-                      {Array.from({ length: 5 }, (_, index) => index + 1).map(
-                        (score) => (
-                          <button
-                            key={score}
-                            type="button"
-                            className={score <= reviewRating ? "active" : ""}
-                            aria-label={`${score}점`}
-                            onClick={() => setReviewRating(score)}
-                          >
-                            ★
-                          </button>
-                        ),
-                      )}
-
-                      <strong>{reviewRating}.0</strong>
-                    </div>
-                  </div>
-
-                  <label>
-                    <span>제목</span>
-
-                    <input
-                      type="text"
-                      maxLength={255}
-                      value={reviewTitle}
-                      onChange={(event) => setReviewTitle(event.target.value)}
-                      placeholder="리뷰 제목을 입력해주세요."
-                    />
-                  </label>
-
-                  <label>
-                    <span>내용</span>
-
-                    <textarea
-                      value={reviewContent}
-                      onChange={(event) => setReviewContent(event.target.value)}
-                      placeholder="색상, 발림성, 밀착력, 지속력, 피부 표현 등 사용 후기를 자유롭게 남겨주세요."
-                      rows={7}
-                    />
-                  </label>
-
-                  <div className="product-review-beauty-guide">
-                    <span>BEAUTY REVIEW</span>
-
-                    <p>
-                      사용한 컬러와 포토 리뷰 기능은 추후 구매 옵션과 함께 연결됩니다.
-                    </p>
-                  </div>
-
-                  <div className="product-review-form-bottom">
-                    <p>
-                      실제 구매 옵션과 리뷰를 연결하는 기능은 추후 적용됩니다.
-                    </p>
-
-                    <button
-                      type="button"
-                      className="product-review-submit-button"
-                      disabled={reviewSaving}
-                      onClick={handleSaveReview}
-                    >
-                      {reviewSaving
-                        ? "저장 중..."
-                        : editingReviewId !== null
-                          ? "리뷰 수정"
-                          : "리뷰 등록"}
-                    </button>
-                  </div>
-                </div>
-              )}
 
               {reviewLoading ? (
                 <div className="product-review-empty">
@@ -2193,13 +1949,11 @@ const ProductDetail = () => {
                 <div className="product-review-empty">
                   <strong>등록된 상품 리뷰가 없습니다.</strong>
 
-                  <p>이 상품의 첫 번째 리뷰를 남겨보세요.</p>
+                  <p>구매 후 주문내역에서 작성된 리뷰가 여기에 표시됩니다.</p>
                 </div>
               ) : (
                 <div className="product-review-list">
                   {reviewList.map((review) => {
-                    const isMine = sw && review.memberId === memberId;
-
                     return (
                       <article key={review.id} className="product-review-item">
                         <div className="product-review-item-meta">
@@ -2222,6 +1976,17 @@ const ProductDetail = () => {
                           <div className="product-review-item-copy">
                             <h3>{review.title}</h3>
 
+                            {(review.colorName || review.variantName) && (
+                              <div className="product-review-purchased-option">
+                                <span>구매 옵션</span>
+                                <strong>
+                                  {[review.colorName, review.variantName]
+                                    .filter(Boolean)
+                                    .join(" · ")}
+                                </strong>
+                              </div>
+                            )}
+
                             <p>{review.content}</p>
 
                             {review.updatedAt && (
@@ -2243,23 +2008,6 @@ const ProductDetail = () => {
                           )}
                         </div>
 
-                        {isMine && (
-                          <div className="product-review-actions">
-                            <button
-                              type="button"
-                              onClick={() => handleEditReview(review)}
-                            >
-                              수정
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteReview(review)}
-                            >
-                              삭제
-                            </button>
-                          </div>
-                        )}
                       </article>
                     );
                   })}
