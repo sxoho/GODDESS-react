@@ -315,7 +315,7 @@ const Menu = () => {
           </NavLink>
 
           <NavLink
-            to="/products?category=makeup"
+            to="/products?category=1"
             className="goddess-nav-link"
             onMouseEnter={() =>
               setActiveMenu("makeup")
@@ -325,7 +325,7 @@ const Menu = () => {
           </NavLink>
 
           <NavLink
-            to="/products?category=skincare"
+            to="/products?category=2"
             className="goddess-nav-link"
             onMouseEnter={() =>
               setActiveMenu(
@@ -337,7 +337,7 @@ const Menu = () => {
           </NavLink>
 
           <NavLink
-            to="/products?category=hair"
+            to="/products?category=3"
             className="goddess-nav-link"
             onMouseEnter={() =>
               setActiveMenu("hair")
@@ -397,7 +397,7 @@ const Menu = () => {
                     className="mega-feature-card"
                     onClick={() =>
                       navigate(
-                        "/products?category=makeup"
+                        "/products?category=1"
                       )
                     }
                   >
@@ -414,7 +414,7 @@ const Menu = () => {
                     className="mega-feature-card"
                     onClick={() =>
                       navigate(
-                        "/products?category=skincare"
+                        "/products?category=2"
                       )
                     }
                   >
@@ -445,15 +445,15 @@ const Menu = () => {
                     베스트
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup">
+                  <NavLink to="/products?category=1">
                     메이크업
                   </NavLink>
 
-                  <NavLink to="/products?category=skincare">
+                  <NavLink to="/products?category=2">
                     스킨케어
                   </NavLink>
 
-                  <NavLink to="/products?category=hair">
+                  <NavLink to="/products?category=3">
                     헤어
                   </NavLink>
                 </div>
@@ -489,104 +489,60 @@ const Menu = () => {
                     className="mega-feature-card"
                     onClick={() =>
                       navigate(
-                        "/products?category=makeup&type=base"
+                        "/products?category=1&sub=7"
                       )
                     }
                   >
                     <div className="mega-visual cushion-visual">
                       <span />
                     </div>
-
-                    <p>
-                      BASE MAKEUP
-                    </p>
+                    <p>FACE MAKEUP</p>
                   </div>
 
                   <div
                     className="mega-feature-card"
                     onClick={() =>
                       navigate(
-                        "/products?category=makeup&type=lip"
+                        "/products?category=1&sub=8"
                       )
                     }
                   >
                     <div className="mega-visual lip-visual">
                       <span />
                     </div>
-
-                    <p>
-                      LIP COLLECTION
-                    </p>
+                    <p>LIP COLLECTION</p>
                   </div>
                 </div>
 
                 <div className="mega-column">
-                  <h3>
-                    FACE
-                  </h3>
+                  <h3>MAKEUP</h3>
 
-                  <NavLink to="/products?category=makeup&type=foundation">
-                    파운데이션
+                  <NavLink to="/products?category=1&sub=7">
+                    페이스
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&type=cushion">
-                    쿠션
+                  <NavLink to="/products?category=1&sub=8">
+                    립
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&type=blusher">
-                    블러셔
-                  </NavLink>
-
-                  <NavLink to="/products?category=makeup&type=powder">
-                    파우더
-                  </NavLink>
-
-                  <NavLink to="/products?category=makeup&type=concealer">
-                    컨실러
+                  <NavLink to="/products?category=1&sub=9">
+                    아이
                   </NavLink>
                 </div>
 
                 <div className="mega-column">
-                  <h3>
-                    LIP
-                  </h3>
+                  <h3>DETAIL</h3>
 
-                  <NavLink to="/products?category=makeup&type=lipstick">
-                    립스틱
+                  <NavLink to="/products?category=1&sub=10">
+                    치크
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&type=lipbalm">
-                    립밤
+                  <NavLink to="/products?category=1&sub=11">
+                    브로우
                   </NavLink>
 
-                  <NavLink to="/products?category=makeup&type=lip-tint">
-                    립틴트
-                  </NavLink>
-
-                  <NavLink to="/products?category=makeup&type=lip-gloss">
-                    립글로스
-                  </NavLink>
-
-                  <NavLink to="/products?category=makeup&type=lip-liner">
-                    립라이너
-                  </NavLink>
-                </div>
-
-                <div className="mega-column">
-                  <h3>
-                    EYE
-                  </h3>
-
-                  <NavLink to="/products?category=makeup&type=mascara">
-                    마스카라
-                  </NavLink>
-
-                  <NavLink to="/products?category=makeup&type=eyeshadow">
-                    아이 팔레트
-                  </NavLink>
-
-                  <NavLink to="/products?category=makeup&type=eyeliner">
-                    아이라이너
+                  <NavLink to="/products?category=1">
+                    메이크업 모두 보기
                   </NavLink>
                 </div>
               </>
@@ -601,79 +557,57 @@ const Menu = () => {
                 <div className="mega-feature">
                   <div
                     className="mega-feature-card"
-                    onClick={() =>
-                      navigate(
-                        "/products?category=skincare&type=serum"
-                      )
-                    }
+                    onClick={() => navigate("/products?category=2&sub=14")}
                   >
                     <div className="mega-visual serum-visual">
                       <span />
                     </div>
-
-                    <p>
-                      SERUM EDIT
-                    </p>
+                    <p>SERUM EDIT</p>
                   </div>
 
                   <div
                     className="mega-feature-card"
-                    onClick={() =>
-                      navigate(
-                        "/products?category=skincare&type=cream"
-                      )
-                    }
+                    onClick={() => navigate("/products?category=2&sub=15")}
                   >
                     <div className="mega-visual cream-visual">
                       <span />
                     </div>
-
-                    <p>
-                      DAILY MOISTURE
-                    </p>
+                    <p>DAILY MOISTURE</p>
                   </div>
                 </div>
 
                 <div className="mega-column">
-                  <h3>
-                    SKINCARE
-                  </h3>
+                  <h3>SKINCARE</h3>
 
-                  <NavLink to="/products?category=skincare&type=toner">
+                  <NavLink to="/products?category=2&sub=13">
                     토너
                   </NavLink>
 
-                  <NavLink to="/products?category=skincare&type=serum">
+                  <NavLink to="/products?category=2&sub=14">
                     세럼
                   </NavLink>
 
-                  <NavLink to="/products?category=skincare&type=cream">
+                  <NavLink to="/products?category=2&sub=15">
                     크림
                   </NavLink>
 
-                  <NavLink to="/products?category=skincare&type=mask">
-                    마스크
-                  </NavLink>
-
-                  <NavLink to="/products?category=skincare&type=cleanser">
-                    클렌저
+                  <NavLink to="/products?category=2&sub=16">
+                    선케어
                   </NavLink>
                 </div>
 
                 <div className="mega-column">
-                  <h3>
-                    CARE
-                  </h3>
+                  <h3>CARE</h3>
 
-                  <NavLink to="/products?category=skincare">
+                  <NavLink to="/products?category=2">
                     스킨케어 모두 보기
                   </NavLink>
 
-                  <NavLink to="/products?category=skincare&sort=new">
+                  <NavLink to="/products?category=2&sort=new">
                     신제품
                   </NavLink>
 
-                  <NavLink to="/products?category=skincare&sort=best">
+                  <NavLink to="/products?category=2&sort=best">
                     베스트
                   </NavLink>
                 </div>
@@ -689,88 +623,54 @@ const Menu = () => {
                 <div className="mega-feature">
                   <div
                     className="mega-feature-card"
-                    onClick={() =>
-                      navigate(
-                        "/beauty?mode=hair-style"
-                      )
-                    }
+                    onClick={() => navigate("/products?category=3&sub=17")}
                   >
                     <div className="mega-visual hairstyle-visual">
                       <span />
                     </div>
-
-                    <p>
-                      TRY HAIR STYLE
-                    </p>
+                    <p>HAIR CARE</p>
                   </div>
 
                   <div
                     className="mega-feature-card"
-                    onClick={() =>
-                      navigate(
-                        "/beauty?mode=hair-color"
-                      )
-                    }
+                    onClick={() => navigate("/products?category=3&sub=19")}
                   >
                     <div className="mega-visual haircolor-visual">
                       <span />
                     </div>
-
-                    <p>
-                      TRY HAIR COLOR
-                    </p>
+                    <p>HAIR COLOR</p>
                   </div>
                 </div>
 
                 <div className="mega-column">
-                  <h3>
-                    HAIR STYLE
-                  </h3>
+                  <h3>HAIR</h3>
 
-                  <NavLink to="/beauty?mode=hair-style&style=short">
-                    단발
+                  <NavLink to="/products?category=3&sub=17">
+                    샴푸
                   </NavLink>
 
-                  <NavLink to="/beauty?mode=hair-style&style=long">
-                    장발
+                  <NavLink to="/products?category=3&sub=18">
+                    트리트먼트
                   </NavLink>
 
-                  <NavLink to="/beauty?mode=hair-style&style=layered">
-                    레이어드
+                  <NavLink to="/products?category=3&sub=19">
+                    헤어컬러
                   </NavLink>
 
-                  <NavLink to="/beauty?mode=hair-style&style=wave">
-                    웨이브
-                  </NavLink>
-
-                  <NavLink to="/beauty?mode=hair-style&style=straight">
-                    스트레이트
+                  <NavLink to="/products?category=3">
+                    헤어 모두 보기
                   </NavLink>
                 </div>
 
                 <div className="mega-column">
-                  <h3>
-                    HAIR COLOR
-                  </h3>
+                  <h3>AI HAIR</h3>
 
-                  <NavLink to="/beauty?mode=hair-color&color=black">
-                    블랙
+                  <NavLink to="/beauty?mode=hair-style">
+                    AI 헤어스타일
                   </NavLink>
 
-                  <NavLink to="/beauty?mode=hair-color&color=brown">
-                    브라운
-                  </NavLink>
-
-                  <NavLink to="/beauty?mode=hair-color&color=ash-brown">
-                    애쉬브라운
-                  </NavLink>
-
-                  <NavLink to="/beauty?mode=hair-color&color=red-brown">
-                    레드브라운
-                  </NavLink>
-
-                  <NavLink to="/beauty?mode=hair-color&color=blonde">
-                    블론드
+                  <NavLink to="/beauty?mode=hair-color">
+                    AI 헤어컬러
                   </NavLink>
                 </div>
               </>
