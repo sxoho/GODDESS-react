@@ -130,6 +130,7 @@ export default function ProductList() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [selectedColorByProduct, setSelectedColorByProduct] = useState<Record<number, number>>({});
+  const [hoverColorByProduct, setHoverColorByProduct] = useState<Record<number, number>>({});
 
   const categoryParam = params.get("category") || "ALL";
   const subParam = params.get("sub") || "ALL";
@@ -767,11 +768,20 @@ export default function ProductList() {
             const liked = wishlist.includes(product.id);
             const productColors = getProductColors(product.id);
             const selectedProductColorId = selectedColorByProduct[product.id];
+            const hoverProductColorId = hoverColorByProduct[product.id];
+
             const selectedProductColor = productColors.find(
               (color) => color.id === selectedProductColorId,
             );
-            const cardImage = selectedProductColor
-              ? shadeThumb(selectedProductColor.id, product.id)
+
+            const hoverProductColor = productColors.find(
+              (color) => color.id === hoverProductColorId,
+            );
+
+            const displayProductColor = hoverProductColor ?? selectedProductColor;
+
+            const cardImage = displayProductColor
+              ? shadeThumb(displayProductColor.id, product.id)
               : productThumb(product.id);
 
             return (
@@ -792,8 +802,8 @@ export default function ProductList() {
                   <img
                     src={cardImage}
                     alt={
-                      selectedProductColor
-                        ? `${product.name} ${selectedProductColor.colorName}`
+                      displayProductColor
+                        ? `${product.name} ${displayProductColor.colorName}`
                         : product.name
                     }
                   />
@@ -877,6 +887,19 @@ export default function ProductList() {
                             tabIndex={0}
                             aria-label={`${color.colorName} 색상 이미지 보기`}
                             title={`${color.colorName} 이미지 보기`}
+                            onMouseEnter={() =>
+                              setHoverColorByProduct((previous) => ({
+                                ...previous,
+                                [product.id]: color.id,
+                              }))
+                            }
+                            onMouseLeave={() =>
+                              setHoverColorByProduct((previous) => {
+                                const next = { ...previous };
+                                delete next[product.id];
+                                return next;
+                              })
+                            }
                             onClick={() =>
                               setSelectedColorByProduct((previous) => ({
                                 ...previous,
