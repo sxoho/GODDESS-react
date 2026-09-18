@@ -2750,3 +2750,14 @@
   font-size: 10px;
   font-weight: 600;
 }
+
+
+.product-detail-about-copy {
+  display: -webkit-box;
+  overflow: hidden;
+
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+
+  line-height: 1.7;
+}

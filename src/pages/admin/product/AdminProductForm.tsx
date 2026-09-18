@@ -11,6 +11,7 @@ type ProductForm = {
   categoryId: string;
   price: string;
   discount: string;
+  shortDescription: string;
   description: string;
   usageInfo: string;
   productType: string;
@@ -71,6 +72,7 @@ type ProductDetailResponse = {
   } | null;
   brand?: string;
   name: string;
+  shortDescription?: string;
   description?: string;
   price: number;
   discount?: string;
@@ -250,6 +252,7 @@ const AdminProductForm = () => {
     categoryId: "",
     price: "",
     discount: "0",
+    shortDescription: "",
     description: "",
     usageInfo: "",
     productType: "",
@@ -1354,6 +1357,7 @@ const AdminProductForm = () => {
               : "",
           price: String(data.price ?? ""),
           discount: String(data.discount ?? "0"),
+          shortDescription: data.shortDescription ?? "",
           description: data.description ?? "",
           usageInfo: data.usageInfo ?? "",
           productType: data.productType ?? "",
@@ -1537,6 +1541,7 @@ const AdminProductForm = () => {
         categoryId: effectiveCategoryId,
         brand: product.brand.trim(),
         name: product.name.trim(),
+        shortDescription: (product.shortDescription ?? "").trim() || null,
         description: (product.description ?? "").trim(),
         price: Number(product.price),
         discount: product.discount || "0",
@@ -2283,6 +2288,19 @@ const AdminProductForm = () => {
             )}
 
             <div className="editor-copy-grid">
+              <div className="admin-form-field editor-span-2">
+                <label>리스트 짧은 설명</label>
+                <input
+                  type="text"
+                  name="shortDescription"
+                  value={product.shortDescription}
+                  onChange={handleProductChange}
+                  placeholder="예: 가볍고 촉촉한 쿠션 파운데이션"
+                  maxLength={150}
+                />
+                <p>상품 리스트 카드에 한 줄로 표시됩니다.</p>
+              </div>
+
               <div className="admin-form-field">
                 <label>상품 설명</label>
                 <textarea
@@ -2597,7 +2615,7 @@ const AdminProductForm = () => {
                               src={getImagePreviewUrl(image)}
                               alt={`${color.colorName || "상품"} 색상 추출용 이미지`}
                               className="admin-image-color-picker"
-          
+                              title="마우스로 색상을 확인하고 클릭해 색상코드를 추출하세요"
                               onMouseMove={(event) =>
                                 handleColorHover(image, event)
                               }

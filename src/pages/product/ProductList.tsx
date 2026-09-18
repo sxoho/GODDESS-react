@@ -67,6 +67,7 @@ type Product = {
   categoryName?: string;
   name: string;
   brand?: string;
+  shortDescription?: string;
   description?: string;
   price: number;
   discount?: number;
@@ -849,7 +850,7 @@ export default function ProductList() {
                   </div>
 
                   <p className="product-subtitle">
-                    {product.description ||
+                    {product.shortDescription ||
                       product.brand ||
                       "GODDESS BEAUTY"}
                   </p>
@@ -951,7 +952,6 @@ export default function ProductList() {
                   >
                     {product.name}
                   </button>
-                  
                 </header>
 
                 {productColors.length > 0 ? (

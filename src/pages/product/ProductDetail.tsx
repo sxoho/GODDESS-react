@@ -1472,14 +1472,7 @@ const ProductDetail = () => {
               <span className="product-detail-badge">AI BEAUTY</span>
             )}
           </div>
-
-          {product.description && (
-            <p className="product-detail-short-copy">
-              {product.description}
-            </p>
-          )}
-
-          <div className="product-detail-price-block">
+<div className="product-detail-price-block">
             {discountRate ? (
               <div className="product-detail-price-line">
                 <strong className="product-detail-sale-price">
@@ -1667,8 +1660,18 @@ const ProductDetail = () => {
 
           <div className="product-detail-editorial-info">
             <div>
-              <span>ABOUT</span>
-              <p>{product.description || "상품 설명이 없습니다."}</p>
+    <span>ABOUT</span>
+              <p
+                style={{
+                  display: "-webkit-box",
+                  overflow: "hidden",
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  lineHeight: 1.7,
+                }}
+              >
+                {product.description || "상품 설명이 없습니다."}
+              </p>
             </div>
 
             {product.usageInfo && (
