@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { axiosInstance, enterChk } from "../ToolBak";
 import { useGlobalStore } from "../../store/store";
 
+import "../../styles/member/MemberLogin.css";
+
 /**
  * 로그인 정보 저장용 Key
  */
@@ -42,24 +44,37 @@ const Member_Login = () => {
    * 저장된 아이디 / 비밀번호 불러오기
    */
   useEffect(() => {
-    const savedLoginId = localStorage.getItem(SAVED_LOGIN_ID) ?? "";
-    const savedPassword = localStorage.getItem(SAVED_PASSWORD) ?? "";
-    const savedLoginIdCheck = localStorage.getItem(SAVE_LOGIN_ID_CHECK) === "true";
-    const savedPasswordCheck = localStorage.getItem(SAVE_PASSWORD_CHECK) === "true";
+    const savedLoginId =
+      localStorage.getItem(SAVED_LOGIN_ID) ?? "";
+
+    const savedPassword =
+      localStorage.getItem(SAVED_PASSWORD) ?? "";
+
+    const savedLoginIdCheck =
+      localStorage.getItem(SAVE_LOGIN_ID_CHECK) === "true";
+
+    const savedPasswordCheck =
+      localStorage.getItem(SAVE_PASSWORD_CHECK) === "true";
 
     setSaveLoginId(savedLoginIdCheck);
     setSavePassword(savedPasswordCheck);
 
     setMember({
-      loginId: savedLoginIdCheck ? savedLoginId : "",
-      password: savedPasswordCheck ? savedPassword : "",
+      loginId: savedLoginIdCheck
+        ? savedLoginId
+        : "",
+      password: savedPasswordCheck
+        ? savedPassword
+        : "",
     });
   }, []);
 
   /**
    * 입력값 변경
    */
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const { name, value } = event.target;
 
     setMember((prev) => ({
@@ -84,19 +99,45 @@ const Member_Login = () => {
    */
   const saveLoginInformation = () => {
     if (saveLoginId) {
-      localStorage.setItem(SAVED_LOGIN_ID, member.loginId);
-      localStorage.setItem(SAVE_LOGIN_ID_CHECK, "true");
+      localStorage.setItem(
+        SAVED_LOGIN_ID,
+        member.loginId
+      );
+
+      localStorage.setItem(
+        SAVE_LOGIN_ID_CHECK,
+        "true"
+      );
     } else {
-      localStorage.removeItem(SAVED_LOGIN_ID);
-      localStorage.setItem(SAVE_LOGIN_ID_CHECK, "false");
+      localStorage.removeItem(
+        SAVED_LOGIN_ID
+      );
+
+      localStorage.setItem(
+        SAVE_LOGIN_ID_CHECK,
+        "false"
+      );
     }
 
     if (savePassword) {
-      localStorage.setItem(SAVED_PASSWORD, member.password);
-      localStorage.setItem(SAVE_PASSWORD_CHECK, "true");
+      localStorage.setItem(
+        SAVED_PASSWORD,
+        member.password
+      );
+
+      localStorage.setItem(
+        SAVE_PASSWORD_CHECK,
+        "true"
+      );
     } else {
-      localStorage.removeItem(SAVED_PASSWORD);
-      localStorage.setItem(SAVE_PASSWORD_CHECK, "false");
+      localStorage.removeItem(
+        SAVED_PASSWORD
+      );
+
+      localStorage.setItem(
+        SAVE_PASSWORD_CHECK,
+        "false"
+      );
     }
   };
 
@@ -106,21 +147,31 @@ const Member_Login = () => {
   const login = async () => {
     if (!member.loginId?.trim()) {
       alert("아이디를 입력해주세요.");
-      document.getElementById("loginId")?.focus();
+      document
+        .getElementById("loginId")
+        ?.focus();
+
       return;
     }
 
     if (!member.password?.trim()) {
       alert("비밀번호를 입력해주세요.");
-      document.getElementById("password")?.focus();
+      document
+        .getElementById("password")
+        ?.focus();
+
       return;
     }
 
     try {
-      const response = await axiosInstance.post("/member/login", {
-        loginId: member.loginId,
-        password: member.password,
-      });
+      const response =
+        await axiosInstance.post(
+          "/member/login",
+          {
+            loginId: member.loginId,
+            password: member.password,
+          }
+        );
 
       const data = response.data;
 
@@ -128,17 +179,23 @@ const Member_Login = () => {
 
       /**
        * JWT Access Token 저장
-       *
-       * Spring LoginResponseDto의
-       * accessToken 값을 sessionStorage에 저장한다.
        */
       if (!data.accessToken) {
-        console.error("JWT Access Token이 없습니다.");
-        alert("로그인 토큰 발급에 실패했습니다.");
+        console.error(
+          "JWT Access Token이 없습니다."
+        );
+
+        alert(
+          "로그인 토큰 발급에 실패했습니다."
+        );
+
         return;
       }
 
-      sessionStorage.setItem("jwt", data.accessToken);
+      sessionStorage.setItem(
+        "jwt",
+        data.accessToken
+      );
 
       if (data.refreshToken) {
         sessionStorage.setItem(
@@ -160,21 +217,20 @@ const Member_Login = () => {
       setMemberId(data.memberId ?? 0);
       setLoginId(data.loginId ?? "");
       setNickname(data.nickname ?? "");
-      setGradeId(Number(data.gradeId ?? 0));
-      setGradeName(data.gradeName ?? "");
+      setGradeId(
+        Number(data.gradeId ?? 0)
+      );
+      setGradeName(
+        data.gradeName ?? ""
+      );
 
       alert("로그인되었습니다.");
 
       /**
        * 관리자 / 일반 회원 분기
-       *
-       * GRADE_ID
-       * 1 = USER
-       * 2 = GOLD
-       * 3 = VIP
-       * 4 = ADMIN
        */
-      const gradeId = Number(data.gradeId ?? 0);
+      const gradeId =
+        Number(data.gradeId ?? 0);
 
       if (gradeId === 4) {
         navigate("/admin");
@@ -183,195 +239,176 @@ const Member_Login = () => {
       }
     } catch (error) {
       console.error(error);
-      alert("아이디 또는 비밀번호를 확인해주세요.");
+
+      alert(
+        "아이디 또는 비밀번호를 확인해주세요."
+      );
     }
   };
 
   return (
-    <div className="member-page">
-      <div className="member-container">
+    <div className="goddess-login-page">
 
-        {/* =========================
-            로그인 제목
-        ========================= */}
-        <h1
-          style={{
-            width: "100%",
-            textAlign: "center",
-            marginLeft: 0,
-            marginRight: 0,
-          }}
-        >
-          LOGIN
-        </h1>
+      {/* 배경 장식 */}
+      <div className="goddess-login-glow goddess-login-glow-left" />
+      <div className="goddess-login-glow goddess-login-glow-right" />
 
-        <p className="member-subtitle">
-          GODDESS에 로그인하고
-          <br />
-          나만의 스타일과 가상 피팅을 만나보세요.
+      <main className="goddess-login-container">
+
+        
+
+        {/* 로그인 영역 */}
+        <section className="goddess-login-card">
+
+          <div className="goddess-login-header">
+            <span className="goddess-login-eyebrow">
+              WELCOME BACK
+            </span>
+
+            <h1>LOGIN</h1>
+
+            <p>
+              GODDESS에 로그인하고
+              <br />
+              나만의 뷰티 스타일을 만나보세요.
+            </p>
+          </div>
+
+          {/* 아이디 */}
+          <div className="goddess-login-form-group">
+            <label htmlFor="loginId">
+              아이디
+            </label>
+
+            <input
+              type="text"
+              id="loginId"
+              name="loginId"
+              value={member.loginId ?? ""}
+              onChange={handleChange}
+              onKeyDown={(event) =>
+                enterChk(
+                  event,
+                  "password"
+                )
+              }
+              placeholder="아이디를 입력해주세요."
+              autoComplete="username"
+            />
+          </div>
+
+          {/* 비밀번호 */}
+          <div className="goddess-login-form-group">
+            <label htmlFor="password">
+              비밀번호
+            </label>
+
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={member.password ?? ""}
+              onChange={handleChange}
+              onKeyDown={(event) => {
+                if (
+                  event.key === "Enter"
+                ) {
+                  login();
+                }
+              }}
+              placeholder="비밀번호를 입력해주세요."
+              autoComplete="current-password"
+            />
+          </div>
+
+          {/* 저장 옵션 */}
+          <div className="goddess-login-options">
+            <label className="goddess-login-check">
+              <input
+                type="checkbox"
+                checked={saveLoginId}
+                onChange={(event) =>
+                  setSaveLoginId(
+                    event.target.checked
+                  )
+                }
+              />
+
+              <span className="goddess-login-custom-check" />
+
+              <span>
+                아이디 저장
+              </span>
+            </label>
+
+            <label className="goddess-login-check">
+              <input
+                type="checkbox"
+                checked={savePassword}
+                onChange={(event) =>
+                  setSavePassword(
+                    event.target.checked
+                  )
+                }
+              />
+
+              <span className="goddess-login-custom-check" />
+
+              <span>
+                비밀번호 저장
+              </span>
+            </label>
+          </div>
+
+          {/* 로그인 버튼 */}
+          <button
+            type="button"
+            className="goddess-login-button"
+            onClick={login}
+          >
+            LOGIN
+          </button>
+
+          {/* 아이디 / 비밀번호 찾기 */}
+          <div className="goddess-login-find">
+            <Link to="/find_id">
+              아이디 찾기
+            </Link>
+
+            <span />
+
+            <Link to="/find_password">
+              비밀번호 찾기
+            </Link>
+          </div>
+
+          {/* 회원가입 */}
+          <div className="goddess-login-signup">
+            <p>
+              아직 GODDESS 회원이 아니신가요?
+            </p>
+
+            <Link to="/signup">
+              SIGN UP
+            </Link>
+          </div>
+
+          {/* 관리자 테스트 */}
+          <button
+            type="button"
+            className="goddess-login-admin-button"
+            onClick={adminTestAccount}
+          >
+            ADMIN TEST ACCOUNT
+          </button>
+
+        </section>
+
+        <p className="goddess-login-footer">
+          YOUR BEAUTY, YOUR GODDESS
         </p>
 
-        {/* =========================
-            아이디
-        ========================= */}
-        <div className="member-form-group">
-          <label htmlFor="loginId" className="member-label">
-            아이디
-          </label>
-
-          <input
-            type="text"
-            id="loginId"
-            name="loginId"
-            className="member-input"
-            value={member.loginId ?? ""}
-            onChange={handleChange}
-            onKeyDown={(event) => enterChk(event, "password")}
-            placeholder="아이디를 입력해주세요."
-          />
-        </div>
-
-        {/* =========================
-            비밀번호
-        ========================= */}
-        <div className="member-form-group">
-          <label htmlFor="password" className="member-label">
-            비밀번호
-          </label>
-
-          <input
-            type="password"
-            id="password"
-            name="password"
-            className="member-input"
-            value={member.password ?? ""}
-            onChange={handleChange}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                login();
-              }
-            }}
-            placeholder="비밀번호를 입력해주세요."
-          />
-        </div>
-
-        {/* =========================
-            아이디 / 비밀번호 저장
-        ========================= */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "22px",
-            marginTop: "-4px",
-            marginBottom: "22px",
-            fontSize: "13px",
-            color: "#555",
-          }}
-        >
-          {/* 아이디 저장 */}
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "7px",
-              cursor: "pointer",
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={saveLoginId}
-              onChange={(event) => setSaveLoginId(event.target.checked)}
-            />
-            <span>아이디 저장</span>
-          </label>
-
-          {/* 비밀번호 저장 */}
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "7px",
-              cursor: "pointer",
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={savePassword}
-              onChange={(event) => setSavePassword(event.target.checked)}
-            />
-            <span>비밀번호 저장</span>
-          </label>
-        </div>
-
-        {/* =========================
-            관리자 테스트 계정
-        ========================= */}
-        <button
-          type="button"
-          className="member-main-button"
-          onClick={adminTestAccount}
-          style={{ marginBottom: "10px" }}
-        >
-          관리자 테스트 계정 입력
-        </button>
-
-        {/* =========================
-            로그인 버튼
-        ========================= */}
-        <button
-          type="button"
-          className="member-main-button"
-          onClick={login}
-        >
-          LOGIN
-        </button>
-
-        {/* =========================
-            회원가입
-        ========================= */}
-        <div className="member-bottom">
-          <span>아직 회원이 아니신가요?</span>
-          <Link to="/signup">SIGN UP</Link>
-        </div>
-
-        {/* =========================
-            아이디 / 비밀번호 찾기
-        ========================= */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "12px",
-            marginTop: "18px",
-            fontSize: "13px",
-          }}
-        >
-          <Link
-            to="/find_id"
-            style={{
-              color: "#555",
-              textDecoration: "none",
-            }}
-          >
-            아이디 찾기
-          </Link>
-
-          <span style={{ color: "#ccc" }}>|</span>
-
-          <Link
-            to="/find_password"
-            style={{
-              color: "#555",
-              textDecoration: "none",
-            }}
-          >
-            비밀번호 찾기
-          </Link>
-        </div>
-
-      </div>
+      </main>
     </div>
   );
 };

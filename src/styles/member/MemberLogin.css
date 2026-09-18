@@ -1,0 +1,564 @@
+/* ==================================================
+   GODDESS LOGIN
+================================================== */
+
+.goddess-login-page {
+  position: relative;
+
+  width: 100%;
+  min-height: calc(100vh - 80px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 80px 20px 100px;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #fffafb 45%,
+      #fff7f9 100%
+    );
+}
+
+
+/* ==================================================
+   BACKGROUND DECORATION
+================================================== */
+
+.goddess-login-glow {
+  position: absolute;
+
+  width: 420px;
+  height: 420px;
+
+  border-radius: 50%;
+
+  filter: blur(90px);
+
+  opacity: 0.35;
+
+  pointer-events: none;
+}
+
+.goddess-login-glow-left {
+  top: -170px;
+  left: -170px;
+
+  background: #f7dce4;
+}
+
+.goddess-login-glow-right {
+  right: -180px;
+  bottom: -170px;
+
+  background: #eee5e8;
+}
+
+
+/* ==================================================
+   CONTAINER
+================================================== */
+
+.goddess-login-container {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  max-width: 470px;
+}
+
+
+
+
+
+/* ==================================================
+   CARD
+================================================== */
+
+.goddess-login-card {
+  position: relative;
+
+  padding: 45px 44px 38px;
+
+  border: 1px solid #eee5e8;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.92
+    );
+
+  box-shadow:
+    0 24px 70px
+    rgba(
+      79,
+      56,
+      65,
+      0.07
+    );
+
+  backdrop-filter: blur(12px);
+}
+
+
+/* 작은 진주 느낌 장식 */
+
+.goddess-login-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: -8px;
+  left: 50%;
+
+  width: 14px;
+  height: 14px;
+
+  border: 1px solid #ded4d7;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #ffffff 0%,
+      #fffefe 28%,
+      #eee4e7 100%
+    );
+
+  box-shadow:
+    0 2px 7px
+    rgba(
+      70,
+      50,
+      58,
+      0.14
+    );
+
+  transform:
+    translateX(-50%);
+}
+
+
+/* ==================================================
+   HEADER
+================================================== */
+
+.goddess-login-header {
+  margin-bottom: 34px;
+
+  text-align: center;
+}
+
+.goddess-login-eyebrow {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #c19ca8;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 2.4px;
+}
+
+.goddess-login-header h1 {
+  margin: 0 0 14px;
+
+  color: #292528;
+
+  font-family:
+    "Times New Roman",
+    "Georgia",
+    serif;
+
+  font-size: 28px;
+  font-weight: 400;
+
+  letter-spacing: 5px;
+}
+
+.goddess-login-header p {
+  margin: 0;
+
+  color: #999096;
+
+  font-size: 13px;
+  font-weight: 400;
+
+  line-height: 1.75;
+}
+
+
+/* ==================================================
+   FORM
+================================================== */
+
+.goddess-login-form-group {
+  margin-bottom: 20px;
+}
+
+.goddess-login-form-group label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #4d474b;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 0.2px;
+}
+
+.goddess-login-form-group input {
+  width: 100%;
+  height: 49px;
+
+  padding: 0 15px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ded8da;
+
+  outline: none;
+
+  background: #ffffff;
+
+  color: #302b2e;
+
+  font-size: 13px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.goddess-login-form-group input::placeholder {
+  color: #c2bbbe;
+}
+
+.goddess-login-form-group input:hover {
+  border-color: #cfc4c8;
+}
+
+.goddess-login-form-group input:focus {
+  border-color: #d6a9b7;
+
+  background: #fffdfd;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      214,
+      169,
+      183,
+      0.1
+    );
+}
+
+
+/* ==================================================
+   SAVE OPTION
+================================================== */
+
+.goddess-login-options {
+  display: flex;
+  align-items: center;
+
+  gap: 22px;
+
+  margin-top: 3px;
+  margin-bottom: 27px;
+}
+
+.goddess-login-check {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  cursor: pointer;
+
+  color: #777074;
+
+  font-size: 12px;
+
+  user-select: none;
+}
+
+.goddess-login-check input {
+  position: absolute;
+
+  width: 0;
+  height: 0;
+
+  opacity: 0;
+}
+
+.goddess-login-custom-check {
+  position: relative;
+
+  width: 14px;
+  height: 14px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #d1c7ca;
+
+  background: #ffffff;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.goddess-login-check
+input:checked
++
+.goddess-login-custom-check {
+  border-color: #c99eaa;
+
+  background: #c99eaa;
+}
+
+.goddess-login-check
+input:checked
++
+.goddess-login-custom-check::after {
+  content: "";
+
+  position: absolute;
+
+  top: 1px;
+  left: 4px;
+
+  width: 4px;
+  height: 8px;
+
+  border-right: 1.5px solid #ffffff;
+  border-bottom: 1.5px solid #ffffff;
+
+  transform: rotate(45deg);
+}
+
+
+/* ==================================================
+   LOGIN BUTTON
+================================================== */
+
+.goddess-login-button {
+  width: 100%;
+  height: 51px;
+
+  border: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      #d9abb7,
+      #cfa0ad
+    );
+
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 3px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.goddess-login-button:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 24px
+    rgba(
+      191,
+      139,
+      154,
+      0.25
+    );
+}
+
+.goddess-login-button:active {
+  transform: translateY(0);
+}
+
+
+/* ==================================================
+   FIND ID / PASSWORD
+================================================== */
+
+.goddess-login-find {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 14px;
+
+  margin-top: 19px;
+}
+
+.goddess-login-find a {
+  color: #777075;
+
+  font-size: 12px;
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.goddess-login-find a:hover {
+  color: #bf8e9c;
+}
+
+.goddess-login-find span {
+  width: 1px;
+  height: 11px;
+
+  background: #ddd6d8;
+}
+
+
+/* ==================================================
+   SIGN UP
+================================================== */
+
+.goddess-login-signup {
+  margin-top: 31px;
+  padding-top: 24px;
+
+  border-top: 1px solid #eee8ea;
+
+  text-align: center;
+}
+
+.goddess-login-signup p {
+  margin: 0 0 8px;
+
+  color: #969095;
+
+  font-size: 12px;
+}
+
+.goddess-login-signup a {
+  color: #3e373b;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 1.4px;
+
+  text-decoration: none;
+
+  border-bottom:
+    1px solid #d5abb6;
+
+  padding-bottom: 2px;
+}
+
+
+/* ==================================================
+   ADMIN TEST BUTTON
+================================================== */
+
+.goddess-login-admin-button {
+  width: 100%;
+
+  margin-top: 28px;
+  padding: 10px 12px;
+
+  border: 1px dashed #ded6d9;
+
+  background: #fdfafb;
+
+  color: #aca3a7;
+
+  font-size: 9px;
+  font-weight: 500;
+
+  letter-spacing: 1.2px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.goddess-login-admin-button:hover {
+  border-color: #cdbbc1;
+
+  background: #fff7f9;
+
+  color: #86777c;
+}
+
+
+/* ==================================================
+   FOOTER
+================================================== */
+
+.goddess-login-footer {
+  margin: 22px 0 0;
+
+  color: #bdb3b7;
+
+  font-size: 9px;
+
+  letter-spacing: 2px;
+
+  text-align: center;
+}
+
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+
+@media (
+  max-width: 600px
+) {
+
+  .goddess-login-page {
+    padding:
+      55px 16px
+      70px;
+  }
+
+  .goddess-login-logo {
+    font-size: 35px;
+    letter-spacing: 6px;
+  }
+
+  .goddess-login-card {
+    padding:
+      39px 25px
+      32px;
+  }
+
+  .goddess-login-options {
+    gap: 16px;
+
+    flex-wrap: wrap;
+  }
+
+}

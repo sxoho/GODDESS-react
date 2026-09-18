@@ -1,0 +1,281 @@
+/* ==================================================
+   GODDESS SIGN UP
+================================================== */
+
+.goddess-signup-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 72px 20px 110px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #ffffff 0%, #fffbfc 55%, #fff8fa 100%);
+}
+
+.goddess-signup-container {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ==================================================
+   HEADER
+================================================== */
+
+.goddess-signup-header {
+  margin-bottom: 34px;
+  text-align: center;
+}
+
+.goddess-signup-header h1 {
+  margin: 0 0 14px;
+
+  color: #292528;
+
+  font-family:
+    "Times New Roman",
+    "Georgia",
+    serif;
+
+
+  font-size: 25px;
+  font-weight: 500;
+
+  letter-spacing: 4px;
+}
+
+.goddess-signup-header p {
+  margin: 0;
+  color: #999095;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* ==================================================
+   CARD
+================================================== */
+
+.goddess-signup-card {
+  padding: 48px 52px 42px;
+  border: 1px solid #eee5e8;
+  background: #ffffff;
+  box-shadow: 0 24px 65px rgba(84, 58, 68, 0.06);
+}
+
+/* ==================================================
+   SECTION
+================================================== */
+
+.goddess-signup-section + .goddess-signup-section {
+  margin-top: 48px;
+}
+
+.goddess-signup-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 29px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee7e9;
+}
+
+.goddess-signup-section-header > div {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.goddess-signup-section-header div > span {
+  color: #cfa4b0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.goddess-signup-section-header h2 {
+  margin: 0;
+  color: #393236;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.goddess-signup-section-header p {
+  margin: 0;
+  color: #aaa1a5;
+  font-size: 11px;
+}
+
+.goddess-signup-section-header p strong {
+  color: #ca8fa0;
+  font-weight: 500;
+}
+
+/* ==================================================
+   FORM
+================================================== */
+
+.goddess-signup-form-group {
+  margin-bottom: 22px;
+}
+
+.goddess-signup-form-group > label {
+  display: block;
+  margin-bottom: 9px;
+  color: #50494d;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.goddess-signup-form-group > label span {
+  margin-left: 4px;
+  color: #cf91a2;
+}
+
+.goddess-signup-form-group input {
+  width: 100%;
+  height: 48px;
+  padding: 0 15px;
+  box-sizing: border-box;
+  border: 1px solid #ded8da;
+  outline: none;
+  background: #ffffff;
+  color: #302b2e;
+  font-family: inherit;
+  font-size: 13px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.goddess-signup-form-group input::placeholder {
+  color: #c2bbbe;
+}
+
+.goddess-signup-form-group input:hover {
+  border-color: #cec3c7;
+}
+
+.goddess-signup-form-group input:focus {
+  border-color: #d5a6b4;
+  background: #fffdfd;
+  box-shadow: 0 0 0 3px rgba(213, 166, 180, 0.1);
+}
+
+.goddess-signup-form-group input[readonly] {
+  background: #fbf9fa;
+  color: #777075;
+  cursor: default;
+}
+
+/* ==================================================
+   INPUT + BUTTON
+================================================== */
+
+.goddess-signup-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 98px;
+  gap: 9px;
+}
+
+.goddess-signup-input-row button {
+  height: 48px;
+  padding: 0 12px;
+  border: 1px solid #d9cdd1;
+  background: #fffafb;
+  color: #685b60;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.goddess-signup-input-row button:hover {
+  border-color: #cda7b2;
+  background: #fff3f6;
+  color: #a77482;
+}
+
+.goddess-signup-address-row {
+  grid-template-columns: minmax(0, 1fr) 112px;
+}
+
+/* ==================================================
+   SUBMIT
+================================================== */
+
+.goddess-signup-submit {
+  width: 100%;
+  height: 52px;
+  margin-top: 22px;
+  border: none;
+  background: linear-gradient(90deg, #d8a9b6 0%, #cc9aa8 100%);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.goddess-signup-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(190, 138, 153, 0.23);
+}
+
+/* ==================================================
+   LOGIN LINK
+================================================== */
+
+.goddess-signup-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 23px;
+}
+
+.goddess-signup-login span {
+  color: #aaa1a5;
+  font-size: 12px;
+}
+
+.goddess-signup-login a {
+  color: #4d4448;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #d5a9b5;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+.goddess-signup-login a:hover {
+  color: #b17e8d;
+}
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+
+@media (max-width: 700px) {
+  .goddess-signup-page {
+    padding: 52px 15px 80px;
+  }
+
+  .goddess-signup-card {
+    padding: 37px 24px 34px;
+  }
+
+  
+
+  .goddess-signup-input-row {
+    grid-template-columns: minmax(0, 1fr) 86px;
+  }
+
+  .goddess-signup-address-row {
+    grid-template-columns: minmax(0, 1fr) 104px;
+  }
+
+  .goddess-signup-section-header {
+    align-items: center;
+  }
+}
