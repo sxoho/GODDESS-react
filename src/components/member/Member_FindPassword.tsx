@@ -11,6 +11,10 @@ import {
   axiosInstance
 } from "../ToolBak";
 
+import "../../styles/member/MemberRecovery.css";
+
+import "../../styles/member/MemberLogin.css";
+
 
 const Member_FindPassword = () => {
 
@@ -146,202 +150,24 @@ const Member_FindPassword = () => {
 
 
   return (
-
-    <div className="member-page">
-
-      <div className="member-container">
-
-
-        {/* 제목 */}
-        <h1
-          style={{
-            width: "100%",
-            textAlign: "center"
-          }}
-        >
-          FIND PASSWORD
-        </h1>
-
-
-        <p className="member-subtitle">
-
-          가입할 때 등록한 아이디와 이메일을 확인한 후
-
-          <br />
-
-          새로운 비밀번호를 설정해주세요.
-
-        </p>
-
-
-        {/* 아이디 */}
-        <div className="member-form-group">
-
-          <label
-            htmlFor="loginId"
-            className="member-label"
-          >
-            아이디
-          </label>
-
-
-          <input
-            type="text"
-            id="loginId"
-            className="member-input"
-            value={
-              loginId
-            }
-            onChange={
-              (event) =>
-                setLoginId(
-                  event.target.value
-                )
-            }
-            placeholder="아이디를 입력해주세요."
-          />
-
-        </div>
-
-
-        {/* 이메일 */}
-        <div className="member-form-group">
-
-          <label
-            htmlFor="email"
-            className="member-label"
-          >
-            이메일
-          </label>
-
-
-          <input
-            type="email"
-            id="email"
-            className="member-input"
-            value={
-              email
-            }
-            onChange={
-              (event) =>
-                setEmail(
-                  event.target.value
-                )
-            }
-            placeholder="이메일을 입력해주세요."
-          />
-
-        </div>
-
-
-        {/* 새 비밀번호 */}
-        <div className="member-form-group">
-
-          <label
-            htmlFor="newPassword"
-            className="member-label"
-          >
-            새 비밀번호
-          </label>
-
-
-          <input
-            type="password"
-            id="newPassword"
-            className="member-input"
-            value={
-              newPassword
-            }
-            onChange={
-              (event) =>
-                setNewPassword(
-                  event.target.value
-                )
-            }
-            placeholder="새 비밀번호를 입력해주세요."
-          />
-
-        </div>
-
-
-        {/* 새 비밀번호 확인 */}
-        <div className="member-form-group">
-
-          <label
-            htmlFor="confirmPassword"
-            className="member-label"
-          >
-            새 비밀번호 확인
-          </label>
-
-
-          <input
-            type="password"
-            id="confirmPassword"
-            className="member-input"
-            value={
-              confirmPassword
-            }
-            onChange={
-              (event) =>
-                setConfirmPassword(
-                  event.target.value
-                )
-            }
-            onKeyDown={
-              (event) => {
-
-                if (
-                  event.key ===
-                  "Enter"
-                ) {
-
-                  resetPassword();
-                }
-              }
-            }
-            placeholder="새 비밀번호를 한 번 더 입력해주세요."
-          />
-
-        </div>
-
-
-        {/* 비밀번호 변경 버튼 */}
-        <button
-          type="button"
-          className="member-main-button"
-          onClick={
-            resetPassword
-          }
-        >
-          비밀번호 변경
-        </button>
-
-
-        {/* 로그인으로 돌아가기 */}
-        <div
-          style={{
-            marginTop: "24px",
-            textAlign: "center"
-          }}
-        >
-
-          <Link
-            to="/login"
-            style={{
-              color: "#222",
-              fontSize: "13px",
-              fontWeight: 600
-            }}
-          >
-            LOGIN으로 돌아가기
-          </Link>
-
-        </div>
-
-
-      </div>
-
+    <div className="goddess-recovery-page">
+      <main className="goddess-recovery-container">
+        <section className="goddess-recovery-card">
+          <div className="goddess-recovery-header">
+            <span className="goddess-recovery-eyebrow">ACCOUNT RECOVERY</span>
+            <h1>FIND PASSWORD</h1>
+            <p>가입한 아이디와 이메일을 확인한 후<br/>새로운 비밀번호를 설정해주세요.</p>
+          </div>
+          <div className="goddess-recovery-form-group"><label htmlFor="loginId">아이디</label><input id="loginId" value={loginId} onChange={(e)=>setLoginId(e.target.value)} placeholder="아이디를 입력해주세요." /></div>
+          <div className="goddess-recovery-form-group"><label htmlFor="email">이메일</label><input type="email" id="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="이메일을 입력해주세요." /></div>
+          <div className="goddess-recovery-divider"><span>NEW PASSWORD</span></div>
+          <div className="goddess-recovery-form-group"><label htmlFor="newPassword">새 비밀번호</label><input type="password" id="newPassword" value={newPassword} onChange={(e)=>setNewPassword(e.target.value)} placeholder="새 비밀번호를 입력해주세요." /></div>
+          <div className="goddess-recovery-form-group"><label htmlFor="confirmPassword">새 비밀번호 확인</label><input type="password" id="confirmPassword" value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} onKeyDown={(e)=>{if(e.key==="Enter")resetPassword();}} placeholder="새 비밀번호를 한 번 더 입력해주세요." /></div>
+          <button type="button" className="goddess-recovery-primary" onClick={resetPassword}>RESET PASSWORD</button>
+          <div className="goddess-recovery-bottom"><Link to="/login">← BACK TO LOGIN</Link></div>
+        </section>
+        <p className="goddess-recovery-footer">YOUR BEAUTY, YOUR GODDESS</p>
+      </main>
     </div>
   );
 };

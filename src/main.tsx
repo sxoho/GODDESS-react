@@ -9,6 +9,7 @@ import {
 import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
+import { SimpleModalProvider } from './contexts/SimpleModalContext';
 import './index.css';
 
 /**
@@ -41,7 +42,9 @@ createRoot(rootElement).render(
   <StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <SimpleModalProvider>
+          <App />
+        </SimpleModalProvider>
       </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>,

@@ -10,6 +10,7 @@ import {
 } from "../../api/cartApi";
 import { useGlobalStore } from "../../store/store";
 import { getSpringApiUrl } from "../../components/ToolBak";
+import { useSimpleModal } from "../../contexts/SimpleModalContext";
 
 import "../../styles/cart/Cart.css";
 
@@ -103,6 +104,7 @@ const getImageUrl = (filePath?: string | null) => {
 const Cart: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { openAlert, openConfirm } = useSimpleModal();
   const { loginId, sw } = useGlobalStore();
 
   const cartQueryKey = ["cartItems", loginId] as const;
@@ -160,7 +162,7 @@ const Cart: React.FC = () => {
     },
     onError: (error) => {
       console.error("장바구니 수량 변경 실패:", error);
-      alert("수량을 변경하지 못했습니다. 재고를 확인해주세요.");
+      openAlert("수량을 변경하지 못했습니다. 재고를 확인해주세요.");
     },
   });
 
@@ -179,7 +181,7 @@ const Cart: React.FC = () => {
     },
     onError: (error) => {
       console.error("장바구니 삭제 실패:", error);
-      alert("상품 삭제에 실패했습니다. 다시 시도해주세요.");
+      openAlert("상품 삭제에 실패했습니다. 다시 시도해주세요.");
     },
   });
 
@@ -197,7 +199,7 @@ const Cart: React.FC = () => {
     },
     onError: (error) => {
       console.error("선택 상품 삭제 실패:", error);
-      alert("선택 상품 삭제에 실패했습니다. 다시 시도해주세요.");
+      openAlert("선택 상품 삭제에 실패했습니다. 다시 시도해주세요.");
     },
   });
 
@@ -226,24 +228,35 @@ const Cart: React.FC = () => {
     });
   };
 
-  const handleRemoveSingle = (cartId: number) => {
-    if (!window.confirm("해당 상품을 장바구니에서 삭제하시겠습니까?")) return;
+  const handleRemoveSingle = async (cartId: number) => {
+    const confirmed = await openConfirm({
+      title: "상품 삭제",
+      message: "해당 상품을 장바구니에서 삭제하시겠습니까?",
+      confirmText: "삭제",
+      cancelText: "취소",
+      tone: "danger",
+    });
+
+    if (!confirmed) return;
+
     deleteMutation.mutate(cartId);
   };
 
-  const handleRemoveSelected = () => {
+  const handleRemoveSelected = async () => {
     if (selectedIds.size === 0) {
-      alert("삭제할 상품을 선택해주세요.");
+      openAlert("삭제할 상품을 선택해주세요.");
       return;
     }
 
-    if (
-      !window.confirm(
-        `선택한 ${selectedIds.size}개 상품을 장바구니에서 삭제하시겠습니까?`,
-      )
-    ) {
-      return;
-    }
+    const confirmed = await openConfirm({
+      title: "선택 상품 삭제",
+      message: `선택한 ${selectedIds.size}개 상품을 장바구니에서 삭제하시겠습니까?`,
+      confirmText: "삭제",
+      cancelText: "취소",
+      tone: "danger",
+    });
+
+    if (!confirmed) return;
 
     deleteMultipleMutation.mutate(Array.from(selectedIds));
   };
@@ -268,7 +281,7 @@ const Cart: React.FC = () => {
 
   const handleCheckout = () => {
     if (selectedItems.length === 0) {
-      alert("주문할 상품을 선택해주세요.");
+      openAlert("주문할 상품을 선택해주세요.");
       return;
     }
 
@@ -280,7 +293,7 @@ const Cart: React.FC = () => {
     );
 
     if (unavailable) {
-      alert(
+      openAlert(
         `${unavailable.productName} 상품의 판매 상태 또는 재고가 변경되었습니다.`,
       );
       queryClient.invalidateQueries({ queryKey: cartQueryKey });

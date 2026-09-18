@@ -1,0 +1,25 @@
+/* GODDESS recovery pages only: login page untouched */
+.goddess-recovery-page{min-height:100vh;display:flex;justify-content:center;padding:72px 20px 90px;background:radial-gradient(circle at 18% 16%,rgba(233,199,207,.18),transparent 24%),radial-gradient(circle at 82% 78%,rgba(232,217,205,.18),transparent 25%),#fffdfd;color:#2b2729}
+.goddess-recovery-container{width:min(520px,100%)}
+.goddess-recovery-card{padding:44px 40px 36px;border:1px solid #e9e0e3;background:#fff;box-shadow:0 22px 60px rgba(68,49,56,.07)}
+.goddess-recovery-header{text-align:center;margin-bottom:32px}
+.goddess-recovery-eyebrow{display:block;margin-bottom:10px;color:#b88a97;font-size:9px;font-weight:600;letter-spacing:.2em}
+.goddess-recovery-header h1{margin:0;color:#272326;font-size:26px;font-weight:500;letter-spacing:.15em}
+.goddess-recovery-header p{margin:14px 0 0;color:#91878b;font-size:12px;line-height:1.7}
+.goddess-recovery-form-group{display:flex;flex-direction:column;gap:8px}
+.goddess-recovery-form-group+.goddess-recovery-form-group{margin-top:18px}
+.goddess-recovery-form-group label{color:#5d5659;font-size:11px;font-weight:500}
+.goddess-recovery-form-group input{width:100%;height:48px;padding:0 14px;border:1px solid #e1d8db;border-radius:0;background:#fff;color:#302b2e;font:inherit;font-size:12px;outline:none}
+.goddess-recovery-form-group input:focus{border-color:#c994a1;background:#fffafb}
+.goddess-recovery-primary{width:100%;height:50px;margin-top:26px;border:1px solid #c58f9c;border-radius:0;background:#f5e5e9;color:#83505d;font:inherit;font-size:11px;font-weight:600;letter-spacing:.1em;cursor:pointer}
+.goddess-recovery-primary:hover{background:#edd2d9;border-color:#b77c8a}
+.goddess-recovery-divider{display:flex;align-items:center;gap:12px;margin:28px 0 22px}
+.goddess-recovery-divider:before,.goddess-recovery-divider:after{content:"";flex:1;height:1px;background:#eee6e8}
+.goddess-recovery-divider span{color:#b5a9ad;font-size:8px;font-weight:600;letter-spacing:.16em}
+.goddess-recovery-result{margin-top:22px;padding:18px 16px;border-top:1px solid #eadfe2;border-bottom:1px solid #eadfe2;text-align:center}
+.goddess-recovery-result.success{background:#fff9fa}.goddess-recovery-result.error{background:#fffafa}
+.goddess-recovery-result>span{display:block;margin-bottom:8px;color:#b88a97;font-size:8px;font-weight:600;letter-spacing:.16em}
+.goddess-recovery-result strong{display:block;font-size:19px}.goddess-recovery-result p{margin:7px 0 0;color:#8a8185;font-size:11px}
+.goddess-recovery-bottom{text-align:center;margin-top:25px}.goddess-recovery-bottom a{color:#6f666a;font-size:10px;text-decoration:none;letter-spacing:.09em}
+.goddess-recovery-footer{text-align:center;margin:18px 0 0;color:#b3a8ac;font-size:8px;letter-spacing:.18em}
+@media(max-width:600px){.goddess-recovery-page{padding:36px 14px 60px}.goddess-recovery-card{padding:34px 20px 28px}.goddess-recovery-header h1{font-size:22px}}

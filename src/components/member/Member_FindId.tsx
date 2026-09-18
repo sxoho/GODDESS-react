@@ -10,6 +10,10 @@ import {
   axiosInstance
 } from "../ToolBak";
 
+import "../../styles/member/MemberRecovery.css";
+
+import "../../styles/member/MemberLogin.css";
+
 
 const Member_FindId = () => {
 
@@ -106,178 +110,29 @@ const Member_FindId = () => {
 
 
   return (
-
-    <div className="member-page">
-
-      <div className="member-container">
-
-        <h1
-          style={{
-            width: "100%",
-            textAlign: "center"
-          }}
-        >
-          FIND ID
-        </h1>
-
-
-        <p className="member-subtitle">
-
-          가입할 때 등록한
-
-          <br />
-
-          이름과 이메일을 입력해주세요.
-
-        </p>
-
-
-        {/* 이름 */}
-        <div className="member-form-group">
-
-          <label
-            htmlFor="name"
-            className="member-label"
-          >
-            이름
-          </label>
-
-
-          <input
-            type="text"
-            id="name"
-            className="member-input"
-            value={
-              name
-            }
-            onChange={
-              (event) =>
-                setName(
-                  event.target.value
-                )
-            }
-            placeholder="이름을 입력해주세요."
-          />
-
-        </div>
-
-
-        {/* 이메일 */}
-        <div className="member-form-group">
-
-          <label
-            htmlFor="email"
-            className="member-label"
-          >
-            이메일
-          </label>
-
-
-          <input
-            type="email"
-            id="email"
-            className="member-input"
-            value={
-              email
-            }
-            onChange={
-              (event) =>
-                setEmail(
-                  event.target.value
-                )
-            }
-            placeholder="이메일을 입력해주세요."
-          />
-
-        </div>
-
-
-        {/* 아이디 찾기 */}
-        <button
-          type="button"
-          className="member-main-button"
-          onClick={
-            findId
-          }
-        >
-          아이디 찾기
-        </button>
-
-
-        {/* 성공 */}
-        {foundLoginId && (
-
-          <div
-            style={{
-              marginTop: "24px",
-              padding: "18px 14px",
-              borderTop: "1px solid #e5e5e5",
-              borderBottom: "1px solid #e5e5e5",
-              textAlign: "center",
-              fontSize: "14px",
-              lineHeight: 1.8
-            }}
-          >
-
-            회원님의 아이디는
-
-            <br />
-
-            <strong
-              style={{
-                fontSize: "18px"
-              }}
-            >
-              {foundLoginId}
-            </strong>
-
-            입니다.
-
+    <div className="goddess-recovery-page">
+      <main className="goddess-recovery-container">
+        <section className="goddess-recovery-card">
+          <div className="goddess-recovery-header">
+            <span className="goddess-recovery-eyebrow">ACCOUNT RECOVERY</span>
+            <h1>FIND ID</h1>
+            <p>가입할 때 등록한 이름과 이메일을 입력하면<br/>회원님의 아이디를 확인할 수 있어요.</p>
           </div>
-
-        )}
-
-
-        {/* 실패 */}
-        {error && (
-
-          <div
-            style={{
-              marginTop: "20px",
-              textAlign: "center",
-              color: "#a33",
-              fontSize: "13px"
-            }}
-          >
-            {error}
+          <div className="goddess-recovery-form-group">
+            <label htmlFor="name">이름</label>
+            <input id="name" value={name} onChange={(e)=>setName(e.target.value)} placeholder="이름을 입력해주세요." />
           </div>
-
-        )}
-
-
-        {/* 로그인으로 */}
-        <div
-          style={{
-            marginTop: "24px",
-            textAlign: "center"
-          }}
-        >
-
-          <Link
-            to="/login"
-            style={{
-              color: "#222",
-              fontSize: "13px",
-              fontWeight: 600
-            }}
-          >
-            LOGIN으로 돌아가기
-          </Link>
-
-        </div>
-
-      </div>
-
+          <div className="goddess-recovery-form-group">
+            <label htmlFor="email">이메일</label>
+            <input type="email" id="email" value={email} onChange={(e)=>setEmail(e.target.value)} onKeyDown={(e)=>{if(e.key==="Enter")findId();}} placeholder="이메일을 입력해주세요." />
+          </div>
+          <button type="button" className="goddess-recovery-primary" onClick={findId}>FIND MY ID</button>
+          {foundLoginId && <div className="goddess-recovery-result success"><span>YOUR LOGIN ID</span><strong>{foundLoginId}</strong><p>위 아이디로 로그인해주세요.</p></div>}
+          {error && <div className="goddess-recovery-result error"><span>NOT FOUND</span><p>{error}</p></div>}
+          <div className="goddess-recovery-bottom"><Link to="/login">← BACK TO LOGIN</Link></div>
+        </section>
+        <p className="goddess-recovery-footer">YOUR BEAUTY, YOUR GODDESS</p>
+      </main>
     </div>
   );
 };

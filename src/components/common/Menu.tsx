@@ -12,6 +12,7 @@ import "../../styles/common/Menu.css";
 import { useGlobalStore } from "../../store/store";
 import { axiosInstance } from "../ToolBak";
 import goddessLogo from "../../assets/logo/goddesslogo1.png";
+import { useSimpleModal } from "../../contexts/SimpleModalContext";
 
 type MegaMenuKey =
   | "shop"
@@ -27,6 +28,7 @@ const Menu = () => {
   const location = useLocation();
 
   const { sw, memberId, gradeId, loginId } = useGlobalStore();
+  const { openConfirm } = useSimpleModal();
 
   const [activeMenu, setActiveMenu] =
     useState<MegaMenuKey>(null);
@@ -59,7 +61,12 @@ const Menu = () => {
   };
 
   const handleLogout = async () => {
-    const confirmed = window.confirm("로그아웃하시겠습니까?");
+    const confirmed = await openConfirm({
+      title: "로그아웃",
+      message: "로그아웃하시겠습니까?",
+      confirmText: "로그아웃",
+      cancelText: "취소",
+    });
 
     if (!confirmed) {
       return;
