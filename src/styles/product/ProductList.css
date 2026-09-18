@@ -625,30 +625,33 @@
 
 /* HEART */
 
+/* HEART */
+
 .product-heart {
-  width: 35px;
-  height: 35px;
-
   position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 4;
 
-  top: 10px;
-  right: 10px;
+  width: 38px;
+  height: 38px;
 
-  z-index: 3;
-
+  padding: 0;
   border: 0;
-
   background: transparent;
 
   color: #111;
 
-  cursor: pointer;
+  font-family: Arial, sans-serif;
+  font-size: 25px;
+  line-height: 1;
 
-  font-size: 20px;
+  cursor: pointer;
 }
 
 .product-heart.active {
-  color: var(--shop-rose);
+  color: #b86f7e;
+  font-size: 24px;
 }
 
 /* =========================================
