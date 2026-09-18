@@ -3596,3 +3596,751 @@
   font-size: 10px;
   font-weight: 600;
 }
+
+/* =========================================================
+   GODDESS MY PAGE - CLEAN SQUARE REDESIGN
+   - 기존 기능/클래스 구조 유지
+   - 검은색 박스 버튼 제거
+   - SHOP NOW처럼 각진 사각 버튼 톤으로 통일
+========================================================= */
+
+:root {
+  --mypage-ink: #302b2e;
+  --mypage-text: #5f565a;
+  --mypage-muted: #9a9095;
+  --mypage-line: #ece4e7;
+  --mypage-line-strong: #ddcfd4;
+  --mypage-pink: #cfa0ad;
+  --mypage-pink-dark: #b98493;
+  --mypage-pink-soft: #fff7f9;
+  --mypage-surface: #ffffff;
+  --mypage-surface-soft: #fcfafb;
+}
+
+.mypage {
+  max-width: 1240px;
+  padding: 54px 34px 110px;
+  color: var(--mypage-ink);
+  background: #fff;
+}
+
+/* 2단 레이아웃 */
+.mypage-layout {
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 56px;
+}
+
+.mypage-sidebar {
+  padding-right: 28px;
+  border-right: 1px solid var(--mypage-line);
+}
+
+.mypage-sidebar-profile {
+  padding: 4px 0 28px;
+  border-bottom: 1px solid var(--mypage-line-strong);
+}
+
+.mypage-sidebar-label {
+  color: var(--mypage-muted);
+  letter-spacing: 0.14em;
+}
+
+.mypage-sidebar-profile h2 {
+  color: var(--mypage-ink);
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.mypage-sidebar-grade {
+  color: #8d8388;
+}
+
+.mypage-sidebar-manage {
+  margin-top: 17px;
+  padding: 0 0 3px;
+  border-bottom: 1px solid #cdbbc1;
+  color: #76696e;
+}
+
+.mypage-sidebar-manage:hover {
+  color: var(--mypage-pink-dark);
+  border-bottom-color: var(--mypage-pink);
+}
+
+/* 왼쪽 메뉴 - 검정 활성선 대신 핑크 포인트 */
+.mypage-sidebar-navigation {
+  gap: 2px;
+  padding-top: 18px;
+}
+
+.mypage-sidebar-navigation button {
+  min-height: 58px;
+  padding: 12px 12px 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #82787d;
+  transition: border-color .18s ease, background .18s ease, color .18s ease;
+}
+
+.mypage-sidebar-navigation button::after {
+  display: none;
+}
+
+.mypage-sidebar-navigation button:hover {
+  border-color: #efe4e7;
+  background: #fffafb;
+  color: var(--mypage-ink);
+}
+
+.mypage-sidebar-navigation button.active {
+  border-color: #e4cfd5;
+  border-left: 3px solid var(--mypage-pink);
+  background: #fff9fa;
+  color: var(--mypage-ink);
+}
+
+.mypage-sidebar-navigation button.active small {
+  color: #9b858c;
+}
+
+/* 대시보드 타이틀 */
+.mypage-dashboard-heading {
+  margin-bottom: 30px;
+  padding: 4px 0 24px;
+  border-bottom: 1px solid var(--mypage-line-strong);
+}
+
+.mypage-dashboard-heading h2 {
+  color: var(--mypage-ink);
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.mypage-dashboard-heading span {
+  color: #94898e;
+}
+
+/* 대시보드 메뉴 - 각진 카드 */
+.mypage-dashboard-menu {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  border: 0;
+}
+
+.mypage-dashboard-menu > button {
+  min-height: 142px;
+  padding: 22px 18px;
+  border: 1px solid var(--mypage-line);
+  border-radius: 0;
+  background: #fff;
+  text-align: left;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+
+.mypage-dashboard-menu > button:hover {
+  border-color: #dfc7ce;
+  background: #fffafb;
+  transform: translateY(-1px);
+}
+
+.mypage-dashboard-menu > button > span {
+  color: #c1adb4;
+}
+
+.mypage-dashboard-menu > button > strong {
+  color: #4f464a;
+  font-weight: 600;
+}
+
+.mypage-dashboard-menu-count {
+  color: var(--mypage-ink);
+  font-size: 29px;
+  font-weight: 600;
+}
+
+.mypage-dashboard-menu > button > small {
+  color: #9a9095;
+}
+
+/* 섹션 제목 */
+.mypage-section-heading {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--mypage-line);
+}
+
+.mypage-section-heading > span {
+  color: #c69aa7;
+}
+
+.mypage-section-heading p {
+  color: #aa9da2;
+}
+
+.mypage-section-heading h2 {
+  color: var(--mypage-ink);
+}
+
+/* 회원정보 */
+.mypage-info {
+  border-top: 1px solid var(--mypage-line-strong);
+}
+
+.mypage-info-row {
+  border-bottom: 1px solid #f0eaec;
+}
+
+.mypage-info-label {
+  color: #8c8186;
+}
+
+.mypage-edit-input,
+.mypage-password-field input,
+.mypage-customer-qna-edit-row input,
+.mypage-customer-qna-edit-row select,
+.mypage-customer-qna-edit-row textarea,
+.mypage-review-edit input,
+.mypage-review-edit textarea,
+.mypage-review-edit select {
+  border-color: #e2dadd;
+  border-radius: 0;
+  background: #fff;
+}
+
+.mypage-edit-input:focus,
+.mypage-password-field input:focus,
+.mypage-customer-qna-edit-row input:focus,
+.mypage-customer-qna-edit-row select:focus,
+.mypage-customer-qna-edit-row textarea:focus,
+.mypage-review-edit input:focus,
+.mypage-review-edit textarea:focus,
+.mypage-review-edit select:focus {
+  border-color: #d2a8b3;
+  box-shadow: 0 0 0 3px rgba(207, 160, 173, .08);
+}
+
+/* 공통 버튼: SHOP NOW 느낌의 각진 사각형 */
+.mypage-update-button,
+.mypage-password-submit-button,
+.mypage-wishlist-more-button,
+.mypage-photo-banner button,
+.mypage-photo-upload-button,
+.mypage-customer-qna-top > button,
+.mypage-review-edit-actions button:not(.cancel),
+.mypage-customer-qna-edit-actions button:not(.cancel) {
+  border: 1px solid var(--mypage-pink);
+  border-radius: 0;
+  background: var(--mypage-pink);
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: .02em;
+  box-shadow: none;
+}
+
+.mypage-update-button:hover:not(:disabled),
+.mypage-password-submit-button:hover:not(:disabled),
+.mypage-wishlist-more-button:hover,
+.mypage-photo-banner button:hover,
+.mypage-photo-upload-button:hover:not(:disabled),
+.mypage-customer-qna-top > button:hover,
+.mypage-review-edit-actions button:not(.cancel):hover,
+.mypage-customer-qna-edit-actions button:not(.cancel):hover {
+  border-color: var(--mypage-pink-dark);
+  background: #fff;
+  color: var(--mypage-pink-dark);
+}
+
+/* 보조 버튼 */
+.mypage-cancel-button,
+.mypage-check-button,
+.mypage-password-change-button,
+.mypage-password-cancel-button,
+.mypage-review-edit-actions button.cancel,
+.mypage-customer-qna-edit-actions button.cancel,
+.mypage-photo-source-actions button {
+  border: 1px solid #d8cdd1;
+  border-radius: 0;
+  background: #fff;
+  color: #685d62;
+}
+
+.mypage-cancel-button:hover:not(:disabled),
+.mypage-check-button:hover,
+.mypage-password-change-button:hover,
+.mypage-password-cancel-button:hover:not(:disabled),
+.mypage-review-edit-actions button.cancel:hover,
+.mypage-customer-qna-edit-actions button.cancel:hover,
+.mypage-photo-source-actions button:hover {
+  border-color: #cda7b2;
+  background: #fff8fa;
+  color: #9b6f7b;
+}
+
+/* 찜 없음/SHOP 성격 버튼도 동일한 사각형 */
+.mypage-wishlist-empty button,
+.mypage-order-empty button {
+  min-width: 132px;
+  height: 42px;
+  padding: 0 20px;
+  border: 1px solid #d6a6b3;
+  border-radius: 0;
+  background: #fff;
+  color: #a97986;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+
+.mypage-wishlist-empty button:hover,
+.mypage-order-empty button:hover {
+  background: #fff7f9;
+  border-color: #c7909f;
+  color: #8f6570;
+}
+
+/* 사진 영역 */
+.mypage-photo-banner,
+.mypage-photo-edit,
+.mypage-photo-ai-result {
+  border-radius: 0;
+}
+
+.mypage-photo-banner {
+  border-color: #eadfe2;
+  background: #fffafb;
+}
+
+.mypage-photo-banner strong {
+  color: #ad7785;
+}
+
+.mypage-member-photo {
+  border-color: #e7dde0;
+}
+
+/* 리뷰/Q&A 액션 */
+.mypage-qna-actions button,
+.mypage-review .mypage-qna-actions button {
+  min-width: 58px;
+  height: 34px;
+  padding: 0 13px;
+  border: 1px solid #ded3d7;
+  border-radius: 0;
+  background: #fff;
+  color: #6f6368;
+}
+
+.mypage-qna-actions button:hover,
+.mypage-review .mypage-qna-actions button:hover {
+  border-color: #cfa8b3;
+  background: #fff8fa;
+  color: #966d78;
+}
+
+.mypage-qna-actions button.delete,
+.mypage-review .mypage-qna-actions button.delete {
+  border-color: #ead7da;
+  color: #a06f78;
+}
+
+/* Q&A 하위탭 - pill 제거, 각진 탭 */
+.mypage-qna-submenu {
+  gap: 8px;
+}
+
+.mypage-qna-submenu button {
+  border: 1px solid #e1d7da;
+  border-radius: 0;
+  background: #fff;
+  color: #776c71;
+}
+
+.mypage-qna-submenu button.active {
+  border-color: #d3a6b2;
+  background: #fff6f8;
+  color: #9d6f7b;
+}
+
+/* 테이블 상단 검은 선 완화 */
+.mypage-login-history-wrap,
+.mypage-qna-table-wrap,
+.mypage-customer-qna-table-wrap,
+.mypage-customer-qna-message,
+.mypage-customer-qna-empty,
+.mypage-menu-ready,
+.mypage-wishlist-message,
+.mypage-wishlist-empty {
+  border-top-color: var(--mypage-line-strong);
+}
+
+.mypage-qna-table th,
+.mypage-customer-qna-table th,
+.mypage-login-history-table th {
+  background: #fcfafb;
+  color: #71676b;
+}
+
+/* 페이지네이션 - 검은 채움/원형 제거 */
+.mypage-review-pagination button,
+.mypage-customer-qna-pagination button,
+.mypage-qna-pagination button {
+  min-width: 34px;
+  height: 34px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: #fff;
+  color: #9a9095;
+}
+
+.mypage-review-pagination button:hover:not(:disabled),
+.mypage-customer-qna-pagination button:hover:not(:disabled),
+.mypage-qna-pagination button:hover:not(:disabled) {
+  border-color: #eadde1;
+  color: #8e6873;
+  background: #fffafb;
+}
+
+.mypage-review-pagination button.active,
+.mypage-customer-qna-pagination button.active,
+.mypage-qna-pagination button.active {
+  border-color: #d6a9b5;
+  background: #fff5f7;
+  color: #9a6875;
+  font-weight: 600;
+}
+
+/* AI 문의 타이틀 배지 - 원형 대신 각진 미니 배지 */
+.mypage-customer-qna-ai-title > span {
+  width: 36px;
+  height: 30px;
+  border: 1px solid #d6a8b4;
+  border-radius: 0;
+  background: #fff7f9;
+  color: #a36f7c;
+}
+
+/* 최근 본/찜 상품 카드 */
+.mypage-dashboard-product-card,
+.mypage-wishlist-card {
+  border-radius: 0;
+}
+
+.mypage-dashboard-product-image,
+.mypage-wishlist-image {
+  border: 1px solid #eee7e9;
+  border-radius: 0;
+  background: #faf8f9;
+}
+
+.mypage-dashboard-product-card:hover .mypage-dashboard-product-image,
+.mypage-wishlist-card:hover .mypage-wishlist-image {
+  border-color: #decbd1;
+}
+
+/* 주문 상세 이동/일반 링크 버튼은 가볍게 */
+.mypage-order-detail-link,
+.mypage-order-card-foot button {
+  border-radius: 0;
+}
+
+/* disabled */
+.mypage-update-button:disabled,
+.mypage-password-submit-button:disabled,
+.mypage-photo-upload-button:disabled {
+  border-color: #e3dde0;
+  background: #f3f0f1;
+  color: #b9afb3;
+}
+
+@media (max-width: 980px) {
+  .mypage-layout {
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 34px;
+  }
+
+  .mypage-dashboard-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .mypage {
+    padding: 34px 18px 80px;
+  }
+
+  .mypage-sidebar-navigation {
+    gap: 0;
+  }
+
+  .mypage-sidebar-navigation button {
+    min-height: 52px;
+    border-left-width: 1px;
+  }
+
+  .mypage-sidebar-navigation button.active {
+    border-left-width: 1px;
+    border-bottom: 2px solid var(--mypage-pink);
+  }
+
+  .mypage-dashboard-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+}
+
+@media (max-width: 520px) {
+  .mypage-dashboard-menu {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* =========================================================
+   GODDESS MY PAGE - NEUTRAL REFINEMENT
+   - 핑크 사용 최소화
+   - 화이트 / 웜그레이 / 차콜 중심
+   - SHOP NOW처럼 각진 사각 버튼 유지
+========================================================= */
+
+:root {
+  --mypage-ink: #3f3a3c;
+  --mypage-text: #655f62;
+  --mypage-muted: #9c9699;
+  --mypage-line: #ece9ea;
+  --mypage-line-strong: #d9d4d6;
+  --mypage-accent: #8b7d81;
+  --mypage-accent-dark: #6f6367;
+  --mypage-accent-soft: #f7f4f5;
+  --mypage-surface: #ffffff;
+  --mypage-surface-soft: #faf9f9;
+}
+
+/* 사이드 메뉴 */
+.mypage-sidebar-manage {
+  border-bottom-color: #bcb6b8;
+  color: #6f696b;
+}
+
+.mypage-sidebar-manage:hover {
+  color: var(--mypage-ink);
+  border-bottom-color: #6f696b;
+}
+
+.mypage-sidebar-navigation button:hover {
+  border-color: #e5e1e2;
+  background: #faf9f9;
+  color: var(--mypage-ink);
+}
+
+.mypage-sidebar-navigation button.active {
+  border-color: #dcd7d9;
+  border-left: 3px solid #8b7d81;
+  background: #f8f6f7;
+  color: var(--mypage-ink);
+}
+
+.mypage-sidebar-navigation button.active small {
+  color: #81797c;
+}
+
+/* 대시보드 메뉴 */
+.mypage-dashboard-menu > button:hover {
+  border-color: #d5d0d2;
+  background: #faf9f9;
+}
+
+.mypage-dashboard-menu > button > span {
+  color: #aaa4a6;
+}
+
+.mypage-section-heading > span {
+  color: #958d90;
+}
+
+.mypage-section-heading p {
+  color: #aaa4a6;
+}
+
+/* 입력 포커스 */
+.mypage-edit-input:focus,
+.mypage-password-field input:focus,
+.mypage-customer-qna-edit-row input:focus,
+.mypage-customer-qna-edit-row select:focus,
+.mypage-customer-qna-edit-row textarea:focus,
+.mypage-review-edit input:focus,
+.mypage-review-edit textarea:focus,
+.mypage-review-edit select:focus {
+  border-color: #a9a1a4;
+  box-shadow: 0 0 0 3px rgba(95, 86, 90, .06);
+}
+
+/* 주요 버튼 - 핑크 대신 차분한 로즈그레이 */
+.mypage-update-button,
+.mypage-password-submit-button,
+.mypage-photo-banner button,
+.mypage-photo-upload-button,
+.mypage-customer-qna-top > button,
+.mypage-review-edit-actions button:not(.cancel),
+.mypage-customer-qna-edit-actions button:not(.cancel) {
+  border: 1px solid #8b7d81;
+  border-radius: 0;
+  background: #8b7d81;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.mypage-update-button:hover:not(:disabled),
+.mypage-password-submit-button:hover:not(:disabled),
+.mypage-photo-banner button:hover,
+.mypage-photo-upload-button:hover:not(:disabled),
+.mypage-customer-qna-top > button:hover,
+.mypage-review-edit-actions button:not(.cancel):hover,
+.mypage-customer-qna-edit-actions button:not(.cancel):hover {
+  border-color: #6f6367;
+  background: #ffffff;
+  color: #5f565a;
+}
+
+/* SHOP NOW / 자세히 보기 - 각진 아웃라인 */
+.mypage-wishlist-more-button,
+.mypage-wishlist-empty button,
+.mypage-order-empty button {
+  min-width: 132px;
+  height: 42px;
+  padding: 0 20px;
+  border: 1px solid #777174;
+  border-radius: 0;
+  background: #ffffff;
+  color: #4f494b;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.mypage-wishlist-more-button:hover,
+.mypage-wishlist-empty button:hover,
+.mypage-order-empty button:hover {
+  border-color: #4f494b;
+  background: #f7f5f5;
+  color: #302c2e;
+}
+
+/* 보조 버튼 */
+.mypage-cancel-button,
+.mypage-check-button,
+.mypage-password-change-button,
+.mypage-password-cancel-button,
+.mypage-review-edit-actions button.cancel,
+.mypage-customer-qna-edit-actions button.cancel,
+.mypage-photo-source-actions button {
+  border-color: #d0cbcd;
+  background: #ffffff;
+  color: #625c5e;
+}
+
+.mypage-cancel-button:hover:not(:disabled),
+.mypage-check-button:hover,
+.mypage-password-change-button:hover,
+.mypage-password-cancel-button:hover:not(:disabled),
+.mypage-review-edit-actions button.cancel:hover,
+.mypage-customer-qna-edit-actions button.cancel:hover,
+.mypage-photo-source-actions button:hover {
+  border-color: #969092;
+  background: #f8f7f7;
+  color: #403b3d;
+}
+
+/* 사진 영역 */
+.mypage-photo-banner {
+  border-color: #e4e0e1;
+  background: #faf9f9;
+}
+
+.mypage-photo-banner strong {
+  color: #766a6e;
+}
+
+/* 리뷰 / Q&A */
+.mypage-qna-actions button,
+.mypage-review .mypage-qna-actions button {
+  border-color: #d8d3d5;
+  background: #ffffff;
+  color: #6b6567;
+}
+
+.mypage-qna-actions button:hover,
+.mypage-review .mypage-qna-actions button:hover {
+  border-color: #9f989b;
+  background: #f8f7f7;
+  color: #403b3d;
+}
+
+.mypage-qna-actions button.delete,
+.mypage-review .mypage-qna-actions button.delete {
+  border-color: #ddd6d8;
+  color: #786c70;
+}
+
+/* Q&A 하위 탭 */
+.mypage-qna-submenu button {
+  border-color: #ddd8da;
+  background: #ffffff;
+  color: #706a6c;
+}
+
+.mypage-qna-submenu button.active {
+  border-color: #aaa3a6;
+  background: #f6f4f5;
+  color: #403b3d;
+}
+
+/* 페이지네이션 */
+.mypage-review-pagination button:hover:not(:disabled),
+.mypage-customer-qna-pagination button:hover:not(:disabled),
+.mypage-qna-pagination button:hover:not(:disabled) {
+  border-color: #d8d3d5;
+  color: #514b4d;
+  background: #faf9f9;
+}
+
+.mypage-review-pagination button.active,
+.mypage-customer-qna-pagination button.active,
+.mypage-qna-pagination button.active {
+  border-color: #989194;
+  background: #f6f4f5;
+  color: #3f3a3c;
+  font-weight: 600;
+}
+
+/* AI 배지 */
+.mypage-customer-qna-ai-title > span {
+  border-color: #c9c3c5;
+  background: #f8f6f7;
+  color: #655d60;
+}
+
+/* 상품 카드 */
+.mypage-dashboard-product-image,
+.mypage-wishlist-image {
+  border-color: #ebe7e8;
+  background: #faf9f9;
+}
+
+.mypage-dashboard-product-card:hover .mypage-dashboard-product-image,
+.mypage-wishlist-card:hover .mypage-wishlist-image {
+  border-color: #cfc9cb;
+}
+
+/* 모바일 활성선 */
+@media (max-width: 760px) {
+  .mypage-sidebar-navigation button.active {
+    border-left-width: 1px;
+    border-bottom: 2px solid #8b7d81;
+  }
+}

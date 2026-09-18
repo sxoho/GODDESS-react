@@ -1480,6 +1480,10 @@
   gap: 12px;
 }
 
+.product-detail-image-grid.single {
+  grid-template-columns: 1fr;
+}
+
 .product-detail-image-panel {
   position: relative;
   display: block;
@@ -1569,6 +1573,17 @@
 
 .product-detail-gallery-arrows button:last-child {
   border-right: 1px solid #111;
+}
+
+.product-detail-gallery-arrows button:disabled {
+  border-color: #d8d5d1;
+  background: #f7f6f5;
+  color: #b9b5b1;
+  cursor: default;
+}
+
+.product-detail-gallery-arrows button:disabled + button {
+  border-left-color: #d8d5d1;
 }
 
 .product-detail-bottom {

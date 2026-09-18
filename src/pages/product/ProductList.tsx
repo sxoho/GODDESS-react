@@ -128,6 +128,7 @@ export default function ProductList() {
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
+  const [selectedColorByProduct, setSelectedColorByProduct] = useState<Record<number, number>>({});
 
   const categoryParam = params.get("category") || "ALL";
   const subParam = params.get("sub") || "ALL";
@@ -395,21 +396,30 @@ export default function ProductList() {
     return imageUrl(productImages[0]?.filePath);
   };
 
-  const shadeThumb = (productColorId: number) => {
-    const shadeImages = images
+  /**
+   * 색상별 썸네일
+   * - 해당 색상에 THUMBNAIL이 있으면 그 이미지를 사용
+   * - THUMBNAIL이 없으면 임의의 TEMP_IMAGE 대신
+   *   상품 상세/목록에서 쓰는 대표 이미지를 그대로 사용
+   */
+  const shadeThumb = (productColorId: number, productId: number) => {
+    const thumbnail = images
       .filter(
         (image) =>
-          Number(image.productcolorId ?? image.productColorId) === productColorId,
+          Number(image.productcolorId ?? image.productColorId) === productColorId &&
+          image.imageType === "THUMBNAIL",
       )
       .sort(
         (a, b) =>
-          Number(b.imageType === "THUMBNAIL") -
-            Number(a.imageType === "THUMBNAIL") ||
           Number(b.isMain === "Y") - Number(a.isMain === "Y") ||
           a.sortOrder - b.sortOrder,
-      );
+      )[0];
 
-    return imageUrl(shadeImages[0]?.filePath);
+    if (thumbnail?.filePath) {
+      return imageUrl(thumbnail.filePath);
+    }
+
+    return productThumb(productId);
   };
 
   const getProductColors = (productId: number) =>
@@ -755,6 +765,13 @@ export default function ProductList() {
             );
             const liked = wishlist.includes(product.id);
             const productColors = getProductColors(product.id);
+            const selectedProductColorId = selectedColorByProduct[product.id];
+            const selectedProductColor = productColors.find(
+              (color) => color.id === selectedProductColorId,
+            );
+            const cardImage = selectedProductColor
+              ? shadeThumb(selectedProductColor.id, product.id)
+              : productThumb(product.id);
 
             return (
               <article className="product-card" key={product.id}>
@@ -772,8 +789,12 @@ export default function ProductList() {
                   }}
                 >
                   <img
-                    src={productThumb(product.id)}
-                    alt={product.name}
+                    src={cardImage}
+                    alt={
+                      selectedProductColor
+                        ? `${product.name} ${selectedProductColor.colorName}`
+                        : product.name
+                    }
                   />
 
                   {product.aiApplyEnabled === "Y" && (
@@ -844,15 +865,44 @@ export default function ProductList() {
 
                   {productColors.length > 0 && (
                     <div className="product-shades">
-                      {productColors.slice(0, 8).map((color) => (
-                        <span
-                          key={`${product.id}-${color.id}`}
-                          title={color.colorName}
-                          style={{
-                            backgroundColor: color.colorCode,
-                          }}
-                        />
-                      ))}
+                      {productColors.slice(0, 8).map((color, colorIndex) => {
+                        const selected = selectedProductColorId === color.id;
+                        const hasAnySelection = selectedProductColorId != null;
+
+                        return (
+                          <span
+                            key={`${product.id}-${color.id}`}
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`${color.colorName} 색상 이미지 보기`}
+                            title={`${color.colorName} 이미지 보기`}
+                            onClick={() =>
+                              setSelectedColorByProduct((previous) => ({
+                                ...previous,
+                                [product.id]: color.id,
+                              }))
+                            }
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                setSelectedColorByProduct((previous) => ({
+                                  ...previous,
+                                  [product.id]: color.id,
+                                }));
+                              }
+                            }}
+                            style={{
+                              backgroundColor: color.colorCode,
+                              cursor: "pointer",
+                              boxShadow: selected
+                                ? "inset 0 0 0 1px #111, inset 0 0 0 2px #fff"
+                                : hasAnySelection && colorIndex === 0
+                                  ? "none"
+                                  : undefined,
+                            }}
+                          />
+                        );
+                      })}
 
                       {productColors.length > 8 && (
                         <button
@@ -901,9 +951,7 @@ export default function ProductList() {
                   >
                     {product.name}
                   </button>
-                  <span>
-                    {product.description || product.brand || "GODDESS BEAUTY"}
-                  </span>
+                  
                 </header>
 
                 {productColors.length > 0 ? (
@@ -921,7 +969,7 @@ export default function ProductList() {
                       >
                         <div className="shade-card-image">
                           <img
-                            src={shadeThumb(color.id)}
+                            src={shadeThumb(color.id, product.id)}
                             alt={`${product.name} ${color.colorName}`}
                           />
                         </div>

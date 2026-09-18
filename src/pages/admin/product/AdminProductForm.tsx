@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import { axiosInstance } from "../../../components/ToolBak";
@@ -91,6 +91,25 @@ type ProductColorInfoResponse = {
   id: number;
   colorName: string;
   colorCode: string;
+  baseColorGroup?: string;
+};
+
+type ColorExtractionState = {
+  imageId?: number;
+  extractedHex: string;
+  nearestMaster?: ProductColorInfoResponse;
+  detectedBaseColorGroup: string;
+  newColorName: string;
+  extracting: boolean;
+  saving: boolean;
+  message: string;
+};
+
+type HoverColorPreview = {
+  imageId: number;
+  hex: string;
+  x: number;
+  y: number;
 };
 
 type CategoryResponse = {
@@ -172,6 +191,44 @@ const PERSONAL_COLOR_PRODUCT_TYPES = [
   "BLUSH",
   "BROW",
 ];
+
+const BASE_COLOR_GROUP_OPTIONS = [
+  "RED",
+  "PINK",
+  "ROSE",
+  "CORAL",
+  "BERRY",
+  "MAUVE",
+  "BRICK",
+  "NUDE",
+  "BROWN",
+  "ORANGE",
+  "PURPLE",
+  "BLACK",
+  "WHITE",
+  "BEIGE",
+  "CLEAR",
+] as const;
+
+const BASE_COLOR_GROUP_ANCHORS: Record<
+  Exclude<(typeof BASE_COLOR_GROUP_OPTIONS)[number], "CLEAR">,
+  string
+> = {
+  RED: "#C83A3A",
+  PINK: "#E58AA2",
+  ROSE: "#B85F72",
+  CORAL: "#E97D68",
+  BERRY: "#8F3F59",
+  MAUVE: "#9D7286",
+  BRICK: "#A65443",
+  NUDE: "#C79A81",
+  BROWN: "#765346",
+  ORANGE: "#D9793D",
+  PURPLE: "#76507F",
+  BLACK: "#1D1A19",
+  WHITE: "#F2EEE9",
+  BEIGE: "#D7B391",
+};
 
 const AdminProductForm = () => {
   const navigate = useNavigate();
@@ -316,6 +373,34 @@ const AdminProductForm = () => {
   const [deletedImageIds, setDeletedImageIds] = useState<number[]>([]);
   const [deletedColors, setDeletedColors] = useState<ProductColorForm[]>([]);
 
+  // 색상별 이미지 클릭 추출 결과.
+  // DB 저장 전까지는 화면 상태로만 유지하고, 관리자가 직접 선택/등록을 확정한다.
+  const [colorExtractions, setColorExtractions] = useState<
+    Record<number, ColorExtractionState>
+  >({});
+
+  // 썸네일 위에서 마우스를 움직일 때 현재 픽셀 색상을 실시간 미리보기한다.
+  // 클릭 시에는 기존 9x9 평균 색상 추출 로직이 그대로 실행된다.
+  const [hoverColor, setHoverColor] = useState<HoverColorPreview | null>(null);
+
+  // 기존 서버 이미지도 hover 색상 추출이 가능하도록 이미지를 한 번만 Blob으로 로드해 캐시한다.
+  const hoverImageCacheRef = useRef<Map<number, Promise<HTMLImageElement>>>(
+    new Map()
+  );
+  const hoverObjectUrlCacheRef = useRef<Map<number, string>>(new Map());
+  const hoverRequestRef = useRef(0);
+
+  useEffect(() => {
+    return () => {
+      hoverObjectUrlCacheRef.current.forEach((url) => {
+        URL.revokeObjectURL(url);
+      });
+
+      hoverObjectUrlCacheRef.current.clear();
+      hoverImageCacheRef.current.clear();
+    };
+  }, []);
+
   /**
    * 상품 기본정보 변경
    */
@@ -383,6 +468,527 @@ const AdminProductForm = () => {
     });
   };
 
+  const normalizeHex = (value: string) => value.trim().toUpperCase();
+
+  const hexToRgb = (hex: string) => {
+    const normalized = normalizeHex(hex).replace("#", "");
+
+    if (!/^[0-9A-F]{6}$/.test(normalized)) {
+      return null;
+    }
+
+    return {
+      r: Number.parseInt(normalized.slice(0, 2), 16),
+      g: Number.parseInt(normalized.slice(2, 4), 16),
+      b: Number.parseInt(normalized.slice(4, 6), 16),
+    };
+  };
+
+  const rgbToHex = (r: number, g: number, b: number) =>
+    `#${[r, g, b]
+      .map((value) =>
+        Math.max(0, Math.min(255, Math.round(value)))
+          .toString(16)
+          .padStart(2, "0")
+      )
+      .join("")
+      .toUpperCase()}`;
+
+  const detectBaseColorGroup = (hex: string) => {
+    const target = hexToRgb(hex);
+
+    if (!target) {
+      return "";
+    }
+
+    let nearestGroup = "";
+    let nearestDistance = Number.POSITIVE_INFINITY;
+
+    Object.entries(BASE_COLOR_GROUP_ANCHORS).forEach(([group, anchorHex]) => {
+      const anchor = hexToRgb(anchorHex);
+      if (!anchor) return;
+
+      const distance = Math.sqrt(
+        (target.r - anchor.r) ** 2 +
+        (target.g - anchor.g) ** 2 +
+        (target.b - anchor.b) ** 2
+      );
+
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestGroup = group;
+      }
+    });
+
+    return nearestGroup;
+  };
+
+  const findNearestMasterColor = (hex: string) => {
+    const target = hexToRgb(hex);
+
+    if (!target || masterColors.length === 0) {
+      return undefined;
+    }
+
+    let nearest: ProductColorInfoResponse | undefined;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+
+    masterColors.forEach((masterColor) => {
+      const rgb = hexToRgb(masterColor.colorCode);
+      if (!rgb) return;
+
+      const distance = Math.sqrt(
+        (target.r - rgb.r) ** 2 +
+        (target.g - rgb.g) ** 2 +
+        (target.b - rgb.b) ** 2
+      );
+
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearest = masterColor;
+      }
+    });
+
+    return nearest;
+  };
+
+  const setExtractionState = (
+    colorId: number,
+    patch: Partial<ColorExtractionState>
+  ) => {
+    setColorExtractions((prev) => ({
+      ...prev,
+      [colorId]: {
+        ...(prev[colorId] ?? {
+          extractedHex: "",
+          detectedBaseColorGroup: "",
+          newColorName: "",
+          extracting: false,
+          saving: false,
+          message: "",
+        }),
+        ...patch,
+      },
+    }));
+  };
+
+  /**
+   * hover 색상 미리보기에 사용할 원본 이미지를 준비한다.
+   * - 새로 업로드한 파일: object URL 사용
+   * - 기존 서버 이미지: axios로 Blob을 받아 object URL 사용
+   * - 같은 이미지는 한 번만 로드하고 캐시한다.
+   */
+  const getHoverSourceImage = (
+    image: ProductImageForm
+  ): Promise<HTMLImageElement> => {
+    const cached = hoverImageCacheRef.current.get(image.id);
+
+    if (cached) {
+      return cached;
+    }
+
+    const promise = (async () => {
+      let objectUrl = "";
+
+      try {
+        if (image.file) {
+          objectUrl = URL.createObjectURL(image.file);
+        } else if (image.filePath) {
+          const response = await axiosInstance.get<Blob>(image.filePath, {
+            responseType: "blob",
+          });
+
+          objectUrl = URL.createObjectURL(response.data);
+        } else {
+          throw new Error("색상을 확인할 이미지 파일을 찾을 수 없습니다.");
+        }
+
+        const sourceImage = await new Promise<HTMLImageElement>(
+          (resolve, reject) => {
+            const img = new Image();
+
+            img.onload = () => resolve(img);
+            img.onerror = () =>
+              reject(new Error("이미지를 불러오지 못했습니다."));
+            img.src = objectUrl;
+          }
+        );
+
+        hoverObjectUrlCacheRef.current.set(image.id, objectUrl);
+
+        return sourceImage;
+      } catch (error) {
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+        }
+
+        hoverImageCacheRef.current.delete(image.id);
+        throw error;
+      }
+    })();
+
+    hoverImageCacheRef.current.set(image.id, promise);
+
+    return promise;
+  };
+
+  /**
+   * 썸네일 위의 현재 마우스 위치 색상을 실시간으로 보여준다.
+   * object-fit: cover로 잘린 영역까지 고려하여 화면 좌표를 원본 이미지 좌표로 환산한다.
+   */
+  const handleColorHover = async (
+    image: ProductImageForm,
+    event: React.MouseEvent<HTMLImageElement>
+  ) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+
+    if (!rect.width || !rect.height) {
+      return;
+    }
+
+    const hoverX = event.clientX - rect.left;
+    const hoverY = event.clientY - rect.top;
+    const tooltipX = event.clientX + 16;
+    const tooltipY = event.clientY + 16;
+
+    const requestId = ++hoverRequestRef.current;
+
+    try {
+      const sourceImage = await getHoverSourceImage(image);
+
+      if (requestId !== hoverRequestRef.current) {
+        return;
+      }
+
+      const naturalWidth = sourceImage.naturalWidth;
+      const naturalHeight = sourceImage.naturalHeight;
+
+      if (!naturalWidth || !naturalHeight) {
+        return;
+      }
+
+      const scale = Math.max(
+        rect.width / naturalWidth,
+        rect.height / naturalHeight
+      );
+      const renderedWidth = naturalWidth * scale;
+      const renderedHeight = naturalHeight * scale;
+      const cropX = (renderedWidth - rect.width) / 2;
+      const cropY = (renderedHeight - rect.height) / 2;
+
+      const sourceX = Math.max(
+        0,
+        Math.min(
+          naturalWidth - 1,
+          Math.round((hoverX + cropX) / scale)
+        )
+      );
+      const sourceY = Math.max(
+        0,
+        Math.min(
+          naturalHeight - 1,
+          Math.round((hoverY + cropY) / scale)
+        )
+      );
+
+      const canvas = document.createElement("canvas");
+      canvas.width = 1;
+      canvas.height = 1;
+
+      const context = canvas.getContext("2d");
+
+      if (!context) {
+        return;
+      }
+
+      context.drawImage(
+        sourceImage,
+        sourceX,
+        sourceY,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1
+      );
+
+      const pixel = context.getImageData(0, 0, 1, 1).data;
+      const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+
+      setHoverColor({
+        imageId: image.id,
+        hex,
+        x: tooltipX,
+        y: tooltipY,
+      });
+    } catch (error) {
+      console.error("색상 hover 미리보기 오류:", error);
+
+      if (requestId === hoverRequestRef.current) {
+        setHoverColor(null);
+      }
+    }
+  };
+
+  const clearColorHover = () => {
+    hoverRequestRef.current += 1;
+    setHoverColor(null);
+  };
+
+  /**
+   * 상품 이미지 클릭 지점 주변(9x9)의 평균 색상을 HEX로 추출한다.
+   * - 새로 선택한 로컬 파일과 기존 서버 이미지 모두 지원
+   * - 클릭 즉시 DB에 저장하지 않고, 화면에 결과만 보여준다.
+   */
+  const extractColorFromImage = async (
+    colorId: number,
+    image: ProductImageForm,
+    event: React.MouseEvent<HTMLImageElement>
+  ) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const clickY = event.clientY - rect.top;
+
+    setExtractionState(colorId, {
+      imageId: image.id,
+      extracting: true,
+      message: "색상을 추출하는 중입니다...",
+    });
+
+    let objectUrl = "";
+
+    try {
+      if (image.file) {
+        objectUrl = URL.createObjectURL(image.file);
+      } else if (image.filePath) {
+        const response = await axiosInstance.get<Blob>(image.filePath, {
+          responseType: "blob",
+        });
+        objectUrl = URL.createObjectURL(response.data);
+      } else {
+        throw new Error("색상을 추출할 이미지 파일을 찾을 수 없습니다.");
+      }
+
+      const sourceImage = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error("이미지를 불러오지 못했습니다."));
+        img.src = objectUrl;
+      });
+
+      const naturalWidth = sourceImage.naturalWidth;
+      const naturalHeight = sourceImage.naturalHeight;
+
+      if (!naturalWidth || !naturalHeight || !rect.width || !rect.height) {
+        throw new Error("이미지 크기 정보를 확인할 수 없습니다.");
+      }
+
+      // 미리보기는 object-fit: cover이므로 화면에서 잘린 영역까지 고려해
+      // 클릭 위치를 원본 이미지 좌표로 환산한다.
+      const scale = Math.max(
+        rect.width / naturalWidth,
+        rect.height / naturalHeight
+      );
+      const renderedWidth = naturalWidth * scale;
+      const renderedHeight = naturalHeight * scale;
+      const cropX = (renderedWidth - rect.width) / 2;
+      const cropY = (renderedHeight - rect.height) / 2;
+
+      const sourceX = Math.max(
+        0,
+        Math.min(
+          naturalWidth - 1,
+          Math.round((clickX + cropX) / scale)
+        )
+      );
+      const sourceY = Math.max(
+        0,
+        Math.min(
+          naturalHeight - 1,
+          Math.round((clickY + cropY) / scale)
+        )
+      );
+
+      const canvas = document.createElement("canvas");
+      canvas.width = naturalWidth;
+      canvas.height = naturalHeight;
+
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      if (!context) {
+        throw new Error("색상 추출용 Canvas를 생성하지 못했습니다.");
+      }
+
+      context.drawImage(sourceImage, 0, 0, naturalWidth, naturalHeight);
+
+      const radius = 4;
+      const startX = Math.max(0, sourceX - radius);
+      const startY = Math.max(0, sourceY - radius);
+      const sampleWidth = Math.min(naturalWidth - startX, radius * 2 + 1);
+      const sampleHeight = Math.min(naturalHeight - startY, radius * 2 + 1);
+      const pixels = context.getImageData(
+        startX,
+        startY,
+        sampleWidth,
+        sampleHeight
+      ).data;
+
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let count = 0;
+
+      for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i + 3] < 32) continue;
+        r += pixels[i];
+        g += pixels[i + 1];
+        b += pixels[i + 2];
+        count += 1;
+      }
+
+      if (count === 0) {
+        throw new Error("선택한 지점에서 유효한 색상을 찾지 못했습니다.");
+      }
+
+      const extractedHex = rgbToHex(r / count, g / count, b / count);
+      const detectedBaseColorGroup = detectBaseColorGroup(extractedHex);
+      const nearestMaster = findNearestMasterColor(extractedHex);
+      const exactMaster = masterColors.find(
+        (masterColor) =>
+          normalizeHex(masterColor.colorCode) === normalizeHex(extractedHex)
+      );
+
+      setExtractionState(colorId, {
+        imageId: image.id,
+        extractedHex,
+        nearestMaster: exactMaster ?? nearestMaster,
+        detectedBaseColorGroup,
+        extracting: false,
+        saving: false,
+        message: exactMaster
+          ? `같은 HEX를 쓰는 '${exactMaster.colorName}'이 있습니다. 공식 색상명이 다르면 새 색상으로 등록할 수 있습니다.`
+          : "추출 완료. 공식 색상명을 입력하고 베이스 계열을 확인한 뒤 등록하세요.",
+      });
+    } catch (error) {
+      console.error("상품 이미지 색상 추출 오류", error);
+      setExtractionState(colorId, {
+        extracting: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "이미지에서 색상을 추출하지 못했습니다.",
+      });
+    } finally {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    }
+  };
+
+  /**
+   * 추출된 색상과 가장 가까운 기존 PRODUCT_COLOR_MASTER를 사용한다.
+   */
+  const applyNearestMasterColor = (colorId: number) => {
+    const extraction = colorExtractions[colorId];
+    const nearestMaster = extraction?.nearestMaster;
+
+    if (!nearestMaster) {
+      alert("사용할 기존 마스터 색상이 없습니다.");
+      return;
+    }
+
+    changeColor(colorId, nearestMaster.id);
+    setExtractionState(colorId, {
+      message: `기존 마스터 색상 '${nearestMaster.colorName}'을 선택했습니다.`,
+    });
+  };
+
+  /**
+   * 추출된 HEX를 PRODUCT_COLOR_MASTER에 새 색상으로 저장한다.
+   * 동일 HEX가 이미 있으면 중복 INSERT하지 않고 기존 색상을 사용한다.
+   */
+  const saveExtractedMasterColor = async (colorId: number) => {
+    const extraction = colorExtractions[colorId];
+
+    if (!extraction?.extractedHex) {
+      alert("먼저 상품 이미지에서 색상을 추출해주세요.");
+      return;
+    }
+
+    const colorName = extraction.newColorName.trim();
+    if (!colorName) {
+      alert("새 색상명을 입력해주세요.");
+      return;
+    }
+
+    const sameMaster = masterColors.find(
+      (masterColor) =>
+        masterColor.colorName.trim().toLowerCase() === colorName.toLowerCase() &&
+        normalizeHex(masterColor.colorCode) ===
+          normalizeHex(extraction.extractedHex)
+    );
+
+    if (sameMaster) {
+      changeColor(colorId, sameMaster.id);
+      setExtractionState(colorId, {
+        saving: false,
+        message: `같은 색상명과 HEX가 이미 있어 '${sameMaster.colorName}'을 사용했습니다.`,
+      });
+      return;
+    }
+
+    try {
+      setExtractionState(colorId, { saving: true, message: "새 색상을 등록하는 중입니다..." });
+
+      const response = await axiosInstance.post<ProductColorInfoResponse>(
+        "/product_color_master/save",
+        {
+          colorName,
+          colorCode: extraction.extractedHex,
+          baseColorGroup: extraction.detectedBaseColorGroup || null,
+        }
+      );
+
+      const saved = response.data;
+
+      if (!saved?.id) {
+        throw new Error("새 색상 등록 후 색상번호를 받지 못했습니다.");
+      }
+
+      setMasterColors((prev) => [...prev, saved]);
+
+      setColors((prev) =>
+        prev.map((color) =>
+          color.id === colorId
+            ? {
+                ...color,
+                masterColorId: saved.id,
+                colorName: saved.colorName,
+                colorCode: saved.colorCode,
+              }
+            : color
+        )
+      );
+
+      setExtractionState(colorId, {
+        nearestMaster: saved,
+        detectedBaseColorGroup:
+          saved.baseColorGroup ?? extraction.detectedBaseColorGroup,
+        saving: false,
+        message: `새 마스터 색상 '${saved.colorName}'을 등록하고 선택했습니다.`,
+      });
+    } catch (error) {
+      console.error("새 마스터 색상 등록 오류", error);
+      setExtractionState(colorId, {
+        saving: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "새 마스터 색상을 등록하지 못했습니다.",
+      });
+    }
+  };
+
   /**
    * 색상 추가
    */
@@ -447,6 +1053,12 @@ const AdminProductForm = () => {
     setOptions((prev) =>
       prev.filter((option) => option.colorId !== id)
     );
+
+    setColorExtractions((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   };
 
   /**
@@ -1403,6 +2015,24 @@ const AdminProductForm = () => {
 
   return (
     <main className="admin-product-editor-page">
+      {hoverColor && (
+        <div
+          className="admin-color-hover-tooltip"
+          style={{
+            left: hoverColor.x,
+            top: hoverColor.y,
+          }}
+        >
+          <span
+            className="admin-color-hover-swatch"
+            style={{
+              backgroundColor: hoverColor.hex,
+            }}
+          />
+          <strong>{hoverColor.hex}</strong>
+        </div>
+      )}
+
       <header className="product-editor-head">
         <div>
           <span className="product-editor-kicker">CATALOG EDITOR</span>
@@ -1821,10 +2451,127 @@ const AdminProductForm = () => {
                     {masterColors.map((masterColor) => (
                       <option key={masterColor.id} value={masterColor.id}>
                         {masterColor.colorName} ({masterColor.colorCode})
+                        {masterColor.baseColorGroup
+                          ? ` · ${masterColor.baseColorGroup}`
+                          : ""}
                       </option>
                     ))}
                   </select>
                 </div>
+
+                <div className="editor-color-picker-guide">
+                  THUMBNAIL 미리보기에서 실제 제품 색상을 클릭하면 색상코드를 자동 추출합니다.
+                </div>
+
+                {colorExtractions[color.id] && (
+                  <div className="editor-color-extraction">
+                    <div className="editor-color-extraction-result">
+                      <div
+                        className="editor-color-extraction-swatch"
+                        style={{
+                          backgroundColor:
+                            colorExtractions[color.id].extractedHex || "#f3f3f3",
+                        }}
+                      />
+                      <div>
+                        <span>추출 색상</span>
+                        <strong>
+                          {colorExtractions[color.id].extracting
+                            ? "분석 중..."
+                            : colorExtractions[color.id].extractedHex || "-"}
+                        </strong>
+                      </div>
+                    </div>
+
+                    {colorExtractions[color.id].nearestMaster && (
+                      <div className="editor-color-nearest">
+                        <span>가장 가까운 기존 색상</span>
+                        <div>
+                          <i
+                            style={{
+                              backgroundColor:
+                                colorExtractions[color.id].nearestMaster?.colorCode,
+                            }}
+                          />
+                          <strong>
+                            {colorExtractions[color.id].nearestMaster?.colorName}
+                          </strong>
+                          <small>
+                            {colorExtractions[color.id].nearestMaster?.colorCode}
+                          </small>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => applyNearestMasterColor(color.id)}
+                          disabled={colorExtractions[color.id].extracting}
+                        >
+                          기존 색상 사용
+                        </button>
+                      </div>
+                    )}
+
+                    {colorExtractions[color.id].extractedHex && (
+                      <div className="editor-color-new-master">
+                        <div className="editor-color-new-master-fields">
+                          <input
+                            type="text"
+                            value={colorExtractions[color.id].newColorName}
+                            onChange={(event) =>
+                              setExtractionState(color.id, {
+                                newColorName: event.target.value,
+                              })
+                            }
+                            placeholder="공식 색상명 (예: 실버 펄 로즈)"
+                            maxLength={50}
+                          />
+
+                          <label className="editor-base-color-field">
+                            <span>베이스 색상 계열</span>
+                            <select
+                              value={
+                                colorExtractions[color.id].detectedBaseColorGroup
+                              }
+                              onChange={(event) =>
+                                setExtractionState(color.id, {
+                                  detectedBaseColorGroup: event.target.value,
+                                })
+                              }
+                            >
+                              <option value="">선택 안 함</option>
+                              {BASE_COLOR_GROUP_OPTIONS.map((group) => (
+                                <option key={group} value={group}>
+                                  {group}
+                                </option>
+                              ))}
+                            </select>
+                            <small>
+                              HEX 기준 자동 분류값입니다. 필요하면 직접 변경할 수 있습니다.
+                            </small>
+                          </label>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => saveExtractedMasterColor(color.id)}
+                          disabled={
+                            colorExtractions[color.id].extracting ||
+                            colorExtractions[color.id].saving
+                          }
+                        >
+                          {colorExtractions[color.id].saving
+                            ? "등록 중..."
+                            : "새 색상 등록"}
+                        </button>
+                      </div>
+                    )}
+
+                    {colorExtractions[color.id].message && (
+                      <p className="editor-color-extraction-message">
+                        {colorExtractions[color.id].message}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div className="editor-upload-columns">
                   <div className="editor-upload-zone">
@@ -1840,13 +2587,25 @@ const AdminProductForm = () => {
                         changeImages(color.id, "THUMBNAIL", event)
                       }
                     />
-                    <p>첫 번째 이미지가 대표 이미지로 사용됩니다.</p>
+                    <p>첫 번째 이미지는 대표 이미지입니다. 미리보기의 제품 색상을 클릭하면 HEX를 추출할 수 있습니다.</p>
 
                     {thumbnailImages.length > 0 && (
                       <div className="admin-image-preview-list">
                         {thumbnailImages.map((image, imageIndex) => (
                           <div className="admin-image-preview" key={image.id}>
-                            <img src={getImagePreviewUrl(image)} alt="" />
+                            <img
+                              src={getImagePreviewUrl(image)}
+                              alt={`${color.colorName || "상품"} 색상 추출용 이미지`}
+                              className="admin-image-color-picker"
+          
+                              onMouseMove={(event) =>
+                                handleColorHover(image, event)
+                              }
+                              onMouseLeave={clearColorHover}
+                              onClick={(event) =>
+                                extractColorFromImage(color.id, image, event)
+                              }
+                            />
                             {imageIndex === 0 && <span>대표</span>}
                             <input
                               type="text"

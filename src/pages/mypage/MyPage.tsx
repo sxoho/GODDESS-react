@@ -3413,47 +3413,51 @@ const MyPage = () => {
 
 
 /**
-   * MY PAGE 첫 화면에서 최근 본 상품 불러오기
-   */
-  useEffect(() => {
+ * MY PAGE 첫 화면에서 최근 본 상품 불러오기
+ */
+useEffect(() => {
 
-    if (
-      activeMenu !== "info" ||
-      infoDetailOpen === true
-    ) {
-      return;
-    }
+  if (
+    activeMenu !== "info" ||
+    infoDetailOpen === true
+  ) {
+    return;
+  }
 
+  try {
 
-    try {
+    const storageKey =
+      sw && memberId > 0
+        ? `goddessRecentProducts_${memberId}`
+        : "goddessRecentProducts_guest";
 
-      const saved =
-        JSON.parse(
-          localStorage.getItem("goddessRecentProducts") || "[]"
-        ) as RecentViewedItem[];
+    const saved =
+      JSON.parse(
+        localStorage.getItem(storageKey) || "[]"
+      ) as RecentViewedItem[];
 
+    setRecentViewedItems(
+      Array.isArray(saved)
+        ? saved.slice(0, 20)
+        : []
+    );
 
-      setRecentViewedItems(
-        Array.isArray(saved)
-          ? saved.slice(0, 8)
-          : []
-      );
+  } catch (error) {
 
+    console.error(
+      "최근 본 상품 조회 오류:",
+      error
+    );
 
-    } catch (error) {
+    setRecentViewedItems([]);
+  }
 
-      console.error(
-        "최근 본 상품 조회 오류:",
-        error
-      );
-
-      setRecentViewedItems([]);
-    }
-
-  }, [
-    activeMenu,
-    infoDetailOpen
-  ]);
+}, [
+  activeMenu,
+  infoDetailOpen,
+  sw,
+  memberId
+]);
 
 
   /**

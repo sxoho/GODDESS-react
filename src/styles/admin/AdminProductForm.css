@@ -620,3 +620,253 @@
   .product-editor-bottom-actions .product-editor-cancel,
   .product-editor-bottom-actions .product-editor-submit { flex: 1; min-width: 0; }
 }
+
+/* =========================================================
+   IMAGE COLOR PICKER
+   상품 이미지 클릭 -> 색상코드 추출 -> COLOR MASTER 연결
+========================================================= */
+.editor-color-picker-guide {
+  padding: 10px 17px;
+  border-bottom: 1px solid var(--admin-line);
+  background: #fff;
+  color: #85888c;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.admin-image-preview img.admin-image-color-picker {
+  cursor: crosshair;
+  transition: filter 0.16s ease, opacity 0.16s ease;
+}
+
+.admin-image-preview img.admin-image-color-picker:hover {
+  filter: brightness(0.96);
+}
+
+.editor-color-extraction {
+  padding: 14px 17px;
+  border-bottom: 1px solid var(--admin-line);
+  background: #fff;
+}
+
+.editor-color-extraction-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.editor-color-extraction-swatch {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border: 1px solid #d6d6d6;
+  box-sizing: border-box;
+}
+
+.editor-color-extraction-result > div:last-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.editor-color-extraction-result span,
+.editor-color-nearest > span {
+  color: #96989b;
+  font-size: 8px;
+  letter-spacing: 0.04em;
+}
+
+.editor-color-extraction-result strong {
+  color: #34363a;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.editor-color-nearest {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eeeeee;
+}
+
+.editor-color-nearest > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 7px;
+}
+
+.editor-color-nearest i {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  border: 1px solid #d7d7d7;
+}
+
+.editor-color-nearest strong {
+  color: #4f5256;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.editor-color-nearest small {
+  color: #9a9ca0;
+  font-size: 9px;
+}
+
+.editor-color-nearest button,
+.editor-color-new-master button {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid #c8c9cb;
+  border-radius: 0;
+  background: #fff;
+  color: #55585c;
+  font-family: inherit;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.editor-color-nearest button {
+  margin-top: 9px;
+}
+
+.editor-color-nearest button:hover:not(:disabled),
+.editor-color-new-master button:hover:not(:disabled) {
+  border-color: #8d8f92;
+  background: #f7f7f7;
+  color: #2f3134;
+}
+
+.editor-color-new-master {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.editor-color-new-master-fields {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.7fr);
+  gap: 8px;
+}
+
+.editor-color-new-master input,
+.editor-base-color-field select {
+  min-width: 0;
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #d5d6d8;
+  border-radius: 0;
+  background: #fff;
+  box-sizing: border-box;
+  color: #34363a;
+  font-family: inherit;
+  font-size: 9px;
+  outline: none;
+}
+
+.editor-color-new-master input:focus,
+.editor-base-color-field select:focus {
+  border-color: #a6a7aa;
+}
+
+.editor-base-color-field {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.editor-base-color-field > span {
+  color: #85888c;
+  font-size: 8px;
+  letter-spacing: 0.03em;
+}
+
+.editor-base-color-field small {
+  color: #9a9ca0;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.editor-color-nearest button:disabled,
+.editor-color-new-master button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.editor-color-extraction-message {
+  margin: 10px 0 0;
+  color: #777a7e;
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+@media (max-width: 760px) {
+  .editor-color-new-master,
+  .editor-color-new-master-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   THUMBNAIL COLOR PICKER - LARGE PREVIEW
+   THUMBNAIL 영역만 1열로 넓게 표시한다.
+   DETAIL 미리보기 크기는 기존 설정을 유지한다.
+========================================================= */
+.editor-upload-zone:first-child .admin-image-preview-list {
+  grid-template-columns: 1fr;
+}
+
+.editor-upload-zone:first-child
+  .admin-image-preview img.admin-image-color-picker {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  cursor: crosshair;
+}
+
+/* =========================================================
+   HOVER COLOR PREVIEW
+   마우스 위치의 픽셀 색상과 HEX를 커서 옆에 표시한다.
+========================================================= */
+.admin-color-hover-tooltip {
+  position: fixed;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  min-width: 86px;
+  padding: 7px 9px;
+
+  border: 1px solid #d8d8d8;
+  background: rgba(255, 255, 255, 0.97);
+  color: #34363a;
+
+  box-sizing: border-box;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+
+  pointer-events: none;
+}
+
+.admin-color-hover-swatch {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+
+  border: 1px solid #cfcfcf;
+  box-sizing: border-box;
+}
+
+.admin-color-hover-tooltip strong {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
