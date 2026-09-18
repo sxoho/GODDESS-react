@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import "../../styles/product/ProductDetail.css";
 import { useGlobalStore } from "../../store/store";
 import { addCartItem } from "../../api/cartApi";
+import { useSimpleModal } from "../../contexts/SimpleModalContext";
 
 const API_BASE = "http://localhost:9104";
 
@@ -180,6 +181,7 @@ const ProductDetail = () => {
   const { productId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const { sw, memberId, loginId } = useGlobalStore();
+  const { openAlert, openConfirm } = useSimpleModal();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [colors, setColors] = useState<ProductColor[]>([]);
@@ -189,6 +191,17 @@ const ProductDetail = () => {
   const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
   const [selectedSizeId, setSelectedSizeId] = useState<number | null>(null);
   const [cartSelections, setCartSelections] = useState<
+    Array<{
+      optionId: number;
+      colorName: string;
+      sizeName: string;
+      addPrice: number;
+      stock: number;
+      quantity: number;
+    }>
+  >([]);
+
+  const [addedCartSelections, setAddedCartSelections] = useState<
     Array<{
       optionId: number;
       colorName: string;
@@ -715,7 +728,7 @@ const ProductDetail = () => {
 
   const handleOpenQnaForm = () => {
     if (!sw || memberId <= 0) {
-      window.alert("로그인 후 상품 문의를 작성할 수 있습니다.");
+      openAlert("로그인 후 상품 문의를 작성할 수 있습니다.");
       navigate("/login");
       return;
     }
@@ -728,17 +741,17 @@ const ProductDetail = () => {
     if (!product) return;
 
     if (!sw || memberId <= 0) {
-      window.alert("로그인 후 상품 문의를 작성할 수 있습니다.");
+      openAlert("로그인 후 상품 문의를 작성할 수 있습니다.");
       return;
     }
 
     if (!qnaTitle.trim()) {
-      window.alert("문의 제목을 입력해주세요.");
+      openAlert("문의 제목을 입력해주세요.");
       return;
     }
 
     if (!qnaContent.trim()) {
-      window.alert("문의 내용을 입력해주세요.");
+      openAlert("문의 내용을 입력해주세요.");
       return;
     }
 
@@ -784,7 +797,7 @@ const ProductDetail = () => {
         );
       }
 
-      window.alert(
+      openAlert(
         isEdit ? "문의가 수정되었습니다." : "문의가 등록되었습니다.",
       );
       resetQnaForm();
@@ -793,7 +806,7 @@ const ProductDetail = () => {
       await loadProductQna(0);
     } catch (e) {
       console.error("상품 문의 저장 오류", e);
-      window.alert(
+      openAlert(
         e instanceof Error
           ? e.message
           : "상품 문의 저장 중 오류가 발생했습니다.",
@@ -805,12 +818,12 @@ const ProductDetail = () => {
 
   const handleEditQna = (qna: ProductQna) => {
     if (qna.memberId !== memberId) {
-      window.alert("본인이 작성한 문의만 수정할 수 있습니다.");
+      openAlert("본인이 작성한 문의만 수정할 수 있습니다.");
       return;
     }
 
     if (qna.status !== "WAITING") {
-      window.alert("답변이 등록된 문의는 수정할 수 없습니다.");
+      openAlert("답변이 등록된 문의는 수정할 수 없습니다.");
       return;
     }
 
@@ -823,16 +836,24 @@ const ProductDetail = () => {
 
   const handleDeleteQna = async (qna: ProductQna) => {
     if (qna.memberId !== memberId) {
-      window.alert("본인이 작성한 문의만 삭제할 수 있습니다.");
+      openAlert("본인이 작성한 문의만 삭제할 수 있습니다.");
       return;
     }
 
     if (qna.status !== "WAITING") {
-      window.alert("답변이 등록된 문의는 삭제할 수 없습니다.");
+      openAlert("답변이 등록된 문의는 삭제할 수 없습니다.");
       return;
     }
 
-    if (!window.confirm("상품 문의를 삭제할까요?")) {
+    const confirmed = await openConfirm({
+      title: "상품 문의 삭제",
+      message: "상품 문의를 삭제할까요?",
+      confirmText: "삭제",
+      cancelText: "취소",
+      tone: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -861,7 +882,7 @@ const ProductDetail = () => {
       await loadProductQna(nextPage);
     } catch (e) {
       console.error("상품 문의 삭제 오류", e);
-      window.alert(
+      openAlert(
         e instanceof Error
           ? e.message
           : "상품 문의 삭제 중 오류가 발생했습니다.",
@@ -1198,7 +1219,7 @@ const ProductDetail = () => {
 
     if (!sw || memberId <= 0) {
       console.log("❌ 로그인 정보 없음");
-      window.alert("로그인 후 찜할 수 있습니다.");
+      openAlert("로그인 후 찜할 수 있습니다.");
       return;
     }
 
@@ -1241,7 +1262,7 @@ const ProductDetail = () => {
     } catch (e) {
       console.error("찜 처리 오류", e);
 
-      window.alert(
+      openAlert(
         e instanceof Error ? e.message : "찜 처리 중 오류가 발생했습니다.",
       );
     } finally {
@@ -1251,13 +1272,13 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     if (!sw || !loginId) {
-      window.alert("로그인 후 장바구니를 이용할 수 있습니다.");
+      openAlert("로그인 후 장바구니를 이용할 수 있습니다.");
       navigate("/login");
       return;
     }
 
     if (cartSelections.length === 0) {
-      window.alert("색상과 규격을 선택해주세요.");
+      openAlert("색상과 규격을 선택해주세요.");
       return;
     }
 
@@ -1280,24 +1301,25 @@ const ProductDetail = () => {
        * 같은 상세페이지에서 바로 BUY NOW를 눌렀을 때
        * 방금 장바구니에 담은 수량이 그대로 남아있는 혼동을 방지한다.
        */
+      setAddedCartSelections(cartSelections);
       setCartSelections([]);
       setSelectedSizeId(null);
       setCartModalOpen(true);
     } catch (error) {
       console.error("장바구니 등록 오류", error);
-      window.alert("장바구니 등록에 실패했습니다.");
+      openAlert("장바구니 등록에 실패했습니다.");
     }
   };
 
   const handleBuyNow = () => {
     if (!sw || !loginId) {
-      window.alert("로그인 후 구매할 수 있습니다.");
+      openAlert("로그인 후 구매할 수 있습니다.");
       navigate("/login");
       return;
     }
 
     if (!product || cartSelections.length === 0) {
-      window.alert("색상과 규격을 선택해주세요.");
+      openAlert("색상과 규격을 선택해주세요.");
       return;
     }
 
@@ -1306,7 +1328,7 @@ const ProductDetail = () => {
     );
 
     if (invalidSelection) {
-      window.alert(
+      openAlert(
         `${invalidSelection.colorName} / ${invalidSelection.sizeName} 옵션의 재고를 확인해주세요.`,
       );
       return;
@@ -1472,7 +1494,14 @@ const ProductDetail = () => {
               <span className="product-detail-badge">AI BEAUTY</span>
             )}
           </div>
-<div className="product-detail-price-block">
+
+          {product.description && (
+            <p className="product-detail-short-copy">
+              {product.description}
+            </p>
+          )}
+
+          <div className="product-detail-price-block">
             {discountRate ? (
               <div className="product-detail-price-line">
                 <strong className="product-detail-sale-price">
@@ -1661,18 +1690,9 @@ const ProductDetail = () => {
           <div className="product-detail-editorial-info">
             <div>
     <span>ABOUT</span>
-              <p
-                style={{
-                  display: "-webkit-box",
-                  overflow: "hidden",
-                  WebkitLineClamp: 3,
-                  WebkitBoxOrient: "vertical",
-                  lineHeight: 1.7,
-                }}
-              >
-                {product.description || "상품 설명이 없습니다."}
-              </p>
-            </div>
+
+   
+  </div>
 
             {product.usageInfo && (
               <div>
@@ -2203,7 +2223,7 @@ const ProductDetail = () => {
                           className="product-qna-row"
                           onClick={() => {
                             if (!readable) {
-                              window.alert(
+                              openAlert(
                                 "비밀문의는 작성자 본인만 확인할 수 있습니다.",
                               );
                               return;
@@ -2361,9 +2381,9 @@ const ProductDetail = () => {
               <small>SELECTED OPTION</small>
 
               <strong>
-                {cartSelections.length === 1
-                  ? `${cartSelections[0].colorName} / ${cartSelections[0].sizeName} · ${cartSelections[0].quantity}개`
-                  : `선택 옵션 ${cartSelections.length}개`}
+                {addedCartSelections.length === 1
+                  ? `${addedCartSelections[0].colorName} / ${addedCartSelections[0].sizeName} · ${addedCartSelections[0].quantity}개`
+                  : `선택 옵션 ${addedCartSelections.length}개`}
               </strong>
             </div>
 

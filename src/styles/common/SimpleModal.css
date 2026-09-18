@@ -1,0 +1,173 @@
+/* ==================================================
+   GODDESS SIMPLE MODAL
+   공통 alert / confirm 대체 UI
+================================================== */
+
+.simple-modal-overlay {
+  position: fixed;
+  z-index: 20000;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(33, 29, 30, 0.34);
+  backdrop-filter: blur(4px);
+}
+
+.simple-modal {
+  width: min(430px, 100%);
+
+  padding: 34px 32px 28px;
+
+  border: 1px solid #e7dde0;
+  border-radius: 0;
+
+  background: #fffdfd;
+
+  box-shadow:
+    0 24px 70px rgba(54, 39, 45, 0.16);
+
+  text-align: left;
+}
+
+.simple-modal-eyebrow {
+  margin: 0 0 10px;
+
+  color: #b78a96;
+
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+
+.simple-modal h2 {
+  margin: 0;
+
+  color: #292528;
+
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.simple-modal-message {
+  margin: 12px 0 0;
+
+  color: #777074;
+
+  font-size: 12px;
+  line-height: 1.75;
+
+  white-space: pre-line;
+}
+
+.simple-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+
+  margin-top: 28px;
+}
+
+.simple-modal-actions:has(.simple-modal-cancel) {
+  grid-template-columns: 1fr 1fr;
+}
+
+.simple-modal-actions button {
+  min-height: 48px;
+
+  border-radius: 0;
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.simple-modal-cancel {
+  border: 1px solid #dcd4d7;
+  background: #fff;
+  color: #514a4d;
+}
+
+.simple-modal-cancel:hover {
+  border-color: #cfa7b1;
+  background: #fff8fa;
+  color: #9d6472;
+}
+
+.simple-modal-confirm {
+  border: 1px solid #c58f9c;
+  background: #f6e7eb;
+  color: #865361;
+}
+
+.simple-modal-confirm:hover {
+  border-color: #b77b89;
+  background: #edd3da;
+  color: #70424e;
+}
+
+.simple-modal-danger .simple-modal-eyebrow {
+  color: #a96776;
+}
+
+.simple-modal-danger .simple-modal-confirm {
+  border-color: #b67584;
+  background: #b67584;
+  color: #fff;
+}
+
+.simple-modal-danger .simple-modal-confirm:hover {
+  border-color: #9f5e6d;
+  background: #9f5e6d;
+}
+
+@media (max-width: 520px) {
+  .simple-modal {
+    padding: 30px 20px 24px;
+  }
+
+  .simple-modal-actions:has(.simple-modal-cancel) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.simple-modal {
+  position: relative;
+}
+
+.simple-modal::before {
+  content: "";
+
+  position: absolute;
+  top: -7px;
+  left: 50%;
+
+  width: 12px;
+  height: 12px;
+
+  border: 1px solid #ded4d7;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #ffffff 0%,
+      #fffefe 28%,
+      #eee4e7 100%
+    );
+
+  transform: translateX(-50%);
+}
