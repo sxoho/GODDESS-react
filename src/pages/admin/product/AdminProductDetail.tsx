@@ -26,6 +26,7 @@ type ProductColor = {
   sortOrder: number;
   aiApplyEnabled: string;
   visible: string;
+  personalColors?: string[];
   images: ProductImage[];
 };
 
@@ -64,7 +65,6 @@ type Product = {
   productType?: string;
   volume?: string;
   skinType?: string;
-  personalColor?: string;
   aiApplyEnabled: string;
   status: string;
   viewCount?: number;
@@ -331,10 +331,6 @@ const AdminProductDetail = () => {
             <dt>추천 피부 타입</dt>
             <dd>{product.skinType || "-"}</dd>
           </div>
-          <div>
-            <dt>추천 퍼스널컬러</dt>
-            <dd>{product.personalColor || "-"}</dd>
-          </div>
           <div className="full">
             <dt>사용 방법</dt>
             <dd className="description">
@@ -382,6 +378,7 @@ const AdminProductDetail = () => {
                 <div>
                   <strong>{color.colorName}</strong>
                   <p>{color.colorCode || "-"}</p>
+                  <p>퍼스널컬러: {color.personalColors?.join(", ") || "-"}</p>
                 </div>
                 <div className="admin-product-color-meta">
                   {color.isMain === "Y" && <span>대표 색상</span>}

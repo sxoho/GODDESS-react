@@ -17,7 +17,6 @@ type ProductForm = {
   productType: string;
   volume: string;
   skinType: string;
-  personalColor: string;
   aiApplyEnabled: string;
   status: string;
 };
@@ -38,6 +37,7 @@ type ProductColorForm = {
   masterColorId?: number;
   colorName: string;
   colorCode: string;
+  personalColors: string[];
   images: ProductImageForm[];
 };
 
@@ -80,7 +80,6 @@ type ProductDetailResponse = {
   productType?: string;
   volume?: string;
   skinType?: string;
-  personalColor?: string;
   aiApplyEnabled: string;
   status: string;
 };
@@ -146,6 +145,7 @@ type ProductColorResponse = {
   sortOrder: number;
   aiApplyEnabled: string;
   visible: string;
+  personalColors: string[];
   images: ProductColorImageResponse[];
 };
 
@@ -166,33 +166,19 @@ type ProductOptionResponse = {
   visible: string;
 };
 
-const SKIN_TYPE_OPTIONS = [
-  "건성",
-  "지성",
-  "복합성",
-  "중성",
-  "민감성",
-] as const;
+const SKIN_TYPE_OPTIONS = ["건성", "지성", "복합성", "중성", "민감성"] as const;
 
 const PERSONAL_COLOR_OPTIONS = [
-  "봄웜",
-  "여름쿨",
-  "가을웜",
-  "겨울쿨",
+  { value: "SPRING_WARM", label: "봄웜" },
+  { value: "SUMMER_COOL", label: "여름쿨" },
+  { value: "AUTUMN_WARM", label: "가을웜" },
+  { value: "WINTER_COOL", label: "겨울쿨" },
+  { value: "NEUTRAL", label: "뉴트럴" },
 ] as const;
 
-const SKIN_TYPE_PRODUCT_TYPES = [
-  "BASE",
-  "SKINCARE",
-];
+const SKIN_TYPE_PRODUCT_TYPES = ["BASE", "SKINCARE"];
 
-const PERSONAL_COLOR_PRODUCT_TYPES = [
-  "BASE",
-  "LIP",
-  "EYE",
-  "BLUSH",
-  "BROW",
-];
+const PERSONAL_COLOR_PRODUCT_TYPES = ["BASE", "LIP", "EYE", "BLUSH", "BROW"];
 
 const BASE_COLOR_GROUP_OPTIONS = [
   "RED",
@@ -258,12 +244,13 @@ const AdminProductForm = () => {
     productType: "",
     volume: "",
     skinType: "",
-    personalColor: "",
     aiApplyEnabled: "Y",
     status: "ON_SALE",
   });
 
-  const [masterColors, setMasterColors] = useState<ProductColorInfoResponse[]>([]);
+  const [masterColors, setMasterColors] = useState<ProductColorInfoResponse[]>(
+    [],
+  );
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
 
   // CATEGORY 테이블에서 대분류/하위분류를 동적으로 계산
@@ -280,7 +267,7 @@ const AdminProductForm = () => {
           return parentId == null && category.visible !== "N";
         })
         .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
-    [categories]
+    [categories],
   );
 
   const subCategories = useMemo(() => {
@@ -313,7 +300,7 @@ const AdminProductForm = () => {
     return (
       mainCategories.find(
         (category) =>
-          (category.categoryId ?? category.id ?? 0) === selectedMainId
+          (category.categoryId ?? category.id ?? 0) === selectedMainId,
       ) ?? null
     );
   }, [mainCategories, product.mainCategoryId]);
@@ -325,12 +312,10 @@ const AdminProductForm = () => {
   // SKINCARE: 피부 타입
   // LIP/EYE/BLUSH/BROW: 퍼스널컬러
   // 그 외: 둘 다 사용하지 않음
-  const needsSkinType = SKIN_TYPE_PRODUCT_TYPES.includes(
-    product.productType
-  );
+  const needsSkinType = SKIN_TYPE_PRODUCT_TYPES.includes(product.productType);
 
   const needsPersonalColor = PERSONAL_COLOR_PRODUCT_TYPES.includes(
-    product.productType
+    product.productType,
   );
 
   const selectedSkinTypes = useMemo(
@@ -339,16 +324,7 @@ const AdminProductForm = () => {
         .split(",")
         .map((value) => value.trim())
         .filter(Boolean),
-    [product.skinType]
-  );
-
-  const selectedPersonalColors = useMemo(
-    () =>
-      product.personalColor
-        .split(",")
-        .map((value) => value.trim())
-        .filter(Boolean),
-    [product.personalColor]
+    [product.skinType],
   );
 
   const [colors, setColors] = useState<ProductColorForm[]>([
@@ -356,6 +332,7 @@ const AdminProductForm = () => {
       id: Date.now(),
       colorName: "",
       colorCode: "",
+      personalColors: [],
       images: [],
     },
   ]);
@@ -388,7 +365,7 @@ const AdminProductForm = () => {
 
   // 기존 서버 이미지도 hover 색상 추출이 가능하도록 이미지를 한 번만 Blob으로 로드해 캐시한다.
   const hoverImageCacheRef = useRef<Map<number, Promise<HTMLImageElement>>>(
-    new Map()
+    new Map(),
   );
   const hoverObjectUrlCacheRef = useRef<Map<number, string>>(new Map());
   const hoverRequestRef = useRef(0);
@@ -411,7 +388,7 @@ const AdminProductForm = () => {
     event:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
 
@@ -421,9 +398,7 @@ const AdminProductForm = () => {
         [name]: value,
 
         // 대분류가 바뀌면 이전 하위 카테고리 선택값은 초기화.
-        ...(name === "mainCategoryId"
-          ? { categoryId: "" }
-          : {}),
+        ...(name === "mainCategoryId" ? { categoryId: "" } : {}),
       };
 
       // 상품 유형을 변경했을 때 더 이상 사용하지 않는 추천값은
@@ -433,27 +408,17 @@ const AdminProductForm = () => {
         if (!SKIN_TYPE_PRODUCT_TYPES.includes(value)) {
           next.skinType = "";
         }
-
-        if (!PERSONAL_COLOR_PRODUCT_TYPES.includes(value)) {
-          next.personalColor = "";
-        }
       }
 
       return next;
     });
   };
 
-
   /**
-   * 추천 피부 타입 / 퍼스널컬러 복수 선택
-   *
-   * DB 구조는 그대로 유지하고
-   * "건성,복합성", "봄웜,여름쿨" 형태의 문자열로 저장한다.
+   * 추천 피부 타입 복수 선택
+   * PRODUCT.SKIN_TYPE에는 "건성,복합성" 형태의 문자열로 저장한다.
    */
-  const toggleCommaValue = (
-    field: "skinType" | "personalColor",
-    value: string
-  ) => {
+  const toggleCommaValue = (field: "skinType", value: string) => {
     setProduct((prev) => {
       const currentValues = (prev[field] ?? "")
         .split(",")
@@ -469,6 +434,21 @@ const AdminProductForm = () => {
         [field]: nextValues.join(","),
       };
     });
+  };
+
+  const toggleColorPersonalColor = (colorId: number, value: string) => {
+    setColors((prev) =>
+      prev.map((color) =>
+        color.id === colorId
+          ? {
+              ...color,
+              personalColors: color.personalColors.includes(value)
+                ? color.personalColors.filter((item) => item !== value)
+                : [...color.personalColors, value],
+            }
+          : color,
+      ),
+    );
   };
 
   const normalizeHex = (value: string) => value.trim().toUpperCase();
@@ -492,7 +472,7 @@ const AdminProductForm = () => {
       .map((value) =>
         Math.max(0, Math.min(255, Math.round(value)))
           .toString(16)
-          .padStart(2, "0")
+          .padStart(2, "0"),
       )
       .join("")
       .toUpperCase()}`;
@@ -513,8 +493,8 @@ const AdminProductForm = () => {
 
       const distance = Math.sqrt(
         (target.r - anchor.r) ** 2 +
-        (target.g - anchor.g) ** 2 +
-        (target.b - anchor.b) ** 2
+          (target.g - anchor.g) ** 2 +
+          (target.b - anchor.b) ** 2,
       );
 
       if (distance < nearestDistance) {
@@ -542,8 +522,8 @@ const AdminProductForm = () => {
 
       const distance = Math.sqrt(
         (target.r - rgb.r) ** 2 +
-        (target.g - rgb.g) ** 2 +
-        (target.b - rgb.b) ** 2
+          (target.g - rgb.g) ** 2 +
+          (target.b - rgb.b) ** 2,
       );
 
       if (distance < nearestDistance) {
@@ -557,7 +537,7 @@ const AdminProductForm = () => {
 
   const setExtractionState = (
     colorId: number,
-    patch: Partial<ColorExtractionState>
+    patch: Partial<ColorExtractionState>,
   ) => {
     setColorExtractions((prev) => ({
       ...prev,
@@ -582,7 +562,7 @@ const AdminProductForm = () => {
    * - 같은 이미지는 한 번만 로드하고 캐시한다.
    */
   const getHoverSourceImage = (
-    image: ProductImageForm
+    image: ProductImageForm,
   ): Promise<HTMLImageElement> => {
     const cached = hoverImageCacheRef.current.get(image.id);
 
@@ -614,7 +594,7 @@ const AdminProductForm = () => {
             img.onerror = () =>
               reject(new Error("이미지를 불러오지 못했습니다."));
             img.src = objectUrl;
-          }
+          },
         );
 
         hoverObjectUrlCacheRef.current.set(image.id, objectUrl);
@@ -641,7 +621,7 @@ const AdminProductForm = () => {
    */
   const handleColorHover = async (
     image: ProductImageForm,
-    event: React.MouseEvent<HTMLImageElement>
+    event: React.MouseEvent<HTMLImageElement>,
   ) => {
     const rect = event.currentTarget.getBoundingClientRect();
 
@@ -672,7 +652,7 @@ const AdminProductForm = () => {
 
       const scale = Math.max(
         rect.width / naturalWidth,
-        rect.height / naturalHeight
+        rect.height / naturalHeight,
       );
       const renderedWidth = naturalWidth * scale;
       const renderedHeight = naturalHeight * scale;
@@ -681,17 +661,11 @@ const AdminProductForm = () => {
 
       const sourceX = Math.max(
         0,
-        Math.min(
-          naturalWidth - 1,
-          Math.round((hoverX + cropX) / scale)
-        )
+        Math.min(naturalWidth - 1, Math.round((hoverX + cropX) / scale)),
       );
       const sourceY = Math.max(
         0,
-        Math.min(
-          naturalHeight - 1,
-          Math.round((hoverY + cropY) / scale)
-        )
+        Math.min(naturalHeight - 1, Math.round((hoverY + cropY) / scale)),
       );
 
       const canvas = document.createElement("canvas");
@@ -704,17 +678,7 @@ const AdminProductForm = () => {
         return;
       }
 
-      context.drawImage(
-        sourceImage,
-        sourceX,
-        sourceY,
-        1,
-        1,
-        0,
-        0,
-        1,
-        1
-      );
+      context.drawImage(sourceImage, sourceX, sourceY, 1, 1, 0, 0, 1, 1);
 
       const pixel = context.getImageData(0, 0, 1, 1).data;
       const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
@@ -747,7 +711,7 @@ const AdminProductForm = () => {
   const extractColorFromImage = async (
     colorId: number,
     image: ProductImageForm,
-    event: React.MouseEvent<HTMLImageElement>
+    event: React.MouseEvent<HTMLImageElement>,
   ) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const clickX = event.clientX - rect.left;
@@ -773,12 +737,15 @@ const AdminProductForm = () => {
         throw new Error("색상을 추출할 이미지 파일을 찾을 수 없습니다.");
       }
 
-      const sourceImage = await new Promise<HTMLImageElement>((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error("이미지를 불러오지 못했습니다."));
-        img.src = objectUrl;
-      });
+      const sourceImage = await new Promise<HTMLImageElement>(
+        (resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () =>
+            reject(new Error("이미지를 불러오지 못했습니다."));
+          img.src = objectUrl;
+        },
+      );
 
       const naturalWidth = sourceImage.naturalWidth;
       const naturalHeight = sourceImage.naturalHeight;
@@ -791,7 +758,7 @@ const AdminProductForm = () => {
       // 클릭 위치를 원본 이미지 좌표로 환산한다.
       const scale = Math.max(
         rect.width / naturalWidth,
-        rect.height / naturalHeight
+        rect.height / naturalHeight,
       );
       const renderedWidth = naturalWidth * scale;
       const renderedHeight = naturalHeight * scale;
@@ -800,17 +767,11 @@ const AdminProductForm = () => {
 
       const sourceX = Math.max(
         0,
-        Math.min(
-          naturalWidth - 1,
-          Math.round((clickX + cropX) / scale)
-        )
+        Math.min(naturalWidth - 1, Math.round((clickX + cropX) / scale)),
       );
       const sourceY = Math.max(
         0,
-        Math.min(
-          naturalHeight - 1,
-          Math.round((clickY + cropY) / scale)
-        )
+        Math.min(naturalHeight - 1, Math.round((clickY + cropY) / scale)),
       );
 
       const canvas = document.createElement("canvas");
@@ -833,7 +794,7 @@ const AdminProductForm = () => {
         startX,
         startY,
         sampleWidth,
-        sampleHeight
+        sampleHeight,
       ).data;
 
       let r = 0;
@@ -858,7 +819,7 @@ const AdminProductForm = () => {
       const nearestMaster = findNearestMasterColor(extractedHex);
       const exactMaster = masterColors.find(
         (masterColor) =>
-          normalizeHex(masterColor.colorCode) === normalizeHex(extractedHex)
+          normalizeHex(masterColor.colorCode) === normalizeHex(extractedHex),
       );
 
       setExtractionState(colorId, {
@@ -926,9 +887,10 @@ const AdminProductForm = () => {
 
     const sameMaster = masterColors.find(
       (masterColor) =>
-        masterColor.colorName.trim().toLowerCase() === colorName.toLowerCase() &&
+        masterColor.colorName.trim().toLowerCase() ===
+          colorName.toLowerCase() &&
         normalizeHex(masterColor.colorCode) ===
-          normalizeHex(extraction.extractedHex)
+          normalizeHex(extraction.extractedHex),
     );
 
     if (sameMaster) {
@@ -941,7 +903,10 @@ const AdminProductForm = () => {
     }
 
     try {
-      setExtractionState(colorId, { saving: true, message: "새 색상을 등록하는 중입니다..." });
+      setExtractionState(colorId, {
+        saving: true,
+        message: "새 색상을 등록하는 중입니다...",
+      });
 
       const response = await axiosInstance.post<ProductColorInfoResponse>(
         "/product_color_master/save",
@@ -949,7 +914,7 @@ const AdminProductForm = () => {
           colorName,
           colorCode: extraction.extractedHex,
           baseColorGroup: extraction.detectedBaseColorGroup || null,
-        }
+        },
       );
 
       const saved = response.data;
@@ -969,8 +934,8 @@ const AdminProductForm = () => {
                 colorName: saved.colorName,
                 colorCode: saved.colorCode,
               }
-            : color
-        )
+            : color,
+        ),
       );
 
       setExtractionState(colorId, {
@@ -1002,6 +967,7 @@ const AdminProductForm = () => {
         id: Date.now(),
         colorName: "",
         colorCode: "",
+        personalColors: [],
         images: [],
       },
     ]);
@@ -1022,8 +988,8 @@ const AdminProductForm = () => {
               colorName: selected?.colorName ?? "",
               colorCode: selected?.colorCode ?? "",
             }
-          : color
-      )
+          : color,
+      ),
     );
   };
 
@@ -1037,7 +1003,7 @@ const AdminProductForm = () => {
       setDeletedColors((prev) =>
         prev.some((color) => color.backendId === targetColor.backendId)
           ? prev
-          : [...prev, targetColor]
+          : [...prev, targetColor],
       );
 
       const existingImageIds = targetColor.images
@@ -1045,17 +1011,13 @@ const AdminProductForm = () => {
         .map((image) => image.id);
 
       setDeletedImageIds((prev) =>
-        Array.from(new Set([...prev, ...existingImageIds]))
+        Array.from(new Set([...prev, ...existingImageIds])),
       );
     }
 
-    setColors((prev) =>
-      prev.filter((color) => color.id !== id)
-    );
+    setColors((prev) => prev.filter((color) => color.id !== id));
 
-    setOptions((prev) =>
-      prev.filter((option) => option.colorId !== id)
-    );
+    setOptions((prev) => prev.filter((option) => option.colorId !== id));
 
     setColorExtractions((prev) => {
       const next = { ...prev };
@@ -1072,7 +1034,7 @@ const AdminProductForm = () => {
   const changeImages = (
     id: number,
     imageType: "THUMBNAIL" | "DETAIL",
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const files = Array.from(event.target.files ?? []);
 
@@ -1096,8 +1058,8 @@ const AdminProductForm = () => {
               ...color,
               images: [...color.images, ...imageForms],
             }
-          : color
-      )
+          : color,
+      ),
     );
 
     event.target.value = "";
@@ -1105,13 +1067,15 @@ const AdminProductForm = () => {
 
   const removeImage = (colorId: number, imageId: number) => {
     const targetColor = colors.find((color) => color.id === colorId);
-    const targetImage = targetColor?.images.find((image) => image.id === imageId);
+    const targetImage = targetColor?.images.find(
+      (image) => image.id === imageId,
+    );
 
     // 새로 선택한 로컬 파일은 화면에서만 제거.
     // 기존 DB 이미지는 수정 저장 시 DELETE API를 호출한다.
     if (targetImage && !targetImage.file && targetImage.filePath) {
       setDeletedImageIds((prev) =>
-        prev.includes(imageId) ? prev : [...prev, imageId]
+        prev.includes(imageId) ? prev : [...prev, imageId],
       );
     }
 
@@ -1122,8 +1086,8 @@ const AdminProductForm = () => {
               ...color,
               images: color.images.filter((image) => image.id !== imageId),
             }
-          : color
-      )
+          : color,
+      ),
     );
   };
 
@@ -1133,7 +1097,7 @@ const AdminProductForm = () => {
   const changeImageFileName = (
     colorId: number,
     imageId: number,
-    fileName: string
+    fileName: string,
   ) => {
     setColors((prev) =>
       prev.map((color) =>
@@ -1146,11 +1110,11 @@ const AdminProductForm = () => {
                       ...image,
                       fileName,
                     }
-                  : image
+                  : image,
               ),
             }
-          : color
-      )
+          : color,
+      ),
     );
   };
 
@@ -1174,7 +1138,7 @@ const AdminProductForm = () => {
   const changeSize = (
     id: number,
     field: "variantName" | "variantDescription",
-    value: string
+    value: string,
   ) => {
     setSizes((prev) =>
       prev.map((size) =>
@@ -1183,8 +1147,8 @@ const AdminProductForm = () => {
               ...size,
               [field]: value,
             }
-          : size
-      )
+          : size,
+      ),
     );
   };
 
@@ -1199,17 +1163,13 @@ const AdminProductForm = () => {
       setDeletedSizeIds((prev) =>
         prev.includes(targetSize.backendId!)
           ? prev
-          : [...prev, targetSize.backendId!]
+          : [...prev, targetSize.backendId!],
       );
     }
 
-    setSizes((prev) =>
-      prev.filter((size) => size.id !== id)
-    );
+    setSizes((prev) => prev.filter((size) => size.id !== id));
 
-    setOptions((prev) =>
-      prev.filter((option) => option.sizeId !== id)
-    );
+    setOptions((prev) => prev.filter((option) => option.sizeId !== id));
   };
 
   /**
@@ -1221,9 +1181,7 @@ const AdminProductForm = () => {
     colors.forEach((color) => {
       sizes.forEach((size) => {
         const oldOption = options.find(
-          (option) =>
-            option.colorId === color.id &&
-            option.sizeId === size.id
+          (option) => option.colorId === color.id && option.sizeId === size.id,
         );
 
         generated.push(
@@ -1232,7 +1190,7 @@ const AdminProductForm = () => {
             sizeId: size.id,
             stock: 30,
             addPrice: 0,
-          }
+          },
         );
       });
     });
@@ -1247,33 +1205,26 @@ const AdminProductForm = () => {
     colorId: number,
     sizeId: number,
     field: "stock" | "addPrice",
-    value: number
+    value: number,
   ) => {
     setOptions((prev) =>
       prev.map((option) =>
-        option.colorId === colorId &&
-        option.sizeId === sizeId
+        option.colorId === colorId && option.sizeId === sizeId
           ? {
               ...option,
               [field]: value,
             }
-          : option
-      )
+          : option,
+      ),
     );
   };
 
   const findColorName = (id: number) => {
-    return (
-      colors.find((color) => color.id === id)?.colorName ||
-      "색상 미입력"
-    );
+    return colors.find((color) => color.id === id)?.colorName || "색상 미입력";
   };
 
   const findSizeName = (id: number) => {
-    return (
-      sizes.find((size) => size.id === id)?.variantName ||
-      "규격 미입력"
-    );
+    return sizes.find((size) => size.id === id)?.variantName || "규격 미입력";
   };
 
   /**
@@ -1285,7 +1236,7 @@ const AdminProductForm = () => {
         const [categoryResponse, colorResponse] = await Promise.all([
           axiosInstance.get<CategoryResponse[]>("/category/find_all"),
           axiosInstance.get<ProductColorInfoResponse[]>(
-            "/product_color_master/find_all"
+            "/product_color_master/find_all",
           ),
         ]);
 
@@ -1298,7 +1249,7 @@ const AdminProductForm = () => {
               category.parent?.categoryId ??
               category.parent?.id ??
               null,
-          }))
+          })),
         );
 
         setMasterColors(colorResponse.data);
@@ -1323,9 +1274,15 @@ const AdminProductForm = () => {
         const [productResponse, colorResponse, sizeResponse, optionResponse] =
           await Promise.all([
             axiosInstance.get<ProductDetailResponse>(`/product/${productId}`),
-            axiosInstance.get<ProductColorResponse[]>(`/product_color/product/${productId}`),
-            axiosInstance.get<ProductVariantResponse[]>(`/product_variant/product/${productId}`),
-            axiosInstance.get<ProductOptionResponse[]>(`/product_option/product/${productId}`),
+            axiosInstance.get<ProductColorResponse[]>(
+              `/product_color/product/${productId}`,
+            ),
+            axiosInstance.get<ProductVariantResponse[]>(
+              `/product_variant/product/${productId}`,
+            ),
+            axiosInstance.get<ProductOptionResponse[]>(
+              `/product_option/product/${productId}`,
+            ),
           ]);
 
         const data = productResponse.data;
@@ -1335,24 +1292,24 @@ const AdminProductForm = () => {
           name: data.name ?? "",
           mainCategoryId: String(
             data.parentCategoryId ??
-            data.category?.parentId ??
-            data.category?.parent?.categoryId ??
-            data.category?.parent?.id ??
-            data.categoryId ??
-            data.category?.categoryId ??
-            data.category?.id ??
-            ""
+              data.category?.parentId ??
+              data.category?.parent?.categoryId ??
+              data.category?.parent?.id ??
+              data.categoryId ??
+              data.category?.categoryId ??
+              data.category?.id ??
+              "",
           ),
           categoryId:
-            data.parentCategoryId ??
+            (data.parentCategoryId ??
             data.category?.parentId ??
             data.category?.parent?.categoryId ??
-            data.category?.parent?.id
+            data.category?.parent?.id)
               ? String(
                   data.categoryId ??
-                  data.category?.categoryId ??
-                  data.category?.id ??
-                  ""
+                    data.category?.categoryId ??
+                    data.category?.id ??
+                    "",
                 )
               : "",
           price: String(data.price ?? ""),
@@ -1363,28 +1320,28 @@ const AdminProductForm = () => {
           productType: data.productType ?? "",
           volume: data.volume ?? "",
           skinType: data.skinType ?? "",
-          personalColor: data.personalColor ?? "",
           aiApplyEnabled: data.aiApplyEnabled ?? "Y",
           status: data.status ?? "ON_SALE",
         });
 
-        const loadedColors: ProductColorForm[] =
-          colorResponse.data.map((color) => ({
+        const loadedColors: ProductColorForm[] = colorResponse.data.map(
+          (color) => ({
             id: color.id,
             backendId: color.id,
             masterColorId: color.colorId,
             colorName: color.colorName,
             colorCode: color.colorCode,
+            personalColors: color.personalColors ?? [],
             images: (color.images ?? []).map((image) => ({
               id: image.id,
               fileName: image.fileSaved.replace(/\.[^/.]+$/, ""),
               filePath: image.filePath,
-              imageType:
-                image.imageType === "DETAIL" ? "DETAIL" : "THUMBNAIL",
+              imageType: image.imageType === "DETAIL" ? "DETAIL" : "THUMBNAIL",
               isMain: image.isMain,
               sortOrder: image.sortOrder,
             })),
-          }));
+          }),
+        );
 
         setColors(loadedColors);
 
@@ -1408,14 +1365,15 @@ const AdminProductForm = () => {
 
         setSizes(loadedSizes);
 
-        const loadedOptions: ProductOptionForm[] =
-          optionResponse.data.map((option) => ({
+        const loadedOptions: ProductOptionForm[] = optionResponse.data.map(
+          (option) => ({
             id: option.id,
             colorId: option.productColorId,
             sizeId: option.productVariantId,
             stock: option.stock ?? 0,
             addPrice: option.addPrice ?? 0,
-          }));
+          }),
+        );
 
         // 기존 옵션/옵션이 전혀 없는 예전 상품은
         // 현재 등록된 색상 × 기본 규격 조합을 자동 생성하고 재고를 30으로 시작한다.
@@ -1444,7 +1402,6 @@ const AdminProductForm = () => {
         setDeletedSizeIds([]);
         setDeletedImageIds([]);
         setDeletedColors([]);
-
       } catch (error) {
         console.error("상품 수정 데이터 조회 오류", error);
         alert("기존 상품 정보를 불러오지 못했습니다.");
@@ -1517,7 +1474,7 @@ const AdminProductForm = () => {
 
       if (
         colors.some((color) =>
-          color.images.some((image) => image.file && !image.fileName.trim())
+          color.images.some((image) => image.file && !image.fileName.trim()),
         )
       ) {
         alert("이미지 저장 이름을 모두 입력해주세요.");
@@ -1549,7 +1506,6 @@ const AdminProductForm = () => {
         productType: (product.productType ?? "").trim() || null,
         volume: (product.volume ?? "").trim() || null,
         skinType: (product.skinType ?? "").trim() || null,
-        personalColor: (product.personalColor ?? "").trim() || null,
         aiApplyEnabled: product.aiApplyEnabled,
         status: product.status,
       };
@@ -1567,7 +1523,7 @@ const AdminProductForm = () => {
 
         if (
           colors.some((color) =>
-            color.images.some((image) => image.file && !image.fileName.trim())
+            color.images.some((image) => image.file && !image.fileName.trim()),
           )
         ) {
           throw new Error("이미지 저장 이름을 모두 입력해주세요.");
@@ -1598,16 +1554,13 @@ const AdminProductForm = () => {
             continue;
           }
 
-          await axiosInstance.put(
-            `/product_color/${deletedColor.backendId}`,
-            {
-              colorId: deletedColor.masterColorId,
-              isMain: "N",
-              sortOrder: 9999,
-              aiApplyEnabled: product.aiApplyEnabled,
-              visible: "N",
-            }
-          );
+          await axiosInstance.put(`/product_color/${deletedColor.backendId}`, {
+            colorId: deletedColor.masterColorId,
+            isMain: "N",
+            sortOrder: 9999,
+            aiApplyEnabled: product.aiApplyEnabled,
+            visible: "N",
+          });
         }
 
         // -------------------------------------------------
@@ -1635,28 +1588,33 @@ const AdminProductForm = () => {
                 sortOrder: index + 1,
                 aiApplyEnabled: product.aiApplyEnabled,
                 visible: "Y",
-              }
+                personalColors: color.personalColors,
+              },
             );
 
             actualProductColorId = colorResponse.data.id ?? color.backendId;
           } else {
             // 수정 화면에서 새로 추가한 색상은 POST
-            const colorResponse = await axiosInstance.post<ProductColorResponse>(
-              `/product_color/product/${productId}/save`,
-              {
-                colorId: color.masterColorId,
-                isMain: index === 0 ? "Y" : "N",
-                sortOrder: index + 1,
-                aiApplyEnabled: product.aiApplyEnabled,
-                visible: "Y",
-              }
-            );
+            const colorResponse =
+              await axiosInstance.post<ProductColorResponse>(
+                `/product_color/product/${productId}/save`,
+                {
+                  colorId: color.masterColorId,
+                  isMain: index === 0 ? "Y" : "N",
+                  sortOrder: index + 1,
+                  aiApplyEnabled: product.aiApplyEnabled,
+                  visible: "Y",
+                  personalColors: color.personalColors,
+                },
+              );
 
             actualProductColorId = colorResponse.data.id;
           }
 
           if (!actualProductColorId) {
-            throw new Error(`${color.colorName} 색상 저장 후 색상번호를 받지 못했습니다.`);
+            throw new Error(
+              `${color.colorName} 색상 저장 후 색상번호를 받지 못했습니다.`,
+            );
           }
 
           savedEditColorIdMap.set(color.id, actualProductColorId);
@@ -1668,10 +1626,10 @@ const AdminProductForm = () => {
           const newImages = color.images.filter((image) => image.file);
 
           const existingThumbnailCount = color.images.filter(
-            (image) => !image.file && image.imageType === "THUMBNAIL"
+            (image) => !image.file && image.imageType === "THUMBNAIL",
           ).length;
           const existingDetailCount = color.images.filter(
-            (image) => !image.file && image.imageType === "DETAIL"
+            (image) => !image.file && image.imageType === "DETAIL",
           ).length;
 
           let newThumbnailIndex = 0;
@@ -1681,7 +1639,9 @@ const AdminProductForm = () => {
             if (!image.file) continue;
 
             const isThumbnail = image.imageType === "THUMBNAIL";
-            const typeIndex = isThumbnail ? newThumbnailIndex++ : newDetailIndex++;
+            const typeIndex = isThumbnail
+              ? newThumbnailIndex++
+              : newDetailIndex++;
             const existingCount = isThumbnail
               ? existingThumbnailCount
               : existingDetailCount;
@@ -1693,14 +1653,14 @@ const AdminProductForm = () => {
               "isMain",
               isThumbnail && existingThumbnailCount === 0 && typeIndex === 0
                 ? "Y"
-                : "N"
+                : "N",
             );
             formData.append("imageType", image.imageType);
             formData.append("sortOrder", String(existingCount + typeIndex + 1));
 
             await axiosInstance.post(
               `/product_color_image/product_color/${actualProductColorId}/save`,
-              formData
+              formData,
             );
           }
         }
@@ -1717,33 +1677,37 @@ const AdminProductForm = () => {
           let actualProductVariantId: number;
 
           if (size.backendId) {
-            const sizeResponse = await axiosInstance.put<ProductVariantResponse>(
-              `/product_variant/${size.backendId}`,
-              {
-                variantName: size.variantName.trim(),
-                variantDescription: size.variantDescription.trim(),
-                visible: "Y",
-                sortOrder: index + 1,
-              }
-            );
+            const sizeResponse =
+              await axiosInstance.put<ProductVariantResponse>(
+                `/product_variant/${size.backendId}`,
+                {
+                  variantName: size.variantName.trim(),
+                  variantDescription: size.variantDescription.trim(),
+                  visible: "Y",
+                  sortOrder: index + 1,
+                },
+              );
 
             actualProductVariantId = sizeResponse.data.id ?? size.backendId;
           } else {
-            const sizeResponse = await axiosInstance.post<ProductVariantResponse>(
-              `/product_variant/product/${productId}/save`,
-              {
-                variantName: size.variantName.trim(),
-                variantDescription: size.variantDescription.trim(),
-                visible: "Y",
-                sortOrder: index + 1,
-              }
-            );
+            const sizeResponse =
+              await axiosInstance.post<ProductVariantResponse>(
+                `/product_variant/product/${productId}/save`,
+                {
+                  variantName: size.variantName.trim(),
+                  variantDescription: size.variantDescription.trim(),
+                  visible: "Y",
+                  sortOrder: index + 1,
+                },
+              );
 
             actualProductVariantId = sizeResponse.data.id;
           }
 
           if (!actualProductVariantId) {
-            throw new Error(`${size.variantName} 규격 저장 후 규격번호를 받지 못했습니다.`);
+            throw new Error(
+              `${size.variantName} 규격 저장 후 규격번호를 받지 못했습니다.`,
+            );
           }
 
           savedEditSizeIdMap.set(size.id, actualProductVariantId);
@@ -1760,16 +1724,13 @@ const AdminProductForm = () => {
             savedEditSizeIdMap.get(option.sizeId) ?? option.sizeId;
 
           if (option.id) {
-            await axiosInstance.put(
-              `/product_option/${option.id}`,
-              {
-                productColorId: actualProductColorId,
-                productVariantId: actualProductVariantId,
-                addPrice: option.addPrice,
-                stock: option.stock,
-                visible: "Y",
-              }
-            );
+            await axiosInstance.put(`/product_option/${option.id}`, {
+              productColorId: actualProductColorId,
+              productVariantId: actualProductVariantId,
+              addPrice: option.addPrice,
+              stock: option.stock,
+              visible: "Y",
+            });
           } else {
             await axiosInstance.post(
               `/product_option/product/${productId}/save`,
@@ -1779,7 +1740,7 @@ const AdminProductForm = () => {
                 addPrice: option.addPrice,
                 stock: option.stock,
                 visible: "Y",
-              }
+              },
             );
           }
         }
@@ -1791,9 +1752,15 @@ const AdminProductForm = () => {
         const [verifyProduct, verifyColors, verifySizes, verifyOptions] =
           await Promise.all([
             axiosInstance.get<ProductDetailResponse>(`/product/${productId}`),
-            axiosInstance.get<ProductColorResponse[]>(`/product_color/product/${productId}`),
-            axiosInstance.get<ProductVariantResponse[]>(`/product_variant/product/${productId}`),
-            axiosInstance.get<ProductOptionResponse[]>(`/product_option/product/${productId}`),
+            axiosInstance.get<ProductColorResponse[]>(
+              `/product_color/product/${productId}`,
+            ),
+            axiosInstance.get<ProductVariantResponse[]>(
+              `/product_variant/product/${productId}`,
+            ),
+            axiosInstance.get<ProductOptionResponse[]>(
+              `/product_option/product/${productId}`,
+            ),
           ]);
 
         if (
@@ -1804,15 +1771,17 @@ const AdminProductForm = () => {
         }
 
         const verifiedVisibleColors = verifyColors.data.filter(
-          (color) => color.visible === "Y"
+          (color) => color.visible === "Y",
         );
 
         if (verifiedVisibleColors.length !== colors.length) {
-          throw new Error("상품 색상 추가/삭제가 서버에 정확히 반영되지 않았습니다.");
+          throw new Error(
+            "상품 색상 추가/삭제가 서버에 정확히 반영되지 않았습니다.",
+          );
         }
 
         const verifiedVisibleSizes = verifySizes.data.filter(
-          (size) => size.visible === "Y"
+          (size) => size.visible === "Y",
         );
 
         const expectedSizeNames = sizes
@@ -1826,11 +1795,15 @@ const AdminProductForm = () => {
           .join("|");
 
         if (expectedSizeNames !== verifiedSizeNames) {
-          throw new Error("상품 옵션 추가/수정/삭제가 서버에 정확히 반영되지 않았습니다.");
+          throw new Error(
+            "상품 옵션 추가/수정/삭제가 서버에 정확히 반영되지 않았습니다.",
+          );
         }
 
         if (options.length > 0 && verifyOptions.data.length < options.length) {
-          throw new Error("상품 옵션/재고 정보가 서버에 모두 반영되지 않았습니다.");
+          throw new Error(
+            "상품 옵션/재고 정보가 서버에 모두 반영되지 않았습니다.",
+          );
         }
 
         alert("상품 수정이 완료되었습니다.");
@@ -1853,7 +1826,7 @@ const AdminProductForm = () => {
       // -------------------------------------------------
       const productResponse = await axiosInstance.post<IdResponse>(
         "/product/save",
-        productData
+        productData,
       );
 
       const savedProductId = productResponse.data.id;
@@ -1884,14 +1857,15 @@ const AdminProductForm = () => {
             sortOrder: colorIndex + 1,
             aiApplyEnabled: product.aiApplyEnabled,
             visible: "Y",
-          }
+            personalColors: color.personalColors,
+          },
         );
 
         const savedProductColorId = colorResponse.data.id;
 
         if (!savedProductColorId) {
           throw new Error(
-            `${color.colorName} 색상 등록 후 색상번호를 받지 못했습니다.`
+            `${color.colorName} 색상 등록 후 색상번호를 받지 못했습니다.`,
           );
         }
 
@@ -1903,17 +1877,21 @@ const AdminProductForm = () => {
         // DETAIL: 상품 상세 설명 영역
         // -------------------------------------------------
         const thumbnailImages = color.images.filter(
-          (image) => image.imageType === "THUMBNAIL"
+          (image) => image.imageType === "THUMBNAIL",
         );
         const detailImages = color.images.filter(
-          (image) => image.imageType === "DETAIL"
+          (image) => image.imageType === "DETAIL",
         );
 
         const uploadImages = async (
           images: ProductImageForm[],
-          imageType: "THUMBNAIL" | "DETAIL"
+          imageType: "THUMBNAIL" | "DETAIL",
         ) => {
-          for (let imageIndex = 0; imageIndex < images.length; imageIndex += 1) {
+          for (
+            let imageIndex = 0;
+            imageIndex < images.length;
+            imageIndex += 1
+          ) {
             const image = images[imageIndex];
             if (!image.file) continue;
 
@@ -1922,14 +1900,14 @@ const AdminProductForm = () => {
             formData.append("fileName", image.fileName.trim());
             formData.append(
               "isMain",
-              imageType === "THUMBNAIL" && imageIndex === 0 ? "Y" : "N"
+              imageType === "THUMBNAIL" && imageIndex === 0 ? "Y" : "N",
             );
             formData.append("imageType", imageType);
             formData.append("sortOrder", String(imageIndex + 1));
 
             await axiosInstance.post(
               `/product_color_image/product_color/${savedProductColorId}/save`,
-              formData
+              formData,
             );
           }
         };
@@ -1951,14 +1929,14 @@ const AdminProductForm = () => {
             variantDescription: size.variantDescription.trim(),
             visible: "Y",
             sortOrder: sizeIndex + 1,
-          }
+          },
         );
 
         const savedProductVariantId = sizeResponse.data.id;
 
         if (!savedProductVariantId) {
           throw new Error(
-            `${size.variantName} 규격 등록 후 규격번호를 받지 못했습니다.`
+            `${size.variantName} 규격 등록 후 규격번호를 받지 못했습니다.`,
           );
         }
 
@@ -1984,7 +1962,7 @@ const AdminProductForm = () => {
             addPrice: option.addPrice,
             stock: option.stock,
             visible: "Y",
-          }
+          },
         );
       }
 
@@ -1993,28 +1971,27 @@ const AdminProductForm = () => {
     } catch (error) {
       console.error("상품 등록 오류", error);
 
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error
-      ) {
+      if (typeof error === "object" && error !== null && "response" in error) {
         console.error("Spring 응답 오류", (error as any).response?.data);
       }
 
       alert(
         error instanceof Error
           ? error.message
-          : "상품 등록 중 오류가 발생했습니다. 콘솔과 Spring 로그를 확인해주세요."
+          : "상품 등록 중 오류가 발생했습니다. 콘솔과 Spring 로그를 확인해주세요.",
       );
     } finally {
       setSubmitting(false);
     }
   };
 
-  const totalStock = options.reduce((sum, option) => sum + Number(option.stock || 0), 0);
+  const totalStock = options.reduce(
+    (sum, option) => sum + Number(option.stock || 0),
+    0,
+  );
   const salePrice = product.price
     ? Math.round(
-        Number(product.price) * (1 - Number(product.discount || 0) / 100)
+        Number(product.price) * (1 - Number(product.discount || 0) / 100),
       )
     : 0;
 
@@ -2125,7 +2102,8 @@ const AdminProductForm = () => {
                         : "대분류를 먼저 선택해주세요"}
                     </option>
                     {subCategories.map((category) => {
-                      const categoryId = category.categoryId ?? category.id ?? 0;
+                      const categoryId =
+                        category.categoryId ?? category.id ?? 0;
                       return (
                         <option
                           key={`sub-category-${categoryId}`}
@@ -2240,7 +2218,7 @@ const AdminProductForm = () => {
               </div>
             </div>
 
-            {(needsSkinType || needsPersonalColor) && (
+            {needsSkinType && (
               <div className="editor-recommend-zone">
                 {needsSkinType && (
                   <div className="admin-form-field">
@@ -2251,37 +2229,15 @@ const AdminProductForm = () => {
                           <input
                             type="checkbox"
                             checked={selectedSkinTypes.includes(skinType)}
-                            onChange={() => toggleCommaValue("skinType", skinType)}
+                            onChange={() =>
+                              toggleCommaValue("skinType", skinType)
+                            }
                           />
                           <span>{skinType}</span>
                         </label>
                       ))}
                     </div>
                     <p>해당 상품에 맞는 피부 타입을 복수 선택할 수 있습니다.</p>
-                  </div>
-                )}
-
-                {needsPersonalColor && (
-                  <div className="admin-form-field">
-                    <label>추천 퍼스널컬러</label>
-                    <div className="admin-recommend-check-list">
-                      {PERSONAL_COLOR_OPTIONS.map((personalColor) => (
-                        <label
-                          className="admin-recommend-check"
-                          key={personalColor}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedPersonalColors.includes(personalColor)}
-                            onChange={() =>
-                              toggleCommaValue("personalColor", personalColor)
-                            }
-                          />
-                          <span>{personalColor}</span>
-                        </label>
-                      ))}
-                    </div>
-                    <p>해당 상품에 맞는 퍼스널컬러를 복수 선택할 수 있습니다.</p>
                   </div>
                 )}
               </div>
@@ -2434,10 +2390,10 @@ const AdminProductForm = () => {
         <div className="editor-color-grid">
           {colors.map((color, index) => {
             const thumbnailImages = color.images.filter(
-              (image) => image.imageType === "THUMBNAIL"
+              (image) => image.imageType === "THUMBNAIL",
             );
             const detailImages = color.images.filter(
-              (image) => image.imageType === "DETAIL"
+              (image) => image.imageType === "DETAIL",
             );
 
             return (
@@ -2477,8 +2433,43 @@ const AdminProductForm = () => {
                   </select>
                 </div>
 
+                {needsPersonalColor && (
+  <div className="admin-form-field editor-color-personal-color">
+    <label>이 색상 추천 퍼스널컬러</label>
+
+    <div className="admin-recommend-check-list">
+      {PERSONAL_COLOR_OPTIONS.map((option) => (
+        <label
+          className="admin-recommend-check"
+          key={option.value}
+        >
+          <input
+            type="checkbox"
+            checked={color.personalColors.includes(
+              option.value,
+            )}
+            onChange={() =>
+              toggleColorPersonalColor(
+                color.id,
+                option.value,
+              )
+            }
+          />
+
+          <span>{option.label}</span>
+        </label>
+      ))}
+    </div>
+
+    <p>
+      현재 색상에 어울리는 퍼스널컬러를 복수 선택할 수 있습니다.
+    </p>
+  </div>
+)}
+
                 <div className="editor-color-picker-guide">
-                  THUMBNAIL 미리보기에서 실제 제품 색상을 클릭하면 색상코드를 자동 추출합니다.
+                  THUMBNAIL 미리보기에서 실제 제품 색상을 클릭하면 색상코드를
+                  자동 추출합니다.
                 </div>
 
                 {colorExtractions[color.id] && (
@@ -2488,7 +2479,8 @@ const AdminProductForm = () => {
                         className="editor-color-extraction-swatch"
                         style={{
                           backgroundColor:
-                            colorExtractions[color.id].extractedHex || "#f3f3f3",
+                            colorExtractions[color.id].extractedHex ||
+                            "#f3f3f3",
                         }}
                       />
                       <div>
@@ -2508,14 +2500,21 @@ const AdminProductForm = () => {
                           <i
                             style={{
                               backgroundColor:
-                                colorExtractions[color.id].nearestMaster?.colorCode,
+                                colorExtractions[color.id].nearestMaster
+                                  ?.colorCode,
                             }}
                           />
                           <strong>
-                            {colorExtractions[color.id].nearestMaster?.colorName}
+                            {
+                              colorExtractions[color.id].nearestMaster
+                                ?.colorName
+                            }
                           </strong>
                           <small>
-                            {colorExtractions[color.id].nearestMaster?.colorCode}
+                            {
+                              colorExtractions[color.id].nearestMaster
+                                ?.colorCode
+                            }
                           </small>
                         </div>
                         <button
@@ -2547,7 +2546,8 @@ const AdminProductForm = () => {
                             <span>베이스 색상 계열</span>
                             <select
                               value={
-                                colorExtractions[color.id].detectedBaseColorGroup
+                                colorExtractions[color.id]
+                                  .detectedBaseColorGroup
                               }
                               onChange={(event) =>
                                 setExtractionState(color.id, {
@@ -2563,7 +2563,8 @@ const AdminProductForm = () => {
                               ))}
                             </select>
                             <small>
-                              HEX 기준 자동 분류값입니다. 필요하면 직접 변경할 수 있습니다.
+                              HEX 기준 자동 분류값입니다. 필요하면 직접 변경할
+                              수 있습니다.
                             </small>
                           </label>
                         </div>
@@ -2605,7 +2606,10 @@ const AdminProductForm = () => {
                         changeImages(color.id, "THUMBNAIL", event)
                       }
                     />
-                    <p>첫 번째 이미지는 대표 이미지입니다. 미리보기의 제품 색상을 클릭하면 HEX를 추출할 수 있습니다.</p>
+                    <p>
+                      첫 번째 이미지는 대표 이미지입니다. 미리보기의 제품 색상을
+                      클릭하면 HEX를 추출할 수 있습니다.
+                    </p>
 
                     {thumbnailImages.length > 0 && (
                       <div className="admin-image-preview-list">
@@ -2632,7 +2636,7 @@ const AdminProductForm = () => {
                                 changeImageFileName(
                                   color.id,
                                   image.id,
-                                  event.target.value
+                                  event.target.value,
                                 )
                               }
                               placeholder="저장 파일명"
@@ -2676,7 +2680,7 @@ const AdminProductForm = () => {
                                 changeImageFileName(
                                   color.id,
                                   image.id,
-                                  event.target.value
+                                  event.target.value,
                                 )
                               }
                               placeholder="저장 파일명"
@@ -2732,7 +2736,11 @@ const AdminProductForm = () => {
                   type="text"
                   value={size.variantDescription}
                   onChange={(event) =>
-                    changeSize(size.id, "variantDescription", event.target.value)
+                    changeSize(
+                      size.id,
+                      "variantDescription",
+                      event.target.value,
+                    )
                   }
                   placeholder="규격 설명 (선택)"
                 />
@@ -2790,7 +2798,7 @@ const AdminProductForm = () => {
                               option.colorId,
                               option.sizeId,
                               "stock",
-                              Number(event.target.value)
+                              Number(event.target.value),
                             )
                           }
                         />
@@ -2805,7 +2813,7 @@ const AdminProductForm = () => {
                               option.colorId,
                               option.sizeId,
                               "addPrice",
-                              Number(event.target.value)
+                              Number(event.target.value),
                             )
                           }
                         />
@@ -2838,11 +2846,7 @@ const AdminProductForm = () => {
             onClick={submitProduct}
             disabled={submitting}
           >
-            {submitting
-              ? "저장 중..."
-              : isEdit
-                ? "변경사항 저장"
-                : "상품 등록"}
+            {submitting ? "저장 중..." : isEdit ? "변경사항 저장" : "상품 등록"}
           </button>
         </div>
       </div>

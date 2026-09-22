@@ -43,7 +43,8 @@ const PERSONAL_COLOR_OPTIONS = [
   { value: "SPRING_WARM", label: "봄웜" },
   { value: "SUMMER_COOL", label: "여름쿨" },
   { value: "AUTUMN_WARM", label: "가을웜" },
-  { value: "WINTER_COOL", label: "겨울쿨" }
+  { value: "WINTER_COOL", label: "겨울쿨" },
+  { value: "NEUTRAL", label: "뉴트럴" }
 ];
 
 

@@ -39,7 +39,6 @@ type Product = {
   productType?: string;
   volume?: string;
   skinType?: string;
-  personalColor?: string;
   brand?: string;
   name: string;
   description?: string;
@@ -65,6 +64,7 @@ type ProductColor = {
   sortOrder: number;
   aiApplyEnabled: string;
   visible: string;
+  personalColors?: string[];
 };
 
 type ProductColorImage = {
@@ -1701,7 +1701,7 @@ const ProductDetail = () => {
               </div>
             )}
 
-            {(product.skinType || product.personalColor || product.volume) && (
+            {(product.skinType || selectedColor?.personalColors?.length || product.volume) && (
               <div className="product-detail-fit-row">
                 {product.skinType && (
                   <p>
@@ -1709,10 +1709,10 @@ const ProductDetail = () => {
                     {product.skinType}
                   </p>
                 )}
-                {product.personalColor && (
+                {!!selectedColor?.personalColors?.length && (
                   <p>
                     <span>PERSONAL COLOR</span>
-                    {product.personalColor}
+                    {selectedColor.personalColors.join(", ")}
                   </p>
                 )}
                 {product.volume && (

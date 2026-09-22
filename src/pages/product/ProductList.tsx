@@ -75,7 +75,6 @@ type Product = {
   productType?: string;
   volume?: string;
   skinType?: string;
-  personalColor?: string;
   status: string;
   viewCount?: number;
   createdAt?: string;
@@ -91,6 +90,7 @@ type ProductColor = {
   sortOrder: number;
   aiApplyEnabled: string;
   visible: string;
+  personalColors?: string[];
 };
 
 type ProductImage = {

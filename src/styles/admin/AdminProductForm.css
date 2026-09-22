@@ -251,43 +251,115 @@
   gap: 16px;
   margin-top: 22px;
   padding: 20px;
-  border-radius: 10px;
-  background: #f7f7f7;
+  border: 1px solid #eee8e9;
+  border-radius: 12px;
+  background: #fbf9fa;
+}
+
+.editor-recommend-zone .admin-form-field {
+  min-width: 0;
+}
+
+.editor-recommend-zone .admin-form-field > label {
+  margin-bottom: 2px;
+  color: #4d4749;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.editor-recommend-zone .admin-form-field > p {
+  margin-top: 3px;
+  color: #aaa1a4;
+  font-size: 9px;
+  line-height: 1.55;
 }
 
 .admin-recommend-check-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 10px 18px;
 }
 
 .admin-recommend-check {
-  min-height: 33px;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 0 10px;
-  border: 1px solid #dfdfdf;
-  border-radius: 7px;
-  background: #fff;
-  color: #616469;
+  gap: 8px;
+
+  padding: 4px 2px;
+
+  color: #5f595b;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+
   cursor: pointer;
-  font-size: 10px;
-  font-weight: 400;
 }
 
-.admin-recommend-check input {
-  width: 13px;
-  min-height: auto;
-  height: 13px;
-  margin: 0;
-  accent-color: #9b7378;
+.admin-recommend-check input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 16px !important;
+  min-width: 16px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 1px solid #d8cccf !important;
+  border-radius: 4px !important;
+
+  background: #fff !important;
+
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
 }
 
-.admin-recommend-check:has(input:checked) {
-  border-color: #d8c0bd;
-  background: var(--admin-rose-soft);
-  color: #75585e;
+.admin-recommend-check input[type="checkbox"]:hover {
+  border-color: #c6a8af !important;
+}
+
+.admin-recommend-check input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(185, 130, 142, 0.14);
+}
+
+.admin-recommend-check input[type="checkbox"]:checked {
+  border-color: #b9828e !important;
+  background: #b9828e !important;
+}
+
+.admin-recommend-check input[type="checkbox"]:checked::after {
+  content: "✓";
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.admin-recommend-check span {
+  white-space: nowrap;
+}
+
+.admin-recommend-check:has(input:checked) span {
+  color: #825964;
+  font-weight: 600;
 }
 
 .editor-copy-grid {
