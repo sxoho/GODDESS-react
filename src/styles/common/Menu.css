@@ -906,7 +906,7 @@
 .diagnosis-mega {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: 1.15fr 1fr 1fr;
+  grid-template-columns: 1.08fr 1fr 1fr 1fr;
   gap: 0;
   min-height: 270px;
   border-top: 1px solid #efedeb;
@@ -1088,6 +1088,8 @@
 ========================================= */
 
 .beauty-mega-heading {
+  grid-row: 1 / span 2;
+
   padding: 38px 44px 32px 4px;
 
   border-right: 1px solid #eadfe1;
@@ -1216,6 +1218,14 @@
 }
 
 .beauty-mega-card:last-child {
+  border-right: 0;
+}
+
+/* 03 맞춤 뷰티 추천은 01 + 02 바로 아래에서 두 카드 폭 전체를 사용 */
+.beauty-mega-card.recommendation {
+  grid-column: 2 / 4;
+  min-height: 300px;
+  border-top: 1px solid #eadfe1;
   border-right: 0;
 }
 
@@ -1456,6 +1466,85 @@
     rotate(10deg);
 }
 
+
+/* =========================================
+   맞춤 뷰티 추천 비주얼
+========================================= */
+
+.beauty-recommendation-visual {
+  background:
+    radial-gradient(
+      circle at 72% 26%,
+      rgba(233, 204, 210, 0.34),
+      transparent 31%
+    ),
+    linear-gradient(
+      145deg,
+      #fffdfd 0%,
+      #f7edef 100%
+    );
+}
+
+.beauty-rec-chip {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  box-shadow: 0 12px 26px rgba(92, 61, 67, 0.08);
+  transition: transform .3s ease;
+}
+
+.beauty-rec-chip-one {
+  transform: translate(-58px, -24px);
+  background: #efc7b8;
+}
+
+.beauty-rec-chip-two {
+  transform: translate(-57px, 28px);
+  background: #d9b4c7;
+}
+
+.beauty-rec-chip-three {
+  transform: translate(-8px, -45px);
+  background: #c99d89;
+}
+
+.beauty-rec-chip-four {
+  transform: translate(-4px, 10px);
+  background: #b87c88;
+}
+
+.beauty-rec-product-shape {
+  position: absolute;
+  width: 48px;
+  height: 100px;
+  transform: translate(55px, 8px) rotate(7deg);
+  border: 1px solid rgba(171, 123, 132, .22);
+  border-radius: 4px 4px 10px 10px;
+  background: linear-gradient(180deg, #fffdfd 0 28%, #e8cfd4 28% 100%);
+  box-shadow: 0 16px 30px rgba(87, 54, 61, .09);
+  transition: transform .3s ease;
+}
+
+.beauty-mega-card:hover .beauty-rec-chip-one {
+  transform: translate(-62px, -27px) scale(1.05);
+}
+
+.beauty-mega-card:hover .beauty-rec-chip-two {
+  transform: translate(-61px, 31px) scale(1.05);
+}
+
+.beauty-mega-card:hover .beauty-rec-chip-three {
+  transform: translate(-10px, -49px) scale(1.05);
+}
+
+.beauty-mega-card:hover .beauty-rec-chip-four {
+  transform: translate(-6px, 13px) scale(1.05);
+}
+
+.beauty-mega-card:hover .beauty-rec-product-shape {
+  transform: translate(59px, 5px) rotate(9deg);
+}
 
 /* =========================================
    카드 하단 텍스트

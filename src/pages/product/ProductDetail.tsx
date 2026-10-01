@@ -1041,29 +1041,39 @@ const ProductDetail = () => {
   };
 
   /**
-   * 상세 상단 전체 갤러리
+   * 상세 상단 갤러리
    *
-   * 선택한 색상만 보여주는 것이 아니라 상품에 등록된 모든
-   * THUMBNAIL / MAIN 이미지를 색상 순서대로 한 번에 묶는다.
-   * 화살표로 다른 색상의 이미지로 넘어가면 해당 색상도 자동 선택된다.
+   * 현재 선택한 색상(호수)에 등록된 THUMBNAIL / MAIN 이미지만 보여준다.
+   * 대표 이미지가 1장뿐이면 상단의 두 이미지 패널 모두 같은 이미지를 사용한다.
+   * 다른 호수의 이미지는 섞지 않고, 사용자가 색상을 선택했을 때만 변경한다.
    */
   const galleryItems = useMemo(() => {
-    const items = colors.flatMap((color) =>
-      productImages
-        .filter(
-          (image) =>
-            image.productcolorId === color.productcolorId &&
-            image.imageType !== "DETAIL",
-        )
-        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-        .map((image) => ({
-          imageId: image.colorimageId,
-          imageUrl: getImageUrl(image.filePath),
-          colorId: color.colorId,
-          productColorId: color.productcolorId,
-          colorName: color.colorName,
-        })),
-    );
+    if (!selectedColor) {
+      return [
+        {
+          imageId: 0,
+          imageUrl: TEMP_IMAGE,
+          colorId: 0,
+          productColorId: 0,
+          colorName: "",
+        },
+      ];
+    }
+
+    const items = productImages
+      .filter(
+        (image) =>
+          image.productcolorId === selectedColor.productcolorId &&
+          image.imageType !== "DETAIL",
+      )
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      .map((image) => ({
+        imageId: image.colorimageId,
+        imageUrl: getImageUrl(image.filePath),
+        colorId: selectedColor.colorId,
+        productColorId: selectedColor.productcolorId,
+        colorName: selectedColor.colorName,
+      }));
 
     if (items.length > 0) {
       return items;
@@ -1073,16 +1083,17 @@ const ProductDetail = () => {
       {
         imageId: 0,
         imageUrl: TEMP_IMAGE,
-        colorId: selectedColor?.colorId ?? 0,
-        productColorId: selectedColor?.productcolorId ?? 0,
-        colorName: selectedColor?.colorName ?? "",
+        colorId: selectedColor.colorId,
+        productColorId: selectedColor.productcolorId,
+        colorName: selectedColor.colorName,
       },
     ];
-  }, [colors, productImages, selectedColor]);
+  }, [productImages, selectedColor]);
 
   /**
    * 최근 본 상품 저장
-   * - 로그인/JWT와 무관하게 브라우저 localStorage에 저장
+   * - 로그인 사용자는 회원별 localStorage 키에 저장
+   * - 비로그인 사용자는 guest 키에 저장
    * - 같은 상품은 중복 제거 후 가장 앞으로 이동
    * - 최대 8개 유지
    */
@@ -1090,7 +1101,10 @@ const ProductDetail = () => {
     if (!product) return;
 
     try {
-      const storageKey = "goddessRecentProducts";
+      const storageKey =
+        sw && memberId > 0
+          ? `goddessRecentProducts_${memberId}`
+          : "goddessRecentProducts_guest";
       const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
       const recentProducts = Array.isArray(saved) ? saved : [];
 
@@ -1115,7 +1129,7 @@ const ProductDetail = () => {
     } catch (error) {
       console.error("최근 본 상품 저장 오류:", error);
     }
-  }, [product, galleryItems]);
+  }, [product, galleryItems, sw, memberId]);
 
   // 상품 상세 설명 영역 전용 이미지
   const detailImages = useMemo(() => {

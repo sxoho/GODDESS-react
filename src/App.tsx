@@ -2,6 +2,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 
 import { BRAND } from "./config/brand";
 import BeautyHome from "./pages/beauty/BeautyHome";
+import BeautyRecommendation from "./pages/beauty/BeautyRecommendation";
 
 import "./App.css";
 
@@ -219,6 +220,12 @@ function App() {
 
               {/* AI BEAUTY */}
               <Route path="/beauty" element={<BeautyHome />} />
+
+              {/* 맞춤 뷰티 추천 */}
+              <Route
+                path="/beauty-recommendation"
+                element={<BeautyRecommendation />}
+              />
 
               {/* 상품 상세 */}
               <Route path="/products/:productId" element={<ProductDetail />} />

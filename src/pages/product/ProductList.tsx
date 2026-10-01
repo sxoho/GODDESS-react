@@ -5,7 +5,6 @@ import { useGlobalStore } from "../../store/store";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:9104";
 const PAGE_SIZE = 24;
-const TEMP_IMAGE = "/images/goddess/beauty-editorial.webp";
 
 const SKIN_TYPE_FILTERS = [
   { value: "복합성", label: "Combination" },
@@ -110,7 +109,7 @@ type PageResponse = {
 };
 
 const imageUrl = (path?: string) => {
-  if (!path) return TEMP_IMAGE;
+  if (!path) return "";
   if (/^https?:\/\//.test(path)) return path;
   return `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
 };
@@ -799,14 +798,16 @@ export default function ProductList() {
                     }
                   }}
                 >
-                  <img
-                    src={cardImage}
-                    alt={
-                      displayProductColor
-                        ? `${product.name} ${displayProductColor.colorName}`
-                        : product.name
-                    }
-                  />
+                  {cardImage && (
+                    <img
+                      src={cardImage}
+                      alt={
+                        displayProductColor
+                          ? `${product.name} ${displayProductColor.colorName}`
+                          : product.name
+                      }
+                    />
+                  )}
 
                   {product.aiApplyEnabled === "Y" && (
                     <button

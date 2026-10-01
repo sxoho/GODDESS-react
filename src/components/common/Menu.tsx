@@ -810,6 +810,33 @@ const Menu = () => {
                   </div>
                 </button>
 
+                <button
+                  type="button"
+                  className="beauty-mega-card recommendation"
+                  onClick={() => navigate("/beauty-recommendation")}
+                >
+                  <div className="beauty-mega-visual beauty-recommendation-visual" aria-hidden="true">
+                    <span className="beauty-rec-chip beauty-rec-chip-one" />
+                    <span className="beauty-rec-chip beauty-rec-chip-two" />
+                    <span className="beauty-rec-chip beauty-rec-chip-three" />
+                    <span className="beauty-rec-chip beauty-rec-chip-four" />
+                    <span className="beauty-rec-product-shape" />
+                    <span className="beauty-visual-label">PERSONAL BEAUTY PICK</span>
+                  </div>
+
+                  <div className="beauty-mega-card-bottom">
+                    <span className="beauty-mega-card-number">03</span>
+
+                    <div className="beauty-mega-card-copy">
+                      <small>AI RECOMMENDATION</small>
+                      <strong>맞춤 뷰티 추천</strong>
+                      <p>퍼스널 컬러 · 피부 타입 기반 상품 추천</p>
+                    </div>
+
+                    <b aria-hidden="true">→</b>
+                  </div>
+                </button>
+
               </div>
             )}
 
