@@ -669,15 +669,20 @@
 .gd-photo-editor-preview img {
   display: block;
 
-  width: min(100%, 440px);
+  width: 100%;
+  max-width: 430px;
 
-  height: 440px;
+  height:
+    430px;
 
-  object-fit: cover;
+  object-fit:
+    cover;
 
-  object-position: center;
+  object-position:
+    center;
 
-  background: #eee;
+  background:
+    #eee;
 }
 
 .gd-photo-empty-visual {
@@ -1258,15 +1263,20 @@
 .gd-photo-current-image img {
   display: block;
 
-  width: min(100%, 440px);
+  width:
+    min(100%, 440px);
 
-  height: 440px;
+  height:
+    440px;
 
-  object-fit: cover;
+  object-fit:
+    cover;
 
-  object-position: center;
+  object-position:
+    center;
 
-  background: #eee;
+  background:
+    #eee;
 }
 
 .gd-photo-current-info {
@@ -3393,303 +3403,659 @@
   font-size: 9px;
 }
 
-/* 헤어컬러 색상칩 크기 최종 조정 */
-.gd-tryon-hair-options
-.gd-tryon-hair-option-top
-.gd-tryon-hair-color-chip {
-  display: inline-block;
-
-  width: 34px;
-  height: 34px;
-
-  min-width: 34px;
-  min-height: 34px;
-
-  flex: 0 0 34px;
-
-  border-radius: 6px;
-
-  border: 1px solid rgba(45, 35, 38, 0.18);
-}
-
-
-/* 아래 HEX 색상코드도 조금 크게 */
-.gd-tryon-hair-options button > em {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-}
-
-/* 헤어컬러 카드 내부 정렬 보정 */
-.gd-tryon-hair-options button {
-  justify-content: flex-start;
-}
-
-/* COLOR + 색상칩 줄 */
-.gd-tryon-hair-option-top {
-  margin-bottom: 2px;
-}
-
-/* 색상명 */
-.gd-tryon-hair-options button > strong {
-  margin-top: 0;
-  margin-bottom: 2px;
-}
-
-/* HEX 코드 */
-.gd-tryon-hair-options button > em {
-  margin-top: 2px;
-}
-
 
 /* =========================================
-   HAIR COLOR CARD FINAL ALIGNMENT FIX
-   - 큰 컬러칩은 우측 상단에 고정
-   - 색상명/HEX는 원래처럼 위쪽에 배치
+   MY HISTORY
+   - MY PHOTO / MEMBERSHIP와 동일한 로즈 톤
+   - 목록은 사진 없이 가로형 카드
 ========================================= */
 
-.gd-tryon-hair-options button {
-  position: relative;
-  justify-content: flex-start;
+.gd-history-page {
+  min-height: 570px;
+  padding: 0;
+  border: 1px solid #e7e1e2;
+  background: #fff;
 }
 
-/* COLOR 텍스트 줄은 색상칩 높이의 영향을 받지 않도록 함 */
-.gd-tryon-hair-option-top {
+.gd-history-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 32px 36px 28px;
+  border-bottom: 1px solid #eee7e8;
+  background:
+    linear-gradient(
+      135deg,
+      #fffdfd,
+      #fff8fa
+    );
+}
+
+.gd-history-head > div > span {
   display: block;
-  width: 100%;
-  min-height: 12px;
-  margin-bottom: 6px;
-}
-
-/* COLOR 라벨 */
-.gd-tryon-hair-option-top > span {
-  display: block;
-  line-height: 1.2;
-}
-
-/* 큰 색상칩은 카드 흐름에서 분리해 우측 상단에 고정 */
-.gd-tryon-hair-options
-.gd-tryon-hair-option-top
-.gd-tryon-hair-color-chip {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
-  min-height: 34px;
-
-  margin: 0;
-  flex: none;
-
-  border-radius: 6px;
-  border: 1px solid rgba(45, 35, 38, 0.18);
-}
-
-/* 헤어스타일명 / 헤어컬러명 */
-.gd-tryon-hair-options button > strong {
-  margin: 0 46px 2px 0;
-  font-size: 15px;
-  line-height: 1.35;
-  font-weight: 650;
-}
-
-/* 헤어스타일 설명 */
-.gd-tryon-hair-options button > small {
-  margin-top: 2px;
-  font-size: 11px;
-  line-height: 1.6;
-  color: #7f7477;
-}
-
-/* HEX 코드: 더 이상 카드 아래로 밀지 않음 */
-.gd-tryon-hair-options button > em {
-  display: block;
-  margin-top: 4px;
-  color: #a08f93;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-}
-
-
-/* =========================================
-   MY PHOTO IMAGE SIZE FINAL FIX
-   - 현재 사진 / 사진 변경 화면 이미지 크기 통일
-========================================= */
-
-.gd-photo-editor-preview img,
-.gd-photo-current-image img {
-  display: block;
-
-  width: min(100%, 440px);
-  height: 440px;
-
-  object-fit: cover;
-  object-position: center;
-
-  background: #eee;
-}
-
-/* 모바일에서는 화면 너비에 맞춰 자연스럽게 축소 */
-@media (max-width: 750px) {
-
-  .gd-photo-editor-preview img,
-  .gd-photo-current-image img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-  }
-
-}
-
-
-/* =========================================
-   MY PHOTO EDIT MODE FINAL MATCH
-   - 사진 변경 화면을 현재 사진 화면과 같은 비율/타이포 기준으로 통일
-========================================= */
-
-/* 사진 변경 화면도 현재 사진 화면과 동일한 1:1 컬럼 비율 */
-.gd-photo-editor {
-  grid-template-columns:
-    minmax(340px, 1fr)
-    minmax(360px, 1fr);
-
-  min-height: 500px;
-}
-
-/* 좌측 사진 영역 패딩/배경도 현재 사진 화면 기준으로 통일 */
-.gd-photo-editor-preview {
-  min-height: 500px;
-  padding: 36px;
-
-  border-right: 1px solid #eee7e8;
-  background: #f8eff1;
-}
-
-/* 현재 사진 / 변경 사진 크기 완전 동일 */
-.gd-photo-editor-preview img,
-.gd-photo-current-image img {
-  display: block;
-
-  width: min(100%, 440px);
-  height: 440px;
-
-  object-fit: cover;
-  object-position: center;
-
-  background: #eee;
-}
-
-/* 변경 화면 오른쪽 영역도 현재 사진 정보 영역과 비슷한 여백감 */
-.gd-photo-editor-info {
-  padding: 44px 46px;
-}
-
-/* 변경 화면의 안내 제목을 현재 사진 화면 타이포와 맞춤 */
-.gd-photo-guide > span {
+  margin-bottom: 10px;
+  color: #b26f7a;
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: .15em;
+  letter-spacing: .16em;
 }
 
-.gd-photo-guide h3 {
-  margin: 11px 0 13px;
-
-  color: #272223;
-
-  font-size: 20px;
+.gd-history-head h2 {
+  margin: 0;
+  color: #211d1e;
+  font-size: 26px;
   font-weight: 600;
-  letter-spacing: -.02em;
+  letter-spacing: -.035em;
 }
 
-.gd-photo-guide li {
+.gd-history-head p {
+  max-width: 650px;
+  margin: 12px 0 0;
+  color: #888083;
+  font-size: 12px;
+  line-height: 1.8;
+  word-break: keep-all;
+}
+
+.gd-history-head > button {
+  flex-shrink: 0;
+  min-width: 164px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid #262123;
+  background: #fff;
+  color: #262123;
+  font-family: inherit;
   font-size: 11px;
-  line-height: 1.75;
+  cursor: pointer;
+  transition:
+    background .2s ease,
+    color .2s ease;
 }
 
-/* 파일 선택/AI 검사 문구도 현재 정보 영역과 비슷하게 정돈 */
-.gd-photo-selected-file strong {
-  font-size: 11px;
+.gd-history-head > button:hover {
+  background: #211e1f;
+  color: #fff;
 }
 
-.gd-photo-ai-check strong {
+
+/* 목록 본문 */
+
+.gd-history-compact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 36px 36px;
+}
+
+.gd-history-compact-row {
+  width: 100%;
+  min-height: 96px;
+  display: grid;
+  grid-template-columns:
+    minmax(145px, .7fr)
+    minmax(0, 2.4fr)
+    135px;
+  align-items: center;
+  gap: 26px;
+  padding: 18px 22px;
+  border: 1px solid #eadfe1;
+  background: #fff9fa;
+  color: #282224;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color .2s ease,
+    background .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease;
+}
+
+.gd-history-compact-row:hover {
+  border-color: #c698a1;
+  background: #fff;
+  box-shadow:
+    0 8px 22px rgba(116, 76, 85, .07);
+  transform: translateY(-1px);
+}
+
+
+/* 카드 왼쪽 */
+
+.gd-history-row-type {
+  min-width: 0;
+}
+
+.gd-history-row-type > span {
+  display: block;
+  margin-bottom: 7px;
+  color: #b26f7a;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+.gd-history-row-type > strong {
+  display: block;
+  overflow: hidden;
+  color: #282124;
   font-size: 13px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.gd-photo-ai-check p {
+
+/* 적용 항목 */
+
+.gd-history-compact-summary {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 34px;
+}
+
+.gd-history-compact-item {
+  position: relative;
+  min-width: 145px;
+  max-width: 270px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.gd-history-compact-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: -17px;
+  width: 1px;
+  height: 34px;
+  background: #eadfe1;
+}
+
+.gd-history-compact-item small {
+  color: #aaa1a3;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+
+.gd-history-compact-item strong {
+  overflow: hidden;
+  color: #494345;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* 날짜 */
+
+.gd-history-compact-date {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 17px;
+  white-space: nowrap;
+}
+
+.gd-history-compact-date span {
+  color: #8f8588;
+  font-size: 10px;
+}
+
+.gd-history-compact-date b {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d9c6ca;
+  color: #9d6872;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.gd-history-compact-row:hover
+.gd-history-compact-date b {
+  border-color: #9d6872;
+  background: #9d6872;
+  color: #fff;
+}
+
+
+/* 비어 있음 / 오류 */
+
+.gd-history-page > .gd-beauty-placeholder-box {
+  margin: 28px 36px 36px;
+}
+
+.gd-history-message.error {
+  margin: 28px 36px 0;
+  padding: 16px 18px;
+  border: 1px solid #e0bfc5;
+  background: #fff9fa;
+  color: #8f5964;
+  font-size: 11px;
+}
+
+
+/* =========================================
+   MY HISTORY DETAIL
+========================================= */
+
+.gd-history-detail-head {
+  padding: 30px 36px 26px;
+  border-bottom: 1px solid #eee7e8;
+  background:
+    linear-gradient(
+      135deg,
+      #fffdfd,
+      #fff8fa
+    );
+}
+
+.gd-history-back {
+  margin-bottom: 23px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #8f5964;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.gd-history-detail-head > div > span {
+  display: block;
+  margin-bottom: 9px;
+  color: #b26f7a;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+.gd-history-detail-head h2 {
+  margin: 0;
+  color: #211d1e;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -.035em;
+}
+
+.gd-history-detail-head p {
+  margin: 10px 0 0;
+  color: #888083;
+  font-size: 11px;
+}
+
+.gd-history-detail-card {
+  display: grid;
+  grid-template-columns:
+    minmax(430px, 1.1fr)
+    minmax(300px, .9fr);
+  gap: 32px;
+  margin: 28px 36px 36px;
+  padding: 24px;
+  border: 1px solid #eadfe1;
+  background: #fff;
+}
+
+.gd-history-detail-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.gd-history-detail-images > div > span {
+  display: block;
+  margin-bottom: 8px;
+  color: #b26f7a;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+.gd-history-detail-images img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: #fbf5f6;
+}
+
+.gd-history-detail-info {
+  min-width: 0;
+  padding: 6px 2px;
+}
+
+.gd-history-detail-overline {
+  color: #b26f7a;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+.gd-history-detail-info h3 {
+  margin: 8px 0 20px;
+  color: #211d1e;
+  font-size: 23px;
+  font-weight: 600;
+}
+
+.gd-history-detail-items {
+  border-top: 1px solid #ede8e9;
+}
+
+.gd-history-detail-item {
+  display: grid;
+  grid-template-columns: 105px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f2eded;
+}
+
+.gd-history-detail-item > strong {
+  color: #aaa1a3;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.gd-history-detail-item > span,
+.gd-history-detail-item > button span {
+  color: #494345;
+  font-size: 12px;
+}
+
+.gd-history-detail-item > button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gd-history-detail-item small {
+  display: block;
+  margin-top: 4px;
+  color: #999;
+  font-size: 10px;
+}
+
+.gd-history-memo {
+  margin-top: 18px;
+  color: #888083;
   font-size: 11px;
   line-height: 1.7;
 }
 
 
+@media (max-width: 1050px) {
+  .gd-history-compact-row {
+    grid-template-columns:
+      120px
+      minmax(0, 1fr)
+      115px;
+    gap: 18px;
+  }
+
+  .gd-history-detail-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 760px) {
+  .gd-history-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gd-history-head > button {
+    width: 100%;
+  }
+
+  .gd-history-compact-list {
+    padding: 22px 20px 28px;
+  }
+
+  .gd-history-compact-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .gd-history-compact-summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .gd-history-compact-item {
+    max-width: 100%;
+  }
+
+  .gd-history-compact-item:not(:last-child)::after {
+    display: none;
+  }
+
+  .gd-history-compact-date {
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid #eadfe1;
+  }
+
+  .gd-history-detail-card {
+    margin: 22px 20px 28px;
+  }
+
+  .gd-history-detail-images {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 /* =========================================
-   AI BEAUTY RESULT IMAGE SIZE FINAL MATCH
-   - BEFORE / AFTER 이미지 실크기 완전 동일
+   MY HISTORY - 상세 추가 기능
 ========================================= */
 
-.gd-beauty-result-photo-card,
-.gd-beauty-result-photo-card.after {
-  min-width: 0;
-  padding: 0;
-  border: 0;
-  background: #fff;
+/* AFTER 확대 버튼 */
+
+.gd-history-image-wrap {
+  position: relative;
 }
 
-/* AFTER 강조는 패딩/크기를 줄이지 않고 outline으로만 처리 */
-.gd-beauty-result-photo-card.after
-.gd-beauty-result-photo-frame {
-  outline: 1px solid #d8a5af;
-  outline-offset: 0;
-  background: #fffafb;
-}
-
-/* 두 카드의 프레임 크기/비율을 동일하게 강제 */
-.gd-beauty-result-photo-frame {
+.gd-history-image-wrap > img {
+  display: block;
   width: 100%;
-  aspect-ratio: 3 / 4;
-
-  overflow: hidden;
-
-  border: 1px solid #e9e1e3;
-  box-sizing: border-box;
-
-  background: #f8f4f5;
 }
 
-.gd-beauty-result-photo-frame img {
+.gd-history-image-zoom {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  display: flex;
+  width: 38px;
+  height: 38px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, .9);
+  background: rgba(255, 255, 255, .92);
+
+  color: #7f5860;
+
+  font-family: inherit;
+  font-size: 19px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 3px 14px rgba(55, 38, 42, .12);
+
+  transition:
+    background .2s ease,
+    color .2s ease,
+    border-color .2s ease;
+}
+
+.gd-history-image-zoom:hover {
+  border-color: #9d6872;
+  background: #9d6872;
+  color: #fff;
+}
+
+
+/* 상세 하단 버튼 */
+
+.gd-history-detail-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 10px;
+
+  margin-top: 28px;
+}
+
+.gd-history-detail-actions button {
+  min-height: 48px;
+  padding: 0 16px;
+
+  font-family: inherit;
+  font-size: 11px;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    color .2s ease,
+    border-color .2s ease;
+}
+
+.gd-history-download-button {
+  border: 0;
+  background: #211e1f;
+  color: #fff;
+}
+
+.gd-history-download-button:hover {
+  background: #9d6872;
+}
+
+.gd-history-delete-button {
+  border: 1px solid #d6b8be;
+  background: #fff;
+  color: #9d6872;
+}
+
+.gd-history-delete-button:hover:not(:disabled) {
+  border-color: #a95f6d;
+  background: #fff7f8;
+  color: #8d4e5a;
+}
+
+.gd-history-delete-button:disabled {
+  cursor: wait;
+  opacity: .55;
+}
+
+
+/* 결과 이미지 모달 */
+
+.gd-history-image-modal {
+  position: fixed;
+  z-index: 9999;
+
+  inset: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px;
+
+  background: rgba(20, 16, 17, .76);
+}
+
+.gd-history-image-modal-inner {
+  position: relative;
+
+  display: flex;
+
+  max-width: min(760px, 92vw);
+  max-height: 90vh;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+
+  background: #fff;
+
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, .25);
+}
+
+.gd-history-image-modal-inner img {
   display: block;
 
-  width: 100%;
-  height: 100%;
+  max-width: 100%;
+  max-height: calc(90vh - 36px);
 
-  object-fit: cover;
-  object-position: center;
+  object-fit: contain;
+}
+
+.gd-history-image-modal-close {
+  position: absolute;
+
+  top: 10px;
+  right: 10px;
+
+  z-index: 2;
+
+  display: flex;
+
+  width: 38px;
+  height: 38px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e3d3d6;
+  background: rgba(255, 255, 255, .95);
+
+  color: #6b5358;
+
+  font-size: 25px;
+  font-weight: 300;
+
+  cursor: pointer;
+}
+
+.gd-history-image-modal-close:hover {
+  background: #9d6872;
+  color: #fff;
 }
 
 
-/* 모바일 유지 */
-@media (max-width: 750px) {
-
-  .gd-photo-editor {
+@media (max-width: 760px) {
+  .gd-history-detail-actions {
     grid-template-columns: 1fr;
   }
 
-  .gd-photo-editor-preview {
-    padding: 22px;
+  .gd-history-image-modal {
+    padding: 16px;
   }
-
-  .gd-photo-editor-info {
-    padding: 28px 24px;
-  }
-
-  .gd-photo-editor-preview img,
-  .gd-photo-current-image img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-  }
-
 }
+

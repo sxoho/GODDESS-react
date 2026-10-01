@@ -183,6 +183,45 @@ type BeautyApplyResponse = {
   resultImageBase64: string;
   resultContentType: string;
   resultFileName: string;
+
+  beautyTryonId: number;
+  beautyResultId: number;
+};
+
+
+type BeautySaveResponse = {
+  success: boolean;
+  message: string;
+  beautySaveId: number;
+  beautyResultId: number;
+  saveName: string;
+};
+
+
+type BeautyHistoryItem = {
+  itemType: string;
+  styleValue?: string | null;
+  productId?: number | null;
+  productName?: string | null;
+  brand?: string | null;
+  productColorId?: number | null;
+  colorName?: string | null;
+  colorCode?: string | null;
+  price?: number | null;
+};
+
+type BeautyHistory = {
+  beautySaveId: number;
+  beautyResultId: number;
+  beautyTryonId: number;
+  saveName: string;
+  memo?: string | null;
+  createdAt: string;
+  beautyType: string;
+  tryonStatus: string;
+  resultFilePath: string;
+  beforeFilePath: string;
+  items: BeautyHistoryItem[];
 };
 
 
@@ -687,6 +726,17 @@ export default function BeautyHome() {
     null
   );
 
+  const [
+  beautySaving,
+  setBeautySaving
+] = useState(false);
+
+
+const [
+  beautySaved,
+  setBeautySaved
+] = useState(false);
+
 
   const [
     loadingPromotionIndex,
@@ -697,6 +747,40 @@ export default function BeautyHome() {
     cartSelectedProductIds,
     setCartSelectedProductIds
   ] = useState<number[]>([]);
+
+
+  const [
+    beautyHistory,
+    setBeautyHistory
+  ] = useState<BeautyHistory[]>([]);
+
+  const [
+    beautyHistoryLoading,
+    setBeautyHistoryLoading
+  ] = useState(false);
+
+  const [
+    beautyHistoryError,
+    setBeautyHistoryError
+  ] = useState("");
+
+
+  const [
+    selectedHistoryId,
+    setSelectedHistoryId
+  ] = useState<number | null>(null);
+
+
+  const [
+    historyImagePreview,
+    setHistoryImagePreview
+  ] = useState<string | null>(null);
+
+
+  const [
+    historyDeleting,
+    setHistoryDeleting
+  ] = useState(false);
 
 
   useEffect(() => {
@@ -771,6 +855,373 @@ export default function BeautyHome() {
 
     return `${API_BASE}${path}`;
   };
+
+
+  /* =========================================
+     MY HISTORY 조회
+  ========================================= */
+
+  const loadBeautyHistory =
+    async () => {
+
+      if (
+        sw !== true ||
+        !memberId
+      ) {
+
+        setBeautyHistory([]);
+        return;
+      }
+
+      try {
+
+        setBeautyHistoryLoading(true);
+        setBeautyHistoryError("");
+
+        const response =
+          await axiosInstance.get<BeautyHistory[]>(
+            `/beauty/save/member/${memberId}`
+          );
+
+        setBeautyHistory(
+          response.data ?? []
+        );
+
+      } catch (error) {
+
+        console.error(
+          "AI BEAUTY 저장 내역 조회 오류:",
+          error
+        );
+
+        setBeautyHistory([]);
+        setBeautyHistoryError(
+          "저장한 AI BEAUTY 결과를 불러오지 못했습니다."
+        );
+
+      } finally {
+
+        setBeautyHistoryLoading(false);
+      }
+    };
+
+
+  useEffect(
+    () => {
+
+      if (
+        view !== "saved"
+      ) {
+        return;
+      }
+
+      loadBeautyHistory();
+
+    },
+    [
+      view,
+      sw,
+      memberId
+    ]
+  );
+
+
+  /*
+   * MY HISTORY 상세 화면 상태는
+   * 다른 메뉴로 이동하는 순간 초기화한다.
+   *
+   * 따라서 MY PHOTO / MEMBERSHIP / START에 갔다가
+   * 다시 MY HISTORY를 누르면 항상 목록 화면부터 시작한다.
+   */
+  useEffect(
+    () => {
+
+      if (
+        view === "saved"
+      ) {
+        return;
+      }
+
+
+      setHistoryImagePreview(
+        null
+      );
+
+      setSelectedHistoryId(
+        null
+      );
+
+    },
+    [
+      view
+    ]
+  );
+
+
+  /* =========================================
+     MY HISTORY 상세 → 목록
+  ========================================= */
+
+  const handleBackToHistoryList =
+    () => {
+
+      /*
+       * 상세 → 목록
+       * URL은 이미 view=saved 상태이므로
+       * 선택된 상세 ID만 초기화하면 즉시 목록이 렌더링된다.
+       */
+      setHistoryImagePreview(
+        null
+      );
+
+      setSelectedHistoryId(
+        null
+      );
+    };
+
+
+  /* =========================================
+     결과 이미지 크게 보기
+  ========================================= */
+
+  const handleOpenHistoryImage =
+    (
+      filePath: string
+    ) => {
+
+      setHistoryImagePreview(
+        getImageUrl(
+          filePath
+        )
+      );
+    };
+
+
+  const handleCloseHistoryImage =
+    () => {
+
+      setHistoryImagePreview(
+        null
+      );
+    };
+
+
+  /* =========================================
+     결과 사진 저장
+  ========================================= */
+
+  const handleDownloadHistoryImage =
+    async (
+      history: BeautyHistory
+    ) => {
+
+      const imageUrl =
+        getImageUrl(
+          history.resultFilePath
+        );
+
+
+      if (!imageUrl) {
+
+        alert(
+          "저장할 결과 이미지를 찾을 수 없습니다."
+        );
+
+        return;
+      }
+
+
+      try {
+
+        const response =
+          await fetch(
+            imageUrl
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            "이미지 다운로드에 실패했습니다."
+          );
+        }
+
+
+        const blob =
+          await response.blob();
+
+
+        const objectUrl =
+          window.URL.createObjectURL(
+            blob
+          );
+
+
+        const link =
+          document.createElement(
+            "a"
+          );
+
+
+        link.href =
+          objectUrl;
+
+        link.download =
+          `goddess_ai_beauty_${history.beautySaveId}.png`;
+
+
+        document.body.appendChild(
+          link
+        );
+
+        link.click();
+
+        link.remove();
+
+
+        window.URL.revokeObjectURL(
+          objectUrl
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "AI BEAUTY 결과 이미지 저장 오류:",
+          error
+        );
+
+        alert(
+          "결과 사진을 저장하지 못했습니다."
+        );
+      }
+    };
+
+
+  /* =========================================
+     저장 이용 내역 삭제
+  ========================================= */
+
+  const handleDeleteBeautyHistory =
+    async (
+      history: BeautyHistory
+    ) => {
+
+      if (
+        !memberId ||
+        historyDeleting
+      ) {
+
+        return;
+      }
+
+
+      const confirmed =
+        window.confirm(
+          "이 AI BEAUTY 이용 내역을 삭제할까요?\n삭제한 저장 내역은 MY HISTORY에서 더 이상 보이지 않습니다."
+        );
+
+
+      if (!confirmed) {
+
+        return;
+      }
+
+
+      try {
+
+        setHistoryDeleting(
+          true
+        );
+
+
+        await axiosInstance.delete(
+          `/beauty/save/${history.beautySaveId}/member/${memberId}`
+        );
+
+
+        setHistoryImagePreview(
+          null
+        );
+
+        setSelectedHistoryId(
+          null
+        );
+
+
+        await loadBeautyHistory();
+
+
+        alert(
+          "이용 내역이 삭제되었습니다."
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "AI BEAUTY 이용 내역 삭제 오류:",
+          error
+        );
+
+
+        const responseData =
+          (
+            error as {
+              response?: {
+                data?:
+                  | {
+                      message?: string;
+                      error?: string;
+                    }
+                  | string;
+              };
+            }
+          )
+            ?.response
+            ?.data;
+
+
+        let message =
+          "이용 내역을 삭제하지 못했습니다.";
+
+
+        if (
+          typeof responseData ===
+            "string" &&
+          responseData.trim()
+        ) {
+
+          message =
+            responseData;
+
+        } else if (
+          responseData &&
+          typeof responseData ===
+            "object"
+        ) {
+
+          message =
+            responseData.message
+            ||
+            responseData.error
+            ||
+            message;
+        }
+
+
+        alert(
+          message
+        );
+
+
+      } finally {
+
+        setHistoryDeleting(
+          false
+        );
+      }
+    };
 
 
   /* =========================================
@@ -1822,6 +2273,10 @@ export default function BeautyHome() {
           ""
         );
 
+        setBeautySaved(
+          false
+        );
+
 
         const requestBody = {
 
@@ -1951,6 +2406,172 @@ export default function BeautyHome() {
     };
 
 
+  /* =========================================
+     AI BEAUTY 결과 저장
+  ========================================= */
+
+  const handleSaveBeautyResult =
+    async () => {
+
+      if (
+        sw !== true ||
+        !memberId
+      ) {
+
+        alert(
+          "로그인이 필요한 기능입니다."
+        );
+
+        navigate(
+          "/login"
+        );
+
+        return;
+      }
+
+
+      if (
+        !tryonResult?.beautyResultId
+      ) {
+
+        alert(
+          "저장할 AI BEAUTY 결과가 없습니다."
+        );
+
+        return;
+      }
+
+
+      if (beautySaved) {
+
+        alert(
+          "이미 저장한 결과입니다."
+        );
+
+        return;
+      }
+
+
+      try {
+
+        setBeautySaving(
+          true
+        );
+
+
+        const response =
+          await axiosInstance.post<BeautySaveResponse>(
+            "/beauty/save",
+            {
+              memberId,
+              beautyResultId:
+                tryonResult.beautyResultId,
+              saveName:
+                "AI BEAUTY 결과",
+              memo:
+                null
+            }
+          );
+
+
+        if (
+          !response.data?.success
+        ) {
+
+          throw new Error(
+            "AI BEAUTY 결과 저장에 실패했습니다."
+          );
+        }
+
+
+        setBeautySaved(
+          true
+        );
+
+        await loadBeautyHistory();
+
+
+        alert(
+          response.data.message ||
+          "AI BEAUTY 결과가 저장되었습니다."
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "AI BEAUTY 결과 저장 오류:",
+          error
+        );
+
+
+        const errorData =
+          error as {
+            response?: {
+              data?:
+                | {
+                    message?: string;
+                    error?: string;
+                  }
+                | string;
+            };
+            message?: string;
+          };
+
+
+        const responseData =
+          errorData
+            ?.response
+            ?.data;
+
+
+        let message =
+          "AI BEAUTY 결과를 저장하지 못했습니다.";
+
+
+        if (
+          typeof responseData ===
+            "string" &&
+          responseData.trim()
+        ) {
+
+          message =
+            responseData;
+
+        } else if (
+          responseData &&
+          typeof responseData ===
+            "object"
+        ) {
+
+          message =
+            responseData.message ||
+            responseData.error ||
+            message;
+
+        } else if (
+          errorData?.message
+        ) {
+
+          message =
+            errorData.message;
+        }
+
+
+        alert(
+          message
+        );
+
+
+      } finally {
+
+        setBeautySaving(
+          false
+        );
+      }
+    };
+
+
   const toggleCartProductSelection = (
     productId: number
   ) => {
@@ -2005,41 +2626,106 @@ export default function BeautyHome() {
   };
 
 
-  const goTryon = () => {
+const goTryon = () => {
 
-    if (
-      sw !== true ||
-      !memberId
-    ) {
+  if (
+    sw !== true ||
+    !memberId
+  ) {
 
-      alert(
-        "로그인이 필요한 기능입니다."
-      );
-
-      navigate(
-        "/login"
-      );
-
-      return;
-    }
-
-
-    if (!memberPhoto) {
-
-      alert(
-        "AI BEAUTY에 사용할 사진을 먼저 등록해주세요."
-      );
-
-      goPhoto();
-
-      return;
-    }
-
+    alert(
+      "로그인이 필요한 기능입니다."
+    );
 
     navigate(
-      "/beauty?view=tryon"
+      "/login"
     );
-  };
+
+    return;
+  }
+
+
+  if (!memberPhoto) {
+
+    alert(
+      "AI BEAUTY에 사용할 사진을 먼저 등록해주세요."
+    );
+
+    goPhoto();
+
+    return;
+  }
+
+
+  /* =========================================
+     새로운 AI BEAUTY 체험 시작
+     기존 선택값 전체 초기화
+  ========================================= */
+
+  setSelections(
+    {}
+  );
+
+  setHairSelections(
+    {}
+  );
+
+  setShadeProduct(
+    null
+  );
+
+  setTryonKeyword(
+    ""
+  );
+
+  setAppliedTryonKeyword(
+    ""
+  );
+
+  setActiveTryonMode(
+    "makeup"
+  );
+
+  setActiveTryonCategory(
+    "base"
+  );
+
+  setActiveHairCategory(
+    "hair-style"
+  );
+
+  setTryonResult(
+    null
+  );
+
+  setTryonApplyError(
+    ""
+  );
+
+  setBeautySaved(
+    false
+  );
+
+  setCartSelectedProductIds(
+    []
+  );
+
+
+  /*
+   * sessionStorage에 남아있는
+   * 이전 AI BEAUTY 선택값도 제거
+   */
+  sessionStorage.removeItem(
+    getTryonSelectionStorageKey(
+      memberId
+    )
+  );
+
+
+  navigate(
+    "/beauty?view=tryon"
+  );
+};
 
 
   /* =========================================
@@ -2066,6 +2752,20 @@ export default function BeautyHome() {
 
   const goHistory =
     () => {
+
+      /*
+       * 다른 메뉴에서 MY HISTORY로 다시 들어올 때는
+       * 이전 상세 선택 상태를 남기지 않고
+       * 항상 이용 내역 목록부터 보여준다.
+       */
+      setHistoryImagePreview(
+        null
+      );
+
+      setSelectedHistoryId(
+        null
+      );
+
 
       navigate(
         "/beauty?view=saved"
@@ -2964,6 +3664,9 @@ export default function BeautyHome() {
                   setTryonApplyError(
                     ""
                   );
+                  setBeautySaved(
+                    false
+                  );
                 }}
               >
                 다시 선택하기
@@ -3255,6 +3958,9 @@ export default function BeautyHome() {
                   setTryonApplyError(
                     ""
                   );
+                  setBeautySaved(
+                    false
+                  );
                 }}
               >
                 다른 조합 체험하기
@@ -3263,13 +3969,21 @@ export default function BeautyHome() {
               <button
                 type="button"
                 className="primary"
-                onClick={() =>
-                  alert(
-                    "결과 저장 기능은 다음 단계에서 BEAUTY_SAVE와 연결합니다."
-                  )
+                onClick={
+                  handleSaveBeautyResult
+                }
+                disabled={
+                  beautySaving ||
+                  beautySaved
                 }
               >
-                결과 저장
+                {
+                  beautySaving
+                    ? "저장 중..."
+                    : beautySaved
+                      ? "저장 완료"
+                      : "결과 저장"
+                }
               </button>
 
             </div>
@@ -3952,42 +4666,540 @@ export default function BeautyHome() {
 
 
   /* =========================================
-     저장 내역 - 현재 화면 준비
+     저장 내역
   ========================================= */
 
   const renderSavedView =
-    () => (
+    () => {
 
-      <section className="gd-beauty-placeholder">
+      if (
+        sw !== true ||
+        !memberId
+      ) {
 
-        <span>
-          MY HISTORY
-        </span>
+        return (
+          <section className="gd-beauty-placeholder">
+            <span>MY HISTORY</span>
+            <h2>나의 이용 내역</h2>
+            <p>
+              로그인 후 저장한 AI BEAUTY 결과를 확인할 수 있어요.
+            </p>
 
-        <h2>
-          나의 이용 내역
-        </h2>
+            <div className="gd-beauty-placeholder-box">
+              <strong>로그인이 필요합니다.</strong>
 
-        <p>
-          AI BEAUTY에서 저장한 메이크업과
-          헤어 체험 결과가 이곳에 표시될 예정입니다.
-        </p>
+              <button
+                type="button"
+                onClick={() =>
+                  navigate("/login")
+                }
+              >
+                로그인하기
+              </button>
+            </div>
+          </section>
+        );
+      }
 
-        <div className="gd-beauty-placeholder-box">
 
-          <strong>
-            아직 저장된 이용 내역이 없어요.
-          </strong>
+      if (beautyHistoryLoading) {
 
-          <p>
-            AI BEAUTY 체험 후 마음에 드는 결과를
-            저장하면 이곳에서 다시 확인할 수 있어요.
-          </p>
+        return (
+          <section className="gd-beauty-placeholder">
+            <span>MY HISTORY</span>
+            <h2>나의 이용 내역</h2>
 
-        </div>
+            <div className="gd-beauty-placeholder-box">
+              <strong>
+                저장한 AI BEAUTY 결과를 불러오는 중입니다.
+              </strong>
+            </div>
+          </section>
+        );
+      }
 
-      </section>
-    );
+
+      const selectedHistory =
+        selectedHistoryId
+          ? beautyHistory.find(
+              (history) =>
+                history.beautySaveId ===
+                selectedHistoryId
+            )
+          : null;
+
+
+      /*
+       * 상세보기
+       * 목록에서 한 건을 클릭하면
+       * BEFORE / AFTER와 전체 적용 항목을 표시한다.
+       */
+      if (selectedHistory) {
+
+        return (
+          <section className="gd-history-page">
+
+            <div className="gd-history-detail-head">
+
+              <button
+                type="button"
+                className="gd-history-back"
+                onClick={
+                  handleBackToHistoryList
+                }
+              >
+                ← 이용 내역 목록
+              </button>
+
+              <div>
+                <span>
+                  AI BEAUTY HISTORY
+                </span>
+
+                <h2>
+                  {selectedHistory.saveName || "AI BEAUTY 결과"}
+                </h2>
+
+                <p>
+                  {formatDate(selectedHistory.createdAt)}
+                </p>
+              </div>
+
+            </div>
+
+
+            <article className="gd-history-detail-card">
+
+              <div className="gd-history-detail-images">
+
+                <div>
+                  <span>BEFORE</span>
+
+                  <img
+                    src={
+                      getImageUrl(
+                        selectedHistory.beforeFilePath
+                      )
+                    }
+                    alt="AI BEAUTY 적용 전"
+                  />
+                </div>
+
+
+                <div className="gd-history-after-image">
+                  <span>AFTER</span>
+
+                  <div className="gd-history-image-wrap">
+
+                    <img
+                      src={
+                        getImageUrl(
+                          selectedHistory.resultFilePath
+                        )
+                      }
+                      alt="저장한 AI BEAUTY 결과"
+                    />
+
+                    <button
+                      type="button"
+                      className="gd-history-image-zoom"
+                      onClick={() =>
+                        handleOpenHistoryImage(
+                          selectedHistory.resultFilePath
+                        )
+                      }
+                      aria-label="결과 사진 크게 보기"
+                      title="결과 사진 크게 보기"
+                    >
+                      ⛶
+                    </button>
+
+                  </div>
+                </div>
+
+              </div>
+
+
+              <div className="gd-history-detail-info">
+
+                <span className="gd-history-detail-overline">
+                  APPLIED ITEMS
+                </span>
+
+                <h3>
+                  적용한 항목
+                </h3>
+
+
+                <div className="gd-history-detail-items">
+
+                  {selectedHistory.items.map(
+                    (item, index) => (
+
+                      <div
+                        className="gd-history-detail-item"
+                        key={`${selectedHistory.beautySaveId}-${item.itemType}-${index}`}
+                      >
+
+                        <strong>
+                          {
+                            item.itemType === "HAIR_STYLE"
+                              ? "헤어스타일"
+                              : item.itemType === "HAIR_COLOR"
+                                ? "헤어 컬러"
+                                : item.itemType === "BASE"
+                                  ? "베이스"
+                                  : item.itemType === "LIP"
+                                    ? "립"
+                                    : item.itemType === "CHEEK"
+                                      ? "치크"
+                                      : item.itemType === "EYE"
+                                        ? "아이"
+                                        : item.itemType
+                          }
+                        </strong>
+
+
+                        {item.productId ? (
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              navigate(
+                                `/products/${item.productId}`
+                              )
+                            }
+                          >
+
+                            <span>
+                              {item.brand || "GODDESS"}
+                              {" · "}
+                              {item.productName}
+                            </span>
+
+                            {item.colorName && (
+                              <small>
+                                {item.colorName}
+                              </small>
+                            )}
+
+                          </button>
+
+                        ) : (
+
+                          <span>
+                            {item.styleValue || "-"}
+                          </span>
+
+                        )}
+
+                      </div>
+                    )
+                  )}
+
+                </div>
+
+
+                {selectedHistory.memo && (
+                  <p className="gd-history-memo">
+                    {selectedHistory.memo}
+                  </p>
+                )}
+
+
+                <div className="gd-history-detail-actions">
+
+                  <button
+                    type="button"
+                    className="gd-history-download-button"
+                    onClick={() =>
+                      handleDownloadHistoryImage(
+                        selectedHistory
+                      )
+                    }
+                  >
+                    결과 사진 저장하기
+                  </button>
+
+
+                  <button
+                    type="button"
+                    className="gd-history-delete-button"
+                    disabled={
+                      historyDeleting
+                    }
+                    onClick={() =>
+                      handleDeleteBeautyHistory(
+                        selectedHistory
+                      )
+                    }
+                  >
+                    {
+                      historyDeleting
+                        ? "삭제 중..."
+                        : "이용 내역 삭제"
+                    }
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+
+            {historyImagePreview && (
+
+              <div
+                className="gd-history-image-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-label="AI BEAUTY 결과 사진 크게 보기"
+                onClick={
+                  handleCloseHistoryImage
+                }
+              >
+
+                <div
+                  className="gd-history-image-modal-inner"
+                  onClick={
+                    (
+                      event
+                    ) =>
+                      event.stopPropagation()
+                  }
+                >
+
+                  <button
+                    type="button"
+                    className="gd-history-image-modal-close"
+                    onClick={
+                      handleCloseHistoryImage
+                    }
+                    aria-label="큰 이미지 닫기"
+                  >
+                    ×
+                  </button>
+
+                  <img
+                    src={
+                      historyImagePreview
+                    }
+                    alt="AI BEAUTY 결과 크게 보기"
+                  />
+
+                </div>
+
+              </div>
+            )}
+
+          </section>
+        );
+      }
+
+
+      /*
+       * 목록
+       * 사진 없이 가로형 카드로 표시한다.
+       * 저장일 기준 최신 내역이 항상 위로 오도록 정렬한다.
+       */
+      const sortedBeautyHistory = [
+        ...beautyHistory
+      ].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime()
+          -
+          new Date(a.createdAt).getTime()
+      );
+
+
+      return (
+        <section className="gd-history-page">
+
+          <div className="gd-history-head">
+
+            <div>
+              <span>MY HISTORY</span>
+
+              <h2>
+                나의 이용 내역
+              </h2>
+
+              <p>
+                저장한 AI BEAUTY 체험을 최신순으로 확인하고,
+                원하는 내역을 눌러 상세 결과를 다시 볼 수 있어요.
+              </p>
+            </div>
+
+
+            <button
+              type="button"
+              onClick={goTryon}
+            >
+              새 AI BEAUTY 체험
+            </button>
+
+          </div>
+
+
+          {beautyHistoryError && (
+            <div className="gd-history-message error">
+              {beautyHistoryError}
+            </div>
+          )}
+
+
+          {!beautyHistoryError &&
+            beautyHistory.length === 0 && (
+
+            <div className="gd-beauty-placeholder-box">
+
+              <strong>
+                아직 저장된 이용 내역이 없어요.
+              </strong>
+
+              <p>
+                AI BEAUTY 체험 후 마음에 드는 결과를
+                저장하면 이곳에서 다시 확인할 수 있어요.
+              </p>
+
+              <button
+                type="button"
+                onClick={goTryon}
+              >
+                AI BEAUTY 시작하기
+              </button>
+
+            </div>
+          )}
+
+
+          <div className="gd-history-compact-list">
+
+            {sortedBeautyHistory.map(
+              (history) => {
+
+                const summaryItems =
+                  history.items
+                    .map(
+                      (item) => {
+
+                        const label =
+                          item.itemType === "HAIR_STYLE"
+                            ? "헤어스타일"
+                            : item.itemType === "HAIR_COLOR"
+                              ? "헤어 컬러"
+                              : item.itemType === "BASE"
+                                ? "베이스"
+                                : item.itemType === "LIP"
+                                  ? "립"
+                                  : item.itemType === "CHEEK"
+                                    ? "치크"
+                                    : item.itemType === "EYE"
+                                      ? "아이"
+                                      : item.itemType;
+
+                        const value =
+                          item.styleValue
+                          ||
+                          (
+                            item.productName
+                              ? `${item.productName}${
+                                  item.colorName
+                                    ? ` · ${item.colorName}`
+                                    : ""
+                                }`
+                              : "-"
+                          );
+
+                        return {
+                          label,
+                          value
+                        };
+                      }
+                    );
+
+
+                return (
+                  <button
+                    type="button"
+                    className="gd-history-compact-row"
+                    key={history.beautySaveId}
+                    onClick={() =>
+                      setSelectedHistoryId(
+                        history.beautySaveId
+                      )
+                    }
+                  >
+
+                    <div className="gd-history-row-type">
+
+                      <span>
+                        {
+                          history.beautyType === "MAKEUP"
+                            ? "MAKEUP"
+                            : history.beautyType === "HAIR_STYLE" ||
+                              history.beautyType === "HAIR_COLOR"
+                              ? "HAIR"
+                              : "AI BEAUTY"
+                        }
+                      </span>
+
+                      <strong>
+                        {history.saveName || "AI BEAUTY 결과"}
+                      </strong>
+
+                    </div>
+
+
+                    <div className="gd-history-compact-summary">
+
+                      {summaryItems.map(
+                        (item, index) => (
+
+                          <div
+                            className="gd-history-compact-item"
+                            key={`${history.beautySaveId}-${index}`}
+                          >
+
+                            <small>
+                              {item.label}
+                            </small>
+
+                            <strong>
+                              {item.value}
+                            </strong>
+
+                          </div>
+
+                        )
+                      )}
+
+                    </div>
+
+
+                    <div className="gd-history-compact-date">
+
+                      <span>
+                        {formatDate(history.createdAt)}
+                      </span>
+
+                      <b>
+                        →
+                      </b>
+
+                    </div>
+
+                  </button>
+                );
+              }
+            )}
+
+          </div>
+
+        </section>
+      );
+    };
 
 
   /* =========================================
