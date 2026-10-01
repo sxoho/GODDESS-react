@@ -1,120 +1,303 @@
 .beauty-rec-page {
+  --g-bg: #fffdfc;
+  --g-bg-soft: #fbf6f4;
+  --g-pink: #d9a7ae;
+  --g-pink-deep: #b87580;
+  --g-pink-soft: #f6e7e9;
+  --g-beige: #f2e9e4;
+  --g-line: #eadfdb;
+  --g-text: #4a3d40;
+  --g-sub: #8f8083;
+
   max-width: 1440px;
   margin: 0 auto;
-  padding: 46px 5% 100px;
-  color: #1f1b1c;
+  padding: 42px 5% 110px;
+  color: var(--g-text);
+  background: var(--g-bg);
 }
 
 .beauty-rec-hero {
-  padding: 44px 0 50px;
-  border-bottom: 1px solid #eadfe1;
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 52px;
+  align-items: center;
+  padding: 56px 0 64px;
+  border-bottom: 1px solid var(--g-line);
 }
 
-.beauty-rec-hero > span,
+.beauty-rec-hero-copy > span,
 .beauty-rec-section-title > span,
 .beauty-rec-result-head > div:first-child > span,
 .beauty-rec-login > span {
   display: block;
   margin-bottom: 12px;
-  color: #b26f7a;
+  color: var(--g-pink-deep);
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: .16em;
+  letter-spacing: 0.18em;
 }
 
 .beauty-rec-hero h1,
 .beauty-rec-login h1 {
   margin: 0;
-  font-size: clamp(32px, 4vw, 54px);
+  font-size: clamp(38px, 4.7vw, 64px);
+  line-height: 1.12;
   font-weight: 600;
-  letter-spacing: -.045em;
+  letter-spacing: -0.05em;
+  color: #46383c;
 }
 
-.beauty-rec-hero p,
+.beauty-rec-hero-copy > p:last-child,
 .beauty-rec-login p {
-  max-width: 640px;
-  margin: 18px 0 0;
-  color: #83797b;
+  max-width: 650px;
+  margin: 22px 0 0;
+  color: var(--g-sub);
   font-size: 14px;
-  line-height: 1.9;
+  line-height: 1.95;
   word-break: keep-all;
+}
+
+.beauty-rec-hero-note {
+  min-height: 300px;
+  padding: 30px 34px 34px;
+  border-radius: 28px;
+  background: linear-gradient(145deg, #fffaf9 0%, #f9f0ee 100%);
+  border: 1px solid #eee0dc;
+  box-shadow: 0 18px 50px rgba(130, 90, 100, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.beauty-rec-hero-note span {
+  color: #c18c97;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.beauty-rec-hero-note strong {
+  margin-top: 18px;
+  color: #5b474c;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.beauty-rec-hero-note p {
+  margin: 10px 0 0;
+  color: #99888c;
+  font-size: 12px;
+}
+
+.beauty-rec-face-icon {
+  position: relative;
+  width: 118px;
+  height: 118px;
+  margin-top: 16px;
+}
+
+.beauty-rec-face-hair {
+  position: absolute;
+  inset: 6px 10px 18px;
+  background: #5d4b4f;
+  border-radius: 52% 52% 44% 44%;
+}
+
+.beauty-rec-face-head {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: 84px;
+  height: 88px;
+  background: #f5ddd2;
+  border-radius: 44px 44px 38px 38px;
+}
+
+.beauty-rec-face-head .eye {
+  position: absolute;
+  top: 34px;
+  width: 7px;
+  height: 7px;
+  background: #5a4b4d;
+  border-radius: 50%;
+}
+
+.beauty-rec-face-head .eye.left {
+  left: 23px;
+}
+
+.beauty-rec-face-head .eye.right {
+  right: 23px;
+}
+
+.beauty-rec-face-head .blush {
+  position: absolute;
+  top: 44px;
+  width: 14px;
+  height: 8px;
+  background: rgba(226, 168, 176, 0.65);
+  border-radius: 999px;
+}
+
+.beauty-rec-face-head .blush.left {
+  left: 11px;
+}
+
+.beauty-rec-face-head .blush.right {
+  right: 11px;
+}
+
+.beauty-rec-face-head .mouth {
+  position: absolute;
+  left: 50%;
+  bottom: 19px;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 8px;
+  border-bottom: 2px solid #9f6773;
+  border-radius: 0 0 999px 999px;
+}
+
+.beauty-rec-tone-dots {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.beauty-rec-tone-chip {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: 0 0 auto;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.beauty-rec-tone-chip.spring-warm {
+  background: linear-gradient(145deg, #ffd7a8 0%, #ffb69f 100%);
+}
+
+.beauty-rec-tone-chip.summer-cool {
+  background: linear-gradient(145deg, #dbc7ee 0%, #b9c6f4 100%);
+}
+
+.beauty-rec-tone-chip.autumn-warm {
+  background: linear-gradient(145deg, #d7aa7c 0%, #b97d55 100%);
+}
+
+.beauty-rec-tone-chip.winter-cool {
+  background: linear-gradient(145deg, #8e8ab5 0%, #556080 100%);
+}
+
+.beauty-rec-tone-chip.neutral-tone {
+  background: linear-gradient(145deg, #e7ddd4 0%, #d0c4ba 100%);
+}
+
+.beauty-rec-tone-chip.unknown-tone {
+  background: linear-gradient(145deg, #f0ece7 0%, #ddd4ca 100%);
 }
 
 .beauty-rec-profile-section,
 .beauty-rec-select-section,
 .beauty-rec-result-section,
 .beauty-rec-history-section {
-  padding: 54px 0;
-  border-bottom: 1px solid #eee7e8;
+  padding: 60px 0;
+  border-bottom: 1px solid #f0e7e4;
 }
 
 .beauty-rec-section-title h2,
 .beauty-rec-result-head h2 {
   margin: 0;
-  font-size: 27px;
-  font-weight: 650;
-  letter-spacing: -.035em;
+  color: #4b3d41;
+  font-size: 29px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
 }
 
 .beauty-rec-section-title p,
 .beauty-rec-result-head p {
   margin: 12px 0 0;
-  color: #918789;
+  color: var(--g-sub);
   font-size: 13px;
   line-height: 1.8;
 }
 
 .beauty-rec-section-title.compact {
-  margin-bottom: 28px;
+  margin-bottom: 30px;
 }
 
 .beauty-rec-profile-card {
   display: grid;
-  grid-template-columns: 1.15fr 1fr 1fr auto;
+  grid-template-columns: 1.1fr 1fr 1fr auto;
   align-items: stretch;
   margin-top: 30px;
-  border: 1px solid #eadfe1;
-  background: #fffdfd;
+  padding: 8px;
+  border-radius: 24px;
+  background: #fff;
+  border: 1px solid #efe4e0;
+  box-shadow: 0 14px 38px rgba(120, 83, 92, 0.05);
 }
 
 .beauty-rec-profile-name,
 .beauty-rec-profile-value {
   min-height: 112px;
-  padding: 24px 28px;
-  border-right: 1px solid #eadfe1;
+  padding: 26px 28px;
+  border-right: 1px solid #f0e7e4;
 }
 
 .beauty-rec-profile-name span,
 .beauty-rec-profile-value span {
   display: block;
-  margin-bottom: 13px;
-  color: #b9999f;
+  margin-bottom: 12px;
+  color: #b99199;
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: .14em;
+  letter-spacing: 0.14em;
 }
 
 .beauty-rec-profile-name strong,
 .beauty-rec-profile-value strong {
-  font-size: 19px;
-  font-weight: 650;
+  color: #4b3d41;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.beauty-rec-tone-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .beauty-rec-profile-refresh {
-  min-width: 190px;
-  padding: 0 26px;
-  border: 0;
-  background: #211d1e;
-  color: #fff;
+  align-self: center;
+  min-width: 178px;
+  margin: 14px;
+  padding: 14px 18px;
+  border: 1px solid #e4cfd4;
+  border-radius: 999px;
+  background: #fff8f9;
+  color: #9b5f6d;
   font: inherit;
   font-size: 12px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.beauty-rec-profile-refresh:hover:not(:disabled) {
+  background: #f6e7ea;
+  border-color: #d9a7ae;
 }
 
 .beauty-rec-profile-refresh:disabled,
 .beauty-rec-submit:disabled {
+  opacity: 0.6;
   cursor: wait;
-  opacity: .62;
 }
 
 .beauty-rec-profile-guide {
@@ -122,15 +305,18 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  margin-top: 14px;
+  margin-top: 16px;
   padding: 18px 22px;
-  background: #fbf5f6;
+  border-radius: 18px;
+  background: #fff8f8;
+  border: 1px solid #f0dfe2;
 }
 
 .beauty-rec-profile-guide p {
   margin: 0;
-  color: #7d7274;
+  color: #826f74;
   font-size: 12px;
+  line-height: 1.7;
 }
 
 .beauty-rec-profile-guide div {
@@ -139,37 +325,41 @@
 }
 
 .beauty-rec-profile-guide button {
-  padding: 9px 13px;
-  border: 1px solid #d7c1c5;
+  padding: 10px 14px;
+  border: 1px solid #e3cbd0;
+  border-radius: 999px;
   background: #fff;
-  color: #473e40;
+  color: #8f5a66;
   cursor: pointer;
 }
 
 .beauty-rec-category-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  border-top: 1px solid #ded2d4;
-  border-left: 1px solid #ded2d4;
+  gap: 14px;
 }
 
 .beauty-rec-category-grid button {
   position: relative;
-  min-height: 145px;
+  min-height: 150px;
   padding: 24px;
-  border: 0;
-  border-right: 1px solid #ded2d4;
-  border-bottom: 1px solid #ded2d4;
+  border: 1px solid #eee0dd;
+  border-radius: 22px;
   background: #fff;
-  color: #262122;
+  color: #4b3d41;
   text-align: left;
   cursor: pointer;
-  transition: background .2s ease, color .2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.beauty-rec-category-grid button:hover,
+.beauty-rec-category-grid button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(130, 90, 100, 0.07);
+}
+
 .beauty-rec-category-grid button.active {
-  background: #f8edef;
+  background: linear-gradient(145deg, #fff8f8 0%, #f7e8eb 100%);
+  border-color: #dcb8bf;
 }
 
 .beauty-rec-category-grid button > span {
@@ -182,30 +372,47 @@
 
 .beauty-rec-category-grid small {
   display: block;
-  margin-bottom: 30px;
-  color: #b26f7a;
+  margin-bottom: 28px;
+  color: var(--g-pink-deep);
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: .14em;
+  letter-spacing: 0.14em;
 }
 
 .beauty-rec-category-grid strong {
+  display: block;
   font-size: 18px;
-  font-weight: 650;
+  font-weight: 600;
+}
+
+.beauty-rec-category-grid em {
+  display: block;
+  margin-top: 8px;
+  color: #9b8d90;
+  font-size: 11px;
+  font-style: normal;
 }
 
 .beauty-rec-submit {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 18px;
-  padding: 20px 24px;
-  border: 0;
-  background: #211d1e;
-  color: #fff;
+  justify-content: center;
+  gap: 16px;
+  min-width: 260px;
+  margin: 26px auto 0;
+  padding: 15px 28px;
+  border: 1px solid #d8aeb6;
+  border-radius: 999px;
+  background: #f4dfe3;
+  color: #8f5260;
   font: inherit;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.beauty-rec-submit:hover:not(:disabled) {
+  background: #eccfd5;
+  transform: translateY(-1px);
 }
 
 .beauty-rec-submit span {
@@ -214,13 +421,14 @@
 }
 
 .beauty-rec-submit b {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 400;
 }
 
 .beauty-rec-error {
-  margin-top: 14px;
+  margin-top: 16px;
   padding: 14px 16px;
+  border-radius: 14px;
   border: 1px solid #e8c8ce;
   background: #fff6f7;
   color: #a05462;
@@ -232,7 +440,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
 .beauty-rec-result-tags {
@@ -243,16 +451,24 @@
 }
 
 .beauty-rec-result-tags span {
-  padding: 8px 12px;
-  border: 1px solid #dec8cc;
+  padding: 9px 13px;
+  border: 1px solid #e0c8cd;
+  border-radius: 999px;
+  background: #fff8f8;
   color: #8e646d;
   font-size: 11px;
+}
+
+.beauty-rec-tag-tone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .beauty-rec-product-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 34px 18px;
+  gap: 36px 22px;
 }
 
 .beauty-rec-product-card {
@@ -265,21 +481,25 @@
   aspect-ratio: 1 / 1;
   padding: 0;
   border: 0;
-  background: #f7f3f3;
+  border-radius: 22px;
+  background: #f7f1f0;
   overflow: hidden;
   cursor: pointer;
 }
 
 .beauty-rec-product-image img {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform .25s ease;
+  padding: 0;
+  object-fit: contain;
+  background: #fff;
+  transform: scale(1.12);
+  transition: transform 0.28s ease;
 }
 
 .beauty-rec-product-image:hover img {
-  transform: scale(1.02);
+  transform: scale(1.16);
 }
 
 .beauty-rec-product-image > span {
@@ -290,20 +510,20 @@
   height: 100%;
   color: #b0a5a7;
   font-size: 10px;
-  letter-spacing: .15em;
+  letter-spacing: 0.15em;
 }
 
 .beauty-rec-product-info {
-  padding: 18px 2px 0;
+  padding: 18px 4px 0;
 }
 
 .beauty-rec-product-brand {
   display: block;
   margin-bottom: 7px;
-  color: #a17880;
+  color: #b17d88;
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: .13em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
 }
 
@@ -313,7 +533,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: #211d1e;
+  color: #4a3d40;
   font: inherit;
   font-size: 15px;
   font-weight: 600;
@@ -335,7 +555,7 @@
   width: 13px;
   height: 13px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, .08);
+  border: 1px solid rgba(0, 0, 0, 0.07);
 }
 
 .beauty-rec-price {
@@ -346,6 +566,7 @@
 }
 
 .beauty-rec-price strong {
+  color: #4b3d41;
   font-size: 14px;
 }
 
@@ -356,7 +577,7 @@
 }
 
 .beauty-rec-price em {
-  color: #b26f7a;
+  color: var(--g-pink-deep);
   font-size: 11px;
   font-style: normal;
   font-weight: 700;
@@ -364,9 +585,10 @@
 
 .beauty-rec-reason {
   margin: 14px 0 0;
-  padding-top: 13px;
-  border-top: 1px solid #efe8e9;
-  color: #817779;
+  padding: 14px 15px;
+  border-radius: 14px;
+  background: #fbf5f4;
+  color: #7e6f73;
   font-size: 11px;
   line-height: 1.7;
 }
@@ -374,7 +596,8 @@
 .beauty-rec-empty,
 .beauty-rec-history-empty {
   padding: 48px 24px;
-  background: #faf7f7;
+  border-radius: 18px;
+  background: #fbf6f4;
   text-align: center;
   color: #83797b;
   font-size: 12px;
@@ -383,7 +606,7 @@
 .beauty-rec-empty strong {
   display: block;
   margin-bottom: 10px;
-  color: #342e2f;
+  color: #4b3d41;
   font-size: 16px;
 }
 
@@ -392,35 +615,39 @@
 }
 
 .beauty-rec-history-list {
-  border-top: 1px solid #ded2d4;
+  display: grid;
+  gap: 12px;
 }
 
-.beauty-rec-history-list button {
+.beauty-rec-history-item > button {
   display: grid;
-  grid-template-columns: 50px 1fr auto;
+  grid-template-columns: 46px 1fr auto;
   align-items: center;
   gap: 18px;
   width: 100%;
-  padding: 22px 4px;
-  border: 0;
-  border-bottom: 1px solid #e9dfe1;
+  padding: 20px 22px;
+  border: 1px solid #efe3e0;
+  border-radius: 18px;
   background: #fff;
   text-align: left;
   cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.beauty-rec-history-list button:hover {
-  background: #fff9fa;
+.beauty-rec-history-item > button:hover {
+  background: #fff9f8;
+  transform: translateY(-1px);
 }
 
-.beauty-rec-history-list button > span {
+.beauty-rec-history-item > button > span {
   color: #c6a4aa;
   font-size: 10px;
 }
 
 .beauty-rec-history-list strong {
+  color: #4b3d41;
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .beauty-rec-history-list p {
@@ -430,17 +657,18 @@
 }
 
 .beauty-rec-history-list b {
-  padding-right: 10px;
+  color: #b77d88;
   font-size: 17px;
   font-weight: 400;
 }
 
 .beauty-rec-login {
-  max-width: 720px;
+  max-width: 760px;
   margin: 70px auto 20px;
-  padding: 70px 60px;
-  border: 1px solid #eadfe1;
-  background: #fffafa;
+  padding: 72px 60px;
+  border-radius: 28px;
+  border: 1px solid #eee0dc;
+  background: linear-gradient(145deg, #fffafa 0%, #fbf2ef 100%);
   text-align: center;
 }
 
@@ -452,12 +680,13 @@
 .beauty-rec-login button {
   display: inline-flex;
   align-items: center;
-  gap: 36px;
+  gap: 22px;
   margin-top: 30px;
-  padding: 16px 20px;
-  border: 0;
-  background: #211d1e;
-  color: #fff;
+  padding: 14px 22px;
+  border: 1px solid #d8aeb6;
+  border-radius: 999px;
+  background: #f4dfe3;
+  color: #8f5260;
   cursor: pointer;
 }
 
@@ -466,17 +695,21 @@
 }
 
 @media (max-width: 1000px) {
+  .beauty-rec-hero {
+    grid-template-columns: 1fr;
+  }
+
   .beauty-rec-profile-card {
     grid-template-columns: 1fr 1fr;
   }
 
   .beauty-rec-profile-name,
   .beauty-rec-profile-value {
-    border-bottom: 1px solid #eadfe1;
+    border-bottom: 1px solid #f0e7e4;
   }
 
   .beauty-rec-profile-refresh {
-    min-height: 70px;
+    min-height: 56px;
   }
 
   .beauty-rec-category-grid {
@@ -490,7 +723,17 @@
 
 @media (max-width: 720px) {
   .beauty-rec-page {
-    padding: 26px 20px 70px;
+    padding: 26px 20px 76px;
+  }
+
+  .beauty-rec-hero {
+    gap: 24px;
+    padding: 36px 0 46px;
+  }
+
+  .beauty-rec-hero h1,
+  .beauty-rec-login h1 {
+    font-size: 38px;
   }
 
   .beauty-rec-profile-card,
@@ -519,6 +762,354 @@
   }
 
   .beauty-rec-login {
-    padding: 50px 24px;
+    padding: 54px 24px;
   }
+
+  .beauty-rec-submit {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+
+/* 최근 추천 기록: 현재 추천 결과와 분리된 아코디언 상세 */
+.beauty-rec-history-item {
+  overflow: hidden;
+  border: 1px solid #efe3e0;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.beauty-rec-history-item.open {
+  background: #fffaf9;
+  border-color: #e4cfd3;
+}
+
+.beauty-rec-history-item > button {
+  border: 0;
+  border-radius: 0;
+}
+
+.beauty-rec-history-item > button:hover {
+  transform: none;
+}
+
+.beauty-rec-history-item.open > button {
+  background: #fff7f7;
+}
+
+.beauty-rec-history-detail {
+  padding: 4px 22px 24px;
+  border-top: 1px solid #f1e4e2;
+  background: #fffdfc;
+}
+
+.beauty-rec-history-detail-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 0 18px;
+}
+
+.beauty-rec-history-detail-head > div:first-child > span {
+  display: block;
+  margin-bottom: 7px;
+  color: #b87580;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .15em;
+}
+
+.beauty-rec-history-detail-head > div:first-child > strong {
+  color: #4b3d41;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.beauty-rec-history-product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.beauty-rec-history-product {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 16px;
+  background: #fbf6f4;
+}
+
+.beauty-rec-history-product-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 0;
+  border-radius: 13px;
+  overflow: hidden;
+  background: #f3ecea;
+  cursor: pointer;
+}
+
+.beauty-rec-history-product-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  object-fit: cover;
+  object-position: center;
+  background: #fff;
+}
+
+.beauty-rec-history-product-image > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #b4a5a8;
+  font-size: 9px;
+  letter-spacing: .12em;
+}
+
+.beauty-rec-history-product-info {
+  padding: 12px 2px 2px;
+}
+
+.beauty-rec-history-product-info small {
+  display: block;
+  margin-bottom: 5px;
+  color: #b17d88;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+
+.beauty-rec-history-product-info > button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #4a3d40;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.beauty-rec-history-product-info p {
+  margin: 6px 0 8px;
+  color: #928387;
+  font-size: 10px;
+}
+
+.beauty-rec-history-product-info strong {
+  color: #5b474c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.beauty-rec-history-product-empty {
+  padding: 30px 18px;
+  border-radius: 14px;
+  background: #fbf6f4;
+  color: #918589;
+  font-size: 11px;
+  text-align: center;
+}
+
+@media (max-width: 1000px) {
+  .beauty-rec-history-product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .beauty-rec-history-detail {
+    padding: 4px 14px 18px;
+  }
+
+  .beauty-rec-history-detail-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .beauty-rec-history-product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* 최근 추천 기록 카테고리 구분 */
+.beauty-rec-history-item > button {
+  grid-template-columns: 40px 58px minmax(0, 1fr) 28px;
+  gap: 18px;
+}
+
+.beauty-rec-history-index {
+  display: block;
+  color: #c9959f !important;
+  font-size: 10px !important;
+}
+
+.beauty-rec-history-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.beauty-rec-history-icon svg {
+  width: 29px;
+  height: 29px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.65;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.beauty-rec-history-icon.ALL {
+  color: #a66f7b;
+  background: linear-gradient(145deg, #f9e8eb, #f4dadd);
+}
+
+.beauty-rec-history-icon.BASE {
+  color: #a77c67;
+  background: linear-gradient(145deg, #f6e8dd, #edd8ca);
+}
+
+.beauty-rec-history-icon.LIP {
+  color: #b85e73;
+  background: linear-gradient(145deg, #fbe3e8, #f3ccd5);
+}
+
+.beauty-rec-history-icon.BLUSH {
+  color: #c47b87;
+  background: linear-gradient(145deg, #f9e7e3, #f4d2ce);
+}
+
+.beauty-rec-history-icon.EYE {
+  color: #786f9d;
+  background: linear-gradient(145deg, #ebe7f4, #dcd6eb);
+}
+
+.beauty-rec-history-summary {
+  min-width: 0;
+}
+
+.beauty-rec-history-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.beauty-rec-history-title-row strong {
+  color: #493a3f;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.beauty-rec-history-title-row time {
+  color: #b39fa3;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.beauty-rec-history-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 7px;
+  color: #8f7c81;
+  font-size: 11px;
+}
+
+.beauty-rec-history-meta .beauty-rec-tone-chip {
+  width: 12px;
+  height: 12px;
+}
+
+.beauty-rec-history-meta > i {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #d0b8bd;
+}
+
+.beauty-rec-history-summary > p {
+  margin: 7px 0 0;
+  color: #aa9297;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.beauty-rec-history-toggle {
+  color: #bc7b88 !important;
+  font-size: 20px !important;
+  font-weight: 300 !important;
+  padding-right: 0 !important;
+}
+
+@media (max-width: 720px) {
+  .beauty-rec-history-item > button {
+    grid-template-columns: 32px 48px minmax(0, 1fr) 22px;
+    gap: 10px;
+    padding: 17px 12px;
+  }
+
+  .beauty-rec-history-icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .beauty-rec-history-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .beauty-rec-history-title-row strong {
+    font-size: 14px;
+  }
+
+  .beauty-rec-history-meta {
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+}
+
+
+/* 펼쳐진 과거 추천 상품 내부 버튼은 기록 카드 버튼 스타일과 분리 */
+.beauty-rec-history-item .beauty-rec-history-product-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 0;
+  border-radius: 13px;
+  overflow: hidden;
+  background: #f7f1f0;
+  cursor: pointer;
+}
+
+.beauty-rec-history-item .beauty-rec-history-product-info > button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #4a3d40;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
 }
