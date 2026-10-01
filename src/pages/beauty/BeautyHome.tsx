@@ -23,6 +23,10 @@ import {
   useGlobalStore
 } from "../../store/store";
 
+import {
+  addCartItem
+} from "../../api/cartApi";
+
 
 const API_BASE =
   "http://localhost:9104";
@@ -209,6 +213,19 @@ type BeautyHistoryItem = {
   colorCode?: string | null;
   price?: number | null;
 };
+
+type BeautyProductOption = {
+  id: number;
+  productId: number;
+  productColorId?: number | null;
+  colorName?: string | null;
+  productVariantId?: number | null;
+  variantName?: string | null;
+  addPrice?: number | null;
+  stock: number;
+  visible: string;
+};
+
 
 type BeautyHistory = {
   beautySaveId: number;
@@ -750,6 +767,18 @@ const [
 
 
   const [
+    cartAdding,
+    setCartAdding
+  ] = useState(false);
+
+
+  const [
+    historyCartSelectedProductIds,
+    setHistoryCartSelectedProductIds
+  ] = useState<number[]>([]);
+
+
+  const [
     beautyHistory,
     setBeautyHistory
   ] = useState<BeautyHistory[]>([]);
@@ -855,6 +884,44 @@ const [
 
     return `${API_BASE}${path}`;
   };
+
+
+  /* =========================================
+     MY HISTORY 상세 URL 동기화
+     - 목록: ?view=saved
+     - 상세: ?view=saved&historyId=123
+     브라우저 뒤로가기를 누르면 이전 목록 URL이 복원된다.
+  ========================================= */
+
+  useEffect(
+    () => {
+      if (view !== "saved") {
+        return;
+      }
+
+      const historyIdParam =
+        params.get("historyId");
+
+      const parsedHistoryId =
+        historyIdParam
+          ? Number(historyIdParam)
+          : null;
+
+      setSelectedHistoryId(
+        parsedHistoryId && Number.isFinite(parsedHistoryId)
+          ? parsedHistoryId
+          : null
+      );
+
+      if (!parsedHistoryId) {
+        setHistoryCartSelectedProductIds([]);
+      }
+    },
+    [
+      view,
+      params
+    ]
+  );
 
 
   /* =========================================
@@ -977,6 +1044,14 @@ const [
       setSelectedHistoryId(
         null
       );
+
+      setHistoryCartSelectedProductIds(
+        []
+      );
+
+      setParams({
+        view: "saved"
+      });
     };
 
 
@@ -1147,6 +1222,14 @@ const [
         setSelectedHistoryId(
           null
         );
+
+        setHistoryCartSelectedProductIds(
+          []
+        );
+
+        setParams({
+          view: "saved"
+        });
 
 
         await loadBeautyHistory();
@@ -2593,37 +2676,220 @@ const [
   };
 
 
-  const handleBeautyCartItem = (
-    productId: number
-  ) => {
+  const findBeautyCartOption =
+    async (
+      productId: number,
+      productColorId?: number | null
+    ) => {
 
-    alert(
-      "AI BEAUTY에서 선택한 색상은 유지됩니다. 실제 장바구니 저장은 상품 판매 옵션(PRODUCT_OPTION)과 Cart API를 연결한 뒤 바로 담기 방식으로 완성할 예정입니다."
-    );
+      const response =
+        await axiosInstance.get<BeautyProductOption[]>(
+          `/product_option/product/${productId}/available`
+        );
 
-    navigate(
-      `/products/${productId}`
-    );
-  };
+      const availableOptions =
+        (response.data ?? [])
+          .filter(
+            (option) =>
+              option.visible === "Y" &&
+              Number(option.stock ?? 0) > 0
+          );
+
+      const colorMatched =
+        productColorId
+          ? availableOptions.filter(
+              (option) =>
+                Number(option.productColorId) ===
+                Number(productColorId)
+            )
+          : availableOptions;
+
+      const target =
+        colorMatched[0];
+
+      if (!target) {
+        throw new Error(
+          "선택한 색상으로 구매 가능한 상품 옵션이 없습니다."
+        );
+      }
+
+      return target;
+    };
 
 
-  const handleBeautyCartSelected = () => {
+  const addBeautyProductToCart =
+    async (
+      productId: number,
+      productColorId?: number | null
+    ) => {
 
-    if (
-      cartSelectedProductIds.length === 0
-    ) {
+      const option =
+        await findBeautyCartOption(
+          productId,
+          productColorId
+        );
 
-      alert(
-        "장바구니에 담을 상품을 선택해주세요."
+      await addCartItem({
+        productOptionId: option.id,
+        quantity: 1
+      });
+    };
+
+
+  const handleBeautyCartItem =
+    async (
+      productId: number,
+      productColorId?: number | null
+    ) => {
+
+      if (
+        sw !== true ||
+        !memberId
+      ) {
+        alert("로그인 후 장바구니를 이용할 수 있습니다.");
+        navigate("/login");
+        return;
+      }
+
+      if (cartAdding) {
+        return;
+      }
+
+      try {
+        setCartAdding(true);
+
+        await addBeautyProductToCart(
+          productId,
+          productColorId
+        );
+
+        alert("선택한 화장품을 장바구니에 담았습니다.");
+      } catch (error) {
+        console.error("AI BEAUTY 장바구니 담기 오류:", error);
+
+        alert(
+          error instanceof Error
+            ? error.message
+            : "장바구니에 담지 못했습니다."
+        );
+      } finally {
+        setCartAdding(false);
+      }
+    };
+
+
+  const handleBeautyCartProducts =
+    async (
+      products: Array<{
+        productId: number;
+        productColorId?: number | null;
+      }>
+    ) => {
+
+      if (
+        sw !== true ||
+        !memberId
+      ) {
+        alert("로그인 후 장바구니를 이용할 수 있습니다.");
+        navigate("/login");
+        return;
+      }
+
+      if (products.length === 0) {
+        alert("장바구니에 담을 화장품을 선택해주세요.");
+        return;
+      }
+
+      if (cartAdding) {
+        return;
+      }
+
+      try {
+        setCartAdding(true);
+
+        for (const product of products) {
+          await addBeautyProductToCart(
+            product.productId,
+            product.productColorId
+          );
+        }
+
+        alert(`${products.length}개 화장품을 장바구니에 담았습니다.`);
+      } catch (error) {
+        console.error("AI BEAUTY 장바구니 일괄 담기 오류:", error);
+
+        alert(
+          error instanceof Error
+            ? error.message
+            : "선택한 화장품을 장바구니에 담지 못했습니다."
+        );
+      } finally {
+        setCartAdding(false);
+      }
+    };
+
+
+  const handleBeautyCartSelected =
+    async (
+      appliedProducts: Array<{
+        selection: BeautySelection;
+      }>
+    ) => {
+
+      const targets =
+        appliedProducts
+          .filter(
+            ({ selection }) =>
+              cartSelectedProductIds.includes(
+                selection.product.id
+              )
+          )
+          .map(
+            ({ selection }) => ({
+              productId: selection.product.id,
+              productColorId: selection.color.id
+            })
+          );
+
+      await handleBeautyCartProducts(
+        targets
       );
+    };
 
-      return;
-    }
 
-    alert(
-      `${cartSelectedProductIds.length}개 상품을 선택했습니다. 실제 장바구니 일괄 저장은 PRODUCT_OPTION / Cart API 연결 후 완성할 예정입니다.`
-    );
-  };
+  const handleBeautyCartAll =
+    async (
+      appliedProducts: Array<{
+        selection: BeautySelection;
+      }>
+    ) => {
+
+      await handleBeautyCartProducts(
+        appliedProducts.map(
+          ({ selection }) => ({
+            productId: selection.product.id,
+            productColorId: selection.color.id
+          })
+        )
+      );
+    };
+
+
+  const toggleHistoryCartProductSelection =
+    (productId: number) => {
+
+      setHistoryCartSelectedProductIds(
+        (previous) =>
+          previous.includes(productId)
+            ? previous.filter(
+                (id) => id !== productId
+              )
+            : [
+                ...previous,
+                productId
+              ]
+      );
+    };
 
 
 const goTryon = () => {
@@ -3749,6 +4015,13 @@ const goTryon = () => {
 
                 <div className="gd-beauty-result-product-list">
 
+                  {appliedProducts.length > 0 && (
+                    <div className="gd-beauty-result-section-title">
+                      <span>MAKEUP PRODUCTS</span>
+                      <strong>사용한 화장품</strong>
+                    </div>
+                  )}
+
                   {appliedProducts.map(
                     ({
                       item,
@@ -3860,7 +4133,8 @@ const goTryon = () => {
                             className="gd-beauty-result-item-cart"
                             onClick={() =>
                               handleBeautyCartItem(
-                                selection.product.id
+                                selection.product.id,
+                                selection.color.id
                               )
                             }
                           >
@@ -3872,6 +4146,13 @@ const goTryon = () => {
                     }
                   )}
 
+
+                  {appliedHair.length > 0 && (
+                    <div className="gd-beauty-result-section-title hair">
+                      <span>HAIR</span>
+                      <strong>적용한 헤어</strong>
+                    </div>
+                  )}
 
                   {appliedHair.map(
                     ({
@@ -3913,17 +4194,33 @@ const goTryon = () => {
                     <button
                       type="button"
                       className="gd-beauty-result-cart-selected"
-                      onClick={
-                        handleBeautyCartSelected
+                      disabled={cartAdding}
+                      onClick={() =>
+                        handleBeautyCartSelected(
+                          appliedProducts
+                        )
                       }
                     >
-                      선택 상품 장바구니 담기
+                      {cartAdding ? "담는 중..." : "선택 상품 장바구니 담기"}
                       <span>
                         {
                           cartSelectedProductIds.length
                         }
                         개 선택
                       </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      className="gd-beauty-result-cart-all"
+                      disabled={cartAdding}
+                      onClick={() =>
+                        handleBeautyCartAll(
+                          appliedProducts
+                        )
+                      }
+                    >
+                      모두 장바구니 담기
                     </button>
 
                     <button
@@ -4736,6 +5033,28 @@ const goTryon = () => {
        */
       if (selectedHistory) {
 
+        const historyMakeupItems =
+          selectedHistory.items.filter(
+            (item) =>
+              Boolean(item.productId)
+          );
+
+        const historyHairItems =
+          selectedHistory.items.filter(
+            (item) =>
+              item.itemType === "HAIR_STYLE" ||
+              item.itemType === "HAIR_COLOR"
+          );
+
+        const selectedHistoryCartItems =
+          historyMakeupItems.filter(
+            (item) =>
+              item.productId &&
+              historyCartSelectedProductIds.includes(
+                item.productId
+              )
+          );
+
         return (
           <section className="gd-history-page">
 
@@ -4815,6 +5134,7 @@ const goTryon = () => {
                     </button>
 
                   </div>
+
                 </div>
 
               </div>
@@ -4831,23 +5151,56 @@ const goTryon = () => {
                 </h3>
 
 
-                <div className="gd-history-detail-items">
+                {historyMakeupItems.length > 0 && (
+                  <div className="gd-history-item-section">
+                    <div className="gd-history-item-section-head">
+                      <div>
+                        <span>MAKEUP PRODUCTS</span>
+                        <strong>사용한 화장품</strong>
+                      </div>
 
-                  {selectedHistory.items.map(
-                    (item, index) => (
-
-                      <div
-                        className="gd-history-detail-item"
-                        key={`${selectedHistory.beautySaveId}-${item.itemType}-${index}`}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setHistoryCartSelectedProductIds(
+                            historyMakeupItems
+                              .map((item) => item.productId)
+                              .filter(
+                                (productId): productId is number =>
+                                  Boolean(productId)
+                              )
+                          )
+                        }
                       >
+                        모두 선택
+                      </button>
+                    </div>
 
-                        <strong>
-                          {
-                            item.itemType === "HAIR_STYLE"
-                              ? "헤어스타일"
-                              : item.itemType === "HAIR_COLOR"
-                                ? "헤어 컬러"
-                                : item.itemType === "BASE"
+                    <div className="gd-history-detail-items">
+                      {historyMakeupItems.map(
+                        (item, index) => {
+                          const productId = item.productId as number;
+                          const checked =
+                            historyCartSelectedProductIds.includes(productId);
+
+                          return (
+                            <div
+                              className="gd-history-detail-item product"
+                              key={`${selectedHistory.beautySaveId}-${item.itemType}-${index}`}
+                            >
+                              <label className="gd-history-cart-check">
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={() =>
+                                    toggleHistoryCartProductSelection(productId)
+                                  }
+                                />
+                                <span />
+                              </label>
+
+                              <strong>
+                                {item.itemType === "BASE"
                                   ? "베이스"
                                   : item.itemType === "LIP"
                                     ? "립"
@@ -4855,50 +5208,126 @@ const goTryon = () => {
                                       ? "치크"
                                       : item.itemType === "EYE"
                                         ? "아이"
-                                        : item.itemType
-                          }
-                        </strong>
+                                        : item.itemType}
+                              </strong>
 
+                              <button
+                                type="button"
+                                className="gd-history-product-link"
+                                onClick={() =>
+                                  navigate(`/products/${productId}`)
+                                }
+                              >
+                                <span>
+                                  {item.brand || "GODDESS"}
+                                  {" · "}
+                                  {item.productName}
+                                </span>
 
-                        {item.productId ? (
+                                {item.colorName && (
+                                  <small>{item.colorName}</small>
+                                )}
+                              </button>
 
-                          <button
-                            type="button"
-                            onClick={() =>
-                              navigate(
-                                `/products/${item.productId}`
-                              )
-                            }
-                          >
+                              <button
+                                type="button"
+                                className="gd-history-item-cart-button"
+                                disabled={cartAdding}
+                                onClick={() =>
+                                  handleBeautyCartItem(
+                                    productId,
+                                    item.productColorId
+                                  )
+                                }
+                              >
+                                장바구니
+                              </button>
+                            </div>
+                          );
+                        }
+                      )}
+                    </div>
 
-                            <span>
-                              {item.brand || "GODDESS"}
-                              {" · "}
-                              {item.productName}
-                            </span>
+                    <div className="gd-history-cart-actions">
+                      <button
+                        type="button"
+                        className="primary"
+                        disabled={
+                          cartAdding ||
+                          selectedHistoryCartItems.length === 0
+                        }
+                        onClick={() =>
+                          handleBeautyCartProducts(
+                            selectedHistoryCartItems.map(
+                              (item) => ({
+                                productId: item.productId as number,
+                                productColorId: item.productColorId
+                              })
+                            )
+                          )
+                        }
+                      >
+                        {cartAdding
+                          ? "담는 중..."
+                          : `선택 상품 담기 (${selectedHistoryCartItems.length})`}
+                      </button>
 
-                            {item.colorName && (
-                              <small>
-                                {item.colorName}
-                              </small>
-                            )}
+                      <button
+                        type="button"
+                        disabled={cartAdding}
+                        onClick={() =>
+                          handleBeautyCartProducts(
+                            historyMakeupItems.map(
+                              (item) => ({
+                                productId: item.productId as number,
+                                productColorId: item.productColorId
+                              })
+                            )
+                          )
+                        }
+                      >
+                        모두 장바구니 담기
+                      </button>
 
-                          </button>
+                      <button
+                        type="button"
+                        onClick={() => navigate("/cart")}
+                      >
+                        장바구니 보기
+                      </button>
+                    </div>
+                  </div>
+                )}
 
-                        ) : (
-
-                          <span>
-                            {item.styleValue || "-"}
-                          </span>
-
-                        )}
-
+                {historyHairItems.length > 0 && (
+                  <div className="gd-history-item-section hair">
+                    <div className="gd-history-item-section-head">
+                      <div>
+                        <span>HAIR</span>
+                        <strong>적용한 헤어</strong>
                       </div>
-                    )
-                  )}
+                    </div>
 
-                </div>
+                    <div className="gd-history-detail-items">
+                      {historyHairItems.map(
+                        (item, index) => (
+                          <div
+                            className="gd-history-detail-item hair"
+                            key={`${selectedHistory.beautySaveId}-${item.itemType}-${index}`}
+                          >
+                            <strong>
+                              {item.itemType === "HAIR_STYLE"
+                                ? "헤어스타일"
+                                : "헤어 컬러"}
+                            </strong>
 
+                            <span>{item.styleValue || "-"}</span>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {selectedHistory.memo && (
                   <p className="gd-history-memo">
@@ -4906,46 +5335,40 @@ const goTryon = () => {
                   </p>
                 )}
 
-
-                <div className="gd-history-detail-actions">
-
-                  <button
-                    type="button"
-                    className="gd-history-download-button"
-                    onClick={() =>
-                      handleDownloadHistoryImage(
-                        selectedHistory
-                      )
-                    }
-                  >
-                    결과 사진 저장하기
-                  </button>
-
-
-                  <button
-                    type="button"
-                    className="gd-history-delete-button"
-                    disabled={
-                      historyDeleting
-                    }
-                    onClick={() =>
-                      handleDeleteBeautyHistory(
-                        selectedHistory
-                      )
-                    }
-                  >
-                    {
-                      historyDeleting
-                        ? "삭제 중..."
-                        : "이용 내역 삭제"
-                    }
-                  </button>
-
-                </div>
-
               </div>
 
             </article>
+
+            <div className="gd-history-page-actions">
+              <button
+                type="button"
+                className="gd-history-download-button"
+                onClick={() =>
+                  handleDownloadHistoryImage(
+                    selectedHistory
+                  )
+                }
+              >
+                결과 사진 저장하기
+              </button>
+
+              <button
+                type="button"
+                className="gd-history-delete-button"
+                disabled={historyDeleting}
+                onClick={() =>
+                  handleDeleteBeautyHistory(
+                    selectedHistory
+                  )
+                }
+              >
+                {
+                  historyDeleting
+                    ? "삭제 중..."
+                    : "이용 내역 삭제"
+                }
+              </button>
+            </div>
 
 
             {historyImagePreview && (
@@ -5125,11 +5548,16 @@ const goTryon = () => {
                     type="button"
                     className="gd-history-compact-row"
                     key={history.beautySaveId}
-                    onClick={() =>
+                    onClick={() => {
                       setSelectedHistoryId(
                         history.beautySaveId
-                      )
-                    }
+                      );
+                      setHistoryCartSelectedProductIds([]);
+                      setParams({
+                        view: "saved",
+                        historyId: String(history.beautySaveId)
+                      });
+                    }}
                   >
 
                     <div className="gd-history-row-type">
@@ -5245,196 +5673,268 @@ const goTryon = () => {
      START 기본 화면
   ========================================= */
 
-  const renderStartView =
-    () => (
+  const renderStartView = () => {
+    const startSteps = [
+      {
+        no: "01",
+        title: "사진 선택",
+        desc: "나의 정면 사진을 업로드해요.",
+      },
+      {
+        no: "02",
+        title: "스타일 선택",
+        desc: "메이크업, 헤어스타일, 헤어컬러 중 원하는 스타일을 선택해요.",
+      },
+      {
+        no: "03",
+        title: "결과 확인 및 저장",
+        desc: "AI가 적용한 스타일을 확인하고 마음에 드는 결과를 저장해요.",
+      },
+    ];
 
+    const photoGuide = [
+      {
+        title: "정면 사진",
+        desc: "얼굴이 정면으로 나온 사진이 가장 좋아요.",
+      },
+      {
+        title: "밝은 조명",
+        desc: "어두운 곳보다 밝은 곳에서 촬영한 사진을 추천해요.",
+      },
+      {
+        title: "필터 없는 사진",
+        desc: "필터나 보정이 없는 자연스러운 사진이 좋아요.",
+      },
+      {
+        title: "얼굴이 잘 보이는 사진",
+        desc: "머리카락으로 얼굴이 가려지지 않은 사진을 올려주세요.",
+      },
+    ];
+
+    const beautyBenefits = [
+      {
+        no: "01",
+        title: "내 사진 기반 체험",
+        desc: "등록한 회원 사진을 기준으로 나에게 어울리는 스타일을 직접 확인할 수 있어요.",
+      },
+      {
+        no: "02",
+        title: "실제 상품 연결",
+        desc: "베이스, 립, 치크, 아이에 실제 쇼핑 상품을 선택해 AI BEAUTY로 체험할 수 있어요.",
+      },
+      {
+        no: "03",
+        title: "결과 저장 및 재확인",
+        desc: "마음에 드는 AI BEAUTY 결과를 저장하고 MY HISTORY에서 다시 확인할 수 있어요.",
+      },
+      {
+        no: "04",
+        title: "장바구니 바로 연결",
+        desc: "적용한 화장품을 결과 화면에서 선택해 장바구니로 바로 이어갈 수 있어요.",
+      },
+    ];
+
+    return (
       <>
+        {/* 사진 미등록 안내 - 기존 기능 유지 */}
+        {sw === true && photoLoaded && !memberPhoto && (
+          <div className="gd-beauty-photo-alert">
+            <div>
+              <span>PHOTO REQUIRED</span>
+              <strong>
+                아직 AI BEAUTY에 사용할 사진을 등록하지 않으셨네요.
+              </strong>
+              <p>
+                AI 메이크업과 헤어 체험을 시작하려면 먼저 정면 얼굴사진을
+                등록해주세요.
+              </p>
+            </div>
 
-        {/* 사진 미등록 안내 */}
+            <button type="button" onClick={goPhoto}>
+              사진 등록하기
+              <span>→</span>
+            </button>
+          </div>
+        )}
 
-        {
-          sw === true &&
-          photoLoaded &&
-          !memberPhoto && (
+        {/* START 화면만 새 랜딩 디자인으로 변경 */}
+        <section className="gd-start-home">
+          {/* HERO */}
+          <div className="gd-start-hero">
+            <div className="gd-start-hero-copy">
+              <span className="gd-start-kicker">AI BEAUTY</span>
 
-            <div className="gd-beauty-photo-alert">
+              <h2 className="gd-start-title">
+                나에게 어울리는
+                <br />
+                <em>AI 뷰티를 시작</em>해보세요
+              </h2>
 
-              <div>
-
-                <span>
-                  PHOTO REQUIRED
-                </span>
-
-                <strong>
-                  아직 AI BEAUTY에 사용할 사진을 등록하지 않으셨네요.
-                </strong>
-
-                <p>
-                  AI 메이크업과 헤어 체험을 시작하려면
-                  먼저 정면 얼굴사진을 등록해주세요.
-                </p>
-
-              </div>
-
+              <p className="gd-start-desc">
+                사진 한 장으로 나에게 어울리는 메이크업, 헤어스타일,
+                헤어컬러를 AI가 적용해드려요. 지금, 새로운 나의 모습을 미리
+                만나보세요.
+              </p>
 
               <button
                 type="button"
-                onClick={
-                  goPhoto
-                }
-              >
-                사진 등록하기
-                <span>
-                  →
-                </span>
-              </button>
-
-            </div>
-
-          )
-        }
-
-
-        <div className="gd-beauty-layout">
-
-          <div className="gd-beauty-image">
-
-            <img
-              src="/images/goddess/beauty-editorial.webp"
-              alt={`${BRAND.name} 메이크업 컨셉 화보`}
-              width="1254"
-              height="1254"
-            />
-
-          </div>
-
-
-          <section
-            className="gd-beauty-panel"
-            aria-labelledby="beauty-mode-title"
-          >
-
-            <div
-              className="gd-beauty-tabs"
-              aria-label="AI 뷰티 서비스 선택"
-            >
-
-              {
-                MODES.map(
-                  (item) => (
-
-                    <button
-                      key={
-                        item.id
-                      }
-                      aria-pressed={
-                        mode.id ===
-                        item.id
-                      }
-                      onClick={
-                        () =>
-                          setParams({
-                            mode:
-                              item.id
-                          })
-                      }
-                    >
-
-                      {
-                        item.label
-                      }
-
-                    </button>
-
-                  )
-                )
-              }
-
-            </div>
-
-
-            <div
-              className="gd-beauty-panel-body"
-              aria-live="polite"
-            >
-
-              <h2
-                id="beauty-mode-title"
-              >
-                {
-                  mode.title
-                }
-              </h2>
-
-
-              <p className="gd-beauty-description">
-                {
-                  mode.description
-                }
-              </p>
-
-
-              <ul className="gd-beauty-options">
-
-                {
-                  mode.options.map(
-                    (option) => (
-
-                      <li
-                        key={
-                          option
-                        }
-                      >
-                        {
-                          option
-                        }
-                      </li>
-
-                    )
-                  )
-                }
-
-              </ul>
-
-
-              <div className="gd-beauty-status">
-
-                <strong>
-                  실제 상품으로 시작해보세요.
-                </strong>
-
-                <p>
-                  등록한 회원 사진을 기준으로
-                  베이스, 립, 치크, 아이 상품을 골라 체험할 수 있어요.
-                </p>
-
-              </div>
-
-
-              <button
-                className="gd-beauty-shop"
-                onClick={
-                  goTryon
-                }
+                className="gd-start-primary"
+                onClick={goTryon}
               >
                 AI BEAUTY 시작하기
+                <span aria-hidden="true">→</span>
+              </button>
 
-                <span
-                  aria-hidden="true"
-                >
+              <ul className="gd-start-feature-list">
+                <li>간편한 사용</li>
+                <li>다양한 스타일 체험</li>
+                <li>나만을 위한 뷰티 경험</li>
+              </ul>
+            </div>
+
+            <div className="gd-start-hero-visual">
+              <img
+                src="/images/goddess/beauty-editorial.webp"
+                alt={`${BRAND.name} AI BEAUTY 메인 이미지`}
+                width="1254"
+                height="1254"
+              />
+
+              <p className="gd-start-hero-note">
+                AI로 발견하는
+                <br />
+                더 아름다운 나 ♡
+              </p>
+            </div>
+          </div>
+
+          {/* HOW IT WORKS */}
+          <div className="gd-start-flow">
+            <div className="gd-start-flow-intro">
+              <h3>이렇게 진행돼요</h3>
+              <p>
+                사진을 업로드하고, 원하는 스타일을 선택하면 AI가 선택한 뷰티
+                스타일을 적용해드려요.
+              </p>
+            </div>
+
+            <div className="gd-start-flow-steps">
+              {startSteps.map((step) => (
+                <div key={step.no} className="gd-start-step">
+                  <div className="gd-start-step-no">{step.no}</div>
+                  <strong>{step.title}</strong>
+                  <p>{step.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* BEAUTY STYLE */}
+          <div className="gd-start-section-head">
+            <h3>AI로 체험하는 뷰티 스타일</h3>
+
+            <button
+              type="button"
+              className="gd-start-more"
+              onClick={goTryon}
+            >
+              다양한 스타일 체험하기
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <div className="gd-start-card-grid">
+            {MODES.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`gd-start-style-card gd-start-style-card--${item.id}`}
+                onClick={() => {
+                  setParams({ mode: item.id });
+                  goTryon();
+                }}
+              >
+                <div className="gd-start-style-card-text">
+                  <strong>{item.label}</strong>
+                  <p>{item.description}</p>
+                </div>
+
+                <span className="gd-start-style-card-arrow" aria-hidden="true">
                   →
                 </span>
               </button>
+            ))}
+          </div>
 
+          {/* WHY GODDESS */}
+          <section className="gd-start-benefit-section">
+            <div className="gd-start-benefit-head">
+              <div>
+                <span>WHY GODDESS</span>
+                <h3>GODDESS AI BEAUTY는 이렇게 달라요</h3>
+              </div>
+
+              <p>
+                단순히 이미지를 바꾸는 데서 끝나지 않고,
+                나의 사진에서 시작해 실제 상품과 저장, 쇼핑까지 이어지는
+                AI 뷰티 경험을 제공합니다.
+              </p>
             </div>
 
+            <div className="gd-start-benefit-grid">
+              {beautyBenefits.map((item) => (
+                <article key={item.no} className="gd-start-benefit-card">
+                  <span>{item.no}</span>
+                  <strong>{item.title}</strong>
+                  <p>{item.desc}</p>
+                </article>
+              ))}
+            </div>
           </section>
 
-        </div>
+          {/* PHOTO GUIDE */}
+          <section className="gd-start-guide-section">
+            <div className="gd-start-guide-copy">
+              <span>PHOTO GUIDE</span>
+              <h3>더 자연스러운 결과를 위한 사진 가이드</h3>
+              <p>
+                AI BEAUTY가 얼굴과 스타일을 더 안정적으로 적용할 수 있도록
+                아래 조건에 가까운 사진을 사용해주세요.
+              </p>
+            </div>
 
+            <div className="gd-start-guide-list">
+              {photoGuide.map((item, index) => (
+                <div key={item.title} className="gd-start-guide-item">
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <div>
+                    <strong>{item.title}</strong>
+                    <p>{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="gd-start-guide-action">
+              <div>
+                <strong>준비가 되셨나요?</strong>
+                <p>등록한 나의 사진으로 AI BEAUTY를 바로 체험해보세요.</p>
+              </div>
+
+              <button
+                type="button"
+                className="gd-start-guide-button"
+                onClick={goTryon}
+              >
+                AI BEAUTY 시작하기
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
+          </section>
+        </section>
       </>
     );
-
+  };
 
   return (
 
