@@ -5687,7 +5687,7 @@ const goTryon = () => {
       },
       {
         no: "03",
-        title: "결과 확인 및 저장",
+        title: "결과 및 저장",
         desc: "AI가 적용한 스타일을 확인하고 마음에 드는 결과를 저장해요.",
       },
     ];
@@ -5710,6 +5710,32 @@ const goTryon = () => {
         desc: "머리카락으로 얼굴이 가려지지 않은 사진을 올려주세요.",
       },
     ];
+
+    const startStepVisual = (type: "photo" | "style" | "result") => (
+      <div className={`gd-start-cute gd-start-cute--${type}`} aria-hidden="true">
+        <div className="gd-cute-head">
+          <span className="gd-cute-hair" />
+          <span className="gd-cute-eye gd-cute-eye--left" />
+          <span className="gd-cute-eye gd-cute-eye--right" />
+          <span className="gd-cute-cheek gd-cute-cheek--left" />
+          <span className="gd-cute-cheek gd-cute-cheek--right" />
+          <span className="gd-cute-mouth" />
+        </div>
+        {type === "photo" && <span className="gd-cute-photo-frame" />}
+        {type === "style" && (
+          <div className="gd-cute-palette">
+            <span /><span /><span /><span />
+          </div>
+        )}
+        {type === "result" && <span className="gd-cute-sparkle">✦</span>}
+      </div>
+    );
+
+    const beautyStyleCards = [
+      { id: "makeup", label: "메이크업", desc: "립, 치크, 베이스, 아이라이너로 다양한 메이크업을 체험해보세요." },
+      { id: "hair-style", label: "헤어스타일", desc: "단발, 웨이브, 레이어드 등 눈에 띄는 스타일 변화를 미리 만나보세요." },
+      { id: "hair-color", label: "헤어컬러", desc: "브라운, 애쉬, 레드 등 다양한 컬러로 염색한 모습을 확인해보세요." },
+    ] as const;
 
     const beautyBenefits = [
       {
@@ -5819,11 +5845,12 @@ const goTryon = () => {
             </div>
 
             <div className="gd-start-flow-steps">
-              {startSteps.map((step) => (
+              {startSteps.map((step, index) => (
                 <div key={step.no} className="gd-start-step">
                   <div className="gd-start-step-no">{step.no}</div>
                   <strong>{step.title}</strong>
                   <p>{step.desc}</p>
+                  {startStepVisual((["photo", "style", "result"] as const)[index])}
                 </div>
               ))}
             </div>
@@ -5844,25 +5871,100 @@ const goTryon = () => {
           </div>
 
           <div className="gd-start-card-grid">
-            {MODES.map((item) => (
-              <button
+            {beautyStyleCards.map((item) => (
+              <article
                 key={item.id}
-                type="button"
                 className={`gd-start-style-card gd-start-style-card--${item.id}`}
-                onClick={() => {
-                  setParams({ mode: item.id });
-                  goTryon();
-                }}
               >
                 <div className="gd-start-style-card-text">
+                  <span className="gd-start-style-kicker">AI BEAUTY</span>
                   <strong>{item.label}</strong>
-                  <p>{item.description}</p>
+                  <p>{item.desc}</p>
                 </div>
 
-                <span className="gd-start-style-card-arrow" aria-hidden="true">
-                  →
-                </span>
-              </button>
+<div
+                  className={`gd-style-girl gd-style-girl--${item.id}`}
+                  aria-hidden="true"
+                >
+                  {/* 메이크업 */}
+                  {item.id === "makeup" && (
+                    <>
+                      <div className="gd-style-face gd-style-face--makeup">
+                        <div className="gd-style-makeup-hair">
+                          <span className="gd-style-makeup-bang gd-style-makeup-bang--1" />
+                          <span className="gd-style-makeup-bang gd-style-makeup-bang--2" />
+                          <span className="gd-style-makeup-bang gd-style-makeup-bang--3" />
+                        </div>
+
+                        <span className="gd-style-eye gd-style-eye--left" />
+                        <span className="gd-style-eye gd-style-eye--right" />
+
+                        <span className="gd-style-blush gd-style-blush--left" />
+                        <span className="gd-style-blush gd-style-blush--right" />
+
+                        <span className="gd-style-lip" />
+                      </div>
+
+                      <div className="gd-style-lipstick">
+                        <span />
+                      </div>
+                    </>
+                  )}
+
+                  {/* 헤어스타일 */}
+                  {item.id === "hair-style" && (
+                    <div className="gd-style-curly-wrap">
+                      <span className="gd-style-curl gd-style-curl--1" />
+                      <span className="gd-style-curl gd-style-curl--2" />
+                      <span className="gd-style-curl gd-style-curl--3" />
+                      <span className="gd-style-curl gd-style-curl--4" />
+                      <span className="gd-style-curl gd-style-curl--5" />
+                      <span className="gd-style-curl gd-style-curl--6" />
+                      <span className="gd-style-curl gd-style-curl--7" />
+                      <span className="gd-style-curl gd-style-curl--8" />
+
+                      <div className="gd-style-face gd-style-face--curly">
+                        <span className="gd-style-curly-bang" />
+
+                        <span className="gd-style-eye gd-style-eye--left" />
+                        <span className="gd-style-eye gd-style-eye--right" />
+
+                        <span className="gd-style-blush gd-style-blush--left" />
+                        <span className="gd-style-blush gd-style-blush--right" />
+
+                        <span className="gd-style-smile" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 헤어컬러 */}
+                  {item.id === "hair-color" && (
+                    <div className="gd-style-color-wrap">
+                      <span className="gd-style-color-backhair" />
+                      <span className="gd-style-color-side gd-style-color-side--left" />
+                      <span className="gd-style-color-side gd-style-color-side--right" />
+
+                      <div className="gd-style-face gd-style-face--color">
+                        <span className="gd-style-color-top" />
+
+                        <span className="gd-style-eye gd-style-eye--left" />
+                        <span className="gd-style-eye gd-style-eye--right" />
+
+                        <span className="gd-style-blush gd-style-blush--left" />
+                        <span className="gd-style-blush gd-style-blush--right" />
+
+                        <span className="gd-style-smile" />
+                      </div>
+
+                      <div className="gd-style-color-chips">
+                        <span />
+                        <span />
+                        <span />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </article>
             ))}
           </div>
 

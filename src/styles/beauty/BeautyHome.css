@@ -5201,3 +5201,678 @@
     width: 100%;
   }
 }
+
+/* =========================================================
+   START HOME - CUTE VISUALS
+========================================================= */
+.gd-start-step { min-height: 265px; }
+.gd-start-cute {
+  position: relative;
+  width: 118px;
+  height: 92px;
+  margin: 18px auto 0;
+}
+.gd-cute-head {
+  position: absolute;
+  left: 50%; top: 8px;
+  width: 66px; height: 66px;
+  transform: translateX(-50%);
+  border-radius: 46% 46% 48% 48%;
+  background: #f8ddd4;
+  border: 1px solid #ead0ca;
+  overflow: hidden;
+}
+.gd-cute-hair {
+  position: absolute; inset: -7px 4px auto;
+  height: 31px; border-radius: 40px 40px 22px 22px;
+  background: #5a494b;
+}
+.gd-cute-eye { position:absolute; top:33px; width:5px; height:5px; border-radius:50%; background:#5a494b; }
+.gd-cute-eye--left { left:20px; } .gd-cute-eye--right { right:20px; }
+.gd-cute-cheek { position:absolute; top:42px; width:10px; height:6px; border-radius:50%; background:#efb6b8; opacity:.85; }
+.gd-cute-cheek--left { left:9px; } .gd-cute-cheek--right { right:9px; }
+.gd-cute-mouth { position:absolute; left:50%; top:48px; width:12px; height:7px; transform:translateX(-50%); border-bottom:1.5px solid #b77980; border-radius:0 0 12px 12px; }
+.gd-cute-photo-frame { position:absolute; left:3px; top:26px; width:29px; height:38px; border:2px solid #d8a1ac; border-radius:7px; transform:rotate(-8deg); background:#fff8f8; }
+.gd-cute-palette { position:absolute; right:0; top:28px; width:34px; height:34px; border-radius:10px; background:#fff; border:1px solid #eadcdf; display:grid; grid-template-columns:repeat(2,1fr); gap:4px; padding:5px; }
+.gd-cute-palette span { border-radius:50%; background:#d99aaa; } .gd-cute-palette span:nth-child(2){background:#c7b4df}.gd-cute-palette span:nth-child(3){background:#d5a477}.gd-cute-palette span:nth-child(4){background:#7d748e}
+.gd-cute-sparkle { position:absolute; right:5px; top:18px; color:#d78ca0; font-size:25px; }
+
+.gd-start-style-card {
+  min-height: 280px;
+  border-radius: 20px;
+  padding: 24px 24px 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  align-items: center;
+  gap: 10px;
+  cursor: default;
+}
+.gd-start-style-card::after { display:none; }
+.gd-start-style-card--makeup { background:linear-gradient(135deg,#fff8f8,#fff0f3); }
+.gd-start-style-card--hair-style { background:linear-gradient(135deg,#fffaf6,#f8eee8); }
+.gd-start-style-card--hair-color { background:linear-gradient(135deg,#fbf7ff,#f1e8f6); }
+.gd-start-style-kicker { display:block; margin-bottom:10px; color:#c88793; font-size:10px; font-weight:700; letter-spacing:.14em; }
+.gd-start-style-card-text strong { font-size: 30px; }
+.gd-start-style-card-text p { font-size: 13px; }
+
+.gd-style-girl { position:relative; width:145px; height:190px; justify-self:end; }
+.gd-style-girl-head { position:absolute; left:50%; top:28px; width:100px; height:118px; transform:translateX(-50%); border-radius:46% 46% 44% 44%; background:#f7d8cd; border:1px solid rgba(126,92,86,.12); }
+.gd-style-girl-hair { position:absolute; left:-16px; right:-16px; top:-24px; height:82px; border-radius:58px 58px 34px 34px; background:#554245; z-index:-1; }
+.gd-style-girl--hair-style .gd-style-girl-hair { left:-26px; right:-26px; top:-30px; height:150px; border-radius:54px 54px 70px 70px; background:repeating-radial-gradient(ellipse at 50% 0,#6d5350 0 11px,#5c4544 12px 22px); }
+.gd-style-girl--hair-color .gd-style-girl-hair { left:-22px; right:-22px; top:-28px; height:140px; border-radius:60px 60px 72px 72px; background:linear-gradient(160deg,#b37c5f,#d7ad86 45%,#9d694f); }
+.gd-style-girl-eye { position:absolute; top:55px; width:9px; height:6px; border-radius:50%; background:#4d3e40; }
+.gd-style-girl-eye--left { left:27px; } .gd-style-girl-eye--right { right:27px; }
+.gd-style-girl-cheek { position:absolute; top:70px; width:18px; height:9px; border-radius:50%; background:#eeaab1; opacity:.75; }
+.gd-style-girl-cheek--left { left:10px; } .gd-style-girl-cheek--right { right:10px; }
+.gd-style-girl-mouth { position:absolute; left:50%; top:82px; width:21px; height:8px; transform:translateX(-50%); border-bottom:2px solid #c06f7d; border-radius:0 0 20px 20px; }
+.gd-start-style-card--makeup .gd-style-girl-mouth { height:10px; border:0; border-radius:50%; background:#d45f76; }
+.gd-style-prop { position:absolute; font-weight:700; color:#c88793; }
+.gd-style-prop--lip { right:3px; bottom:16px; font-size:30px; transform:rotate(-68deg); }
+.gd-style-prop--curl { right:0; top:4px; font-size:42px; color:#9e7a72; }
+.gd-style-prop--color { right:3px; bottom:22px; width:26px; height:26px; border-radius:50%; background:#9f6b55; color:transparent; box-shadow:0 -34px 0 #c38f6c, 0 -68px 0 #6e4d43; }
+
+@media (max-width: 1100px) {
+  .gd-start-style-card { grid-template-columns: 1fr 120px; }
+  .gd-style-girl { transform: scale(.88); transform-origin:right center; }
+}
+
+@media (max-width: 768px) {
+  .gd-start-style-card { grid-template-columns: 1fr; min-height: 360px; }
+  .gd-style-girl { justify-self:center; }
+}
+
+/* =========================================================
+   START HOME - CUTE VISUALS REFINEMENT 2026-10-02
+   - HOW IT WORKS 3 cards equal width / prevent awkward Korean breaks
+   - Makeup bangs shorter so eyes remain visible
+   - Hairstyle = visible curly perm around the face
+   - Hair color = dyed hair only, face remains visible
+========================================================= */
+
+/* 01/02/03 카드의 가로 폭을 동일하게 유지 */
+.gd-start-flow-steps {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.gd-start-step {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* 한국어 단어가 "업로드 / 해요"처럼 중간에서 갈라지지 않도록 */
+.gd-start-step p {
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+/* 세 단계의 귀여운 그림 영역도 동일한 가로 크기로 통일 */
+.gd-start-cute {
+  width: 118px;
+  min-width: 118px;
+  max-width: 118px;
+}
+
+/* ---------------------------------------------------------
+   BEAUTY STYLE 캐릭터 공통
+--------------------------------------------------------- */
+.gd-style-girl-head {
+  overflow: visible;
+  isolation: isolate;
+}
+
+.gd-style-girl-eye,
+.gd-style-girl-cheek,
+.gd-style-girl-mouth {
+  z-index: 3;
+}
+
+/* ---------------------------------------------------------
+   MAKEUP: 앞머리를 짧게 해서 눈이 확실히 보이도록
+--------------------------------------------------------- */
+.gd-style-girl--makeup .gd-style-girl-hair {
+  left: -13px;
+  right: -13px;
+  top: -20px;
+  height: 58px;
+  border-radius: 54px 54px 26px 26px;
+  background: #554245;
+  z-index: 2;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 74%,
+    86% 66%,
+    74% 72%,
+    62% 63%,
+    50% 70%,
+    38% 62%,
+    26% 70%,
+    14% 64%,
+    0 72%
+  );
+}
+
+.gd-style-girl--makeup .gd-style-girl-eye {
+  top: 49px;
+}
+
+.gd-style-girl--makeup .gd-style-girl-cheek {
+  top: 68px;
+}
+
+.gd-style-girl--makeup .gd-style-girl-mouth {
+  top: 82px;
+}
+
+/* ---------------------------------------------------------
+   HAIR STYLE: 얼굴은 보이고, 주변 머리만 뽀글뽀글 파마
+--------------------------------------------------------- */
+.gd-style-girl--hair-style .gd-style-girl-hair {
+  left: -18px;
+  right: auto;
+  top: -20px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #624a48;
+  z-index: 1;
+  box-shadow:
+    22px -8px 0 #6c514e,
+    46px -12px 0 #5f4745,
+    70px -8px 0 #6b504d,
+    92px 0 0 #5b4443,
+    102px 24px 0 #684e4b,
+    104px 50px 0 #5d4644,
+    96px 76px 0 #6b514e,
+    86px 98px 0 #5e4745,
+    -6px 24px 0 #6a504d,
+    -8px 50px 0 #5b4442,
+    -2px 76px 0 #674e4b,
+    8px 98px 0 #5c4543;
+}
+
+.gd-style-girl--hair-style .gd-style-girl-hair::before,
+.gd-style-girl--hair-style .gd-style-girl-hair::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: #725653;
+}
+
+.gd-style-girl--hair-style .gd-style-girl-hair::before {
+  width: 27px;
+  height: 27px;
+  left: 31px;
+  top: 10px;
+  box-shadow:
+    28px -3px 0 #624a47,
+    54px 5px 0 #705451,
+    66px 28px 0 #604845,
+    -19px 30px 0 #705451,
+    -20px 58px 0 #604845,
+    69px 58px 0 #6e5350;
+}
+
+.gd-style-girl--hair-style .gd-style-girl-hair::after {
+  width: 22px;
+  height: 22px;
+  left: 39px;
+  top: 2px;
+  box-shadow:
+    22px 5px 0 #5d4644,
+    44px 18px 0 #6a504d,
+    -25px 15px 0 #604845;
+}
+
+/* ---------------------------------------------------------
+   HAIR COLOR: 머리카락 영역만 염색, 얼굴 중앙은 가리지 않음
+--------------------------------------------------------- */
+.gd-style-girl--hair-color .gd-style-girl-hair {
+  left: -16px;
+  right: -16px;
+  top: -22px;
+  height: 58px;
+  border-radius: 58px 58px 25px 25px;
+  background: linear-gradient(150deg, #9e684e 0%, #c8926d 48%, #8b5947 100%);
+  z-index: 2;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 78%,
+    86% 68%,
+    72% 74%,
+    58% 65%,
+    50% 72%,
+    40% 64%,
+    27% 74%,
+    13% 67%,
+    0 78%
+  );
+}
+
+.gd-style-girl--hair-color .gd-style-girl-hair::before,
+.gd-style-girl--hair-color .gd-style-girl-hair::after {
+  content: "";
+  position: absolute;
+  top: 36px;
+  width: 24px;
+  height: 100px;
+  border-radius: 18px 18px 30px 30px;
+  background: linear-gradient(180deg, #a66f54, #c38c67 55%, #8f5d49);
+  z-index: -1;
+}
+
+.gd-style-girl--hair-color .gd-style-girl-hair::before {
+  left: 3px;
+  transform: rotate(7deg);
+}
+
+.gd-style-girl--hair-color .gd-style-girl-hair::after {
+  right: 3px;
+  transform: rotate(-7deg);
+}
+
+.gd-style-girl--hair-color .gd-style-girl-eye {
+  top: 53px;
+}
+
+/* 좁은 화면에서도 문구가 어색하게 쪼개지지 않도록 */
+@media (max-width: 1100px) {
+  .gd-start-step strong,
+  .gd-start-step p {
+    word-break: keep-all;
+  }
+}
+
+
+/* =========================================================
+   AI BEAUTY STYLE - CUTE CHARACTER FINAL
+   메이크업 / 헤어스타일 / 헤어컬러 캐릭터 최종
+========================================================= */
+
+.gd-style-girl {
+  position: relative;
+  width: 150px;
+  height: 190px;
+  justify-self: end;
+}
+
+/* 공통 얼굴 */
+.gd-style-face {
+  position: absolute;
+  width: 88px;
+  height: 104px;
+  background: #f8d9cf;
+  border: 1px solid rgba(117, 82, 78, 0.1);
+  border-radius: 45% 45% 47% 47%;
+  box-sizing: border-box;
+}
+
+.gd-style-eye {
+  position: absolute;
+  top: 52px;
+  width: 7px;
+  height: 6px;
+  background: #4b3e40;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.gd-style-eye--left {
+  left: 25px;
+}
+
+.gd-style-eye--right {
+  right: 25px;
+}
+
+.gd-style-blush {
+  position: absolute;
+  top: 67px;
+  width: 17px;
+  height: 8px;
+  border-radius: 50%;
+  background: #efaeb5;
+  opacity: 0.8;
+  z-index: 10;
+}
+
+.gd-style-blush--left {
+  left: 8px;
+}
+
+.gd-style-blush--right {
+  right: 8px;
+}
+
+.gd-style-smile {
+  position: absolute;
+  left: 50%;
+  top: 76px;
+  width: 18px;
+  height: 9px;
+  transform: translateX(-50%);
+  border-bottom: 1.5px solid #c37981;
+  border-radius: 0 0 18px 18px;
+  z-index: 10;
+}
+
+
+/* =========================================================
+   01. MAKEUP
+========================================================= */
+
+.gd-style-face--makeup {
+  left: 24px;
+  top: 45px;
+}
+
+/* 머리 전체 */
+.gd-style-makeup-hair {
+  position: absolute;
+  left: -8px;
+  top: -22px;
+  width: 102px;
+  height: 48px;
+  background: #564346;
+  border-radius: 52px 52px 18px 18px;
+  z-index: 5;
+}
+
+/* 앞머리를 짧게 해서 눈이 보이도록 */
+.gd-style-makeup-bang {
+  position: absolute;
+  top: 27px;
+  width: 34px;
+  height: 16px;
+  background: #564346;
+  border-radius: 0 0 18px 18px;
+}
+
+.gd-style-makeup-bang--1 {
+  left: 3px;
+  transform: rotate(7deg);
+}
+
+.gd-style-makeup-bang--2 {
+  left: 32px;
+}
+
+.gd-style-makeup-bang--3 {
+  right: 3px;
+  transform: rotate(-7deg);
+}
+
+/* 립 메이크업 강조 */
+.gd-style-lip {
+  position: absolute;
+  left: 50%;
+  top: 78px;
+  width: 19px;
+  height: 9px;
+  transform: translateX(-50%);
+  background: #d95f78;
+  border-radius: 50% 50% 55% 55%;
+  z-index: 10;
+}
+
+/* 작은 립스틱 소품 */
+.gd-style-lipstick {
+  position: absolute;
+  right: 1px;
+  bottom: 20px;
+  width: 17px;
+  height: 38px;
+  background: #c78090;
+  border-radius: 3px;
+  transform: rotate(28deg);
+}
+
+.gd-style-lipstick span {
+  position: absolute;
+  left: 3px;
+  top: -12px;
+  width: 11px;
+  height: 16px;
+  background: #df687f;
+  border-radius: 6px 6px 2px 2px;
+}
+
+
+/* =========================================================
+   02. HAIR STYLE - CURLY PERM
+========================================================= */
+
+/* 헤어스타일 캐릭터 - 글자와 겹치지 않게 오른쪽 이동 */
+.gd-style-curly-wrap {
+  position: absolute;
+  left: 22px;   /* 기존 4px → 22px */
+  top: 20px;
+  width: 138px;
+  height: 150px;
+}
+
+/* 얼굴 */
+.gd-style-face--curly {
+  left: 25px;
+  top: 27px;
+  z-index: 4;
+}
+
+/* 정수리 부분 머리 */
+.gd-style-curly-bang {
+  position: absolute;
+  left: -3px;
+  top: -15px;
+  width: 94px;
+  height: 42px;
+  background: #654a49;
+  border-radius: 48px 48px 22px 22px;
+  z-index: 6;
+}
+
+/* 얼굴 바깥쪽 컬 */
+.gd-style-curl {
+  position: absolute;
+  width: 39px;
+  height: 43px;
+  background: #684d4b;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.gd-style-curl--1 {
+  left: 8px;
+  top: 18px;
+}
+
+.gd-style-curl--2 {
+  left: 0;
+  top: 52px;
+}
+
+.gd-style-curl--3 {
+  left: 4px;
+  top: 88px;
+}
+
+.gd-style-curl--4 {
+  left: 18px;
+  top: 112px;
+}
+
+.gd-style-curl--5 {
+  right: 8px;
+  top: 18px;
+}
+
+.gd-style-curl--6 {
+  right: 0;
+  top: 52px;
+}
+
+.gd-style-curl--7 {
+  right: 4px;
+  top: 88px;
+}
+
+.gd-style-curl--8 {
+  right: 18px;
+  top: 112px;
+}
+
+.gd-style-curl--2,
+.gd-style-curl--5,
+.gd-style-curl--8 {
+  background: #765653;
+}
+
+.gd-style-curl--3,
+.gd-style-curl--6 {
+  background: #5d4444;
+}
+
+
+/* =========================================================
+   03. HAIR COLOR
+========================================================= */
+
+.gd-style-color-wrap {
+  position: absolute;
+  left: 4px;
+  top: 22px;
+  width: 140px;
+  height: 150px;
+}
+
+/* 뒤쪽 긴 머리 */
+.gd-style-color-backhair {
+  position: absolute;
+  left: 16px;
+  top: 5px;
+  width: 102px;
+  height: 135px;
+  background: linear-gradient(
+    160deg,
+    #a96f51 0%,
+    #c58b67 45%,
+    #956047 100%
+  );
+  border-radius: 52px 52px 46px 46px;
+  z-index: 1;
+}
+
+/* 얼굴 */
+.gd-style-face--color {
+  left: 26px;
+  top: 24px;
+  z-index: 4;
+}
+
+/* 정수리 부분만 얼굴 위로 */
+.gd-style-color-top {
+  position: absolute;
+  left: -5px;
+  top: -20px;
+  width: 97px;
+  height: 45px;
+  background: linear-gradient(
+    135deg,
+    #9f694d,
+    #c48b66
+  );
+  border-radius: 50px 50px 20px 20px;
+  z-index: 6;
+}
+
+/* 양쪽 옆머리 */
+.gd-style-color-side {
+  position: absolute;
+  top: 36px;
+  width: 22px;
+  height: 91px;
+  background: linear-gradient(
+    180deg,
+    #b57957,
+    #986149
+  );
+  border-radius: 18px;
+  z-index: 3;
+}
+
+.gd-style-color-side--left {
+  left: 17px;
+}
+
+.gd-style-color-side--right {
+  right: 17px;
+}
+
+/* 오른쪽 컬러 샘플 */
+.gd-style-color-chips {
+  position: absolute;
+  right: -12px;   /* 기존 -3px → -12px */
+  top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gd-style-color-chips span {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+
+.gd-style-color-chips span:nth-child(1) {
+  background: #715044;
+}
+
+.gd-style-color-chips span:nth-child(2) {
+  background: #bd8766;
+}
+
+.gd-style-color-chips span:nth-child(3) {
+  background: #9c674f;
+}
+
+
+/* 제목이 메이크 / 업처럼 잘리지 않도록 */
+.gd-start-style-card-text strong,
+.gd-start-style-card-text p {
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+@media (max-width: 1100px) {
+  .gd-style-girl {
+    transform: scale(0.88);
+    transform-origin: right center;
+  }
+}
+
+@media (max-width: 760px) {
+  .gd-style-girl {
+    justify-self: center;
+  }
+}
+
+/* =========================================
+   START - 진행 단계 그림 위치 통일
+========================================= */
+
+.gd-start-step {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 01, 02, 03 그림을 카드 아래쪽 같은 위치로 맞춤 */
+.gd-start-step .gd-start-cute {
+  margin-top: auto;
+  align-self: center;
+
+  /* 아래 여백 */
+  margin-bottom: 24px;
+}

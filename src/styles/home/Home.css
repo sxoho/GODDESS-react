@@ -4618,3 +4618,27 @@
     width: calc(100% - 36px);
   }
 }
+
+.home-ending-logo {
+  width: min(720px, 72vw);
+  margin: 38px 0 46px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-ending-logo img {
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+
+  object-fit: contain;
+  display: block;
+
+  filter:
+    drop-shadow(
+      0 10px 35px
+      rgba(215, 154, 165, 0.14)
+    );
+}

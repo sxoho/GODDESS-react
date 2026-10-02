@@ -5,6 +5,8 @@ import { BRAND } from "../config/brand";
 
 import { axiosInstance } from "../components/ToolBak";
 
+import goddessLogo from "../assets/logo/goddesslogo1.png";
+
 import "../styles/home/Home.css";
 
 const API_BASE = "http://localhost:9104";
@@ -1045,25 +1047,25 @@ const Home = () => {
       <section className="home-ending">
         <span className="ending-glow" />
 
-        <p>FIND YOUR BEAUTY</p>
+<p>FIND YOUR BEAUTY</p>
 
-        <h2>
-          BE YOUR
-          <br />
-          OWN
-          <em> GODDESS.</em>
-        </h2>
+      <div className="home-ending-logo">
+        <img
+          src={goddessLogo}
+          alt={`${BRAND.name} 로고`}
+        />
+      </div>
 
-        <button
-          onClick={() =>
-            navigate(
-              "/beauty?mode=makeup",
-            )
-          }
-        >
-          START EXPERIENCE
-          <span>→</span>
-        </button>
+      <button
+        onClick={() =>
+          navigate(
+            "/beauty?mode=makeup",
+          )
+        }
+      >
+        START EXPERIENCE
+        <span>→</span>
+      </button>
       </section>
 
       {/* =================================
