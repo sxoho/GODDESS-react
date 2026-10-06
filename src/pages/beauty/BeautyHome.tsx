@@ -34,51 +34,6 @@ const API_BASE =
   "http://localhost:9104";
 
 
-const MODES = [
-
-  {
-    id: "makeup",
-    label: "메이크업",
-    title: "나에게 어울리는 메이크업",
-    description:
-      "립, 아이섀도, 치크. 나에게 어울리는 메이크업을 찾는 새로운 방법을 준비하고 있어요.",
-    options: [
-      "립 메이크업",
-      "아이 메이크업",
-      "치크",
-      "베이스 메이크업"
-    ]
-  },
-
-  {
-    id: "hair-style",
-    label: "헤어스타일",
-    title: "새로운 헤어스타일",
-    description:
-      "단발부터 긴 웨이브까지. 머리를 자르기 전에 새로운 분위기를 만나볼 수 있도록 준비하고 있어요.",
-    options: [
-      "단발",
-      "레이어드",
-      "웨이브",
-      "스트레이트"
-    ]
-  },
-
-  {
-    id: "hair-color",
-    label: "헤어컬러",
-    title: "분위기를 바꾸는 헤어컬러",
-    description:
-      "차분한 브라운부터 밝은 블론드까지. 나에게 어울리는 헤어컬러를 미리 살펴보는 경험을 준비하고 있어요.",
-    options: [
-      "블랙",
-      "브라운",
-      "애쉬 브라운",
-      "블론드"
-    ]
-  }
-
-] as const;
 
 
 /* =========================================
@@ -544,13 +499,46 @@ export default function BeautyHome() {
     params.get("view") ?? "start";
 
 
-  const mode =
-    MODES.find(
-      (item) =>
-        item.id ===
-        params.get("mode")
-    ) ??
-    MODES[0];
+  const heroStages = [
+    {
+      id: "base",
+      label: "기본 얼굴",
+      title: "내 사진 기반 기본 얼굴",
+      desc: "정면 사진을 바탕으로 얼굴을 자연스럽게 인식해요.",
+    },
+    {
+      id: "makeup",
+      label: "메이크업 효과",
+      title: "메이크업이 자연스럽게 적용돼요",
+      desc: "립, 치크, 아이 포인트가 얼굴에 부드럽게 더해져요.",
+    },
+    {
+      id: "hair",
+      label: "헤어스타일 적용",
+      title: "헤어스타일까지 완성된 모습을 확인해요",
+      desc: "메이크업 위에 어울리는 헤어스타일을 함께 입혀 새로운 분위기를 미리 볼 수 있어요.",
+    },
+  ] as const;
+
+  const [
+    activeHeroStage,
+    setActiveHeroStage
+  ] = useState(0);
+
+  const [
+    heroTool,
+    setHeroTool
+  ] = useState<"makeup" | "hair" | null>(null);
+
+  const heroToolTimerRef =
+    useRef<number | null>(null);
+
+  const heroAutoTimerRef =
+    useRef<number | null>(null);
+
+  const heroAutoNextRef =
+    useRef<"makeup" | "hair">("makeup");
+
 
 
   /* =========================================
@@ -656,6 +644,64 @@ export default function BeautyHome() {
   ] =
     useState("");
 
+
+  const playHeroEffect =
+    (type: "makeup" | "hair") => {
+      if (heroToolTimerRef.current !== null) {
+        window.clearTimeout(heroToolTimerRef.current);
+      }
+
+      setActiveHeroStage(0);
+      setHeroTool(type);
+
+      heroToolTimerRef.current =
+        window.setTimeout(
+          () => {
+            setActiveHeroStage(
+              type === "makeup" ? 1 : 2
+            );
+            setHeroTool(null);
+            heroToolTimerRef.current = null;
+          },
+          1050
+        );
+    };
+
+
+  useEffect(
+    () => {
+      if (view !== "start") {
+        return;
+      }
+
+      heroAutoNextRef.current = "makeup";
+
+      const runAutoEffect = () => {
+        const nextType = heroAutoNextRef.current;
+        playHeroEffect(nextType);
+        heroAutoNextRef.current =
+          nextType === "makeup" ? "hair" : "makeup";
+      };
+
+      heroAutoTimerRef.current = window.setInterval(
+        runAutoEffect,
+        4200
+      );
+
+      return () => {
+        if (heroAutoTimerRef.current !== null) {
+          window.clearInterval(heroAutoTimerRef.current);
+          heroAutoTimerRef.current = null;
+        }
+
+        if (heroToolTimerRef.current !== null) {
+          window.clearTimeout(heroToolTimerRef.current);
+          heroToolTimerRef.current = null;
+        }
+      };
+    },
+    [view]
+  );
 
   /* =========================================
      AI BEAUTY 체험 상품 상태
@@ -4133,6 +4179,22 @@ const goTryon = () => {
                       }
                       alt="AI BEAUTY 적용 전"
                     />
+
+                    <button
+                      type="button"
+                      className="gd-beauty-result-image-zoom"
+                      onClick={() =>
+                        setHistoryImagePreview(
+                          getImageUrl(
+                            memberPhoto.filePath
+                          )
+                        )
+                      }
+                      aria-label="BEFORE 사진 크게 보기"
+                      title="BEFORE 사진 크게 보기"
+                    >
+                      ⛶
+                    </button>
                   </div>
 
                 </div>
@@ -4159,6 +4221,27 @@ const goTryon = () => {
                       }
                       alt="AI BEAUTY 적용 결과"
                     />
+
+                    <button
+                      type="button"
+                      className="gd-beauty-result-image-zoom"
+                      onClick={() =>
+                        setHistoryImagePreview(
+                          `data:${
+                            tryonResult
+                              .resultContentType ||
+                            "image/png"
+                          };base64,${
+                            tryonResult
+                              .resultImageBase64
+                          }`
+                        )
+                      }
+                      aria-label="AFTER 사진 크게 보기"
+                      title="AFTER 사진 크게 보기"
+                    >
+                      ⛶
+                    </button>
                   </div>
 
                 </div>
@@ -4456,6 +4539,52 @@ const goTryon = () => {
               </button>
 
             </div>
+
+
+            {historyImagePreview && (
+
+              <div
+                className="gd-history-image-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-label="AI BEAUTY 결과 사진 크게 보기"
+                onClick={
+                  handleCloseHistoryImage
+                }
+              >
+
+                <div
+                  className="gd-history-image-modal-inner"
+                  onClick={
+                    (
+                      event
+                    ) =>
+                      event.stopPropagation()
+                  }
+                >
+
+                  <button
+                    type="button"
+                    className="gd-history-image-modal-close"
+                    onClick={
+                      handleCloseHistoryImage
+                    }
+                    aria-label="큰 이미지 닫기"
+                  >
+                    ×
+                  </button>
+
+                  <img
+                    src={
+                      historyImagePreview
+                    }
+                    alt="AI BEAUTY 결과 크게 보기"
+                  />
+
+                </div>
+
+              </div>
+            )}
 
           </section>
         );
@@ -6171,45 +6300,138 @@ const goTryon = () => {
         {/* START 화면만 새 랜딩 디자인으로 변경 */}
         <section className="gd-start-home">
           {/* HERO */}
-          <div className="gd-start-hero">
-            <div className="gd-start-hero-copy">
+          <div className="gd-start-hero gd-start-hero--focus">
+            <div className="gd-start-hero-head">
               <span className="gd-start-kicker">AI BEAUTY</span>
-
-              <h2 className="gd-start-title">
-                나에게 어울리는
-                <br />
-                <em>AI 뷰티를 시작</em>해보세요
-              </h2>
-
-              <p className="gd-start-desc">
-                사진 한 장으로 나에게 어울리는 메이크업, 헤어스타일,
-                헤어컬러를 AI가 적용해드려요. 지금, 새로운 나의 모습을 미리
-                만나보세요.
+              <p className="gd-start-hero-subcopy">
+                얼굴 위에 메이크업과 헤어스타일이 차례로 적용되는 모습을 확인해보세요.
               </p>
+            </div>
+
+            <div
+              className={`gd-start-hero-visual gd-start-hero-visual--animated gd-hero-stage--${heroStages[activeHeroStage].id}`}
+            >
+              <div className="gd-hero-glow gd-hero-glow--left" aria-hidden="true" />
+              <div className="gd-hero-glow gd-hero-glow--right" aria-hidden="true" />
 
               <button
                 type="button"
-                className="gd-start-primary"
-                onClick={goTryon}
+                className={`gd-hero-floating-action gd-hero-floating-action--makeup ${heroTool === "makeup" ? "is-playing" : ""}`}
+                onClick={() => playHeroEffect("makeup")}
               >
-                AI BEAUTY 시작하기
-                <span aria-hidden="true">→</span>
+                <span className="gd-hero-floating-icon gd-hero-floating-icon--makeup" aria-hidden="true">
+                  <i className="gd-mini-brush-handle" />
+                  <i className="gd-mini-brush-head" />
+                </span>
+                <span>메이크업</span>
+                <small>브러쉬로 슥슥</small>
               </button>
 
-              <ul className="gd-start-feature-list">
-                <li>간편한 사용</li>
-                <li>다양한 스타일 체험</li>
-                <li>나만을 위한 뷰티 경험</li>
-              </ul>
+              <button
+                type="button"
+                className={`gd-hero-floating-action gd-hero-floating-action--hair ${heroTool === "hair" ? "is-playing" : ""}`}
+                onClick={() => playHeroEffect("hair")}
+              >
+                <span className="gd-hero-floating-icon gd-hero-floating-icon--hair" aria-hidden="true">
+                  <i className="gd-mini-curl gd-mini-curl--1" />
+                  <i className="gd-mini-curl gd-mini-curl--2" />
+                  <i className="gd-mini-curl gd-mini-curl--3" />
+                  <i className="gd-mini-curl gd-mini-curl--4" />
+                  <i className="gd-mini-face" />
+                </span>
+                <span>헤어스타일</span>
+                <small>고데기로 슥슥</small>
+              </button>
+
+              <div className="gd-hero-face-wrap" aria-live="polite">
+                <div className="gd-hero-stage-ring" aria-hidden="true" />
+                <div className="gd-hero-stage-ring gd-hero-stage-ring--inner" aria-hidden="true" />
+
+                <div className="gd-hero-face-card">
+                  <div className="gd-hero-face-canvas" aria-hidden="true">
+                    <span className="gd-hero-face-shadow" />
+                    <span className="gd-hero-portrait-shoulder" />
+                    <span className="gd-hero-portrait-neck" />
+
+                    {heroTool === "makeup" && (
+                      <span className="gd-hero-tool gd-hero-tool--brush" aria-hidden="true">
+                        <i className="gd-hero-tool-brush-head" />
+                        <i className="gd-hero-tool-brush-handle" />
+                      </span>
+                    )}
+
+                    {heroTool === "hair" && (
+                      <span className="gd-hero-tool gd-hero-tool--iron" aria-hidden="true">
+                        <i className="gd-hero-tool-iron-arm gd-hero-tool-iron-arm--top" />
+                        <i className="gd-hero-tool-iron-arm gd-hero-tool-iron-arm--bottom" />
+                        <i className="gd-hero-tool-iron-hinge" />
+                      </span>
+                    )}
+
+                    <div className="gd-hero-character">
+                      <div className="gd-hero-curl-layer">
+                        <span className="gd-hero-curl gd-hero-curl--1" />
+                        <span className="gd-hero-curl gd-hero-curl--2" />
+                        <span className="gd-hero-curl gd-hero-curl--3" />
+                        <span className="gd-hero-curl gd-hero-curl--4" />
+                        <span className="gd-hero-curl gd-hero-curl--5" />
+                        <span className="gd-hero-curl gd-hero-curl--6" />
+                        <span className="gd-hero-curl gd-hero-curl--7" />
+                        <span className="gd-hero-curl gd-hero-curl--8" />
+                        <span className="gd-hero-curl gd-hero-curl--9" />
+                        <span className="gd-hero-curl gd-hero-curl--10" />
+                      </div>
+
+                      <span className="gd-hero-basic-hair" />
+
+                      <div className="gd-hero-character-face">
+                        <span className="gd-hero-character-bang" />
+                        <span className="gd-hero-character-eye gd-hero-character-eye--left" />
+                        <span className="gd-hero-character-eye gd-hero-character-eye--right" />
+                        <span className="gd-hero-character-blush gd-hero-character-blush--left" />
+                        <span className="gd-hero-character-blush gd-hero-character-blush--right" />
+                        <span className="gd-hero-character-lip" />
+                      </div>
+                    </div>
+
+                    <span className="gd-hero-spark gd-hero-spark--1">✦</span>
+                    <span className="gd-hero-spark gd-hero-spark--2">✦</span>
+                    <span className="gd-hero-spark gd-hero-spark--3">✦</span>
+                  </div>
+
+                  <div className="gd-hero-stage-copy">
+                    <strong>
+                      {heroTool === "makeup"
+                        ? "메이크업을 적용하고 있어요"
+                        : heroTool === "hair"
+                          ? "헤어스타일을 바꾸고 있어요"
+                          : heroStages[activeHeroStage].title}
+                    </strong>
+                    <p>
+                      {heroTool === "makeup"
+                        ? "브러쉬가 얼굴을 지나간 뒤 메이크업이 완성돼요."
+                        : heroTool === "hair"
+                          ? "고데기가 머리를 지나간 뒤 히피펌 스타일로 변해요."
+                          : heroStages[activeHeroStage].desc}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="gd-start-hero-visual">
-              <img
-                src="/images/goddess/beauty-editorial.webp"
-                alt={`${BRAND.name} AI BEAUTY 메인 이미지`}
-                width="1254"
-                height="1254"
-              />
+            <div className="gd-start-hero-actions">
+              <button
+                type="button"
+                className="gd-start-primary gd-start-primary--hero"
+                onClick={goTryon}
+              >
+                <span className="gd-start-primary-sparkle" aria-hidden="true">✦</span>
+                <span className="gd-start-primary-copy">
+                  <small>TRY AI BEAUTY</small>
+                  <strong>AI BEAUTY 시작하기</strong>
+                </span>
+                <span className="gd-start-primary-arrow" aria-hidden="true">→</span>
+              </button>
             </div>
           </div>
 
@@ -6351,7 +6573,7 @@ const goTryon = () => {
           <section className="gd-start-benefit-section">
             <div className="gd-start-benefit-head">
               <div>
-                <h3>AI로 나온 결과를 저장하고 
+                <h3>AI로 체험한 결과를 저장하고 
                   연결한 제품들을 결제까지 
                 </h3>
               </div>

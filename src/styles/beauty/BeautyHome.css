@@ -3019,6 +3019,7 @@
 }
 
 .gd-beauty-result-photo-frame {
+  position: relative;
   overflow: hidden;
   aspect-ratio: 3 / 4;
   border: 1px solid #e9e1e3;
@@ -3030,6 +3031,42 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* BEFORE / AFTER 이미지 확대 버튼 */
+.gd-beauty-result-image-zoom {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+
+  display: flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, .9);
+  background: rgba(255, 255, 255, .92);
+  color: #7f5860;
+
+  font-family: inherit;
+  font-size: 19px;
+  line-height: 1;
+
+  cursor: pointer;
+  box-shadow: 0 3px 14px rgba(55, 38, 42, .12);
+
+  transition:
+    background .2s ease,
+    color .2s ease,
+    border-color .2s ease;
+}
+
+.gd-beauty-result-image-zoom:hover {
+  border-color: #9d6872;
+  background: #9d6872;
+  color: #fff;
 }
 
 .gd-beauty-result-products {
@@ -6477,5 +6514,1621 @@
 
   .gd-hair-limit-note {
     text-align: left;
+  }
+}
+
+/* =========================================================
+   START HERO - CENTER FACE ANIMATION (custom override)
+========================================================= */
+
+.gd-start-hero.gd-start-hero--focus {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 30px 32px 34px;
+}
+
+.gd-start-hero-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.gd-start-hero-subcopy {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #75676a;
+}
+
+.gd-start-hero-stage-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.gd-start-hero-stage-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border: 1px solid #eadbdd;
+  border-radius: 999px;
+  background: #fff;
+  color: #7a6a6d;
+  cursor: pointer;
+  transition: all .22s ease;
+}
+
+.gd-start-hero-stage-tabs button span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  color: #c08a96;
+}
+
+.gd-start-hero-stage-tabs button strong {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.gd-start-hero-stage-tabs button.active,
+.gd-start-hero-stage-tabs button:hover {
+  border-color: #d6a3ad;
+  background: #fff7f8;
+  color: #3a3133;
+  box-shadow: 0 12px 20px rgba(214, 163, 173, 0.16);
+}
+
+.gd-start-hero-visual.gd-start-hero-visual--animated {
+  position: relative;
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) 140px;
+  align-items: center;
+  min-height: 610px;
+  padding: 28px 8px 8px;
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 22%, rgba(244, 213, 221, 0.8) 0, rgba(244, 213, 221, 0.22) 18%, transparent 45%),
+    linear-gradient(180deg, #fffdfd 0%, #fff7f8 100%);
+}
+
+.gd-hero-glow {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 999px;
+  filter: blur(16px);
+  opacity: .7;
+}
+
+.gd-hero-glow--left {
+  left: 70px;
+  bottom: 80px;
+  background: rgba(248, 208, 218, 0.52);
+}
+
+.gd-hero-glow--right {
+  right: 60px;
+  top: 90px;
+  background: rgba(238, 223, 241, 0.56);
+}
+
+.gd-hero-stage-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gd-hero-stage-card span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid #eddfe2;
+  background: rgba(255, 255, 255, 0.82);
+  color: #9f8f93;
+  font-size: 13px;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  transition: all .24s ease;
+}
+
+.gd-hero-stage-card span.is-active {
+  border-color: #d59daa;
+  background: #fff5f7;
+  color: #8e5160;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(213, 157, 170, 0.16);
+}
+
+.gd-hero-stage-card--right {
+  align-items: flex-end;
+}
+
+.gd-hero-face-wrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+}
+
+.gd-hero-stage-ring {
+  position: absolute;
+  width: 470px;
+  height: 470px;
+  border-radius: 50%;
+  border: 1px dashed rgba(210, 166, 176, 0.42);
+  animation: gdHeroRotate 18s linear infinite;
+}
+
+.gd-hero-stage-ring--inner {
+  width: 390px;
+  height: 390px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.7);
+  animation-duration: 12s;
+  animation-direction: reverse;
+}
+
+.gd-hero-face-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 440px);
+  padding: 28px 26px 30px;
+  border: 1px solid #f1e5e8;
+  border-radius: 36px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 24px 60px rgba(56, 35, 42, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.gd-hero-face-stage-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  margin-bottom: 18px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #fff4f6;
+  color: #8f5362;
+}
+
+.gd-hero-face-stage-pill span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.gd-hero-face-stage-pill strong {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.gd-hero-face-canvas {
+  position: relative;
+  width: 100%;
+  height: 330px;
+  overflow: hidden;
+}
+
+.gd-hero-face-shadow,
+.gd-hero-face-shoulder,
+.gd-hero-face-neck,
+.gd-hero-hair-back,
+.gd-hero-hair-side,
+.gd-hero-face-base,
+.gd-hero-ear,
+.gd-hero-brow,
+.gd-hero-eye,
+.gd-hero-eyeshadow,
+.gd-hero-blush,
+.gd-hero-nose,
+.gd-hero-lip,
+.gd-hero-hair-front,
+.gd-hero-wave,
+.gd-hero-spark {
+  position: absolute;
+  transition: all .45s ease;
+}
+
+.gd-hero-face-shadow {
+  left: 50%;
+  bottom: 18px;
+  width: 230px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(221, 196, 204, 0.58);
+  transform: translateX(-50%);
+}
+
+.gd-hero-face-shoulder {
+  left: 50%;
+  bottom: 28px;
+  width: 230px;
+  height: 88px;
+  background: #f5d9d8;
+  border-radius: 120px 120px 18px 18px;
+  transform: translateX(-50%);
+}
+
+.gd-hero-face-neck,
+.gd-hero-face-neck--right {
+  bottom: 96px;
+  width: 34px;
+  height: 66px;
+  background: #f4d8cf;
+  border-radius: 20px;
+}
+
+.gd-hero-face-neck {
+  left: calc(50% - 28px);
+}
+
+.gd-hero-face-neck--right {
+  left: calc(50% - 4px);
+}
+
+.gd-hero-hair-back {
+  left: 50%;
+  top: 56px;
+  width: 180px;
+  height: 164px;
+  background: linear-gradient(180deg, #6c4c4b 0%, #7f5a58 100%);
+  border-radius: 100px 100px 70px 70px;
+  transform: translateX(-50%);
+}
+
+.gd-hero-hair-side {
+  top: 126px;
+  width: 52px;
+  height: 112px;
+  background: #765654;
+  opacity: .72;
+}
+
+.gd-hero-hair-side--left {
+  left: 104px;
+  border-radius: 34px 0 40px 38px;
+}
+
+.gd-hero-hair-side--right {
+  right: 104px;
+  border-radius: 0 34px 38px 40px;
+}
+
+.gd-hero-face-base {
+  left: 50%;
+  top: 88px;
+  width: 146px;
+  height: 184px;
+  background: #f9e5dd;
+  border-radius: 44% 44% 48% 48%;
+  transform: translateX(-50%);
+}
+
+.gd-hero-ear {
+  top: 168px;
+  width: 18px;
+  height: 34px;
+  background: #f6ddd6;
+  border-radius: 50%;
+}
+
+.gd-hero-ear--left {
+  left: 124px;
+}
+
+.gd-hero-ear--right {
+  right: 124px;
+}
+
+.gd-hero-brow {
+  top: 150px;
+  width: 28px;
+  height: 4px;
+  background: #705453;
+  border-radius: 999px;
+}
+
+.gd-hero-brow--left {
+  left: 158px;
+  transform: rotate(-10deg);
+}
+
+.gd-hero-brow--right {
+  right: 158px;
+  transform: rotate(10deg);
+}
+
+.gd-hero-eye {
+  top: 175px;
+  width: 18px;
+  height: 10px;
+  border-bottom: 2px solid #3e3131;
+  border-radius: 0 0 12px 12px;
+}
+
+.gd-hero-eye--left {
+  left: 162px;
+}
+
+.gd-hero-eye--right {
+  right: 162px;
+}
+
+.gd-hero-eyeshadow {
+  top: 167px;
+  width: 30px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(233, 171, 190, 0.58);
+  opacity: 0;
+}
+
+.gd-hero-eyeshadow--left {
+  left: 156px;
+}
+
+.gd-hero-eyeshadow--right {
+  right: 156px;
+}
+
+.gd-hero-blush {
+  top: 206px;
+  width: 28px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(238, 167, 185, 0.6);
+  opacity: 0;
+}
+
+.gd-hero-blush--left {
+  left: 145px;
+}
+
+.gd-hero-blush--right {
+  right: 145px;
+}
+
+.gd-hero-nose {
+  left: 50%;
+  top: 188px;
+  width: 10px;
+  height: 24px;
+  border-radius: 999px;
+  border-right: 2px solid rgba(215, 166, 157, 0.56);
+  transform: translateX(-50%);
+}
+
+.gd-hero-lip {
+  left: 50%;
+  top: 228px;
+  width: 38px;
+  height: 18px;
+  background: rgba(227, 126, 146, 0.35);
+  border-radius: 0 0 28px 28px;
+  transform: translateX(-50%);
+}
+
+.gd-hero-hair-front {
+  left: 50%;
+  top: 100px;
+  width: 98px;
+  height: 54px;
+  background: linear-gradient(180deg, #6e4e4d 0%, #7d5a58 100%);
+  border-radius: 0 0 50px 50px;
+  transform: translateX(-50%);
+}
+
+.gd-hero-wave {
+  top: 144px;
+  width: 82px;
+  height: 156px;
+  border-radius: 48px;
+  background: linear-gradient(180deg, #805d5b 0%, #9a726e 100%);
+  opacity: 0;
+}
+
+.gd-hero-wave--left {
+  left: 82px;
+  transform: rotate(10deg) translateY(20px);
+}
+
+.gd-hero-wave--right {
+  right: 82px;
+  transform: rotate(-10deg) translateY(20px);
+}
+
+.gd-hero-spark {
+  color: #e39ab0;
+  font-size: 24px;
+  opacity: 0;
+  animation: gdHeroSparkle 1.8s ease-in-out infinite;
+}
+
+.gd-hero-spark--1 {
+  left: 88px;
+  top: 96px;
+}
+
+.gd-hero-spark--2 {
+  right: 96px;
+  top: 154px;
+  animation-delay: .25s;
+}
+
+.gd-hero-spark--3 {
+  right: 126px;
+  bottom: 70px;
+  animation-delay: .5s;
+}
+
+.gd-hero-stage-copy {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.gd-hero-stage-copy strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 24px;
+  color: #2a2224;
+}
+
+.gd-hero-stage-copy p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.72;
+  color: #6d6063;
+  word-break: keep-all;
+}
+
+.gd-start-hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.gd-start-hero--focus .gd-start-primary {
+  min-width: 320px;
+  height: 60px;
+  font-size: 18px;
+  border-radius: 18px;
+}
+
+.gd-start-hero--focus .gd-start-feature-list {
+  justify-content: center;
+  margin: 0;
+  text-align: center;
+}
+
+.gd-hero-stage--makeup .gd-hero-eyeshadow,
+.gd-hero-stage--makeup .gd-hero-blush,
+.gd-hero-stage--makeup .gd-hero-spark,
+.gd-hero-stage--hair .gd-hero-eyeshadow,
+.gd-hero-stage--hair .gd-hero-blush,
+.gd-hero-stage--hair .gd-hero-spark {
+  opacity: 1;
+}
+
+.gd-hero-stage--makeup .gd-hero-lip,
+.gd-hero-stage--hair .gd-hero-lip {
+  background: #e17c93;
+  box-shadow: 0 4px 10px rgba(225, 124, 147, 0.16);
+}
+
+.gd-hero-stage--makeup .gd-hero-face-card {
+  transform: translateY(-3px);
+}
+
+.gd-hero-stage--makeup .gd-hero-face-base {
+  filter: saturate(1.03);
+}
+
+.gd-hero-stage--hair .gd-hero-hair-back {
+  top: 44px;
+  width: 214px;
+  height: 228px;
+  border-radius: 120px 120px 94px 94px;
+  background: linear-gradient(180deg, #765655 0%, #9a726e 100%);
+}
+
+.gd-hero-stage--hair .gd-hero-hair-side {
+  top: 118px;
+  width: 64px;
+  height: 150px;
+  opacity: 1;
+}
+
+.gd-hero-stage--hair .gd-hero-hair-side--left {
+  left: 86px;
+}
+
+.gd-hero-stage--hair .gd-hero-hair-side--right {
+  right: 86px;
+}
+
+.gd-hero-stage--hair .gd-hero-hair-front {
+  top: 94px;
+  width: 118px;
+  height: 64px;
+  border-radius: 0 0 60px 60px;
+}
+
+.gd-hero-stage--hair .gd-hero-wave {
+  opacity: 1;
+}
+
+.gd-hero-stage--hair .gd-hero-wave--left {
+  transform: rotate(10deg) translateY(0);
+}
+
+.gd-hero-stage--hair .gd-hero-wave--right {
+  transform: rotate(-10deg) translateY(0);
+}
+
+.gd-hero-stage--hair .gd-hero-face-card {
+  transform: translateY(-4px) scale(1.01);
+}
+
+@keyframes gdHeroRotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gdHeroSparkle {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: .5;
+  }
+
+  50% {
+    transform: translateY(-5px) scale(1.14);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1200px) {
+  .gd-start-hero-visual.gd-start-hero-visual--animated {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding-bottom: 24px;
+  }
+
+  .gd-hero-stage-card {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .gd-hero-stage-card--right {
+    align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .gd-start-hero.gd-start-hero--focus {
+    padding: 24px 18px 28px;
+  }
+
+  .gd-start-hero-subcopy {
+    font-size: 14px;
+  }
+
+  .gd-start-hero-stage-tabs {
+    gap: 10px;
+  }
+
+  .gd-start-hero-stage-tabs button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .gd-start-hero-visual.gd-start-hero-visual--animated {
+    min-height: auto;
+    padding: 22px 0 16px;
+  }
+
+  .gd-hero-face-card {
+    padding: 22px 16px 22px;
+    border-radius: 24px;
+  }
+
+  .gd-hero-stage-ring {
+    width: 320px;
+    height: 320px;
+  }
+
+  .gd-hero-stage-ring--inner {
+    width: 260px;
+    height: 260px;
+  }
+
+  .gd-hero-face-canvas {
+    height: 280px;
+  }
+
+  .gd-hero-face-base {
+    top: 82px;
+    width: 128px;
+    height: 168px;
+  }
+
+  .gd-hero-hair-back {
+    top: 56px;
+    width: 162px;
+    height: 150px;
+  }
+
+  .gd-hero-hair-side--left {
+    left: 82px;
+  }
+
+  .gd-hero-hair-side--right {
+    right: 82px;
+  }
+
+  .gd-hero-brow--left,
+  .gd-hero-eye--left,
+  .gd-hero-eyeshadow--left,
+  .gd-hero-blush--left {
+    left: 120px;
+  }
+
+  .gd-hero-brow--right,
+  .gd-hero-eye--right,
+  .gd-hero-eyeshadow--right,
+  .gd-hero-blush--right {
+    right: 120px;
+  }
+
+  .gd-hero-stage--hair .gd-hero-hair-side--left {
+    left: 70px;
+  }
+
+  .gd-hero-stage--hair .gd-hero-hair-side--right {
+    right: 70px;
+  }
+
+  .gd-hero-wave--left {
+    left: 62px;
+  }
+
+  .gd-hero-wave--right {
+    right: 62px;
+  }
+
+  .gd-start-hero--focus .gd-start-primary {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .gd-start-hero--focus .gd-start-feature-list {
+    gap: 10px;
+    font-size: 13px;
+  }
+}
+
+/* =========================================================
+   START HERO - REFINED CENTER CHARACTER
+   아래 스타일 카드의 귀여운 아이콘 톤을 기준으로 재구성
+========================================================= */
+
+.gd-start-hero.gd-start-hero--focus {
+  gap: 18px;
+}
+
+.gd-start-hero-visual.gd-start-hero-visual--animated {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 560px;
+  padding: 22px 20px 8px;
+}
+
+.gd-start-hero-stage-tabs {
+  gap: 0;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 5px;
+  border: 1px solid #eadcdf;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(92, 62, 69, 0.04);
+}
+
+.gd-start-hero-stage-tabs button {
+  min-width: 145px;
+  justify-content: center;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 11px 16px;
+}
+
+.gd-start-hero-stage-tabs button + button {
+  margin-left: 2px;
+}
+
+.gd-start-hero-stage-tabs button.active,
+.gd-start-hero-stage-tabs button:hover {
+  border: 0;
+  background: #f8e8ec;
+  color: #573f45;
+  box-shadow: none;
+}
+
+.gd-hero-face-wrap {
+  min-height: 475px;
+  width: 100%;
+}
+
+.gd-hero-face-card {
+  width: min(100%, 500px);
+  padding: 24px 30px 28px;
+  border-radius: 34px;
+}
+
+.gd-hero-face-canvas {
+  height: 355px;
+}
+
+.gd-hero-character {
+  position: absolute;
+  left: 50%;
+  top: 34px;
+  width: 260px;
+  height: 270px;
+  transform: translateX(-50%);
+}
+
+.gd-hero-portrait-shoulder {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  width: 230px;
+  height: 88px;
+  transform: translateX(-50%);
+  border-radius: 120px 120px 18px 18px;
+  background: #f2d2d3;
+}
+
+.gd-hero-portrait-neck {
+  position: absolute;
+  left: 50%;
+  bottom: 88px;
+  width: 64px;
+  height: 58px;
+  transform: translateX(-50%);
+  border-radius: 18px;
+  background: #f6d7cd;
+}
+
+.gd-hero-character-face {
+  position: absolute;
+  left: 50%;
+  top: 70px;
+  z-index: 4;
+  width: 142px;
+  height: 170px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(117, 82, 78, 0.08);
+  border-radius: 45% 45% 47% 47%;
+  background: #f8d9cf;
+  box-shadow: inset 0 -8px 16px rgba(207, 130, 132, 0.04);
+}
+
+.gd-hero-basic-hair {
+  position: absolute;
+  left: 50%;
+  top: 42px;
+  z-index: 3;
+  width: 172px;
+  height: 112px;
+  transform: translateX(-50%);
+  border-radius: 88px 88px 30px 30px;
+  background: #564346;
+  transition: opacity .38s ease, transform .38s ease;
+}
+
+.gd-hero-character-bang {
+  position: absolute;
+  left: 50%;
+  top: -10px;
+  z-index: 5;
+  width: 148px;
+  height: 58px;
+  transform: translateX(-50%);
+  border-radius: 72px 72px 28px 28px;
+  background: #564346;
+  transition: opacity .38s ease;
+}
+
+.gd-hero-character-eye {
+  position: absolute;
+  top: 82px;
+  z-index: 8;
+  width: 9px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4b3e40;
+}
+
+.gd-hero-character-eye--left {
+  left: 40px;
+}
+
+.gd-hero-character-eye--right {
+  right: 40px;
+}
+
+.gd-hero-character-blush {
+  position: absolute;
+  top: 103px;
+  z-index: 8;
+  width: 25px;
+  height: 12px;
+  border-radius: 50%;
+  background: #efaeb5;
+  opacity: .22;
+  transition: opacity .38s ease, transform .38s ease;
+}
+
+.gd-hero-character-blush--left {
+  left: 18px;
+}
+
+.gd-hero-character-blush--right {
+  right: 18px;
+}
+
+.gd-hero-character-lip {
+  position: absolute;
+  left: 50%;
+  top: 122px;
+  z-index: 8;
+  width: 26px;
+  height: 11px;
+  transform: translateX(-50%);
+  border-bottom: 2px solid #c37981;
+  border-radius: 0 0 24px 24px;
+  background: transparent;
+  transition: all .38s ease;
+}
+
+.gd-hero-curl-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  transform: scale(.88) translateY(12px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+
+.gd-hero-curl {
+  position: absolute;
+  width: 72px;
+  height: 76px;
+  border-radius: 50%;
+  background: #684d4b;
+  box-shadow: inset -8px -8px 14px rgba(67, 44, 43, 0.08);
+}
+
+.gd-hero-curl--1 { left: 38px; top: 24px; }
+.gd-hero-curl--2 { left: 16px; top: 76px; }
+.gd-hero-curl--3 { left: 18px; top: 134px; }
+.gd-hero-curl--4 { left: 44px; top: 184px; }
+.gd-hero-curl--5 { left: 82px; top: 2px; }
+.gd-hero-curl--6 { right: 82px; top: 2px; }
+.gd-hero-curl--7 { right: 38px; top: 24px; }
+.gd-hero-curl--8 { right: 16px; top: 76px; }
+.gd-hero-curl--9 { right: 18px; top: 134px; }
+.gd-hero-curl--10 { right: 44px; top: 184px; }
+
+.gd-hero-stage--base .gd-hero-spark {
+  opacity: 0;
+}
+
+.gd-hero-stage--makeup .gd-hero-character-blush,
+.gd-hero-stage--hair .gd-hero-character-blush {
+  opacity: .86;
+  transform: scale(1.05);
+}
+
+.gd-hero-stage--makeup .gd-hero-character-lip,
+.gd-hero-stage--hair .gd-hero-character-lip {
+  width: 30px;
+  height: 13px;
+  border: 0;
+  border-radius: 50% 50% 58% 58%;
+  background: #d95f78;
+  box-shadow: 0 3px 7px rgba(217, 95, 120, 0.15);
+}
+
+.gd-hero-stage--makeup .gd-hero-character-face,
+.gd-hero-stage--hair .gd-hero-character-face {
+  box-shadow:
+    inset 0 -8px 16px rgba(207, 130, 132, 0.04),
+    0 10px 24px rgba(218, 159, 173, 0.06);
+}
+
+.gd-hero-stage--hair .gd-hero-basic-hair,
+.gd-hero-stage--hair .gd-hero-character-bang {
+  opacity: 0;
+  transform: translateX(-50%) scale(.9);
+}
+
+.gd-hero-stage--hair .gd-hero-curl-layer {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.gd-hero-stage--hair .gd-hero-character-face::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  width: 128px;
+  height: 48px;
+  transform: translateX(-50%);
+  border-radius: 64px 64px 24px 24px;
+  background: #684d4b;
+  z-index: 4;
+}
+
+.gd-hero-stage--hair .gd-hero-spark {
+  opacity: 1;
+}
+
+.gd-hero-stage-copy {
+  margin-top: 6px;
+}
+
+.gd-hero-stage-copy strong {
+  font-size: 22px;
+}
+
+.gd-hero-stage-copy p {
+  max-width: 390px;
+  margin: 0 auto;
+}
+
+.gd-start-hero-actions {
+  margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+  .gd-start-hero-stage-tabs {
+    width: 100%;
+    border-radius: 18px;
+  }
+
+  .gd-start-hero-stage-tabs button {
+    min-width: 0;
+    flex: 1;
+    padding: 10px 8px;
+  }
+
+  .gd-start-hero-stage-tabs button span {
+    display: none;
+  }
+
+  .gd-start-hero-stage-tabs button strong {
+    font-size: 12px;
+  }
+
+  .gd-hero-face-card {
+    width: min(100%, 410px);
+  }
+
+  .gd-hero-character {
+    transform: translateX(-50%) scale(.88);
+  }
+}
+
+/* =========================================================
+   START HERO - FLOATING BEAUTY ACTIONS
+========================================================= */
+
+.gd-start-hero.gd-start-hero--focus {
+  gap: 20px;
+}
+
+.gd-start-hero-visual.gd-start-hero-visual--animated {
+  position: relative;
+  min-height: 590px;
+  padding: 20px 150px 8px;
+  overflow: visible;
+}
+
+.gd-hero-floating-action {
+  position: absolute;
+  z-index: 6;
+  width: 138px;
+  min-height: 138px;
+  padding: 18px 14px 14px;
+  border: 1px solid rgba(224, 190, 198, 0.9);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 38px rgba(111, 72, 84, 0.11);
+  backdrop-filter: blur(12px);
+  color: #493b3f;
+  cursor: pointer;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.gd-hero-floating-action:hover {
+  transform: translateY(-8px) scale(1.035);
+  border-color: #d9a6b2;
+  box-shadow: 0 24px 44px rgba(111, 72, 84, 0.15);
+}
+
+.gd-hero-floating-action.is-playing {
+  border-color: #cb8394;
+  box-shadow: 0 20px 48px rgba(203, 131, 148, 0.2);
+}
+
+.gd-hero-floating-action > span:not(.gd-hero-floating-icon) {
+  display: block;
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+
+.gd-hero-floating-action small {
+  display: block;
+  margin-top: 5px;
+  color: #a18d92;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.gd-hero-floating-action--makeup {
+  left: 22px;
+  top: 160px;
+  animation: gdFloatMakeup 3.9s ease-in-out infinite;
+}
+
+.gd-hero-floating-action--hair {
+  right: 20px;
+  top: 290px;
+  animation: gdFloatHair 4.4s ease-in-out infinite;
+}
+
+.gd-hero-floating-action.is-playing {
+  animation-play-state: paused;
+}
+
+.gd-hero-floating-icon {
+  position: relative;
+  display: block;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto;
+}
+
+/* makeup floating icon */
+.gd-hero-floating-icon--makeup {
+  border-radius: 50%;
+  background: #fff5f7;
+}
+
+.gd-mini-brush-handle,
+.gd-mini-brush-head {
+  position: absolute;
+  display: block;
+}
+
+.gd-mini-brush-handle {
+  left: 29px;
+  top: 26px;
+  width: 9px;
+  height: 31px;
+  border-radius: 999px;
+  background: #bd7283;
+  transform: rotate(35deg);
+  transform-origin: top center;
+}
+
+.gd-mini-brush-head {
+  left: 18px;
+  top: 11px;
+  width: 25px;
+  height: 22px;
+  border-radius: 60% 60% 45% 45%;
+  background: linear-gradient(180deg, #5f4a4e 0%, #8b6a70 100%);
+  transform: rotate(35deg);
+}
+
+/* hair floating icon - lower beauty card style */
+.gd-hero-floating-icon--hair {
+  width: 66px;
+  height: 62px;
+}
+
+.gd-mini-face {
+  position: absolute;
+  left: 50%;
+  top: 21px;
+  z-index: 3;
+  width: 32px;
+  height: 36px;
+  border-radius: 45% 45% 50% 50%;
+  background: #f7d9cf;
+  transform: translateX(-50%);
+}
+
+.gd-mini-curl {
+  position: absolute;
+  z-index: 2;
+  width: 28px;
+  height: 29px;
+  border-radius: 50%;
+  background: #6d5150;
+}
+
+.gd-mini-curl--1 { left: 7px; top: 5px; }
+.gd-mini-curl--2 { right: 7px; top: 5px; }
+.gd-mini-curl--3 { left: 5px; top: 28px; }
+.gd-mini-curl--4 { right: 5px; top: 28px; }
+
+/* center face polish */
+.gd-hero-face-card {
+  width: min(100%, 520px);
+  padding: 26px 34px 30px;
+  border-radius: 38px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 28px 70px rgba(77, 50, 59, 0.09);
+}
+
+.gd-hero-face-canvas {
+  height: 370px;
+}
+
+.gd-hero-character {
+  top: 28px;
+  width: 286px;
+  height: 292px;
+}
+
+.gd-hero-character-face {
+  top: 76px;
+  width: 152px;
+  height: 180px;
+  background: #f8ddd4;
+  border: 0;
+  box-shadow: inset 0 -8px 18px rgba(200, 129, 132, 0.04);
+}
+
+.gd-hero-basic-hair {
+  top: 44px;
+  width: 182px;
+  height: 116px;
+  background: #594447;
+}
+
+.gd-hero-character-bang {
+  width: 154px;
+  height: 60px;
+  background: #594447;
+}
+
+.gd-hero-character-eye {
+  top: 84px;
+  width: 10px;
+  height: 10px;
+  background: #4d4042;
+}
+
+.gd-hero-character-eye--left { left: 43px; }
+.gd-hero-character-eye--right { right: 43px; }
+
+.gd-hero-character-blush {
+  top: 108px;
+  width: 29px;
+  height: 13px;
+  background: #f3adb8;
+}
+
+.gd-hero-character-blush--left { left: 19px; }
+.gd-hero-character-blush--right { right: 19px; }
+
+.gd-hero-character-lip {
+  top: 132px;
+  width: 28px;
+  height: 12px;
+}
+
+.gd-hero-curl {
+  width: 78px;
+  height: 80px;
+  background: #694f4d;
+  box-shadow: inset -8px -8px 14px rgba(65, 44, 43, 0.07);
+}
+
+.gd-hero-curl--1 { left: 36px; top: 22px; }
+.gd-hero-curl--2 { left: 11px; top: 76px; }
+.gd-hero-curl--3 { left: 12px; top: 139px; }
+.gd-hero-curl--4 { left: 40px; top: 195px; }
+.gd-hero-curl--5 { left: 91px; top: -2px; }
+.gd-hero-curl--6 { right: 91px; top: -2px; }
+.gd-hero-curl--7 { right: 36px; top: 22px; }
+.gd-hero-curl--8 { right: 11px; top: 76px; }
+.gd-hero-curl--9 { right: 12px; top: 139px; }
+.gd-hero-curl--10 { right: 40px; top: 195px; }
+
+.gd-hero-stage--hair .gd-hero-character-face::before {
+  top: -20px;
+  width: 136px;
+  height: 50px;
+  background: #694f4d;
+}
+
+/* animated tools */
+.gd-hero-tool {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.gd-hero-tool--brush {
+  left: 22%;
+  top: 31%;
+  width: 90px;
+  height: 170px;
+  transform: rotate(-30deg);
+  animation: gdMakeupBrushSwipe 1.05s cubic-bezier(.42, 0, .24, 1) both;
+}
+
+.gd-hero-tool-brush-head,
+.gd-hero-tool-brush-handle {
+  position: absolute;
+  display: block;
+}
+
+.gd-hero-tool-brush-head {
+  left: 16px;
+  top: 0;
+  width: 56px;
+  height: 58px;
+  border-radius: 55% 55% 45% 45%;
+  background: linear-gradient(180deg, #59494d 0%, #8b6d73 100%);
+  box-shadow: 0 8px 16px rgba(63, 45, 50, 0.12);
+}
+
+.gd-hero-tool-brush-handle {
+  left: 37px;
+  top: 48px;
+  width: 16px;
+  height: 118px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #d38ca0 0%, #b46578 100%);
+}
+
+.gd-hero-tool--iron {
+  right: 18%;
+  top: 20%;
+  width: 78px;
+  height: 190px;
+  transform: rotate(13deg);
+  animation: gdHairIronSwipe 1.05s cubic-bezier(.42, 0, .24, 1) both;
+}
+
+.gd-hero-tool-iron-arm {
+  position: absolute;
+  left: 26px;
+  width: 18px;
+  height: 150px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #5c5052 0%, #766466 100%);
+  transform-origin: bottom center;
+}
+
+.gd-hero-tool-iron-arm--top {
+  top: 2px;
+  transform: rotate(-9deg);
+}
+
+.gd-hero-tool-iron-arm--bottom {
+  top: 2px;
+  transform: rotate(9deg);
+}
+
+.gd-hero-tool-iron-hinge {
+  position: absolute;
+  left: 27px;
+  bottom: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #c98a99;
+  box-shadow: inset 0 0 0 5px #f1c8d1;
+}
+
+.gd-hero-stage-copy strong,
+.gd-hero-stage-copy p {
+  transition: opacity .2s ease;
+}
+
+@keyframes gdFloatMakeup {
+  0%, 100% { transform: translate(0, 0) rotate(-2deg); }
+  35% { transform: translate(6px, -12px) rotate(2deg); }
+  70% { transform: translate(-4px, -5px) rotate(-1deg); }
+}
+
+@keyframes gdFloatHair {
+  0%, 100% { transform: translate(0, 0) rotate(2deg); }
+  40% { transform: translate(-7px, -11px) rotate(-2deg); }
+  75% { transform: translate(4px, -4px) rotate(1deg); }
+}
+
+@keyframes gdMakeupBrushSwipe {
+  0% {
+    opacity: 0;
+    transform: translate(-28px, 18px) rotate(-36deg) scale(.94);
+  }
+  12% { opacity: 1; }
+  35% {
+    transform: translate(95px, -4px) rotate(-18deg) scale(1);
+  }
+  66% {
+    transform: translate(176px, 45px) rotate(-8deg) scale(1);
+  }
+  88% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate(228px, 2px) rotate(4deg) scale(.96);
+  }
+}
+
+@keyframes gdHairIronSwipe {
+  0% {
+    opacity: 0;
+    transform: translate(35px, -30px) rotate(7deg) scale(.94);
+  }
+  12% { opacity: 1; }
+  42% {
+    transform: translate(-5px, 70px) rotate(14deg) scale(1);
+  }
+  74% {
+    transform: translate(22px, 160px) rotate(8deg) scale(1);
+  }
+  88% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate(-8px, 215px) rotate(12deg) scale(.96);
+  }
+}
+
+@media (max-width: 1150px) {
+  .gd-start-hero-visual.gd-start-hero-visual--animated {
+    padding-left: 115px;
+    padding-right: 115px;
+  }
+
+  .gd-hero-floating-action {
+    width: 118px;
+    min-height: 118px;
+  }
+
+  .gd-hero-floating-action--makeup { left: 0; }
+  .gd-hero-floating-action--hair { right: 0; }
+}
+
+@media (max-width: 768px) {
+  .gd-start-hero-visual.gd-start-hero-visual--animated {
+    padding: 120px 0 105px;
+    overflow: hidden;
+  }
+
+  .gd-hero-floating-action {
+    width: 112px;
+    min-height: 112px;
+    padding: 13px 10px 11px;
+  }
+
+  .gd-hero-floating-action--makeup {
+    left: 14px;
+    top: 18px;
+  }
+
+  .gd-hero-floating-action--hair {
+    right: 14px;
+    top: 40px;
+  }
+
+  .gd-hero-floating-icon {
+    transform: scale(.84);
+  }
+
+  .gd-hero-floating-action > span:not(.gd-hero-floating-icon) {
+    margin-top: 2px;
+    font-size: 13px;
+  }
+
+  .gd-hero-floating-action small {
+    font-size: 9px;
+  }
+
+  .gd-hero-face-card {
+    width: min(100%, 430px);
+    padding: 22px 18px 26px;
+  }
+
+  .gd-hero-character {
+    transform: translateX(-50%) scale(.86);
+  }
+
+  .gd-hero-tool--brush {
+    left: 11%;
+  }
+
+  .gd-hero-tool--iron {
+    right: 8%;
+  }
+}
+
+/* =========================================================
+   START HERO CTA - visible redesign override
+========================================================= */
+.gd-start-hero--focus .gd-start-hero-actions .gd-start-primary.gd-start-primary--hero {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 42px minmax(0, 1fr) 46px;
+  align-items: center;
+  gap: 12px;
+  width: auto;
+  min-width: 330px;
+  height: auto;
+  min-height: 70px;
+  padding: 9px 10px 9px 14px;
+  border: 1px solid #e7c9d0;
+  border-radius: 999px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,.95), transparent 28%),
+    linear-gradient(135deg, #fffafb 0%, #f9e8ec 55%, #f5dbe1 100%);
+  color: #5e4148;
+  box-shadow:
+    0 12px 28px rgba(185, 116, 133, .14),
+    inset 0 1px 0 rgba(255,255,255,.9);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+  transition:
+    transform .22s ease,
+    box-shadow .22s ease,
+    border-color .22s ease;
+}
+
+.gd-start-hero--focus .gd-start-hero-actions .gd-start-primary.gd-start-primary--hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255,255,255,.8) 47%,
+    transparent 64%
+  );
+  transform: translateX(-120%);
+  transition: transform .65s ease;
+  pointer-events: none;
+}
+
+.gd-start-hero--focus .gd-start-hero-actions .gd-start-primary.gd-start-primary--hero:hover {
+  opacity: 1;
+  transform: translateY(-3px);
+  border-color: #dba8b5;
+  box-shadow:
+    0 18px 34px rgba(185, 116, 133, .2),
+    inset 0 1px 0 rgba(255,255,255,.94);
+}
+
+.gd-start-hero--focus .gd-start-hero-actions .gd-start-primary.gd-start-primary--hero:hover::before {
+  transform: translateX(120%);
+}
+
+.gd-start-primary-sparkle {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.82);
+  color: #d28094;
+  font-size: 20px;
+  box-shadow: inset 0 0 0 1px #efd7dd;
+  animation: gdStartButtonSparkle 2.2s ease-in-out infinite;
+}
+
+.gd-start-primary-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.gd-start-primary-copy small {
+  color: #bd8390;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .18em;
+}
+
+.gd-start-primary-copy strong {
+  color: #4b353a;
+  font-size: 16px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.gd-start-primary-arrow {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #bf7d8e;
+  color: #fff;
+  font-size: 19px;
+  box-shadow: 0 7px 16px rgba(191, 125, 142, .24);
+  transition: transform .22s ease, background .22s ease;
+}
+
+.gd-start-primary--hero:hover .gd-start-primary-arrow {
+  transform: translateX(3px);
+  background: #ad6d7d;
+}
+
+@keyframes gdStartButtonSparkle {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(12deg) scale(1.12);
+  }
+}
+
+@media (max-width: 768px) {
+  .gd-start-hero--focus .gd-start-hero-actions .gd-start-primary.gd-start-primary--hero {
+    width: min(100%, 340px);
+    min-width: 0;
+    grid-template-columns: 40px minmax(0, 1fr) 44px;
+    min-height: 66px;
+  }
+
+  .gd-start-primary-copy strong {
+    font-size: 15px;
   }
 }
