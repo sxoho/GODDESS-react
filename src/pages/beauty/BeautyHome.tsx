@@ -5825,12 +5825,6 @@ const goTryon = () => {
                 width="1254"
                 height="1254"
               />
-
-              <p className="gd-start-hero-note">
-                AI로 발견하는
-                <br />
-                더 아름다운 나 ♡
-              </p>
             </div>
           </div>
 
