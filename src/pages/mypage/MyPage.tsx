@@ -20,6 +20,16 @@ import {
 
 import MyCustomerQnaSection from "./MyCustomerQnaSection";
 
+import {
+  getSubscriptionHistory,
+  getSubscriptionStatus
+} from "../../api/subscriptionApi";
+
+import type {
+  SubscriptionResponse,
+  SubscriptionStatusResponse
+} from "../../api/subscriptionApi";
+
 import "../../styles/member/MyPage.css";
 import "../../styles/member/MyPageOrder.css";
 
@@ -2209,6 +2219,40 @@ const MyPage = () => {
 
 
   /**
+   * Premium 구독 상태
+   */
+  const [
+    subscriptionStatus,
+    setSubscriptionStatus
+  ] = useState<SubscriptionStatusResponse | null>(
+    null
+  );
+
+
+  /**
+   * Premium 구독 / 결제 내역
+   */
+  const [
+    subscriptionHistory,
+    setSubscriptionHistory
+  ] = useState<SubscriptionResponse[]>(
+    []
+  );
+
+
+  const [
+    subscriptionLoading,
+    setSubscriptionLoading
+  ] = useState(false);
+
+
+  const [
+    subscriptionError,
+    setSubscriptionError
+  ] = useState("");
+
+
+  /**
    * 로그인 내역
    */
   const [
@@ -2298,14 +2342,17 @@ const MyPage = () => {
   ] = useState<
     "info" |
     "order" |
+    "subscription" |
     "wishlist" |
     "beauty" |
     "review" |
     "qna"
   >(
-    location.state?.activeMenu === "qna"
-      ? "qna"
-      : "info"
+    location.state?.activeMenu === "subscription"
+      ? "subscription"
+      : location.state?.activeMenu === "qna"
+        ? "qna"
+        : "info"
   );
 
 
@@ -2560,6 +2607,57 @@ const MyPage = () => {
 
 
           /**
+           * Premium 구독 상태 / 내역
+           *
+           * 구독 API 오류가 나더라도
+           * 기존 마이페이지 전체 조회는 유지한다.
+           */
+          try {
+
+            const [
+              statusData,
+              historyData
+            ] =
+              await Promise.all([
+                getSubscriptionStatus(
+                  memberId
+                ),
+                getSubscriptionHistory(
+                  memberId
+                )
+              ]);
+
+
+            setSubscriptionStatus(
+              statusData
+            );
+
+
+            setSubscriptionHistory(
+              historyData
+            );
+
+
+          } catch (subscriptionLoadError) {
+
+            console.log(
+              "Premium 구독 정보 없음 또는 조회 실패:",
+              subscriptionLoadError
+            );
+
+
+            setSubscriptionStatus(
+              null
+            );
+
+
+            setSubscriptionHistory(
+              []
+            );
+          }
+
+
+          /**
            * 회원 대표 사진
            *
            * 사진이 없으면
@@ -2661,6 +2759,118 @@ const MyPage = () => {
   /**
    * 날짜 표시
    */
+  /**
+   * Premium 플랜 한글 표시
+   */
+  const getSubscriptionPlanLabel = (
+    planType?: string | null
+  ) => {
+
+    if (planType === "YEARLY") {
+      return "연간 Premium";
+    }
+
+    if (planType === "MONTHLY") {
+      return "월간 Premium";
+    }
+
+    return "Premium";
+  };
+
+
+  /**
+   * 구독 상태 한글 표시
+   */
+  const getSubscriptionStatusLabel = (
+    status?: string | null
+  ) => {
+
+    if (status === "ACTIVE") {
+      return "이용 중";
+    }
+
+    if (status === "CANCELLED") {
+      return "해지";
+    }
+
+    if (status === "EXPIRED") {
+      return "만료";
+    }
+
+    return "-";
+  };
+
+
+  /**
+   * 구독 / 결제 내역 다시 불러오기
+   */
+  const loadSubscriptionSection =
+    async () => {
+
+      if (
+        !memberId ||
+        sw !== true
+      ) {
+        return;
+      }
+
+
+      try {
+
+        setSubscriptionLoading(
+          true
+        );
+
+        setSubscriptionError(
+          ""
+        );
+
+
+        const [
+          statusData,
+          historyData
+        ] =
+          await Promise.all([
+            getSubscriptionStatus(
+              memberId
+            ),
+            getSubscriptionHistory(
+              memberId
+            )
+          ]);
+
+
+        setSubscriptionStatus(
+          statusData
+        );
+
+
+        setSubscriptionHistory(
+          historyData
+        );
+
+
+      } catch (subscriptionLoadError) {
+
+        console.error(
+          "구독 내역 조회 오류:",
+          subscriptionLoadError
+        );
+
+
+        setSubscriptionError(
+          "구독 · 결제 내역을 불러오는 중 오류가 발생했습니다."
+        );
+
+      } finally {
+
+        setSubscriptionLoading(
+          false
+        );
+      }
+    };
+
+
   const formatDate = (
     date?: string
   ) => {
@@ -4593,9 +4803,30 @@ useEffect(() => {
               {member.nickname}님
             </h2>
 
-            <span className="mypage-sidebar-grade">
-              {member.gradeName || member.status || "일반회원"}
-            </span>
+            <div className="mypage-sidebar-membership-line">
+
+              <span className="mypage-sidebar-grade">
+                {member.gradeName || member.status || "일반회원"}
+              </span>
+
+
+              {subscriptionStatus?.premium && (
+
+                <span
+                  className="mypage-sidebar-premium-mark"
+                  title={`${getSubscriptionPlanLabel(
+                    subscriptionStatus.planType
+                  )} 이용 중`}
+                  aria-label={`${getSubscriptionPlanLabel(
+                    subscriptionStatus.planType
+                  )} 이용 중`}
+                >
+                  P
+                </span>
+
+              )}
+
+            </div>
 
             <button
               type="button"
@@ -4637,6 +4868,42 @@ useEffect(() => {
             >
               <span>ORDER</span>
               <small>주문 내역</small>
+            </button>
+
+            <button
+              type="button"
+              className={activeMenu === "subscription" ? "active" : ""}
+              onClick={async () => {
+
+                setActiveMenu(
+                  "subscription"
+                );
+
+
+                /*
+                 * 이용권 관리 화면으로 이동했다가
+                 * 브라우저 뒤로가기를 눌러도
+                 * SUBSCRIPTION 메뉴를 유지하기 위해
+                 * 현재 마이페이지 history state에 저장한다.
+                 */
+                navigate(
+                  `${location.pathname}${location.search}`,
+                  {
+                    replace: true,
+                    state: {
+                      ...location.state,
+                      activeMenu:
+                        "subscription"
+                    }
+                  }
+                );
+
+
+                await loadSubscriptionSection();
+              }}
+            >
+              <span>SUBSCRIPTION</span>
+              <small>구독 · 결제 내역</small>
             </button>
 
             <button
@@ -5140,6 +5407,61 @@ useEffect(() => {
                 <span>
                   {member.gradeName || "-"}
                 </span>
+
+              </div>
+
+
+              {/* Premium 이용권 */}
+
+              <div className="mypage-info-row">
+
+                <span className="mypage-info-label">
+                  Premium 이용권
+                </span>
+
+
+                <div className="mypage-premium-info-value">
+
+                  <strong
+                    className={
+                      subscriptionStatus?.premium
+                        ? "mypage-premium-status active"
+                        : "mypage-premium-status"
+                    }
+                  >
+                    {
+                      subscriptionStatus?.premium
+                        ? `${getSubscriptionPlanLabel(
+                            subscriptionStatus.planType
+                          )} 이용 중`
+                        : "미이용"
+                    }
+                  </strong>
+
+
+                  {
+                    subscriptionStatus?.premium &&
+                    subscriptionStatus.endDate && (
+
+                      <small>
+                        이용기간&nbsp;
+                        {
+                          formatDate(
+                            subscriptionStatus.startDate || undefined
+                          )
+                        }
+                        &nbsp;~&nbsp;
+                        {
+                          formatDate(
+                            subscriptionStatus.endDate
+                          )
+                        }
+                      </small>
+
+                    )
+                  }
+
+                </div>
 
               </div>
 
@@ -5925,6 +6247,327 @@ useEffect(() => {
 
           )}
         </>
+
+      )}
+
+
+      {/* =========================
+          SUBSCRIPTION
+          Premium 구독 · 결제 내역
+      ========================= */}
+
+      {activeMenu === "subscription" && (
+
+        <section className="mypage-section">
+
+          <div className="mypage-section-heading">
+
+            <span>
+              01
+            </span>
+
+
+            <div>
+
+              <p>
+                MY SUBSCRIPTION
+              </p>
+
+
+              <h2>
+                구독 · 결제 내역
+              </h2>
+
+            </div>
+
+          </div>
+
+
+          {subscriptionLoading ? (
+
+            <div className="mypage-subscription-message">
+              구독 정보를 불러오는 중입니다.
+            </div>
+
+          ) : subscriptionError ? (
+
+            <div className="mypage-subscription-message error">
+              {subscriptionError}
+            </div>
+
+          ) : (
+
+            <>
+
+              <div className="mypage-subscription-current">
+
+                <div className="mypage-subscription-current-copy">
+
+                  <span>
+                    CURRENT PLAN
+                  </span>
+
+
+                  <h3>
+                    {
+                      subscriptionStatus?.premium
+                        ? getSubscriptionPlanLabel(
+                            subscriptionStatus.planType
+                          )
+                        : "FREE"
+                    }
+                  </h3>
+
+
+                  <p>
+                    {
+                      subscriptionStatus?.premium
+                        ? "현재 Premium 이용권을 이용하고 있습니다."
+                        : "현재 이용 중인 Premium 이용권이 없습니다."
+                    }
+                  </p>
+
+                </div>
+
+
+                <div className="mypage-subscription-current-meta">
+
+                  <div>
+
+                    <small>
+                      STATUS
+                    </small>
+
+                    <strong
+                      className={
+                        subscriptionStatus?.premium
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      {
+                        subscriptionStatus?.premium
+                          ? "이용 중"
+                          : "무료"
+                      }
+                    </strong>
+
+                  </div>
+
+
+                  <div>
+
+                    <small>
+                      이용 기간
+                    </small>
+
+                    <strong className="mypage-subscription-current-period">
+                      {
+                        subscriptionStatus?.premium ? (
+
+                          <>
+                            <span>
+                              {
+                                formatDate(
+                                  subscriptionStatus.startDate || undefined
+                                )
+                              }
+                            </span>
+
+                            <span>
+                              ~ {
+                                formatDate(
+                                  subscriptionStatus.endDate || undefined
+                                )
+                              }
+                            </span>
+                          </>
+
+                        ) : (
+                          "-"
+                        )
+                      }
+                    </strong>
+
+                  </div>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  className="mypage-subscription-manage-button"
+                  onClick={() =>
+                    navigate(
+                      "/beauty?view=membership"
+                    )
+                  }
+                >
+                  {
+                    subscriptionStatus?.premium
+                      ? "이용권 관리"
+                      : "Premium 이용권 보기"
+                  }
+                  <span>→</span>
+                </button>
+
+              </div>
+
+
+              <div className="mypage-subscription-history-head">
+
+                <div>
+
+                  <span>
+                    PAYMENT HISTORY
+                  </span>
+
+                  <h3>
+                    Premium 결제 내역
+                  </h3>
+
+                </div>
+
+
+                <small>
+                  총 {subscriptionHistory.length}건
+                </small>
+
+              </div>
+
+
+              <div className="mypage-subscription-history-wrap">
+
+                {subscriptionHistory.length === 0 ? (
+
+                  <div className="mypage-subscription-empty">
+
+                    <strong>
+                      결제 내역이 없습니다.
+                    </strong>
+
+                    <p>
+                      Premium 이용권을 결제하면 이곳에서 이용 내역을 확인할 수 있습니다.
+                    </p>
+
+                  </div>
+
+                ) : (
+
+                  <table className="mypage-subscription-table">
+
+                    <thead>
+
+                      <tr>
+                        <th>결제번호</th>
+                        <th>이용권</th>
+                        <th>결제금액</th>
+                        <th>결제일</th>
+                        <th>이용기간</th>
+                        <th>상태</th>
+                      </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                      {subscriptionHistory.map(
+                        (item) => (
+
+                          <tr
+                            key={
+                              item.subscriptionId
+                            }
+                          >
+
+                            <td>
+                              #{item.subscriptionId}
+                            </td>
+
+                            <td>
+                              {
+                                getSubscriptionPlanLabel(
+                                  item.planType
+                                )
+                              }
+                            </td>
+
+                            <td className="price">
+                              {
+                                Number(
+                                  item.price || 0
+                                ).toLocaleString()
+                              }
+                              원
+                            </td>
+
+                            <td>
+                              {
+                                formatDateTime(
+                                  item.createdAt ||
+                                  item.startDate
+                                )
+                              }
+                            </td>
+
+                            <td>
+                              {
+                                formatDate(
+                                  item.startDate
+                                )
+                              }
+                              <br />
+                              <span className="mypage-subscription-period-arrow">
+                                ~
+                              </span>
+                              {
+                                formatDate(
+                                  item.endDate
+                                )
+                              }
+                            </td>
+
+                            <td>
+
+                              <span
+                                className={
+                                  `mypage-subscription-history-status ${
+                                    item.status === "ACTIVE"
+                                      ? "active"
+                                      : item.status === "CANCELLED"
+                                        ? "cancelled"
+                                        : "expired"
+                                  }`
+                                }
+                              >
+                                {
+                                  getSubscriptionStatusLabel(
+                                    item.status
+                                  )
+                                }
+                              </span>
+
+                            </td>
+
+                          </tr>
+
+                        )
+                      )}
+
+                    </tbody>
+
+                  </table>
+
+                )}
+
+              </div>
+
+            </>
+
+          )}
+
+        </section>
 
       )}
 

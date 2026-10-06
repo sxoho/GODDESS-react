@@ -402,9 +402,9 @@ export default function BeautyRecommendation() {
         <div className="beauty-rec-hero-copy">
           <span>AI BEAUTY RECOMMENDATION</span>
           <h1>
-            오늘의 나에게
+            AI가 추천해주는
             <br />
-            가장 잘 어울리는 뷰티.
+            나에게 어울리는 뷰티
           </h1>
           <p>
             저장된 퍼스널 컬러와 피부 타입을 바탕으로

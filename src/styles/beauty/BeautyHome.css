@@ -5876,3 +5876,606 @@
   /* 아래 여백 */
   margin-bottom: 24px;
 }
+
+/* =========================================
+   MY HISTORY - 비로그인 화면
+========================================= */
+
+.gd-history-login-page {
+  min-height: 570px;
+  padding: 38px 40px 54px;
+  border: 1px solid #e7e1e2;
+  background: #fff;
+}
+
+.gd-history-login-head > span {
+  display: block;
+  margin-bottom: 8px;
+  color: #b26f7a;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+.gd-history-login-head h2 {
+  margin: 0;
+  color: #241f20;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -.03em;
+}
+
+.gd-history-login-head p {
+  margin: 12px 0 0;
+  color: #8b8183;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.gd-history-login-card {
+  display: flex;
+  width: 78%;
+  max-width: 760px;
+  min-height: 390px;
+  margin: 42px auto 0;
+  padding: 50px 58px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #eadfe1;
+  background:
+    linear-gradient(
+      145deg,
+      #fffdfd 0%,
+      #fff7f9 100%
+    );
+  text-align: center;
+}
+.gd-history-login-icon {
+  display: flex;
+  width: 54px;
+  height: 54px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d9b5bd;
+  border-radius: 50%;
+  color: #b26f7a;
+  font-size: 22px;
+}
+
+.gd-history-login-label {
+  margin-top: 20px;
+  color: #b26f7a;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .18em;
+}
+
+.gd-history-login-card h3 {
+  margin: 10px 0 0;
+  color: #2c2527;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.gd-history-login-card > p {
+  margin: 12px 0 0;
+  color: #8e8486;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.gd-history-login-features {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 30px;
+  border-top: 1px solid #eadfe1;
+  border-bottom: 1px solid #eadfe1;
+}
+
+.gd-history-login-features > div {
+  padding: 18px 12px;
+  border-right: 1px solid #eadfe1;
+}
+
+.gd-history-login-features > div:last-child {
+  border-right: 0;
+}
+
+.gd-history-login-features strong {
+  display: block;
+  color: #55494c;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.gd-history-login-features span {
+  display: block;
+  margin-top: 6px;
+  color: #a3999b;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.gd-history-login-button {
+  display: flex;
+  min-width: 210px;
+  margin-top: 28px;
+  padding: 14px 24px;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  border: 0;
+  background: #272122;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .18s ease;
+}
+
+.gd-history-login-button:hover {
+  background: #a86676;
+}
+
+.gd-history-login-button span {
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+
+  .gd-history-login-page {
+    padding: 28px 20px 40px;
+  }
+
+  .gd-history-login-card {
+    padding: 32px 20px;
+  }
+
+  .gd-history-login-features {
+    grid-template-columns: 1fr;
+  }
+
+  .gd-history-login-features > div {
+    border-right: 0;
+    border-bottom: 1px solid #eadfe1;
+  }
+
+  .gd-history-login-features > div:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* =========================================
+   AI HAIR - 무료 3회 소진 Premium 모달
+   SIZE UP VERSION
+========================================= */
+
+.gd-hair-limit-modal {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 28px;
+
+  background: rgba(31, 24, 26, 0.45);
+  backdrop-filter: blur(3px);
+}
+
+
+/* 모달 전체 크기 */
+.gd-hair-limit-modal-inner {
+  position: relative;
+
+  width: min(900px, 94vw);
+  max-height: 92vh;
+  overflow-y: auto;
+
+  padding: 44px 46px 34px;
+
+  border: 1px solid #e4c4cc;
+  background: #fff9fa;
+
+  box-shadow:
+    0 28px 80px rgba(72, 45, 52, 0.22);
+}
+
+
+/* X 닫기 */
+.gd-hair-limit-modal-close {
+  position: absolute;
+
+  top: 18px;
+  right: 18px;
+
+  display: flex;
+
+  width: 42px;
+  height: 42px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #dec8ce;
+
+  background: #fff;
+
+  color: #8f5c68;
+
+  font-family: inherit;
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background .18s ease,
+    color .18s ease,
+    border-color .18s ease;
+}
+
+
+.gd-hair-limit-modal-close:hover {
+  border-color: #bd6079;
+
+  background: #bd6079;
+
+  color: #fff;
+}
+
+
+/* 상단 제목 + 횟수 */
+.gd-hair-limit-top {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    165px;
+
+  gap: 38px;
+
+  align-items: center;
+
+  padding-right: 38px;
+}
+
+
+.gd-hair-limit-top > div:first-child > span {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color: #bd6079;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: .18em;
+}
+
+
+/* 메인 제목 */
+.gd-hair-limit-top h3 {
+  margin: 0;
+
+  color: #2e2528;
+
+  font-size: 26px;
+  font-weight: 700;
+
+  letter-spacing: -.035em;
+
+  word-break: keep-all;
+}
+
+
+/* 안내 문구 */
+.gd-hair-limit-top p {
+  max-width: 680px;
+
+  margin: 14px 0 0;
+
+  color: #887a7e;
+
+  font-size: 13px;
+  line-height: 1.85;
+
+  word-break: keep-all;
+}
+
+
+/* 3 / 3 영역 */
+.gd-hair-limit-count {
+  padding: 24px 18px;
+
+  border-left: 1px solid #ecd9de;
+
+  text-align: center;
+}
+
+
+.gd-hair-limit-count small {
+  display: block;
+
+  color: #bd6079;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: .15em;
+}
+
+
+.gd-hair-limit-count strong {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #30272a;
+
+  font-size: 36px;
+  font-weight: 700;
+}
+
+
+.gd-hair-limit-count span {
+  display: block;
+
+  margin-top: 6px;
+
+  color: #9c8d91;
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   가격 영역
+========================================= */
+
+.gd-hair-limit-plans {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  margin-top: 32px;
+
+  border-top: 1px solid #ead8dd;
+  border-bottom: 1px solid #ead8dd;
+}
+
+
+.gd-hair-limit-plans > div {
+  min-height: 145px;
+
+  padding: 26px 28px;
+}
+
+
+.gd-hair-limit-plans > div + div {
+  border-left: 1px solid #ead8dd;
+}
+
+
+.gd-hair-limit-plans > div.recommended {
+  background: #fff2f5;
+}
+
+
+/* MONTHLY / YEARLY */
+.gd-hair-limit-plans span {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color: #bd6079;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: .15em;
+}
+
+
+/* 5,000원 / 40,000원 */
+.gd-hair-limit-plans strong {
+  color: #382e31;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+
+.gd-hair-limit-plans small {
+  margin-left: 6px;
+
+  color: #9b8d91;
+
+  font-size: 11px;
+}
+
+
+/* 60,000원 취소선 */
+.gd-hair-limit-plans del {
+  margin-right: 10px;
+
+  color: #b7abad;
+
+  font-size: 11px;
+}
+
+
+/* 가격 밑 설명 */
+.gd-hair-limit-plans p {
+  margin: 12px 0 0;
+
+  color: #95868a;
+
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+
+/* =========================================
+   하단 버튼
+========================================= */
+
+.gd-hair-limit-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 30px;
+}
+
+
+.gd-hair-limit-actions button {
+  min-width: 220px;
+
+  height: 52px;
+
+  padding: 0 24px;
+
+  border: 1px solid #d9c7cc;
+
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background .18s ease,
+    color .18s ease,
+    border-color .18s ease;
+}
+
+
+.gd-hair-limit-actions button.secondary {
+  background: #fff;
+
+  color: #5f5256;
+}
+
+
+.gd-hair-limit-actions button.secondary:hover {
+  border-color: #bd6079;
+
+  color: #bd6079;
+}
+
+
+.gd-hair-limit-actions button.primary {
+  border-color: #bd6079;
+
+  background: #bd6079;
+
+  color: #fff;
+}
+
+
+.gd-hair-limit-actions button.primary:hover {
+  border-color: #a94f68;
+
+  background: #a94f68;
+}
+
+
+.gd-hair-limit-actions button.primary span {
+  margin-left: 18px;
+
+  font-size: 14px;
+}
+
+
+/* 맨 아래 안내 */
+.gd-hair-limit-note {
+  margin: 15px 0 0;
+
+  color: #aa9da0;
+
+  font-size: 10px;
+
+  text-align: right;
+}
+
+
+/* =========================================
+   반응형
+========================================= */
+
+@media (max-width: 720px) {
+
+  .gd-hair-limit-modal {
+    padding: 14px;
+  }
+
+
+  .gd-hair-limit-modal-inner {
+    width: 100%;
+
+    padding: 38px 22px 26px;
+  }
+
+
+  .gd-hair-limit-top {
+    grid-template-columns: 1fr;
+
+    gap: 20px;
+
+    padding-right: 0;
+  }
+
+
+  .gd-hair-limit-top h3 {
+    font-size: 22px;
+  }
+
+
+  .gd-hair-limit-count {
+    border-top: 1px solid #ecd9de;
+
+    border-left: 0;
+  }
+
+
+  .gd-hair-limit-plans {
+    grid-template-columns: 1fr;
+  }
+
+
+  .gd-hair-limit-plans > div + div {
+    border-top: 1px solid #ead8dd;
+
+    border-left: 0;
+  }
+
+
+  .gd-hair-limit-actions {
+    flex-direction: column;
+  }
+
+
+  .gd-hair-limit-actions button {
+    width: 100%;
+  }
+
+
+  .gd-hair-limit-note {
+    text-align: left;
+  }
+}

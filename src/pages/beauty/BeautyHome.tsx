@@ -11,6 +11,8 @@ import {
 
 import "../../styles/beauty/BeautyHome.css";
 
+import BeautyMembership from "./BeautyMembership";
+
 import {
   BRAND
 } from "../../config/brand";
@@ -190,6 +192,16 @@ type BeautyApplyResponse = {
 
   beautyTryonId: number;
   beautyResultId: number;
+};
+
+
+type AiUsageStatus = {
+  memberId: number;
+  premium: boolean;
+  unlimited: boolean;
+  monthlyLimit: number;
+  usedCount: number;
+  remainingCount: number | null;
 };
 
 
@@ -735,6 +747,20 @@ export default function BeautyHome() {
     tryonApplyError,
     setTryonApplyError
   ] = useState("");
+
+
+  const [
+    hairLimitReached,
+    setHairLimitReached
+  ] = useState(false);
+
+
+  const [
+    hairUsageStatus,
+    setHairUsageStatus
+  ] = useState<AiUsageStatus | null>(
+    null
+  );
 
   const [
     tryonResult,
@@ -2166,7 +2192,6 @@ const [
     ]
   );
 
-
   const handleTryonCategoryChange = (
     categoryId: TryonCategoryId
   ) => {
@@ -2346,6 +2371,91 @@ const [
       }
 
 
+      const hasHairSelection =
+        Boolean(
+          hairSelections[
+            "hair-style"
+          ]?.label
+        )
+        ||
+        Boolean(
+          hairSelections[
+            "hair-color"
+          ]?.label
+        );
+
+
+      /*
+       * 헤어가 포함된 경우 AI 생성 전에
+       * 무료 사용 가능 여부를 먼저 확인한다.
+       *
+       * 무료 3회를 모두 사용한 일반 회원이면
+       * AI 로딩 화면으로 넘어가지 않고
+       * 바로 Premium 이용권 안내를 보여준다.
+       */
+      if (hasHairSelection) {
+
+        try {
+
+          const usageResponse =
+            await axiosInstance.get<AiUsageStatus>(
+              `/beauty/ai-usage/member/${memberId}/status`
+            );
+
+
+          setHairUsageStatus(
+            usageResponse.data
+          );
+
+
+          if (
+            !usageResponse.data.premium
+            &&
+            Number(
+              usageResponse.data.remainingCount ?? 0
+            ) <= 0
+          ) {
+
+            setHairLimitReached(
+              true
+            );
+
+            setTryonApplyError(
+              ""
+            );
+
+            setTryonResult(
+              null
+            );
+
+            return;
+          }
+
+
+          setHairLimitReached(
+            false
+          );
+
+        } catch (usageError) {
+
+          /*
+           * 횟수 상태 조회 자체가 실패해도
+           * 기존 /beauty/tryon 서버 검증은 그대로 동작하게 둔다.
+           */
+          console.warn(
+            "AI 헤어 사용 횟수 사전 조회 실패:",
+            usageError
+          );
+        }
+
+      } else {
+
+        setHairLimitReached(
+          false
+        );
+      }
+
+
       try {
 
         setTryonApplying(
@@ -2454,25 +2564,79 @@ const [
           (
             error as {
               response?: {
-                data?: {
-                  message?: string;
-                };
+                data?:
+                  | {
+                      message?: string;
+                      error?: string;
+                    }
+                  | string;
               };
               message?: string;
             }
           );
 
 
-        const message =
+        const responseData =
           errorData
             ?.response
-            ?.data
-            ?.message
-          ||
-          errorData
-            ?.message
-          ||
+            ?.data;
+
+
+        let message =
           "AI BEAUTY 적용 중 오류가 발생했습니다.";
+
+
+        if (
+          typeof responseData ===
+            "string" &&
+          responseData.trim()
+        ) {
+
+          message =
+            responseData;
+
+        } else if (
+          responseData &&
+          typeof responseData ===
+            "object"
+        ) {
+
+          message =
+            responseData.message
+            ||
+            responseData.error
+            ||
+            message;
+
+        } else if (
+          errorData?.message
+        ) {
+
+          message =
+            errorData.message;
+        }
+
+
+        if (
+          message.includes(
+            "무료 헤어 AI 체험 3회"
+          )
+          ||
+          message.includes(
+            "무료 헤어 AI"
+          )
+        ) {
+
+          setHairLimitReached(
+            true
+          );
+
+          setTryonApplyError(
+            ""
+          );
+
+          return;
+        }
 
 
         setTryonApplyError(
@@ -2966,6 +3130,14 @@ const goTryon = () => {
 
   setTryonApplyError(
     ""
+  );
+
+  setHairLimitReached(
+    false
+  );
+
+  setHairUsageStatus(
+    null
   );
 
   setBeautySaved(
@@ -4347,7 +4519,7 @@ const goTryon = () => {
               메이크업과 헤어를 한 번에 체험해보세요.
             </h2>
             <p>
-              원하는 항목만 선택해도 괜찮아요.
+              원하는 항목만 선택해주세요
               메이크업과 헤어 선택은 서로 유지됩니다.
             </p>
           </div>
@@ -4646,7 +4818,8 @@ const goTryon = () => {
                       어떤 헤어를 적용할까요?
                     </h3>
                     <p>
-                      헤어 기능은 Premium 이용권 전용으로 연결할 예정입니다.
+                      일반 회원은 매월 3회 무료로 이용할 수 있고,
+                      Premium 회원은 횟수 제한 없이 이용할 수 있습니다.
                     </p>
 
                     <div className="gd-tryon-category-tabs gd-tryon-hair-tabs">
@@ -4784,8 +4957,8 @@ const goTryon = () => {
                     <div className="gd-tryon-premium-note">
                       <strong>PREMIUM</strong>
                       <p>
-                        현재는 화면 선택 구조만 먼저 연결했습니다.
-                        다음 단계에서 구독권 확인과 실제 헤어 AI API를 연결합니다.
+                        헤어스타일 또는 헤어컬러가 포함된 결과 생성 1회당 1회 차감됩니다.
+                        헤어스타일과 헤어컬러를 동시에 적용해도 1회로 계산됩니다.
                       </p>
                     </div>
                   </div>
@@ -4957,6 +5130,202 @@ const goTryon = () => {
           </div>
 
 
+          {hairLimitReached && (
+
+            <div
+              className="gd-hair-limit-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="gd-hair-limit-title"
+              onClick={() =>
+                setHairLimitReached(
+                  false
+                )
+              }
+            >
+
+              <div
+                className="gd-hair-limit-modal-inner"
+                onClick={
+                  (event) =>
+                    event.stopPropagation()
+                }
+              >
+
+                <button
+                  type="button"
+                  className="gd-hair-limit-modal-close"
+                  aria-label="무료 헤어 AI 안내 닫기"
+                  onClick={() =>
+                    setHairLimitReached(
+                      false
+                    )
+                  }
+                >
+                  ×
+                </button>
+
+
+                <div className="gd-hair-limit-top">
+
+                  <div>
+
+                    <span>
+                      PREMIUM
+                    </span>
+
+                    <h3 id="gd-hair-limit-title">
+                      이번 달 무료 헤어 AI 3회를 모두 사용했어요.
+                    </h3>
+
+                    <p>
+                      메이크업 AI는 계속 무료로 이용할 수 있습니다.
+                      헤어스타일과 헤어컬러를 더 체험하고 싶다면
+                      Premium 이용권으로 횟수 제한 없이 이용해보세요.
+                    </p>
+
+                  </div>
+
+
+                  <div className="gd-hair-limit-count">
+
+                    <small>
+                      THIS MONTH
+                    </small>
+
+                    <strong>
+                      {
+                        hairUsageStatus?.usedCount ??
+                        3
+                      }
+                      /
+                      {
+                        hairUsageStatus?.monthlyLimit ??
+                        3
+                      }
+                    </strong>
+
+                    <span>
+                      무료 이용 완료
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <div className="gd-hair-limit-plans">
+
+                  <div>
+
+                    <span>
+                      MONTHLY
+                    </span>
+
+                    <strong>
+                      5,000원
+                    </strong>
+
+                    <small>
+                      / 월
+                    </small>
+
+                    <p>
+                      한 달 동안 헤어 AI 무제한
+                    </p>
+
+                  </div>
+
+
+                  <div className="recommended">
+
+                    <span>
+                      YEARLY · BEST
+                    </span>
+
+                    <div>
+
+                      <del>
+                        60,000원
+                      </del>
+
+                      <strong>
+                        40,000원
+                      </strong>
+
+                      <small>
+                        / 년
+                      </small>
+
+                    </div>
+
+                    <p>
+                      약 33% 할인 · 1년 동안 헤어 AI 무제한
+                    </p>
+
+                  </div>
+
+                </div>
+
+
+                <div className="gd-hair-limit-actions">
+
+                  <button
+                    type="button"
+                    className="secondary"
+                    onClick={() => {
+
+                      setHairSelections(
+                        {}
+                      );
+
+                      setHairLimitReached(
+                        false
+                      );
+
+                      setActiveTryonMode(
+                        "makeup"
+                      );
+                    }}
+                  >
+                    메이크업만 계속하기
+                  </button>
+
+
+                  <button
+                    type="button"
+                    className="primary"
+                    onClick={() => {
+
+                      setHairLimitReached(
+                        false
+                      );
+
+                      navigate(
+                        "/beauty?view=membership"
+                      );
+                    }}
+                  >
+                    Premium 이용권 보러가기
+                    <span>
+                      →
+                    </span>
+                  </button>
+
+                </div>
+
+
+                <p className="gd-hair-limit-note">
+                  무료 헤어 AI 이용 횟수는 매월 다시 제공됩니다.
+                </p>
+
+              </div>
+
+            </div>
+
+          )}
+
+
         </section>
       );
     };
@@ -4975,25 +5344,68 @@ const goTryon = () => {
       ) {
 
         return (
-          <section className="gd-beauty-placeholder">
-            <span>MY HISTORY</span>
-            <h2>나의 이용 내역</h2>
-            <p>
-              로그인 후 저장한 AI BEAUTY 결과를 확인할 수 있어요.
-            </p>
+          <section className="gd-history-login-page">
 
-            <div className="gd-beauty-placeholder-box">
-              <strong>로그인이 필요합니다.</strong>
+            <div className="gd-history-login-head">
+              <span>MY HISTORY</span>
+
+              <h2>
+                AI BEAUTY
+              </h2>
+
+              <p>
+                저장한 AI BEAUTY 결과와 내가 체험한 스타일을
+                한 곳에서 다시 확인해보세요.
+              </p>
+            </div>
+
+
+            <div className="gd-history-login-card">
+
+
+              <h3>
+                로그인해야 이용내역을 볼 수 있어요
+              </h3>
+
+              <p>
+                메이크업과 헤어 AI 체험 결과를 저장하고,
+                언제든 다시 확인할 수 있습니다.
+              </p>
+
+
+              <div className="gd-history-login-features">
+
+                <div>
+                  <strong>BEFORE · AFTER</strong>
+                  <span>AI 적용 결과 다시보기</span>
+                </div>
+
+                <div>
+                  <strong>MY STYLE</strong>
+                  <span>적용한 메이크업 · 헤어 확인</span>
+                </div>
+
+                <div>
+                  <strong>SHOPPING</strong>
+                  <span>사용한 상품 다시 확인</span>
+                </div>
+
+              </div>
+
 
               <button
                 type="button"
+                className="gd-history-login-button"
                 onClick={() =>
                   navigate("/login")
                 }
               >
                 로그인하기
+                <span>→</span>
               </button>
+
             </div>
+
           </section>
         );
       }
@@ -5635,38 +6047,11 @@ const goTryon = () => {
   ========================================= */
 
   const renderMembershipView =
-    () => (
+  () => (
 
-      <section className="gd-beauty-placeholder">
+    <BeautyMembership />
 
-        <span>
-          MEMBERSHIP
-        </span>
-
-        <h2>
-          이용권 · 구독
-        </h2>
-
-        <p>
-          현재 이용권과 AI BEAUTY 이용 횟수를
-          확인할 수 있는 화면입니다.
-        </p>
-
-        <div className="gd-beauty-placeholder-box">
-
-          <strong>
-            FREE
-          </strong>
-
-          <p>
-            매월 3회 무료 이용 · Premium 구독 기능은
-            추후 연결할 예정입니다.
-          </p>
-
-        </div>
-
-      </section>
-    );
+  );
 
 
   /* =========================================
@@ -5966,15 +6351,10 @@ const goTryon = () => {
           <section className="gd-start-benefit-section">
             <div className="gd-start-benefit-head">
               <div>
-                <span>WHY GODDESS</span>
-                <h3>GODDESS AI BEAUTY는 이렇게 달라요</h3>
+                <h3>AI로 나온 결과를 저장하고 
+                  연결한 제품들을 결제까지 
+                </h3>
               </div>
-
-              <p>
-                단순히 이미지를 바꾸는 데서 끝나지 않고,
-                나의 사진에서 시작해 실제 상품과 저장, 쇼핑까지 이어지는
-                AI 뷰티 경험을 제공합니다.
-              </p>
             </div>
 
             <div className="gd-start-benefit-grid">
@@ -6189,3 +6569,4 @@ const goTryon = () => {
     </div>
   );
 }
+
