@@ -1,0 +1,256 @@
+/* =========================================
+   FLOATING CHAT BUTTON
+========================================= */
+
+.floating-chat-button {
+  position: fixed;
+
+  right: 34px;
+
+  bottom: 460px;
+
+  z-index: 9999;
+
+  /* 요정 이미지가 잘리지 않도록 충분한 크기 */
+  width: 100px;
+  height: 100px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 동그란 버튼 배경 제거 */
+  border: none;
+  border-radius: 0;
+
+  background: transparent;
+
+  box-shadow: none;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease;
+}
+
+
+/* 마우스 올렸을 때 */
+.floating-chat-button:hover {
+  transform:
+    translateY(-5px)
+    scale(1.05);
+
+  box-shadow: none;
+}
+
+
+/* =========================================
+   요정 이미지
+========================================= */
+
+.floating-chat-button img {
+  width: 95px;
+  height: 95px;
+
+  display: block;
+
+  object-fit: contain;
+
+  background: transparent;
+
+  border: none;
+}
+
+
+/* =========================================
+   챗봇 글자
+========================================= */
+
+.floating-chat-label {
+  position: absolute;
+
+  left: 50%;
+  bottom: -18px;
+
+  transform:
+    translateX(-50%);
+
+  color: #704355;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   모바일
+========================================= */
+
+@media (
+  max-width: 760px
+) {
+
+  .floating-chat-button {
+    right: 18px;
+
+    bottom: 90px;
+
+    width: 82px;
+    height: 82px;
+  }
+
+
+  .floating-chat-button img {
+    width: 78px;
+    height: 78px;
+  }
+
+
+  .floating-chat-label {
+    bottom: -17px;
+
+    font-size: 11px;
+  }
+}
+
+/* =========================================
+   요정 꽃가루 / 반짝이 효과
+========================================= */
+
+.fairy-sparkle {
+  position: absolute;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #f6c8d8;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  box-shadow:
+    0 0 8px rgba(246, 200, 216, 0.9),
+    0 0 14px rgba(255, 235, 170, 0.7);
+
+  z-index: -1;
+}
+
+
+/* 마우스를 올렸을 때 꽃가루 움직임 */
+.floating-chat-button:hover .fairy-sparkle {
+  animation:
+    fairy-sparkle-float
+    1.5s
+    ease-out
+    infinite;
+}
+
+
+/* 각각 다른 위치 */
+.sparkle-1 {
+  top: 25px;
+  left: 15px;
+
+  animation-delay: 0s;
+}
+
+
+.sparkle-2 {
+  top: 5px;
+  left: 45px;
+
+  animation-delay: 0.15s;
+}
+
+
+.sparkle-3 {
+  top: 20px;
+  right: 10px;
+
+  animation-delay: 0.3s;
+}
+
+
+.sparkle-4 {
+  top: 55px;
+  left: 5px;
+
+  animation-delay: 0.45s;
+}
+
+
+.sparkle-5 {
+  top: 65px;
+  right: 5px;
+
+  animation-delay: 0.6s;
+}
+
+
+.sparkle-6 {
+  bottom: 5px;
+  left: 25px;
+
+  animation-delay: 0.75s;
+}
+
+
+.sparkle-7 {
+  bottom: 12px;
+  right: 25px;
+
+  animation-delay: 0.9s;
+}
+
+
+.sparkle-8 {
+  top: 45px;
+  left: 50%;
+
+  animation-delay: 1.05s;
+}
+
+
+/* 꽃가루 퍼지는 움직임 */
+@keyframes fairy-sparkle-float {
+
+  0% {
+    opacity: 0;
+
+    transform:
+      translate(
+        0,
+        0
+      )
+      scale(0.4);
+  }
+
+
+  20% {
+    opacity: 1;
+  }
+
+
+  60% {
+    opacity: 0.9;
+  }
+
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translate(
+        -25px,
+        -45px
+      )
+      scale(1.4);
+  }
+}
