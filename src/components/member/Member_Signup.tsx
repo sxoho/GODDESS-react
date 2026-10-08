@@ -565,7 +565,7 @@ const Member_Signup = () => {
             </div>
 
             <div className="goddess-signup-form-group">
-              <label htmlFor="tel">전화번호</label>
+              <label htmlFor="tel">전화번호 ex) 01012345678 , 010-1234-5678 둘 다 가능합니다 </label>
               <input
                 type="text"
                 id="tel"

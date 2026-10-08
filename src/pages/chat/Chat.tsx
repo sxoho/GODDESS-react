@@ -61,6 +61,14 @@ type ChatbotAskResponse = {
 
 
 /* =========================================
+   챗봇 이름
+========================================= */
+
+const CHATBOT_NAME =
+  "여신강림 도우미 챗봇";
+
+
+/* =========================================
    빠른 질문
 ========================================= */
 
@@ -72,6 +80,83 @@ const QUICK_QUESTIONS = [
   "AI BEAUTY 체험하러 가고 싶어",
   "Premium 이용권 알려줘"
 ];
+
+
+/* =========================================
+   AI 답변 준비 중 문구
+========================================= */
+
+const LOADING_MESSAGES = [
+  "답변을 준비 중입니다.",
+  "보내주신 질문을 확인하고 있어요. 조금만 기다려주세요!",
+  "어울리는 답변을 준비하고 있습니다.",
+  "여신강림 도우미가 생각 중입니다...",
+  "조금만 기다려주세요. 곧 답변해드릴게요!"
+];
+
+
+/* =========================================
+   오늘 날짜 확인
+========================================= */
+
+const getTodayDateKey =
+  () => {
+
+    const today =
+      new Date();
+
+
+    const year =
+      today.getFullYear();
+
+
+    const month =
+      String(
+        today.getMonth() + 1
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    const day =
+      String(
+        today.getDate()
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    return `${year}-${month}-${day}`;
+  };
+
+
+const isTodayChatRoom =
+  (
+    createdAt?: string | null
+  ) => {
+
+    if (
+      !createdAt
+    ) {
+
+      return false;
+    }
+
+
+    const roomDate =
+      createdAt.substring(
+        0,
+        10
+      );
+
+
+    return (
+      roomDate ===
+      getTodayDateKey()
+    );
+  };
 
 
 /* =========================================
@@ -276,6 +361,14 @@ const Chat = () => {
   );
 
 
+  const [
+    loadingMessageIndex,
+    setLoadingMessageIndex
+  ] = useState(
+    0
+  );
+
+
   const initRequestId =
     useRef(
       0
@@ -302,7 +395,9 @@ const Chat = () => {
     value?: string | null
   ) => {
 
-    if (!value) {
+    if (
+      !value
+    ) {
 
       return "";
     }
@@ -365,6 +460,59 @@ const Chat = () => {
     },
     [
       messages,
+      sending
+    ]
+  );
+
+
+  /* =========================================
+     AI 답변 준비 문구
+     3초마다 변경
+  ========================================= */
+
+  useEffect(
+    () => {
+
+      if (
+        !sending
+      ) {
+
+        setLoadingMessageIndex(
+          0
+        );
+
+        return;
+      }
+
+
+      const timer =
+        window.setInterval(
+          () => {
+
+            setLoadingMessageIndex(
+              (
+                previous
+              ) =>
+                (
+                  previous + 1
+                ) %
+                LOADING_MESSAGES.length
+            );
+
+          },
+          3000
+        );
+
+
+      return () => {
+
+        window.clearInterval(
+          timer
+        );
+      };
+
+    },
+    [
       sending
     ]
   );
@@ -522,8 +670,61 @@ const Chat = () => {
         }
 
 
-        const chatRoom =
+        let chatRoom =
           roomResponse.data;
+
+
+        /*
+         * 이전 날짜의 ACTIVE 채팅방이면
+         * 종료 후 오늘 새 채팅방 생성
+         */
+        if (
+          !isTodayChatRoom(
+            chatRoom.createdAt
+          )
+        ) {
+
+          await axiosInstance.patch(
+
+            `/api/chat/rooms/${chatRoom.id}/close`,
+
+            null,
+
+            {
+              params: {
+                memberId
+              }
+            }
+          );
+
+
+          const newRoomResponse =
+            await axiosInstance.post<ChatRoom>(
+
+              "/api/chat/rooms",
+
+              null,
+
+              {
+                params: {
+                  memberId
+                }
+              }
+            );
+
+
+          chatRoom =
+            newRoomResponse.data;
+        }
+
+
+        if (
+          requestId !==
+          initRequestId.current
+        ) {
+
+          return;
+        }
 
 
         setRoom(
@@ -661,10 +862,6 @@ const Chat = () => {
       }
 
 
-      /*
-       * 서버 응답 전
-       * 화면에 바로 표시할 임시 USER 메시지
-       */
       const temporaryMessageId =
         -Date.now();
 
@@ -689,11 +886,6 @@ const Chat = () => {
         };
 
 
-      /*
-       * 사용자가 질문을 보내면
-       * 서버 응답을 기다리지 않고
-       * 즉시 오른쪽 말풍선 표시
-       */
       setMessages(
         (
           previous
@@ -706,9 +898,6 @@ const Chat = () => {
       );
 
 
-      /*
-       * 입력창 바로 비우기
-       */
       setInput(
         ""
       );
@@ -716,9 +905,6 @@ const Chat = () => {
 
       try {
 
-        /*
-         * AI 작성 중 표시
-         */
         setSending(
           true
         );
@@ -763,12 +949,6 @@ const Chat = () => {
         };
 
 
-        /*
-         * 임시 USER 메시지를
-         * DB에 저장된 실제 USER 메시지로 교체
-         *
-         * 그 뒤 BOT 메시지 추가
-         */
         setMessages(
           (
             previous
@@ -812,9 +992,6 @@ const Chat = () => {
         );
 
 
-        /*
-         * 실패한 임시 메시지 제거
-         */
         setMessages(
           (
             previous
@@ -829,9 +1006,6 @@ const Chat = () => {
         );
 
 
-        /*
-         * 실패한 질문 다시 입력창에 표시
-         */
         setInput(
           message
         );
@@ -1045,20 +1219,21 @@ const Chat = () => {
 
             <img
               src={chatProfile}
-              alt="여신강림 AI"
+              alt={CHATBOT_NAME}
             />
 
           </div>
 
+
           <h1>
-            AI 뷰티 챗봇
+            {CHATBOT_NAME}
           </h1>
 
 
           <p className="gd-chat-login-description">
 
-            여신강림을 사용하면서 모르는 것과 
-            궁금한 것들을
+            여신강림을 사용하면서
+            모르는 것과 궁금한 것들을
             자유롭게 물어보세요.
 
           </p>
@@ -1101,7 +1276,7 @@ const Chat = () => {
 
 
           <p>
-            여신강림 AI 상담을 준비하고 있어요.
+            {CHATBOT_NAME} 상담을 준비하고 있어요.
           </p>
 
         </div>
@@ -1134,7 +1309,7 @@ const Chat = () => {
 
               <img
                 src={chatProfile}
-                alt="여신강림 AI"
+                alt={CHATBOT_NAME}
               />
 
             </div>
@@ -1143,7 +1318,7 @@ const Chat = () => {
             <div>
 
               <h1>
-                무엇이든 물어보세요 ! 
+                무엇이든 물어보세요 !
               </h1>
 
 
@@ -1260,14 +1435,14 @@ const Chat = () => {
 
                     <img
                       src={chatProfile}
-                      alt="여신강림 AI"
+                      alt={CHATBOT_NAME}
                     />
 
                   </div>
 
 
                   <strong>
-                    여신강림 AI에게 물어보세요
+                    {CHATBOT_NAME}에게 물어보세요
                   </strong>
 
 
@@ -1310,14 +1485,13 @@ const Chat = () => {
                         }
                       >
 
-
                         <div className="gd-chat-message-wrap">
 
                           {
                             !isUser &&
                             (
                               <span className="gd-chat-message-name">
-                                도우미 ' 여강이 '
+                                {CHATBOT_NAME}
                               </span>
                             )
                           }
@@ -1393,28 +1567,27 @@ const Chat = () => {
             (
               <div className="gd-chat-message-row bot">
 
-                <div className="gd-chat-message-avatar">
-
-                  <img
-                    src={chatProfile}
-                    alt="여신강림 AI"
-                  />
-
-                </div>
-
-
                 <div className="gd-chat-message-wrap">
 
                   <span className="gd-chat-message-name">
-                    여신강림 AI
+                    {CHATBOT_NAME}
                   </span>
 
 
-                  <div className="gd-chat-bubble gd-chat-thinking">
+                  <div className="gd-chat-bubble gd-chat-thinking-text">
 
-                    <span />
-                    <span />
-                    <span />
+                    <span className="gd-chat-thinking-sparkle">
+                      ✦
+                    </span>
+
+
+                    <span>
+                      {
+                        LOADING_MESSAGES[
+                          loadingMessageIndex
+                        ]
+                      }
+                    </span>
 
                   </div>
 
@@ -1530,7 +1703,6 @@ const Chat = () => {
           <div className="gd-chat-input-bottom">
 
             <span>
-              Enter 전송 · Shift + Enter 줄바꿈
             </span>
 
 

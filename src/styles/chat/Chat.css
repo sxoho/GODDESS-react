@@ -1232,3 +1232,57 @@
 
   border-radius: inherit;
 }
+
+/* =========================================
+   AI 답변 준비 중
+========================================= */
+
+.gd-chat-thinking-text {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #754f5e;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  transition:
+    opacity 0.3s ease;
+}
+
+
+.gd-chat-thinking-sparkle {
+  display: inline-block;
+
+  font-size: 14px;
+
+  animation:
+    gd-chat-thinking-sparkle
+    1.4s
+    ease-in-out
+    infinite;
+}
+
+
+@keyframes gd-chat-thinking-sparkle {
+
+  0%,
+  100% {
+    opacity: 0.35;
+
+    transform:
+      scale(0.8)
+      rotate(0deg);
+  }
+
+
+  50% {
+    opacity: 1;
+
+    transform:
+      scale(1.15)
+      rotate(20deg);
+  }
+}

@@ -685,7 +685,7 @@ export default function BeautyHome() {
 
       heroAutoTimerRef.current = window.setInterval(
         runAutoEffect,
-        4200
+        3000
       );
 
       return () => {
@@ -3986,10 +3986,22 @@ const goTryon = () => {
 
             </div>
 
-
             <div className="gd-beauty-processing-loader">
 
-              <div className="gd-beauty-processing-ring" />
+              <div
+                className="gd-beauty-ai-loader"
+                aria-hidden="true"
+              >
+                <div className="gd-beauty-ai-loader-orbit">
+                  <span className="gd-beauty-ai-loader-dot gd-beauty-ai-loader-dot--1" />
+                  <span className="gd-beauty-ai-loader-dot gd-beauty-ai-loader-dot--2" />
+                  <span className="gd-beauty-ai-loader-dot gd-beauty-ai-loader-dot--3" />
+                </div>
+
+                <div className="gd-beauty-ai-loader-center">
+                  ✦
+                </div>
+              </div>
 
               <strong>
                 AI BEAUTY 적용 중
@@ -4003,13 +4015,17 @@ const goTryon = () => {
 
 
             <div
-              className="gd-beauty-promotion"
+              className={`gd-beauty-promotion gd-beauty-promotion--${loadingPromotionIndex}`}
               key={
                 loadingPromotionIndex
               }
             >
 
               <div className="gd-beauty-promotion-copy">
+
+                <div className="gd-beauty-promotion-number">
+                  0{loadingPromotionIndex + 1}
+                </div>
 
                 <span>
                   {promotion.overline}
@@ -4023,18 +4039,135 @@ const goTryon = () => {
                   {promotion.description}
                 </p>
 
+                <div className="gd-beauty-promotion-line" />
+
               </div>
 
 
               <div className="gd-beauty-promotion-visual">
 
-                <span>
-                  GODDESS
-                </span>
+                <div className="gd-beauty-promotion-glow" />
 
-                <strong>
-                  {promotion.accent}
-                </strong>
+
+                {loadingPromotionIndex === 0 && (
+
+                  <div className="gd-beauty-promo-art gd-beauty-promo-art--beauty">
+
+                    <span className="gd-beauty-promo-sparkle gd-beauty-promo-sparkle--1">
+                      ✦
+                    </span>
+
+                    <span className="gd-beauty-promo-sparkle gd-beauty-promo-sparkle--2">
+                      ✦
+                    </span>
+
+                    <div className="gd-beauty-promo-makeup-person">
+
+                      <div className="gd-beauty-promo-makeup-hair" />
+
+                      <div className="gd-beauty-promo-makeup-face">
+
+                        <span className="gd-beauty-promo-makeup-eye left" />
+                        <span className="gd-beauty-promo-makeup-eye right" />
+
+                        <span className="gd-beauty-promo-makeup-cheek" />
+
+                        <span className="gd-beauty-promo-makeup-mouth" />
+
+                      </div>
+
+                      <div className="gd-beauty-promo-makeup-neck" />
+
+                      <div className="gd-beauty-promo-makeup-body" />
+
+                      <div className="gd-beauty-promo-makeup-hand">
+                        <span />
+                      </div>
+
+                      <div className="gd-beauty-promo-makeup-brush">
+                        <span />
+                        <b />
+                      </div>
+
+                      <div className="gd-beauty-promo-makeup-compact" />
+
+                    </div>
+
+                  </div>
+
+                )}
+
+
+                {loadingPromotionIndex === 1 && (
+
+                  <div className="gd-beauty-promo-art gd-beauty-promo-art--color">
+
+                    <div className="gd-beauty-promo-color-circle">
+                      <span />
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+
+                    <div className="gd-beauty-promo-face">
+
+                      <div className="gd-beauty-promo-face-hair" />
+
+                      <div className="gd-beauty-promo-face-bangs">
+                        <span />
+                        <span />
+                        <span />
+                        <span />
+                        <span />
+                      </div>
+
+                      <span className="gd-beauty-promo-face-eye left" />
+
+                      <span className="gd-beauty-promo-face-eye right" />
+
+                      <span className="gd-beauty-promo-face-mouth" />
+
+                    </div>
+
+                  </div>
+
+                )}
+
+
+                {loadingPromotionIndex === 2 && (
+
+                  <div className="gd-beauty-promo-art gd-beauty-promo-art--skin">
+
+                    <span className="gd-beauty-promo-skin-ring" />
+
+                    <span className="gd-beauty-promo-skin-drop gd-beauty-promo-skin-drop--1">
+                      ●
+                    </span>
+
+                    <span className="gd-beauty-promo-skin-drop gd-beauty-promo-skin-drop--2">
+                      ●
+                    </span>
+
+                    <span className="gd-beauty-promo-skin-spark">
+                      ✦
+                    </span>
+
+                  </div>
+
+                )}
+
+
+                <div className="gd-beauty-promotion-label">
+
+                  <span>
+                    GODDESS
+                  </span>
+
+                  <strong>
+                    {promotion.accent}
+                  </strong>
+
+                </div>
 
               </div>
 
@@ -6029,9 +6162,16 @@ const goTryon = () => {
 
               <button
                 type="button"
+                className="gd-history-empty-start-button"
                 onClick={goTryon}
               >
-                AI BEAUTY 시작하기
+                <span>
+                  AI BEAUTY 시작하기
+                </span>
+
+                <b>
+                  →
+                </b>
               </button>
 
             </div>
