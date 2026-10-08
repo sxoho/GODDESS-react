@@ -6119,7 +6119,7 @@ const goTryon = () => {
               <span>MY HISTORY</span>
 
               <h2>
-                나의 이용 내역
+                뷰티 체험 내역
               </h2>
 
               <p>
@@ -6243,20 +6243,24 @@ const goTryon = () => {
 
                     <div className="gd-history-row-type">
 
-                      <span>
-                        {
-                          history.beautyType === "MAKEUP"
-                            ? "MAKEUP"
-                            : history.beautyType === "HAIR_STYLE" ||
-                              history.beautyType === "HAIR_COLOR"
-                              ? "HAIR"
-                              : "AI BEAUTY"
-                        }
-                      </span>
+                      <div className="gd-history-row-thumbnail">
 
-                      <strong>
-                        {history.saveName || "AI BEAUTY 결과"}
-                      </strong>
+                        {history.resultFilePath ? (
+
+                          <img
+                            src={getImageUrl(history.resultFilePath)}
+                            alt="AI BEAUTY 결과"
+                          />
+
+                        ) : (
+
+                          <div className="gd-history-row-thumbnail-empty">
+                            AI BEAUTY
+                          </div>
+
+                        )}
+
+                      </div>
 
                     </div>
 
@@ -6876,7 +6880,7 @@ const goTryon = () => {
               </span>
 
               <small>
-                나의 이용 내역
+                뷰티 체험 내역
               </small>
             </button>
 

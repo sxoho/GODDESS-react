@@ -32,6 +32,7 @@ import type {
 
 import "../../styles/member/MyPage.css";
 import "../../styles/member/MyPageOrder.css";
+import "../../styles/member/MyPageBeauty.css";
 
 
 const API_BASE = "http://localhost:9104";
@@ -323,6 +324,119 @@ type ProductReviewPageResponse = {
   size: number;
   first: boolean;
   last: boolean;
+};
+
+/**
+ * AI BEAUTY 저장 내역
+ */
+type BeautyHistoryItem = {
+  itemType: string;
+  styleValue?: string | null;
+  productId?: number | null;
+  productName?: string | null;
+  brand?: string | null;
+  productColorId?: number | null;
+  colorName?: string | null;
+  colorCode?: string | null;
+  price?: number | null;
+};
+
+
+type BeautyHistory = {
+  beautySaveId: number;
+  beautyResultId: number;
+  beautyTryonId: number;
+  saveName: string;
+  memo?: string | null;
+  createdAt: string;
+  beautyType: string;
+  tryonStatus: string;
+  resultFilePath: string;
+  beforeFilePath: string;
+  items: BeautyHistoryItem[];
+};
+
+
+/**
+ * 적용 항목 이름
+ */
+const getBeautyHistoryItemLabel = (
+  itemType: string
+) => {
+
+  switch (itemType) {
+
+    case "HAIR_STYLE":
+      return "헤어스타일";
+
+    case "HAIR_COLOR":
+      return "헤어 컬러";
+
+    case "BASE":
+      return "베이스";
+
+    case "LIP":
+      return "립";
+
+    case "CHEEK":
+      return "치크";
+
+    case "EYE":
+      return "아이";
+
+    default:
+      return itemType;
+  }
+};
+
+
+/**
+ * 적용 항목 내용
+ */
+const getBeautyHistoryItemValue = (
+  item: BeautyHistoryItem
+) => {
+
+  if (item.styleValue) {
+    return item.styleValue;
+  }
+
+
+  if (item.productName) {
+
+    return `${item.productName}${
+      item.colorName
+        ? ` · ${item.colorName}`
+        : ""
+    }`;
+  }
+
+
+  return "-";
+};
+
+
+/**
+ * AI BEAUTY 유형
+ */
+const getBeautyHistoryTypeLabel = (
+  beautyType: string
+) => {
+
+  if (beautyType === "MAKEUP") {
+    return "MAKEUP";
+  }
+
+
+  if (
+    beautyType === "HAIR_STYLE" ||
+    beautyType === "HAIR_COLOR"
+  ) {
+    return "HAIR";
+  }
+
+
+  return "AI BEAUTY";
 };
 
 
@@ -2423,6 +2537,26 @@ const MyPage = () => {
     review: 0
   });
 
+  /**
+ * 최근 AI BEAUTY 체험 내역
+ */
+const [
+  beautyRecentItems,
+  setBeautyRecentItems
+] = useState<BeautyHistory[]>([]);
+
+
+const [
+  beautyLoading,
+  setBeautyLoading
+] = useState(false);
+
+
+const [
+  beautyError,
+  setBeautyError
+] = useState("");
+
 
   /**
    * 주문 내역
@@ -3211,10 +3345,168 @@ const MyPage = () => {
       next.order = 0;
     }
 
-    // 현재 Spring에는 BEAUTY_SAVE 조회 Controller가 아직 없어 AI BEAUTY 카운트는 0으로 둡니다.
+    try {
 
-    setDashboardCounts(next);
+  const response =
+    await axiosInstance.get<BeautyHistory[]>(
+      `/beauty/save/member/${memberId}`
+    );
+
+
+  next.beauty =
+    Array.isArray(
+      response.data
+    )
+      ? response.data.length
+      : 0;
+
+
+} catch (error) {
+
+  console.error(
+    "마이페이지 AI BEAUTY 개수 조회 오류:",
+    error
+  );
+
+
+  next.beauty = 0;
+}
+
+
+setDashboardCounts(next);
+
+    
   };
+
+  /**
+ * 마이페이지 AI BEAUTY 최근 체험 내역
+ *
+ * 전체 내역을 가져온 뒤
+ * 최신순 정렬 → 최근 4건만 표시
+ */
+const loadMyBeautyPreview =
+  async () => {
+
+    if (
+      !memberId ||
+      sw !== true
+    ) {
+      return;
+    }
+
+
+    try {
+
+      setBeautyLoading(
+        true
+      );
+
+
+      setBeautyError(
+        ""
+      );
+
+
+      const response =
+        await axiosInstance.get<BeautyHistory[]>(
+          `/beauty/save/member/${memberId}`
+        );
+
+
+      const allItems =
+        Array.isArray(
+          response.data
+        )
+          ? response.data
+          : [];
+
+
+      const sortedItems =
+        [
+          ...allItems
+        ].sort(
+          (a, b) =>
+            new Date(
+              b.createdAt
+            ).getTime()
+            -
+            new Date(
+              a.createdAt
+            ).getTime()
+        );
+
+
+      /**
+       * 마이페이지에서는 최근 4건만 표시
+       */
+      setBeautyRecentItems(
+        sortedItems.slice(
+          0,
+          4
+        )
+      );
+
+
+      /**
+       * 대시보드 BEAUTY 개수도 동기화
+       */
+      setDashboardCounts(
+        (previous) => ({
+          ...previous,
+          beauty:
+            allItems.length
+        })
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "마이페이지 AI BEAUTY 내역 조회 오류:",
+        error
+      );
+
+
+      setBeautyRecentItems(
+        []
+      );
+
+
+      setBeautyError(
+        "뷰티 체험 내역을 불러오는 중 오류가 발생했습니다."
+      );
+
+
+    } finally {
+
+      setBeautyLoading(
+        false
+      );
+    }
+  };
+
+
+/**
+ * BEAUTY 메뉴를 눌렀을 때 조회
+ */
+useEffect(() => {
+
+  if (
+    activeMenu !== "beauty" ||
+    !memberId ||
+    sw !== true
+  ) {
+    return;
+  }
+
+
+  void loadMyBeautyPreview();
+
+}, [
+  activeMenu,
+  memberId,
+  sw
+]);
 
 
   /**
@@ -4924,7 +5216,7 @@ useEffect(() => {
               onClick={() => setActiveMenu("beauty")}
             >
               <span>BEAUTY</span>
-              <small>나의 뷰티 체험</small>
+              <small>뷰티 체험 내역</small>
             </button>
 
             <button
@@ -7078,36 +7370,306 @@ useEffect(() => {
 
       {activeMenu === "beauty" && (
 
-        <section className="mypage-section">
+        <section className="mypage-section mypage-beauty-section">
 
-          <div className="mypage-section-heading">
+          {/* =========================
+              상단 제목 + 전체 내역 보기
+          ========================= */}
+          <div className="mypage-beauty-heading-row">
 
-            <span>
-              01
-            </span>
+            <div className="mypage-section-heading">
 
-
-            <div>
-
-              <p>
-                MY BEAUTY
-              </p>
+              <span>
+                01
+              </span>
 
 
-              <h2>
-                뷰티 체험 내역
-              </h2>
+              <div>
+
+                <p>
+                  MY BEAUTY
+                </p>
+
+
+                <h2>
+                  뷰티 체험 내역
+                </h2>
+
+              </div>
 
             </div>
 
+
+            <button
+              type="button"
+              className="mypage-beauty-all-button"
+              onClick={() =>
+                navigate(
+                  "/beauty?view=saved"
+                )
+              }
+            >
+              전체 내역 보기
+
+              <span>
+                →
+              </span>
+            </button>
+
           </div>
 
 
-          <div className="mypage-menu-ready">
+          <div className="mypage-beauty-guide">
 
-            뷰티 체험 내역 기능은 준비 중입니다.
+            <p>
+              최근 저장한 AI BEAUTY 체험 4건을 확인할 수 있습니다.
+            </p>
 
           </div>
+
+
+          {/* 로딩 */}
+          {beautyLoading ? (
+
+            <div className="mypage-beauty-message">
+
+              뷰티 체험 내역을 불러오는 중입니다.
+
+            </div>
+
+          ) : beautyError ? (
+
+            /* 오류 */
+
+            <div className="mypage-beauty-message error">
+
+              {beautyError}
+
+            </div>
+
+          ) : beautyRecentItems.length === 0 ? (
+
+            /* 저장 내역 없음 */
+
+            <div className="mypage-beauty-empty">
+
+              <strong>
+                아직 저장한 뷰티 체험 내역이 없습니다.
+              </strong>
+
+
+              <p>
+                AI BEAUTY 체험 후 마음에 드는 결과를 저장하면
+                이곳에서 최근 체험 내역을 확인할 수 있습니다.
+              </p>
+
+
+              <button
+                type="button"
+                onClick={() =>
+                  navigate(
+                    "/beauty?view=tryon"
+                  )
+                }
+              >
+                AI BEAUTY 시작하기
+
+                <span>
+                  →
+                </span>
+              </button>
+
+            </div>
+
+          ) : (
+
+            /* =========================
+                최근 체험 4건
+            ========================= */
+
+            <div className="mypage-beauty-list">
+
+              {beautyRecentItems.map(
+                (history) => {
+
+                  /**
+                   * 마이페이지에서는 너무 자세하지 않게
+                   * 적용 항목 최대 2개만 표시
+                   */
+                  const summaryItems =
+                    (history.items ?? [])
+                      .map(
+                        (item) => ({
+
+                          label:
+                            getBeautyHistoryItemLabel(
+                              item.itemType
+                            ),
+
+                          value:
+                            getBeautyHistoryItemValue(
+                              item
+                            )
+
+                        })
+                      )
+                      .slice(
+                        0,
+                        2
+                      );
+
+
+                  return (
+
+                    <button
+                      type="button"
+                      key={
+                        history.beautySaveId
+                      }
+                      className="mypage-beauty-card"
+
+                      /**
+                       * 기존 AI BEAUTY의
+                       * 해당 이용내역 상세 화면으로 이동
+                       */
+                      onClick={() =>
+                        navigate(
+                          `/beauty?view=saved&historyId=${history.beautySaveId}`
+                        )
+                      }
+                    >
+
+                      {/* AFTER 결과 썸네일 */}
+                      <div className="mypage-beauty-thumbnail">
+
+                        {history.resultFilePath ? (
+
+                          <img
+                            src={
+                              getImageUrl(
+                                history.resultFilePath
+                              )
+                            }
+                            alt="AI BEAUTY 체험 결과"
+                          />
+
+                        ) : (
+
+                          <span>
+                            AI BEAUTY
+                          </span>
+
+                        )}
+
+                      </div>
+
+
+                      {/* 적용 내용 */}
+                      <div className="mypage-beauty-card-main">
+
+                        <span className="mypage-beauty-type">
+
+                          {
+                            getBeautyHistoryTypeLabel(
+                              history.beautyType
+                            )
+                          }
+
+                        </span>
+
+
+                        <strong className="mypage-beauty-card-title">
+
+                          {
+                            history.saveName ||
+                            "AI BEAUTY 결과"
+                          }
+
+                        </strong>
+
+
+                        <div className="mypage-beauty-summary">
+
+                          {summaryItems.length > 0 ? (
+
+                            summaryItems.map(
+                              (
+                                item,
+                                index
+                              ) => (
+
+                                <div
+                                  key={
+                                    `${history.beautySaveId}-${index}`
+                                  }
+                                  className="mypage-beauty-summary-item"
+                                >
+
+                                  <small>
+                                    {item.label}
+                                  </small>
+
+
+                                  <span>
+                                    {item.value}
+                                  </span>
+
+                                </div>
+
+                              )
+                            )
+
+                          ) : (
+
+                            <div className="mypage-beauty-summary-item">
+
+                              <small>
+                                AI BEAUTY
+                              </small>
+
+
+                              <span>
+                                저장한 체험 결과
+                              </span>
+
+                            </div>
+
+                          )}
+
+                        </div>
+
+                      </div>
+
+
+                      {/* 날짜 + 상세 화살표 */}
+                      <div className="mypage-beauty-card-side">
+
+                        <time>
+
+                          {
+                            formatDate(
+                              history.createdAt
+                            )
+                          }
+
+                        </time>
+
+
+                        <span className="mypage-beauty-arrow">
+                          →
+                        </span>
+
+                      </div>
+
+                    </button>
+
+                  );
+                }
+              )}
+
+            </div>
+
+          )}
 
         </section>
       )}
