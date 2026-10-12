@@ -106,6 +106,22 @@ const formatDateTime = (
     ? date.replace("T", " ").substring(0, 16)
     : "-";
 
+/* =========================
+   AI 문의 분석 로딩 문구
+========================= */
+
+const CUSTOMER_QNA_AI_LOADING_MESSAGES = [
+
+  "최근 고객 문의 내용을 살펴보고 있어요.",
+
+  "자주 문의한 내용을 정리하고 있어요.",
+
+  "최근 문의와 전체 문의 경향을 비교하고 있어요.",
+
+  "답변 상태까지 함께 확인하고 있어요."
+
+];    
+
 
 /* =========================
    마이페이지 고객 문의
@@ -175,6 +191,11 @@ const MyCustomerQnaSection = ({
     aiSummaryError,
     setAiSummaryError
   ] = useState("");
+
+  const [
+    aiLoadingMessageIndex,
+    setAiLoadingMessageIndex
+  ] = useState(0);
 
 
   /* =========================
@@ -278,6 +299,43 @@ const MyCustomerQnaSection = ({
     }
   };
 
+
+  useEffect(() => {
+
+  if (!aiSummaryLoading) {
+
+    setAiLoadingMessageIndex(0);
+
+    return;
+  }
+
+
+  const timer =
+    window.setInterval(
+      () => {
+
+        setAiLoadingMessageIndex(
+          (previous) =>
+            (
+              previous + 1
+            ) %
+            CUSTOMER_QNA_AI_LOADING_MESSAGES.length
+        );
+
+      },
+      3000
+    );
+
+
+  return () => {
+
+    window.clearInterval(timer);
+
+  };
+
+}, [
+  aiSummaryLoading
+]);
 
   useEffect(() => {
 
@@ -621,11 +679,45 @@ const MyCustomerQnaSection = ({
 
             <div className="mypage-customer-qna-ai-loading">
 
-              <span className="mypage-customer-qna-ai-spinner" />
+              <div
+                className="mypage-customer-qna-ai-loader"
+                aria-hidden="true"
+              >
 
-              <p>
-                AI가 고객 문의를 분석하고 있습니다.
-              </p>
+                <div className="mypage-customer-qna-ai-orbit">
+
+                  <span className="mypage-customer-qna-ai-dot dot-1" />
+
+                  <span className="mypage-customer-qna-ai-dot dot-2" />
+
+                  <span className="mypage-customer-qna-ai-dot dot-3" />
+
+                </div>
+
+
+                <div className="mypage-customer-qna-ai-star">
+                  ✦
+                </div>
+
+              </div>
+
+
+              <div className="mypage-customer-qna-ai-loading-copy">
+
+                <strong>
+                  AI가 고객 문의를 분석하고 있어요.
+                </strong>
+
+
+                <p>
+                  {
+                    CUSTOMER_QNA_AI_LOADING_MESSAGES[
+                      aiLoadingMessageIndex
+                    ]
+                  }
+                </p>
+
+              </div>
 
             </div>
 

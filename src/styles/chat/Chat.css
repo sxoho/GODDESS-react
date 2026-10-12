@@ -1286,3 +1286,136 @@
       rotate(20deg);
   }
 }
+
+/* =========================================
+   챗봇 추천 상품
+========================================= */
+
+.gd-chat-products {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.gd-chat-products-title {
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #7c5c64;
+}
+
+.gd-chat-products-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.gd-chat-product-card {
+  flex: 0 0 150px;
+  overflow: hidden;
+  border: 1px solid #eadde0;
+  border-radius: 14px;
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.gd-chat-product-card:hover {
+  transform: translateY(-3px);
+  border-color: #d9bcc5;
+
+  box-shadow:
+    0 7px 18px
+    rgba(116, 73, 87, 0.12);
+}
+
+.gd-chat-product-card:focus-visible {
+  outline: 2px solid #c990a2;
+  outline-offset: 2px;
+}
+
+.gd-chat-product-image-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #f8f5f6;
+}
+
+.gd-chat-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gd-chat-product-image-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.gd-chat-product-info {
+  padding: 10px;
+}
+
+.gd-chat-product-brand {
+  margin-bottom: 3px;
+  font-size: 11px;
+  color: #999;
+}
+
+.gd-chat-product-name {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #333;
+}
+
+.gd-chat-product-color {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #777;
+}
+
+.gd-chat-product-color-chip {
+  width: 11px;
+  height: 11px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+}
+
+.gd-chat-product-price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.gd-chat-product-price strong {
+  font-size: 13px;
+  color: #333;
+}
+
+.gd-chat-product-price del {
+  font-size: 10px;
+  color: #aaa;
+}
+
+.gd-chat-product-discount {
+  font-size: 11px;
+  font-weight: 700;
+  color: #b56e7d;
+}

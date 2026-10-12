@@ -262,13 +262,13 @@ const Member_Login = () => {
 
           <div className="goddess-login-header">
             <span className="goddess-login-eyebrow">
-              WELCOME BACK
+              
             </span>
 
             <h1>LOGIN</h1>
 
             <p>
-              GODDESS에 로그인하고
+              로그인 하셔서
               <br />
               나만의 뷰티 스타일을 만나보세요.
             </p>
@@ -385,7 +385,7 @@ const Member_Login = () => {
           {/* 회원가입 */}
           <div className="goddess-login-signup">
             <p>
-              아직 GODDESS 회원이 아니신가요?
+              아직 회원이 아니신가요?
             </p>
 
             <Link to="/signup">

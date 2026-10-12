@@ -1,0 +1,2103 @@
+/* =========================================
+   GODDESS CHAT LOADING SHOWCASE
+========================================= */
+
+.gd-showcase {
+  width: min(680px, 94%);
+  margin: 8px 0 18px 0;
+  box-sizing: border-box;
+  padding: 18px 18px 16px;
+
+  border: 1px solid #ead9df;
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fffdfd 0%,
+      #fff7f9 100%
+    );
+
+  box-shadow:
+    0 8px 24px
+    rgba(116, 73, 87, 0.06);
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.gd-showcase-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 14px;
+}
+
+
+.gd-showcase-header-icon {
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #f8e9ee;
+  color: #b8758c;
+
+  font-size: 14px;
+
+  animation:
+    gd-showcase-header-glow
+    1.7s
+    ease-in-out
+    infinite;
+}
+
+
+.gd-showcase-header strong {
+  display: block;
+
+  color: #704958;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+@keyframes gd-showcase-header-glow {
+
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.88);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.gd-showcase-card {
+  padding: 15px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    #f0e1e6;
+
+  border-radius: 18px;
+
+  background: #fffafb;
+}
+
+
+.gd-showcase-enter {
+  animation:
+    gd-showcase-enter
+    0.35s
+    ease
+    both;
+}
+
+
+@keyframes gd-showcase-enter {
+
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.gd-showcase-card-title {
+  min-height: 18px;
+
+  margin-bottom: 15px;
+
+  color: #956b79;
+
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   MAKEUP AREA
+========================================= */
+
+.gd-showcase-makeup {
+  min-height: 164px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 25px;
+
+  padding:
+    13px
+    15px
+    15px;
+
+  border:
+    1px solid
+    #f2e1e6;
+
+  border-radius: 17px;
+
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      #ffffff 0%,
+      #fff9fa 55%,
+      #fdf4f6 100%
+    );
+}
+
+
+.gd-showcase-person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.gd-showcase-person-label {
+  margin-bottom: 9px;
+
+  color: #b99aa4;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+}
+
+
+.gd-showcase-person-label.after {
+  color: #b4788c;
+}
+
+
+/* =========================================
+   FACE
+========================================= */
+
+.gd-showcase-face {
+  position: relative;
+
+  width: 96px;
+  height: 112px;
+
+  border-radius:
+    47% 47% 45% 45%
+    /
+    40% 40% 58% 58%;
+
+  background: #f8dfd7;
+
+  box-shadow:
+    inset
+    0 -5px 0
+    rgba(215, 165, 158, 0.07);
+}
+
+
+/* =========================================
+   BEFORE / BASIC HAIR
+
+   참고 이미지처럼
+   짧고 둥근 단발
+========================================= */
+
+.gd-showcase-before-hair,
+.gd-showcase-after-hair {
+  position: absolute;
+
+  z-index: 3;
+
+  top: -8px;
+  left: 5px;
+
+  width: 86px;
+  height: 49px;
+
+  border-radius:
+    46px 46px 19px 19px;
+
+  background: #624b55;
+
+  transition:
+    opacity 0.35s ease;
+}
+
+
+/*
+   왼쪽 짧은 단발
+*/
+.gd-showcase-before-hair::before,
+.gd-showcase-after-hair::before {
+  content: "";
+
+  position: absolute;
+
+  left: -4px;
+  top: 25px;
+
+  width: 18px;
+  height: 29px;
+
+  border-radius:
+    10px 5px 14px 14px;
+
+  background: #624b55;
+}
+
+
+/*
+   오른쪽 짧은 단발
+*/
+.gd-showcase-before-hair::after,
+.gd-showcase-after-hair::after {
+  content: "";
+
+  position: absolute;
+
+  right: -4px;
+  top: 25px;
+
+  width: 18px;
+  height: 29px;
+
+  border-radius:
+    5px 10px 14px 14px;
+
+  background: #624b55;
+}
+
+
+/*
+   JSX에 남아 있는 side는
+   사용하지 않음
+*/
+.gd-showcase-before-hair .side,
+.gd-showcase-after-hair .side {
+  display: none;
+}
+
+
+/* =========================================
+   BROW
+========================================= */
+
+.gd-showcase-brow {
+  position: absolute;
+
+  z-index: 5;
+
+  top: 43px;
+
+  width: 14px;
+  height: 2px;
+
+  border-radius: 999px;
+
+  background: #786269;
+}
+
+
+.gd-showcase-brow.left {
+  left: 22px;
+
+  transform:
+    rotate(-3deg);
+}
+
+
+.gd-showcase-brow.right {
+  right: 22px;
+
+  transform:
+    rotate(3deg);
+}
+
+
+/* =========================================
+   OPEN EYES
+========================================= */
+
+.gd-showcase-eye-open {
+  position: absolute;
+
+  z-index: 6;
+
+  top: 53px;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #5f4a52;
+}
+
+
+.gd-showcase-eye-open.left {
+  left: 26px;
+}
+
+
+.gd-showcase-eye-open.right {
+  right: 26px;
+}
+
+
+.gd-showcase-eye-highlight {
+  position: absolute;
+
+  z-index: 7;
+
+  top: 55px;
+
+  width: 2px;
+  height: 2px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  opacity: 0.9;
+}
+
+
+.gd-showcase-eye-highlight.left {
+  left: 31px;
+}
+
+
+.gd-showcase-eye-highlight.right {
+  right: 31px;
+}
+
+
+/* =========================================
+   NOSE
+========================================= */
+
+.gd-showcase-nose {
+  position: absolute;
+
+  z-index: 5;
+
+  left: 50%;
+  top: 64px;
+
+  width: 5px;
+  height: 8px;
+
+  transform:
+    translateX(-50%);
+
+  border-right:
+    1px solid
+    rgba(176, 126, 119, 0.35);
+
+  border-bottom:
+    1px solid
+    rgba(176, 126, 119, 0.22);
+
+  border-radius:
+    0 0 3px 0;
+}
+
+
+/* =========================================
+   BASIC MOUTH
+========================================= */
+
+.gd-showcase-mouth-basic {
+  position: absolute;
+
+  z-index: 5;
+
+  left: 50%;
+  bottom: 20px;
+
+  width: 17px;
+  height: 5px;
+
+  transform:
+    translateX(-50%);
+
+  border-radius:
+    0 0 10px 10px;
+
+  background: #dfaeb6;
+}
+
+
+/* =========================================
+   TRANSFORM ARROW
+========================================= */
+
+.gd-showcase-transform-arrow {
+  width: 33px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 1px;
+
+  color: #cc97aa;
+}
+
+
+.gd-showcase-transform-arrow span {
+  font-size: 9px;
+
+  animation:
+    gd-showcase-mini-sparkle
+    1.3s
+    ease-in-out
+    infinite;
+}
+
+
+.gd-showcase-transform-arrow b {
+  font-size: 23px;
+  font-weight: 400;
+}
+
+
+@keyframes gd-showcase-mini-sparkle {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.7);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+
+/* =========================================
+   AFTER FACE
+========================================= */
+
+.gd-showcase-face.after {
+  background: #fbe2da;
+
+  transition:
+    box-shadow 0.3s ease;
+}
+
+
+.gd-showcase-face.after.step-4 {
+  box-shadow:
+    inset
+    0 -5px 0
+    rgba(215, 165, 158, 0.07),
+
+    0 0 18px
+    rgba(229, 164, 185, 0.2);
+}
+
+
+/* =========================================
+   EYE SHADOW
+========================================= */
+
+.gd-showcase-eye-shadow {
+  position: absolute;
+
+  z-index: 4;
+
+  top: 47px;
+
+  width: 21px;
+  height: 10px;
+
+  opacity: 0;
+
+  border-radius:
+    50% 50% 40% 40%;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(191, 126, 155, 0.45),
+      rgba(222, 165, 187, 0.15)
+    );
+
+  transform:
+    scale(0.65);
+
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+
+.gd-showcase-eye-shadow.left {
+  left: 19px;
+}
+
+
+.gd-showcase-eye-shadow.right {
+  right: 19px;
+}
+
+
+.gd-showcase-face.after.step-1
+.gd-showcase-eye-shadow,
+
+.gd-showcase-face.after.step-2
+.gd-showcase-eye-shadow,
+
+.gd-showcase-face.after.step-3
+.gd-showcase-eye-shadow,
+
+.gd-showcase-face.after.step-4
+.gd-showcase-eye-shadow {
+  opacity: 1;
+
+  transform:
+    scale(1);
+}
+
+
+/* =========================================
+   EYELINER
+========================================= */
+
+.gd-showcase-eyeliner {
+  position: absolute;
+
+  z-index: 7;
+
+  top: 53px;
+
+  width: 14px;
+  height: 3px;
+
+  opacity: 0;
+
+  border-bottom:
+    2px solid
+    #5c414d;
+
+  transition:
+    opacity 0.3s ease;
+}
+
+
+.gd-showcase-eyeliner.left {
+  left: 22px;
+
+  border-radius:
+    0 0 0 10px;
+
+  transform:
+    rotate(4deg);
+}
+
+
+.gd-showcase-eyeliner.right {
+  right: 22px;
+
+  border-radius:
+    0 0 10px 0;
+
+  transform:
+    rotate(-4deg);
+}
+
+
+.gd-showcase-face.after.step-1
+.gd-showcase-eyeliner,
+
+.gd-showcase-face.after.step-2
+.gd-showcase-eyeliner,
+
+.gd-showcase-face.after.step-3
+.gd-showcase-eyeliner,
+
+.gd-showcase-face.after.step-4
+.gd-showcase-eyeliner {
+  opacity: 1;
+}
+
+
+/* =========================================
+   LASH
+========================================= */
+
+.gd-showcase-lash {
+  position: absolute;
+
+  z-index: 8;
+
+  top: 50px;
+
+  width: 5px;
+  height: 1px;
+
+  opacity: 0;
+
+  background: #5c414d;
+
+  transform-origin: center;
+
+  transition:
+    opacity 0.3s ease;
+}
+
+
+.gd-showcase-lash.left.lash-1 {
+  left: 19px;
+
+  transform:
+    rotate(-50deg);
+}
+
+
+.gd-showcase-lash.left.lash-2 {
+  left: 22px;
+
+  transform:
+    rotate(-35deg);
+}
+
+
+.gd-showcase-lash.right.lash-1 {
+  right: 19px;
+
+  transform:
+    rotate(50deg);
+}
+
+
+.gd-showcase-lash.right.lash-2 {
+  right: 22px;
+
+  transform:
+    rotate(35deg);
+}
+
+
+.gd-showcase-face.after.step-1
+.gd-showcase-lash,
+
+.gd-showcase-face.after.step-2
+.gd-showcase-lash,
+
+.gd-showcase-face.after.step-3
+.gd-showcase-lash,
+
+.gd-showcase-face.after.step-4
+.gd-showcase-lash {
+  opacity: 1;
+}
+
+
+/* =========================================
+   BLUSH
+========================================= */
+
+.gd-showcase-blush {
+  position: absolute;
+
+  z-index: 4;
+
+  top: 68px;
+
+  width: 20px;
+  height: 11px;
+
+  opacity: 0;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(232, 129, 155, 0.55) 0%,
+      rgba(232, 129, 155, 0.18) 55%,
+      transparent 75%
+    );
+
+  transform:
+    scale(0.5);
+
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+
+.gd-showcase-blush.left {
+  left: 9px;
+}
+
+
+.gd-showcase-blush.right {
+  right: 9px;
+}
+
+
+.gd-showcase-face.after.step-2
+.gd-showcase-blush,
+
+.gd-showcase-face.after.step-3
+.gd-showcase-blush,
+
+.gd-showcase-face.after.step-4
+.gd-showcase-blush {
+  opacity: 1;
+
+  transform:
+    scale(1);
+}
+
+
+/* =========================================
+   LIP
+========================================= */
+
+.gd-showcase-lips {
+  position: absolute;
+
+  z-index: 7;
+
+  left: 50%;
+  bottom: 18px;
+
+  width: 20px;
+  height: 11px;
+
+  opacity: 0;
+
+  transform:
+    translateX(-50%)
+    scale(0.6);
+
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+
+.gd-showcase-lips .upper {
+  position: absolute;
+
+  left: 1px;
+  top: 1px;
+
+  width: 18px;
+  height: 6px;
+
+  border-radius:
+    50% 50% 35% 35%;
+
+  background: #d96f8d;
+
+  clip-path:
+    polygon(
+      0 65%,
+      26% 24%,
+      50% 48%,
+      73% 24%,
+      100% 65%,
+      50% 100%
+    );
+}
+
+
+.gd-showcase-lips .lower {
+  position: absolute;
+
+  left: 2px;
+  bottom: 0;
+
+  width: 16px;
+  height: 6px;
+
+  border-radius:
+    20% 20% 50% 50%;
+
+  background: #df7995;
+}
+
+
+.gd-showcase-face.after.step-3
+.gd-showcase-lips,
+
+.gd-showcase-face.after.step-4
+.gd-showcase-lips {
+  opacity: 1;
+
+  transform:
+    translateX(-50%)
+    scale(1);
+}
+
+
+/* =========================================
+   CURLY HAIR
+
+   참고 이미지처럼
+   얼굴 전체를 감싸는
+   풍성한 뽀글 파마
+========================================= */
+
+.gd-showcase-hair-complete-red {
+  position: absolute;
+
+  z-index: 6;
+
+  inset: 0;
+
+  pointer-events: none;
+}
+
+
+/*
+   공통 컬
+
+   완전한 작은 원이 아니라
+   서로 겹치는 큰 컬 덩어리로 구성
+*/
+.gd-showcase-hair-complete-red .curl {
+  position: absolute;
+
+  opacity: 0;
+
+  border-radius: 48%;
+
+  background: #765653;
+
+  box-shadow:
+    inset -3px -4px 0
+    rgba(75, 43, 42, 0.1);
+
+  transform:
+    scale(0.65);
+
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+
+/* =========================================
+   위쪽 볼륨
+========================================= */
+
+.gd-showcase-hair-complete-red .curl-1 {
+  top: -18px;
+  left: -5px;
+
+  width: 39px;
+  height: 41px;
+}
+
+
+.gd-showcase-hair-complete-red .curl-2 {
+  top: -28px;
+  left: 19px;
+
+  width: 42px;
+  height: 45px;
+}
+
+
+.gd-showcase-hair-complete-red .curl-3 {
+  top: -27px;
+  right: 18px;
+
+  width: 43px;
+  height: 45px;
+}
+
+
+.gd-showcase-hair-complete-red .curl-4 {
+  top: -17px;
+  right: -6px;
+
+  width: 40px;
+  height: 42px;
+}
+
+
+/* =========================================
+   왼쪽 볼륨
+========================================= */
+
+.gd-showcase-hair-complete-red .curl-5 {
+  top: 9px;
+  left: -20px;
+
+  width: 42px;
+  height: 47px;
+}
+
+
+.gd-showcase-hair-complete-red .curl-6 {
+  top: 39px;
+  left: -20px;
+
+  width: 43px;
+  height: 48px;
+}
+
+
+/* =========================================
+   오른쪽 볼륨
+========================================= */
+
+.gd-showcase-hair-complete-red .curl-7 {
+  top: 9px;
+  right: -20px;
+
+  width: 42px;
+  height: 47px;
+}
+
+
+.gd-showcase-hair-complete-red .curl-8 {
+  top: 39px;
+  right: -20px;
+
+  width: 43px;
+  height: 48px;
+}
+
+
+/* =========================================
+   CURLY BANGS
+========================================= */
+
+.gd-showcase-hair-complete-red .bang {
+  position: absolute;
+
+  z-index: 2;
+
+  opacity: 0;
+
+  border-radius: 50%;
+
+  background: #765653;
+
+  transform:
+    scale(0.65);
+
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+
+.gd-showcase-hair-complete-red .bang-1 {
+  top: 7px;
+  left: 18px;
+
+  width: 30px;
+  height: 29px;
+}
+
+
+.gd-showcase-hair-complete-red .bang-2 {
+  top: 2px;
+  left: 34px;
+
+  width: 32px;
+  height: 31px;
+}
+
+
+.gd-showcase-hair-complete-red .bang-3 {
+  top: 7px;
+  right: 17px;
+
+  width: 30px;
+  height: 29px;
+}
+
+
+/* =========================================
+   헤어 변신
+
+   기존 단발은 사라지고
+   파마머리가 나타남
+========================================= */
+
+.gd-showcase-face.after.step-4
+.gd-showcase-after-hair {
+  opacity: 0;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .curl,
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .bang {
+  opacity: 1;
+
+  transform:
+    scale(1);
+}
+
+
+/* 컬마다 조금씩 순차 등장 */
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .curl-1 {
+  transition-delay: 0s;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .curl-2 {
+  transition-delay: 0.04s;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .curl-3 {
+  transition-delay: 0.08s;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .curl-4 {
+  transition-delay: 0.12s;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .curl-5 {
+  transition-delay: 0.16s;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .curl-6 {
+  transition-delay: 0.2s;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .curl-7 {
+  transition-delay: 0.24s;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .curl-8 {
+  transition-delay: 0.28s;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .bang-1 {
+  transition-delay: 0.06s;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .bang-2 {
+  transition-delay: 0.1s;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-hair-complete-red .bang-3 {
+  transition-delay: 0.14s;
+}
+
+
+/* =========================================
+   FINISH SPARKLE
+========================================= */
+
+.gd-showcase-finish-sparkle {
+  position: absolute;
+
+  z-index: 10;
+
+  opacity: 0;
+
+  color: #d993a9;
+
+  font-size: 11px;
+}
+
+
+.gd-showcase-finish-sparkle.sparkle-a {
+  left: -10px;
+  top: 13px;
+}
+
+
+.gd-showcase-finish-sparkle.sparkle-b {
+  right: -12px;
+  top: 27px;
+}
+
+
+.gd-showcase-finish-sparkle.sparkle-c {
+  right: 1px;
+  bottom: 5px;
+}
+
+
+.gd-showcase-face.after.step-4
+.gd-showcase-finish-sparkle {
+  animation:
+    gd-showcase-finish-sparkle
+    1.2s
+    ease-in-out
+    infinite;
+}
+
+
+@keyframes gd-showcase-finish-sparkle {
+
+  0%,
+  100% {
+    opacity: 0.25;
+
+    transform:
+      scale(0.65)
+      rotate(0deg);
+  }
+
+  50% {
+    opacity: 1;
+
+    transform:
+      scale(1.2)
+      rotate(18deg);
+  }
+}
+
+
+/* =========================================
+   MAKEUP STEPS
+========================================= */
+
+.gd-showcase-makeup-steps {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  margin-top: 13px;
+}
+
+
+.gd-showcase-step {
+  min-width: 71px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  padding:
+    6px
+    9px;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid
+    #eedde2;
+
+  border-radius: 999px;
+
+  background: #f9f1f3;
+
+  color: #b0959e;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.gd-showcase-step i {
+  width: 15px;
+  height: 15px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #efe1e6;
+
+  color: #a88893;
+
+  font-size: 8px;
+  font-style: normal;
+}
+
+
+.gd-showcase-step.done {
+  border-color: #e2bcc8;
+
+  background: #f5dfe6;
+
+  color: #875a69;
+}
+
+
+.gd-showcase-step.done i {
+  background: #cf91a5;
+
+  color: #ffffff;
+}
+
+
+.gd-showcase-step.current {
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 4px 10px
+    rgba(159, 103, 123, 0.12);
+}
+
+
+/* =========================================
+   RUN AREA
+========================================= */
+
+.gd-showcase-run-area {
+  position: relative;
+
+  height: 118px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    #f0dfe4;
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffefe 0%,
+      #fff8fa 68%,
+      #f9edf1 69%,
+      #f9edf1 100%
+    );
+}
+
+
+/* =========================================
+   CLOUD
+========================================= */
+
+.gd-showcase-run-sky .cloud {
+  position: absolute;
+
+  top: 18px;
+
+  width: 28px;
+  height: 8px;
+
+  opacity: 0.55;
+
+  border-radius: 999px;
+
+  background: #f1dce3;
+}
+
+
+.gd-showcase-run-sky .cloud::before,
+.gd-showcase-run-sky .cloud::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: 1px;
+
+  border-radius: 50%;
+
+  background: inherit;
+}
+
+
+.gd-showcase-run-sky .cloud::before {
+  left: 5px;
+
+  width: 12px;
+  height: 12px;
+}
+
+
+.gd-showcase-run-sky .cloud::after {
+  right: 3px;
+
+  width: 9px;
+  height: 9px;
+}
+
+
+.gd-showcase-run-sky .cloud-1 {
+  left: 17%;
+
+  animation:
+    gd-showcase-cloud
+    7s
+    linear
+    infinite;
+}
+
+
+.gd-showcase-run-sky .cloud-2 {
+  left: 63%;
+  top: 27px;
+
+  transform:
+    scale(0.8);
+
+  animation:
+    gd-showcase-cloud
+    8.5s
+    linear
+    infinite;
+}
+
+
+@keyframes gd-showcase-cloud {
+
+  from {
+    transform:
+      translateX(-12px);
+  }
+
+  to {
+    transform:
+      translateX(18px);
+  }
+}
+
+
+/* =========================================
+   ROAD
+========================================= */
+
+.gd-showcase-road {
+  position: absolute;
+
+  z-index: 1;
+
+  left: 15px;
+  right: 15px;
+  bottom: 27px;
+
+  height: 2px;
+
+  background:
+    repeating-linear-gradient(
+      to right,
+      #dfaab9 0,
+      #dfaab9 13px,
+      transparent 13px,
+      transparent 23px
+    );
+}
+
+
+/* =========================================
+   OBSTACLES
+========================================= */
+
+.gd-showcase-obstacle {
+  position: absolute;
+
+  z-index: 4;
+
+  bottom: 29px;
+
+  width: 17px;
+
+  border-radius:
+    5px 5px 1px 1px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #dfa7b7,
+      #c98da0
+    );
+
+  box-shadow:
+    0 2px 4px
+    rgba(114, 74, 88, 0.1);
+}
+
+
+.gd-showcase-obstacle span {
+  position: absolute;
+
+  left: 50%;
+  top: 5px;
+
+  width: 5px;
+  height: 5px;
+
+  transform:
+    translateX(-50%);
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.65);
+}
+
+
+.gd-showcase-obstacle.obstacle-1 {
+  left: 30%;
+
+  height: 27px;
+}
+
+
+.gd-showcase-obstacle.obstacle-2 {
+  left: 54%;
+
+  height: 35px;
+}
+
+
+.gd-showcase-obstacle.obstacle-3 {
+  left: 74%;
+
+  height: 24px;
+}
+
+
+/* =========================================
+   RUNNER
+========================================= */
+
+.gd-showcase-runner {
+  position: absolute;
+
+  z-index: 7;
+
+  left: 3%;
+  bottom: 30px;
+
+  width: 40px;
+  height: 52px;
+
+  animation:
+    gd-showcase-runner-travel
+    5.7s
+    linear
+    infinite;
+}
+
+
+.gd-showcase-runner-head {
+  position: absolute;
+
+  z-index: 5;
+
+  left: 12px;
+  top: 4px;
+
+  width: 17px;
+  height: 17px;
+
+  border-radius: 50%;
+
+  background: #f4d7ce;
+}
+
+
+.gd-showcase-runner-hair {
+  position: absolute;
+
+  z-index: 6;
+
+  left: 9px;
+  top: 1px;
+
+  width: 23px;
+  height: 11px;
+
+  border-radius:
+    12px 12px 4px 4px;
+
+  background: #67505a;
+}
+
+
+.gd-showcase-runner-hair::after {
+  content: "";
+
+  position: absolute;
+
+  right: -7px;
+  top: 4px;
+
+  width: 12px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #67505a;
+
+  animation:
+    gd-showcase-runner-hair
+    0.28s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+@keyframes gd-showcase-runner-hair {
+
+  from {
+    transform:
+      rotate(-12deg);
+  }
+
+  to {
+    transform:
+      rotate(12deg);
+  }
+}
+
+
+.gd-showcase-runner-body {
+  position: absolute;
+
+  z-index: 4;
+
+  left: 14px;
+  top: 21px;
+
+  width: 14px;
+  height: 19px;
+
+  border-radius:
+    7px 7px 5px 5px;
+
+  background: #cf829a;
+}
+
+
+.gd-showcase-runner-arm {
+  position: absolute;
+
+  z-index: 3;
+
+  top: 24px;
+
+  width: 13px;
+  height: 3px;
+
+  border-radius: 999px;
+
+  background: #815e69;
+
+  transform-origin: center;
+}
+
+
+.gd-showcase-runner-arm.arm-left {
+  left: 5px;
+
+  animation:
+    gd-showcase-arm-left
+    0.25s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+.gd-showcase-runner-arm.arm-right {
+  right: 3px;
+
+  animation:
+    gd-showcase-arm-right
+    0.25s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+@keyframes gd-showcase-arm-left {
+
+  from {
+    transform:
+      rotate(28deg);
+  }
+
+  to {
+    transform:
+      rotate(-30deg);
+  }
+}
+
+
+@keyframes gd-showcase-arm-right {
+
+  from {
+    transform:
+      rotate(-28deg);
+  }
+
+  to {
+    transform:
+      rotate(30deg);
+  }
+}
+
+
+.gd-showcase-runner-leg {
+  position: absolute;
+
+  z-index: 3;
+
+  bottom: 5px;
+
+  width: 15px;
+  height: 3px;
+
+  border-radius: 999px;
+
+  background: #72535f;
+}
+
+
+.gd-showcase-runner-leg.leg-left {
+  left: 8px;
+
+  transform-origin:
+    right center;
+
+  animation:
+    gd-showcase-leg-left
+    0.22s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+.gd-showcase-runner-leg.leg-right {
+  right: 6px;
+
+  transform-origin:
+    left center;
+
+  animation:
+    gd-showcase-leg-right
+    0.22s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+@keyframes gd-showcase-leg-left {
+
+  from {
+    transform:
+      rotate(32deg);
+  }
+
+  to {
+    transform:
+      rotate(-28deg);
+  }
+}
+
+
+@keyframes gd-showcase-leg-right {
+
+  from {
+    transform:
+      rotate(-28deg);
+  }
+
+  to {
+    transform:
+      rotate(32deg);
+  }
+}
+
+
+.gd-showcase-runner-shadow {
+  position: absolute;
+
+  z-index: 1;
+
+  left: 8px;
+  bottom: -1px;
+
+  width: 27px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(105, 73, 83, 0.11);
+}
+
+
+/* =========================================
+   RUN + JUMP + FALL
+========================================= */
+
+@keyframes gd-showcase-runner-travel {
+
+  0% {
+    left: 3%;
+
+    transform:
+      translateY(0)
+      rotate(0deg);
+  }
+
+
+  22% {
+    left: 24%;
+
+    transform:
+      translateY(0)
+      rotate(0deg);
+  }
+
+
+  /* 첫 번째 장애물 점프 */
+  28% {
+    left: 29%;
+
+    transform:
+      translateY(-31px)
+      rotate(0deg);
+  }
+
+
+  34% {
+    left: 36%;
+
+    transform:
+      translateY(0)
+      rotate(0deg);
+  }
+
+
+  46% {
+    left: 48%;
+
+    transform:
+      translateY(0)
+      rotate(0deg);
+  }
+
+
+  /* 두 번째 장애물 점프 */
+  53% {
+    left: 54%;
+
+    transform:
+      translateY(-40px)
+      rotate(0deg);
+  }
+
+
+  58% {
+    left: 58%;
+
+    transform:
+      translateY(0)
+      rotate(0deg);
+  }
+
+
+  /* 한 번 넘어짐 */
+  63% {
+    left: 61%;
+
+    transform:
+      translateY(6px)
+      rotate(38deg);
+  }
+
+
+  67% {
+    left: 63%;
+
+    transform:
+      translateY(8px)
+      rotate(78deg);
+  }
+
+
+  /* 다시 일어남 */
+  72% {
+    left: 66%;
+
+    transform:
+      translateY(0)
+      rotate(0deg);
+  }
+
+
+  /* 마지막 장애물 */
+  76% {
+    left: 72%;
+
+    transform:
+      translateY(-28px)
+      rotate(0deg);
+  }
+
+
+  82% {
+    left: 81%;
+
+    transform:
+      translateY(0)
+      rotate(0deg);
+  }
+
+
+  94% {
+    left:
+      calc(100% - 79px);
+
+    transform:
+      translateY(0)
+      rotate(0deg);
+  }
+
+
+  100% {
+    left:
+      calc(100% - 79px);
+
+    transform:
+      translateY(-4px)
+      rotate(0deg);
+  }
+}
+
+
+/* =========================================
+   FINISH FLAG
+========================================= */
+
+.gd-showcase-finish {
+  position: absolute;
+
+  z-index: 6;
+
+  right: 19px;
+  bottom: 29px;
+
+  width: 37px;
+  height: 60px;
+}
+
+
+.gd-showcase-finish .pole {
+  position: absolute;
+
+  left: 4px;
+  bottom: 0;
+
+  width: 3px;
+  height: 58px;
+
+  border-radius: 999px;
+
+  background: #8b6875;
+}
+
+
+.gd-showcase-finish .flag {
+  position: absolute;
+
+  left: 7px;
+  top: 2px;
+
+  width: 28px;
+  height: 17px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius:
+    2px 9px 9px 2px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d2879e,
+      #edb6c6
+    );
+
+  transform-origin:
+    left center;
+
+  animation:
+    gd-showcase-flag-wave
+    0.75s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+.gd-showcase-finish .flag i {
+  color: #ffffff;
+
+  font-size: 8px;
+  font-style: normal;
+}
+
+
+@keyframes gd-showcase-flag-wave {
+
+  from {
+    transform:
+      skewY(-5deg)
+      scaleX(0.95);
+  }
+
+  to {
+    transform:
+      skewY(5deg)
+      scaleX(1.04);
+  }
+}
+
+
+/* =========================================
+   RUN STATUS
+========================================= */
+
+.gd-showcase-run-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding:
+    6px
+    4px
+    0;
+
+  color: #b4939d;
+
+  font-size: 9px;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 760px) {
+
+  .gd-showcase {
+    width: 100%;
+
+    padding: 14px;
+
+    margin:
+      8px
+      0
+      15px;
+  }
+
+
+  .gd-showcase-makeup {
+    gap: 12px;
+
+    min-height: 150px;
+
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+
+  .gd-showcase-face {
+    width: 82px;
+    height: 100px;
+  }
+
+
+  .gd-showcase-before-hair,
+  .gd-showcase-after-hair {
+    width: 73px;
+    left: 5px;
+  }
+
+
+  .gd-showcase-transform-arrow {
+    width: 22px;
+  }
+
+
+  .gd-showcase-step {
+    min-width: 66px;
+  }
+
+
+  .gd-showcase-run-area {
+    height: 108px;
+  }
+}

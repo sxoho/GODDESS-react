@@ -1,20 +1,22 @@
 import {
   useEffect,
   useRef,
-  useState
+  useState,
 } from "react";
 
 import {
-  useNavigate
+  useNavigate,
 } from "react-router-dom";
 
 import {
-  axiosInstance
+  axiosInstance,
 } from "../../components/ToolBak";
 
 import {
-  useGlobalStore
+  useGlobalStore,
 } from "../../store/store";
+
+import ChatLoadingShowcase from "./ChatLoadingShowcase";
 
 import "../../styles/chat/Chat.css";
 
@@ -43,34 +45,254 @@ type ChatbotAction = {
 };
 
 
+type ChatbotRecommendedProduct = {
+  productId: number;
+  productColorId: number;
+
+  productName: string;
+
+  brand?: string | null;
+
+  price: number;
+
+  discount?: number | null;
+
+  colorName?: string | null;
+
+  colorCode?: string | null;
+
+  imageUrl?: string | null;
+};
+
+
 type ChatMessage = {
   id: number;
+
   chatRoomId: number;
-  senderType: "USER" | "BOT";
+
+  senderType:
+    | "USER"
+    | "BOT";
+
   message: string;
+
   createdAt?: string | null;
+
   action?: ChatbotAction | null;
+
+  recommendedProducts?:
+    ChatbotRecommendedProduct[];
 };
 
 
 type ChatbotAskResponse = {
   userMessage: ChatMessage;
+
   botMessage: ChatMessage;
+
   action?: ChatbotAction | null;
+
+  recommendedProducts?:
+    ChatbotRecommendedProduct[];
+};
+
+
+type StoredProductRecommendations = {
+  [botMessageId: string]:
+    ChatbotRecommendedProduct[];
 };
 
 
 /* =========================================
-   챗봇 이름
+   Spring
+========================================= */
+
+const SPRING_BASE_URL =
+  "http://localhost:9104";
+
+
+/* =========================================
+   상품 이미지
+========================================= */
+
+const getProductImageUrl = (
+  imageUrl?: string | null
+) => {
+
+  if (!imageUrl) {
+
+    return "";
+  }
+
+
+  const normalized =
+    imageUrl.replace(
+      /\\/g,
+      "/"
+    );
+
+
+  if (
+    normalized.startsWith("http://") ||
+    normalized.startsWith("https://")
+  ) {
+
+    return normalized;
+  }
+
+
+  if (
+    normalized.startsWith("/")
+  ) {
+
+    return (
+      SPRING_BASE_URL +
+      normalized
+    );
+  }
+
+
+  return (
+    `${SPRING_BASE_URL}/${normalized}`
+  );
+};
+
+
+/* =========================================
+   추천상품 sessionStorage
+========================================= */
+
+const getRecommendationStorageKey = (
+  roomId: number
+) => {
+
+  return (
+    `goddess_chat_recommendations_${roomId}`
+  );
+};
+
+
+const getStoredRecommendations = (
+  roomId: number
+): StoredProductRecommendations => {
+
+  try {
+
+    const storageKey =
+      getRecommendationStorageKey(
+        roomId
+      );
+
+
+    const saved =
+      sessionStorage.getItem(
+        storageKey
+      );
+
+
+    if (!saved) {
+
+      return {};
+    }
+
+
+    const parsed =
+      JSON.parse(
+        saved
+      );
+
+
+    if (
+      !parsed ||
+      typeof parsed !== "object"
+    ) {
+
+      return {};
+    }
+
+
+    return (
+      parsed as StoredProductRecommendations
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "챗봇 추천상품 저장정보 조회 오류:",
+      error
+    );
+
+
+    return {};
+  }
+};
+
+
+const saveStoredRecommendation = (
+  roomId: number,
+  botMessageId: number,
+  products: ChatbotRecommendedProduct[]
+) => {
+
+  try {
+
+    if (
+      !products ||
+      products.length === 0
+    ) {
+
+      return;
+    }
+
+
+    const storageKey =
+      getRecommendationStorageKey(
+        roomId
+      );
+
+
+    const current =
+      getStoredRecommendations(
+        roomId
+      );
+
+
+    const updated:
+      StoredProductRecommendations = {
+
+        ...current,
+
+        [String(botMessageId)]:
+          products,
+      };
+
+
+    sessionStorage.setItem(
+      storageKey,
+      JSON.stringify(
+        updated
+      )
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "챗봇 추천상품 저장 오류:",
+      error
+    );
+  }
+};
+
+
+/* =========================================
+   챗봇
 ========================================= */
 
 const CHATBOT_NAME =
   "여신강림 도우미 챗봇";
 
-
-/* =========================================
-   빠른 질문
-========================================= */
 
 const QUICK_QUESTIONS = [
   "봄웜 특징 알려줘",
@@ -78,25 +300,21 @@ const QUICK_QUESTIONS = [
   "내 피부 타입에 맞는 관리법 알려줘",
   "퍼스널컬러 진단하러 가고 싶어",
   "AI BEAUTY 체험하러 가고 싶어",
-  "Premium 이용권 알려줘"
+  "Premium 이용권 알려줘",
 ];
 
-
-/* =========================================
-   AI 답변 준비 중 문구
-========================================= */
 
 const LOADING_MESSAGES = [
   "답변을 준비 중입니다.",
   "보내주신 질문을 확인하고 있어요. 조금만 기다려주세요!",
   "어울리는 답변을 준비하고 있습니다.",
   "여신강림 도우미가 생각 중입니다...",
-  "조금만 기다려주세요. 곧 답변해드릴게요!"
+  "조금만 기다려주세요. 곧 답변해드릴게요!",
 ];
 
 
 /* =========================================
-   오늘 날짜 확인
+   오늘 날짜
 ========================================= */
 
 const getTodayDateKey =
@@ -128,39 +346,31 @@ const getTodayDateKey =
       );
 
 
-    return `${year}-${month}-${day}`;
-  };
-
-
-const isTodayChatRoom =
-  (
-    createdAt?: string | null
-  ) => {
-
-    if (
-      !createdAt
-    ) {
-
-      return false;
-    }
-
-
-    const roomDate =
-      createdAt.substring(
-        0,
-        10
-      );
-
-
     return (
-      roomDate ===
-      getTodayDateKey()
+      `${year}-${month}-${day}`
     );
   };
 
 
+const isTodayChatRoom = (
+  createdAt?: string | null
+) => {
+
+  if (!createdAt) {
+
+    return false;
+  }
+
+
+  return (
+    createdAt.substring(0, 10) ===
+    getTodayDateKey()
+  );
+};
+
+
 /* =========================================
-   과거 메시지 ACTION 복원
+   과거 ACTION 복원
 ========================================= */
 
 const getHistoryAction = (
@@ -173,7 +383,6 @@ const getHistoryAction = (
       .toLowerCase();
 
 
-  /* 퍼스널컬러 자가진단 */
   if (
     (
       text.includes("퍼스널컬러") ||
@@ -191,12 +400,11 @@ const getHistoryAction = (
     return {
       type: "NAVIGATE",
       label: "퍼스널컬러 자가진단 하러 가기",
-      path: "/personal-color-diagnosis"
+      path: "/personal-color-diagnosis",
     };
   }
 
 
-  /* 피부 타입 진단 */
   if (
     text.includes("피부") &&
     (
@@ -209,12 +417,11 @@ const getHistoryAction = (
     return {
       type: "NAVIGATE",
       label: "피부 타입 진단하러 가기",
-      path: "/diagnosis?type=skin"
+      path: "/diagnosis?type=skin",
     };
   }
 
 
-  /* MY PHOTO */
   if (
     (
       text.includes("사진") ||
@@ -231,12 +438,11 @@ const getHistoryAction = (
     return {
       type: "NAVIGATE",
       label: "내 사진 관리하러 가기",
-      path: "/beauty?view=photo"
+      path: "/beauty?view=photo",
     };
   }
 
 
-  /* 이용 내역 */
   if (
     text.includes("이용 내역") ||
     text.includes("히스토리") ||
@@ -247,12 +453,11 @@ const getHistoryAction = (
     return {
       type: "NAVIGATE",
       label: "AI BEAUTY 이용 내역 보기",
-      path: "/beauty?view=saved"
+      path: "/beauty?view=saved",
     };
   }
 
 
-  /* Premium */
   if (
     text.includes("premium") ||
     text.includes("프리미엄") ||
@@ -263,12 +468,11 @@ const getHistoryAction = (
     return {
       type: "NAVIGATE",
       label: "Premium 이용권 보러가기",
-      path: "/beauty?view=membership"
+      path: "/beauty?view=membership",
     };
   }
 
 
-  /* AI BEAUTY */
   if (
     text.includes("ai beauty") ||
     text.includes("ai 뷰티") ||
@@ -280,7 +484,7 @@ const getHistoryAction = (
     return {
       type: "NAVIGATE",
       label: "AI BEAUTY 바로가기",
-      path: "/beauty"
+      path: "/beauty",
     };
   }
 
@@ -301,13 +505,13 @@ const Chat = () => {
 
   const {
     sw,
-    memberId
+    memberId,
   } = useGlobalStore();
 
 
   const [
     room,
-    setRoom
+    setRoom,
   ] = useState<ChatRoom | null>(
     null
   );
@@ -315,7 +519,7 @@ const Chat = () => {
 
   const [
     messages,
-    setMessages
+    setMessages,
   ] = useState<ChatMessage[]>(
     []
   );
@@ -323,7 +527,7 @@ const Chat = () => {
 
   const [
     input,
-    setInput
+    setInput,
   ] = useState(
     ""
   );
@@ -331,7 +535,7 @@ const Chat = () => {
 
   const [
     loading,
-    setLoading
+    setLoading,
   ] = useState(
     true
   );
@@ -339,7 +543,7 @@ const Chat = () => {
 
   const [
     sending,
-    setSending
+    setSending,
   ] = useState(
     false
   );
@@ -347,7 +551,7 @@ const Chat = () => {
 
   const [
     roomResetting,
-    setRoomResetting
+    setRoomResetting,
   ] = useState(
     false
   );
@@ -355,7 +559,7 @@ const Chat = () => {
 
   const [
     error,
-    setError
+    setError,
   ] = useState(
     ""
   );
@@ -363,7 +567,7 @@ const Chat = () => {
 
   const [
     loadingMessageIndex,
-    setLoadingMessageIndex
+    setLoadingMessageIndex,
   ] = useState(
     0
   );
@@ -388,16 +592,14 @@ const Chat = () => {
 
 
   /* =========================================
-     시간 표시
+     시간
   ========================================= */
 
   const formatTime = (
     value?: string | null
   ) => {
 
-    if (
-      !value
-    ) {
+    if (!value) {
 
       return "";
     }
@@ -423,7 +625,7 @@ const Chat = () => {
       "ko-KR",
       {
         hour: "2-digit",
-        minute: "2-digit"
+        minute: "2-digit",
       }
     );
   };
@@ -443,7 +645,7 @@ const Chat = () => {
             .current
             ?.scrollIntoView({
               behavior: "smooth",
-              block: "end"
+              block: "end",
             });
 
         },
@@ -460,22 +662,20 @@ const Chat = () => {
     },
     [
       messages,
-      sending
+      sending,
+      loadingMessageIndex,
     ]
   );
 
 
   /* =========================================
-     AI 답변 준비 문구
-     3초마다 변경
+     기존 로딩 문구
   ========================================= */
 
   useEffect(
     () => {
 
-      if (
-        !sending
-      ) {
+      if (!sending) {
 
         setLoadingMessageIndex(
           0
@@ -513,13 +713,13 @@ const Chat = () => {
 
     },
     [
-      sending
+      sending,
     ]
   );
 
 
   /* =========================================
-     기존 메시지 조회
+     메시지 조회
   ========================================= */
 
   const loadMessages =
@@ -536,14 +736,21 @@ const Chat = () => {
           {
             params: {
               memberId:
-                currentMemberId
-            }
+                currentMemberId,
+            },
           }
         );
 
 
       const history =
-        response.data ?? [];
+        response.data ??
+        [];
+
+
+      const storedRecommendations =
+        getStoredRecommendations(
+          roomId
+        );
 
 
       const restoredMessages =
@@ -567,11 +774,8 @@ const Chat = () => {
 
 
             for (
-              let i =
-                index - 1;
-
+              let i = index - 1;
               i >= 0;
-
               i--
             ) {
 
@@ -588,14 +792,25 @@ const Chat = () => {
             }
 
 
-            return {
+            const storedProducts =
+              storedRecommendations[
+                String(
+                  message.id
+                )
+              ] ??
+              [];
 
+
+            return {
               ...message,
 
               action:
                 getHistoryAction(
                   userQuestion
-                )
+                ),
+
+              recommendedProducts:
+                storedProducts,
             };
           }
         );
@@ -608,7 +823,7 @@ const Chat = () => {
 
 
   /* =========================================
-     채팅방 생성 / 조회
+     초기화
   ========================================= */
 
   const initializeChat =
@@ -641,6 +856,7 @@ const Chat = () => {
           true
         );
 
+
         setError(
           ""
         );
@@ -655,8 +871,8 @@ const Chat = () => {
 
             {
               params: {
-                memberId
-              }
+                memberId,
+              },
             }
           );
 
@@ -674,10 +890,6 @@ const Chat = () => {
           roomResponse.data;
 
 
-        /*
-         * 이전 날짜의 ACTIVE 채팅방이면
-         * 종료 후 오늘 새 채팅방 생성
-         */
         if (
           !isTodayChatRoom(
             chatRoom.createdAt
@@ -692,8 +904,8 @@ const Chat = () => {
 
             {
               params: {
-                memberId
-              }
+                memberId,
+              },
             }
           );
 
@@ -707,8 +919,8 @@ const Chat = () => {
 
               {
                 params: {
-                  memberId
-                }
+                  memberId,
+                },
               }
             );
 
@@ -780,13 +992,13 @@ const Chat = () => {
     },
     [
       sw,
-      memberId
+      memberId,
     ]
   );
 
 
   /* =========================================
-     질문 전송
+     메시지 전송
   ========================================= */
 
   const sendMessage =
@@ -813,9 +1025,7 @@ const Chat = () => {
       }
 
 
-      if (
-        !room
-      ) {
+      if (!room) {
 
         setError(
           "채팅방 정보를 찾을 수 없습니다."
@@ -829,21 +1039,16 @@ const Chat = () => {
         (
           customMessage ??
           input
-        )
-          .trim();
+        ).trim();
 
 
-      if (
-        !message
-      ) {
+      if (!message) {
 
         return;
       }
 
 
-      if (
-        sending
-      ) {
+      if (sending) {
 
         return;
       }
@@ -882,7 +1087,7 @@ const Chat = () => {
 
           createdAt:
             new Date()
-              .toISOString()
+              .toISOString(),
         };
 
 
@@ -893,7 +1098,7 @@ const Chat = () => {
 
           ...previous,
 
-          temporaryUserMessage
+          temporaryUserMessage,
         ]
       );
 
@@ -909,6 +1114,7 @@ const Chat = () => {
           true
         );
 
+
         setError(
           ""
         );
@@ -920,22 +1126,27 @@ const Chat = () => {
             `/api/chat/rooms/${room.id}/ask`,
 
             {
-              message
+              message,
             },
 
             {
               params: {
-                memberId
+                memberId,
               },
 
               timeout:
-                180000
+                180000,
             }
           );
 
 
         const data =
           response.data;
+
+
+        const recommendedProducts =
+          data.recommendedProducts ??
+          [];
 
 
         const botMessage:
@@ -945,8 +1156,23 @@ const Chat = () => {
 
           action:
             data.action ??
-            null
+            null,
+
+          recommendedProducts,
         };
+
+
+        if (
+          recommendedProducts.length >
+          0
+        ) {
+
+          saveStoredRecommendation(
+            room.id,
+            data.botMessage.id,
+            recommendedProducts
+          );
+        }
 
 
         setMessages(
@@ -954,7 +1180,7 @@ const Chat = () => {
             previous
           ) => {
 
-            const replacedMessages =
+            const replaced =
               previous.map(
                 (
                   item
@@ -975,10 +1201,8 @@ const Chat = () => {
 
 
             return [
-
-              ...replacedMessages,
-
-              botMessage
+              ...replaced,
+              botMessage,
             ];
           }
         );
@@ -1041,56 +1265,53 @@ const Chat = () => {
      ENTER
   ========================================= */
 
-  const handleKeyDown =
-    (
-      event:
-        React.KeyboardEvent<HTMLTextAreaElement>
-    ) => {
+  const handleKeyDown = (
+    event:
+      React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
 
-      if (
-        event.key === "Enter" &&
-        !event.shiftKey
-      ) {
+    if (
+      event.key ===
+        "Enter" &&
+      !event.shiftKey
+    ) {
 
-        event.preventDefault();
+      event.preventDefault();
 
 
-        void sendMessage();
-      }
-    };
+      void sendMessage();
+    }
+  };
 
 
   /* =========================================
-     바로가기
+     ACTION
   ========================================= */
 
-  const handleAction =
-    (
-      action:
-        ChatbotAction
-    ) => {
+  const handleAction = (
+    action:
+      ChatbotAction
+  ) => {
 
-      if (
-        action.type !==
-        "NAVIGATE"
-      ) {
+    if (
+      action.type !==
+      "NAVIGATE"
+    ) {
 
-        return;
-      }
-
-
-      if (
-        !action.path
-      ) {
-
-        return;
-      }
+      return;
+    }
 
 
-      navigate(
-        action.path
-      );
-    };
+    if (!action.path) {
+
+      return;
+    }
+
+
+    navigate(
+      action.path
+    );
+  };
 
 
   /* =========================================
@@ -1115,9 +1336,7 @@ const Chat = () => {
         );
 
 
-      if (
-        !confirmed
-      ) {
+      if (!confirmed) {
 
         return;
       }
@@ -1128,6 +1347,7 @@ const Chat = () => {
         setRoomResetting(
           true
         );
+
 
         setError(
           ""
@@ -1142,8 +1362,8 @@ const Chat = () => {
 
           {
             params: {
-              memberId
-            }
+              memberId,
+            },
           }
         );
 
@@ -1157,8 +1377,8 @@ const Chat = () => {
 
             {
               params: {
-                memberId
-              }
+                memberId,
+              },
             }
           );
 
@@ -1259,12 +1479,10 @@ const Chat = () => {
 
 
   /* =========================================
-     로딩
+     초기 로딩
   ========================================= */
 
-  if (
-    loading
-  ) {
+  if (loading) {
 
     return (
 
@@ -1286,10 +1504,6 @@ const Chat = () => {
   }
 
 
-  /* =========================================
-     MAIN
-  ========================================= */
-
   return (
 
     <main className="gd-chat-page">
@@ -1297,9 +1511,7 @@ const Chat = () => {
       <section className="gd-chat-shell">
 
 
-        {/* =====================================
-            HEADER
-        ===================================== */}
+        {/* HEADER */}
 
         <header className="gd-chat-header">
 
@@ -1358,9 +1570,7 @@ const Chat = () => {
         </header>
 
 
-        {/* =====================================
-            소개
-        ===================================== */}
+        {/* INTRO */}
 
         <div className="gd-chat-intro">
 
@@ -1377,9 +1587,7 @@ const Chat = () => {
         </div>
 
 
-        {/* =====================================
-            빠른 질문
-        ===================================== */}
+        {/* QUICK */}
 
         <div className="gd-chat-quick">
 
@@ -1411,6 +1619,7 @@ const Chat = () => {
                   }
 
                 </button>
+
               )
             )
           }
@@ -1418,9 +1627,7 @@ const Chat = () => {
         </div>
 
 
-        {/* =====================================
-            메시지
-        ===================================== */}
+        {/* MESSAGES */}
 
         <div className="gd-chat-messages">
 
@@ -1448,10 +1655,10 @@ const Chat = () => {
 
                   <p>
 
-                    퍼스널컬러부터 피부 관리,
+                    이용하셨던 것 중 궁금한 것과
                     메이크업과 헤어 추천,
                     AI BEAUTY 이용 방법까지
-                    도와드릴게요.
+                    모두 도와드릴게요.
 
                   </p>
 
@@ -1490,9 +1697,11 @@ const Chat = () => {
                           {
                             !isUser &&
                             (
+
                               <span className="gd-chat-message-name">
                                 {CHATBOT_NAME}
                               </span>
+
                             )
                           }
 
@@ -1506,11 +1715,233 @@ const Chat = () => {
                           </div>
 
 
+                          {/* 추천 상품 */}
+
+                          {
+                            !isUser &&
+                            message.recommendedProducts &&
+                            message.recommendedProducts.length >
+                              0 &&
+                            (
+
+                              <div className="gd-chat-products">
+
+                                <div className="gd-chat-products-title">
+                                  AI픽 추천 상품
+                                </div>
+
+
+                                <div className="gd-chat-products-list">
+
+                                  {
+                                    message
+                                      .recommendedProducts
+                                      .map(
+                                        (
+                                          product
+                                        ) => {
+
+                                          const discount =
+                                            product.discount ??
+                                            0;
+
+
+                                          const salePrice =
+                                            discount > 0
+                                              ? Math.round(
+                                                  product.price *
+                                                  (
+                                                    1 -
+                                                    discount /
+                                                    100
+                                                  )
+                                                )
+                                              : product.price;
+
+
+                                          const imageUrl =
+                                            getProductImageUrl(
+                                              product.imageUrl
+                                            );
+
+
+                                          return (
+
+                                            <div
+                                              key={`${product.productId}-${product.productColorId}`}
+                                              className="gd-chat-product-card"
+                                              onClick={() =>
+                                                navigate(
+                                                  `/products/${product.productId}`
+                                                )
+                                              }
+                                              role="button"
+                                              tabIndex={0}
+                                              onKeyDown={(event) => {
+                                                if (
+                                                  event.key === "Enter" ||
+                                                  event.key === " "
+                                                ) {
+                                                  event.preventDefault();
+
+                                                  navigate(
+                                                    `/products/${product.productId}`
+                                                  );
+                                                }
+                                              }}
+                                            >
+
+                                              <div className="gd-chat-product-image-wrap">
+
+                                                {
+                                                  imageUrl
+                                                    ? (
+
+                                                      <img
+                                                        src={
+                                                          imageUrl
+                                                        }
+                                                        alt={
+                                                          product.productName
+                                                        }
+                                                        className="gd-chat-product-image"
+                                                      />
+
+                                                    )
+                                                    : (
+
+                                                      <div className="gd-chat-product-image-empty">
+                                                        이미지 준비 중
+                                                      </div>
+
+                                                    )
+                                                }
+
+                                              </div>
+
+
+                                              <div className="gd-chat-product-info">
+
+                                                {
+                                                  product.brand &&
+                                                  (
+
+                                                    <div className="gd-chat-product-brand">
+                                                      {product.brand}
+                                                    </div>
+
+                                                  )
+                                                }
+
+
+                                                <div className="gd-chat-product-name">
+                                                  {product.productName}
+                                                </div>
+
+
+                                                {
+                                                  product.colorName &&
+                                                  (
+
+                                                    <div className="gd-chat-product-color">
+
+                                                      {
+                                                        product.colorCode &&
+                                                        (
+
+                                                          <span
+                                                            className="gd-chat-product-color-chip"
+                                                            style={{
+                                                              backgroundColor:
+                                                                product.colorCode,
+                                                            }}
+                                                          />
+
+                                                        )
+                                                      }
+
+
+                                                      <span>
+                                                        {product.colorName}
+                                                      </span>
+
+                                                    </div>
+
+                                                  )
+                                                }
+
+
+                                                <div className="gd-chat-product-price">
+
+                                                  {
+                                                    discount >
+                                                      0 &&
+                                                    (
+
+                                                      <span className="gd-chat-product-discount">
+                                                        {discount}%
+                                                      </span>
+
+                                                    )
+                                                  }
+
+
+                                                  <strong>
+
+                                                    {
+                                                      salePrice
+                                                        .toLocaleString()
+                                                    }
+                                                    원
+
+                                                  </strong>
+
+
+                                                  {
+                                                    discount >
+                                                      0 &&
+                                                    (
+
+                                                      <del>
+
+                                                        {
+                                                          product
+                                                            .price
+                                                            .toLocaleString()
+                                                        }
+                                                        원
+
+                                                      </del>
+
+                                                    )
+                                                  }
+
+                                                </div>
+
+                                              </div>
+
+                                            </div>
+                                          );
+                                        }
+                                      )
+                                  }
+
+                                </div>
+
+                              </div>
+
+                            )
+                          }
+
+
+                          {/* ACTION */}
+
                           {
                             message.action &&
                             message.action.type ===
                               "NAVIGATE" &&
                             (
+
                               <button
                                 type="button"
                                 className="gd-chat-action-button"
@@ -1534,6 +1965,7 @@ const Chat = () => {
                                 </span>
 
                               </button>
+
                             )
                           }
 
@@ -1559,12 +1991,25 @@ const Chat = () => {
 
 
           {/* =====================================
-              AI 작성 중
+              별도 로딩 컴포넌트
           ===================================== */}
 
           {
             sending &&
             (
+              <ChatLoadingShowcase />
+            )
+          }
+
+
+          {/* =====================================
+              기존 대기 문구 유지
+          ===================================== */}
+
+          {
+            sending &&
+            (
+
               <div className="gd-chat-message-row bot">
 
                 <div className="gd-chat-message-wrap">
@@ -1582,11 +2027,13 @@ const Chat = () => {
 
 
                     <span>
+
                       {
                         LOADING_MESSAGES[
                           loadingMessageIndex
                         ]
                       }
+
                     </span>
 
                   </div>
@@ -1594,6 +2041,7 @@ const Chat = () => {
                 </div>
 
               </div>
+
             )
           }
 
@@ -1607,13 +2055,12 @@ const Chat = () => {
         </div>
 
 
-        {/* =====================================
-            오류
-        ===================================== */}
+        {/* ERROR */}
 
         {
           error &&
           (
+
             <div className="gd-chat-error">
 
               <span>
@@ -1636,13 +2083,12 @@ const Chat = () => {
               </button>
 
             </div>
+
           )
         }
 
 
-        {/* =====================================
-            입력
-        ===================================== */}
+        {/* INPUT */}
 
         <div className="gd-chat-input-area">
 
@@ -1702,15 +2148,16 @@ const Chat = () => {
 
           <div className="gd-chat-input-bottom">
 
-            <span>
-            </span>
+            <span />
 
 
             <span>
+
               {
                 input.length
               }
               /2000
+
             </span>
 
           </div>

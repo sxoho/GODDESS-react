@@ -5065,3 +5065,393 @@
     min-width: 760px;
   }
 }
+/* =========================================================
+   CUSTOMER QNA AI ANALYSIS - FINAL
+   여신강림 컬러 + 별 로딩
+========================================================= */
+
+
+/* =========================================================
+   AI 분석 박스
+========================================================= */
+
+.mypage-customer-qna-ai {
+  position: relative;
+
+  margin: 24px 0 30px;
+  padding: 24px 26px;
+
+  overflow: hidden;
+
+  border: 1px solid #eadbdd;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fffdfd 0%,
+      #fff8fa 55%,
+      #fffafb 100%
+    );
+}
+
+
+/* 오른쪽 배경 장식 */
+
+.mypage-customer-qna-ai::after {
+  content: "";
+
+  position: absolute;
+
+  top: -70px;
+  right: -45px;
+
+  width: 180px;
+  height: 180px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(
+      207,
+      160,
+      173,
+      0.11
+    );
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   상단 AI 제목
+========================================================= */
+
+.mypage-customer-qna-ai-title {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  margin-bottom: 16px;
+}
+
+
+/* AI 배지 */
+
+.mypage-customer-qna-ai-title > span {
+  width: 38px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #d7aab4;
+  border-radius: 0;
+
+  background: #fff4f7;
+
+  color: #ad6676;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+
+/* 제목 */
+
+.mypage-customer-qna-ai-title strong {
+  color: #382f32;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+
+/* 설명 */
+
+.mypage-customer-qna-ai-title p {
+  margin: 3px 0 0;
+
+  color: #a08e93;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   AI 분석 결과
+========================================================= */
+
+.mypage-customer-qna-ai-content {
+  position: relative;
+  z-index: 1;
+
+  padding-top: 17px;
+
+  border-top: 1px solid #eadfe2;
+}
+
+
+.mypage-customer-qna-ai-content > p {
+  margin: 0;
+
+  color: #695c60;
+
+  font-size: 13px;
+
+  line-height: 1.9;
+
+  word-break: keep-all;
+}
+
+
+.mypage-customer-qna-ai-content p.error {
+  color: #a85f6e;
+}
+
+
+/* =========================================================
+   AI 분석 로딩
+========================================================= */
+
+.mypage-customer-qna-ai-loading {
+  min-height: 78px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 19px;
+}
+
+
+/* =========================================================
+   별 AI 로더
+========================================================= */
+
+.mypage-customer-qna-ai-loader {
+  position: relative;
+
+  width: 56px;
+  height: 56px;
+
+  flex: 0 0 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* 회전하는 바깥 궤도 */
+
+.mypage-customer-qna-ai-orbit {
+  position: absolute;
+
+  inset: 0;
+
+  animation:
+    customerQnaAiOrbit
+    2.2s
+    linear
+    infinite;
+}
+
+
+/* 작은 점 공통 */
+
+.mypage-customer-qna-ai-dot {
+  position: absolute;
+
+  display: block;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #ca8d9a;
+}
+
+
+/* 위 점 */
+
+.mypage-customer-qna-ai-dot.dot-1 {
+  top: 2px;
+  left: 25px;
+}
+
+
+/* 오른쪽 아래 */
+
+.mypage-customer-qna-ai-dot.dot-2 {
+  right: 5px;
+  bottom: 10px;
+
+  width: 5px;
+  height: 5px;
+
+  opacity: 0.75;
+}
+
+
+/* 왼쪽 아래 */
+
+.mypage-customer-qna-ai-dot.dot-3 {
+  left: 6px;
+  bottom: 11px;
+
+  width: 4px;
+  height: 4px;
+
+  opacity: 0.5;
+}
+
+
+/* 가운데 별 */
+
+.mypage-customer-qna-ai-star {
+  position: relative;
+
+  z-index: 2;
+
+  color: #b96f80;
+
+  font-size: 26px;
+
+  line-height: 1;
+
+  animation:
+    customerQnaAiStarPulse
+    1.3s
+    ease-in-out
+    infinite;
+}
+
+
+/* =========================================================
+   로딩 문구
+========================================================= */
+
+.mypage-customer-qna-ai-loading-copy {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+
+.mypage-customer-qna-ai-loading-copy strong {
+  color: #473b3f;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+.mypage-customer-qna-ai-loading-copy p {
+  margin: 0;
+
+  color: #a0868d;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+
+  animation:
+    customerQnaAiTextFade
+    0.4s
+    ease;
+}
+
+
+/* =========================================================
+   애니메이션
+========================================================= */
+
+@keyframes customerQnaAiOrbit {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+@keyframes customerQnaAiStarPulse {
+
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+
+}
+
+
+@keyframes customerQnaAiTextFade {
+
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+
+/* =========================================================
+   모바일
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .mypage-customer-qna-ai {
+    padding: 21px 18px;
+  }
+
+
+  .mypage-customer-qna-ai-loading {
+    align-items: flex-start;
+
+    gap: 14px;
+  }
+
+
+  .mypage-customer-qna-ai-loader {
+    width: 48px;
+    height: 48px;
+
+    flex-basis: 48px;
+  }
+
+
+  .mypage-customer-qna-ai-dot.dot-1 {
+    left: 21px;
+  }
+
+}
