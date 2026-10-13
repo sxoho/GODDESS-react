@@ -3,13 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BRAND } from "../config/brand";
 
-import { axiosInstance } from "../components/ToolBak";
+import { axiosInstance, getSpringApiUrl } from "../components/ToolBak";
 
 import goddessLogo from "../assets/logo/goddesslogo1.png";
 
 import "../styles/home/Home.css";
 
-const API_BASE = "http://localhost:9104";
+const BASE_URL  = getSpringApiUrl();
 
 type Product = {
   id?: number;
@@ -67,7 +67,7 @@ const getImageUrl = (filePath?: string) => {
     return filePath;
   }
 
-  return `${API_BASE}${filePath}`;
+  return `${BASE_URL}${filePath}`;
 };
 
 const Home = () => {
@@ -103,15 +103,15 @@ const Home = () => {
           imageResponse,
         ] = await Promise.all([
           fetch(
-            `${API_BASE}/product/find_all`,
+            `${BASE_URL}/product/find_all`,
           ),
 
           fetch(
-            `${API_BASE}/product_color/find_all`,
+            `${BASE_URL}/product_color/find_all`,
           ),
 
           fetch(
-            `${API_BASE}/product_color_image/find_all`,
+            `${BASE_URL}/product_color_image/find_all`,
           ),
         ]);
 

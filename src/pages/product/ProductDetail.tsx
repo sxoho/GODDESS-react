@@ -6,8 +6,9 @@ import "../../styles/product/ProductDetail.css";
 import { useGlobalStore } from "../../store/store";
 import { addCartItem } from "../../api/cartApi";
 import { useSimpleModal } from "../../contexts/SimpleModalContext";
+import { getSpringApiUrl } from "../../components/ToolBak";
 
-const API_BASE = "http://localhost:9104";
+const API_BASE = getSpringApiUrl();
 
 const TEMP_IMAGE =
   "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=90";

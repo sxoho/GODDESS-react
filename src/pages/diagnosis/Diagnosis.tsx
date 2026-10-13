@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGlobalStore } from "../../store/store";
+import { getSpringApiUrl } from "../../components/ToolBak";
+
 import "../../styles/diagnosis/Diagnosis.css";
 
-const API_BASE = "http://localhost:9104";
+const BASE_URL = getSpringApiUrl();
 
 type SkinType =
   | "DRY"
@@ -323,7 +325,7 @@ const Diagnosis = () => {
     try {
       setSaving(true);
 
-      const response = await fetch(`${API_BASE}/skin_diagnosis`, {
+      const response = await fetch(`${BASE_URL}/skin_diagnosis`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

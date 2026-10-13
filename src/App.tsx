@@ -89,7 +89,7 @@ import PersonalColorDiagnosis from "./pages/diagnosis/PersonalColorDiagnosis";
  * GODDESS 전체 라우팅 설정
  *
  * React 실행 주소:
- * http://localhost:5173
+ * http://현재IP:5173
  */
 function App() {
 

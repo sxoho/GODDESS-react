@@ -5,8 +5,9 @@ import { useNavigate } from "react-router-dom";
 
 import { useGlobalStore } from "../../store/store";
 import "../../styles/wishlist/Wishlist.css";
+import { getSpringApiUrl } from "../../components/ToolBak";
 
-const API_BASE = "http://localhost:9104";
+const API_BASE = getSpringApiUrl();
 const PAGE_SIZE = 12;
 
 type WishlistItem = {

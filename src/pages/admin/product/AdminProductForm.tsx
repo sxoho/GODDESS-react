@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import { axiosInstance } from "../../../components/ToolBak";
+import {
+  axiosInstance,
+  getSpringApiUrl
+} from "../../../components/ToolBak";
 import "../../../styles/admin/AdminProductForm.css";
 
 type ProductForm = {
@@ -1418,8 +1421,8 @@ const AdminProductForm = () => {
     }
 
     if (image.filePath) {
-      return `http://localhost:9104${image.filePath}`;
-    }
+  return `${getSpringApiUrl()}${image.filePath}`;
+}
 
     return "";
   };

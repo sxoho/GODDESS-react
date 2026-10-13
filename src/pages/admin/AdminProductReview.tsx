@@ -5,7 +5,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import "../../styles/admin/AdminProductReview.css";
 
-const API_BASE = "http://localhost:9104";
+import { getSpringApiUrl } from '../../components/ToolBak';
+
+const BASE_URL = getSpringApiUrl();
 
 type Review = {
   id: number;
@@ -79,7 +81,7 @@ const AdminProductReview = () => {
       if (rating) params.set("rating", rating);
 
       const response = await fetch(
-        `${API_BASE}/product_review/admin/page?${params.toString()}`
+        `${BASE_URL}/product_review/admin/page?${params.toString()}`
       );
 
       if (!response.ok) {
@@ -127,7 +129,7 @@ const AdminProductReview = () => {
     const nextVisible = review.visible === "Y" ? "N" : "Y";
 
     const response = await fetch(
-      `${API_BASE}/product_review/${review.id}/visible`,
+      `${BASE_URL}/product_review/${review.id}/visible`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

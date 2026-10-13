@@ -1,7 +1,9 @@
 // src/api/deliveryApi.ts
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:9104/api';
+import { getSpringApiUrl } from '../components/ToolBak';
+
+const BASE_URL  = getSpringApiUrl();
 
 export interface ApiResponse<T> {
     success: boolean;

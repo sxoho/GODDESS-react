@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../styles/product/ProductList.css";
 import { useGlobalStore } from "../../store/store";
+import { getSpringApiUrl } from "../../components/ToolBak";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:9104";
+const API_BASE = getSpringApiUrl();
 const PAGE_SIZE = 24;
 
 const SKIN_TYPE_FILTERS = [

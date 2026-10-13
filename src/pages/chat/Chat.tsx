@@ -10,6 +10,7 @@ import {
 
 import {
   axiosInstance,
+  getSpringApiUrl,
 } from "../../components/ToolBak";
 
 import {
@@ -108,7 +109,7 @@ type StoredProductRecommendations = {
 ========================================= */
 
 const SPRING_BASE_URL =
-  "http://localhost:9104";
+  getSpringApiUrl();
 
 
 /* =========================================

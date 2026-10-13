@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useNavigate, useParams } from "react-router-dom";
+import { getSpringApiUrl } from "../../components/ToolBak";
 
 import {
   cancelOrder,
@@ -19,7 +20,7 @@ import ReturnRequestModal from "../../components/order/ReturnRequestModal";
 
 import "../../styles/order/OrderDetail.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:9104";
+const API_BASE = getSpringApiUrl();
 
 type Product = {
   id?: number;

@@ -1,10 +1,10 @@
 // src/api/chatApi.ts
 import axios from 'axios';
-// import { axiosInstance } from '../components/Tool';
+import { getSpringApiUrl } from '../components/ToolBak';
 
 // TODO: [JWT_BYPASS_TEMP] JWT 인증 없이 사용하기 위해 임시 추가된 스토어. 추후 원복 시 삭제
 import { useGlobalStore } from '../store/store';
-const BASE_URL = 'http://localhost:9104/api';
+const BASE_URL = getSpringApiUrl();
 
 export interface ApiResponse<T> {
     success: boolean;

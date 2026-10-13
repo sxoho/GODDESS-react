@@ -11,7 +11,7 @@ import {
 } from "react-router-dom";
 
 import {
-  axiosInstance
+  axiosInstance,getSpringApiUrl
 } from "../../components/ToolBak";
 
 import {
@@ -35,7 +35,8 @@ import "../../styles/member/MyPageOrder.css";
 import "../../styles/member/MyPageBeauty.css";
 
 
-const API_BASE = "http://localhost:9104";
+const API_BASE = getSpringApiUrl();
+
 
 
 const SKIN_TYPE_OPTIONS = [

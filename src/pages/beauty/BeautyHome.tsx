@@ -30,8 +30,9 @@ import {
 } from "../../api/cartApi";
 
 
-const API_BASE =
-  "http://localhost:9104";
+import { getSpringApiUrl } from '../../components/ToolBak';
+
+const BASE_URL  = getSpringApiUrl();
 
 
 
@@ -954,7 +955,7 @@ const [
     }
 
 
-    return `${API_BASE}${path}`;
+    return `${BASE_URL}${path}`;
   };
 
 

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { axiosInstance } from "../../components/ToolBak";
+import { axiosInstance, getSpringApiUrl } from "../../components/ToolBak";
 import { useGlobalStore } from "../../store/store";
 import "../../styles/beauty/BeautyRecommendation.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:9104";
+const BASE_URL = getSpringApiUrl();
 
 const PERSONAL_COLOR_LABELS: Record<string, string> = {
   SPRING_WARM: "봄 웜",
@@ -85,7 +85,7 @@ type HistoryDisplayItem = RecommendationResult & {
 const getImageUrl = (path?: string | null) => {
   if (!path) return "";
   if (/^https?:\/\//.test(path)) return path;
-  return `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
+  return `${BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 };
 
 const getLabel = (
