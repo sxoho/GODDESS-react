@@ -579,9 +579,7 @@ const Home = () => {
             </p>
           </div>
 
-          <p className="home-section-side">
-            REAL BEAUTY EXPERIENCE
-          </p>
+         
         </div>
 
         <div className="makeup-experience-layout">
@@ -900,14 +898,7 @@ const Home = () => {
             </div>
           </article>
         </div>
-
-        <div className="analysis-recommend-flow">
-          <span>CHECK</span>
-          <i>→</i>
-          <span>DISCOVER</span>
-          <i>→</i>
-          <span>YOUR BEAUTY</span>
-        </div>
+    
       </section>
 
       {/* =================================

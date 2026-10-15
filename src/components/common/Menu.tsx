@@ -178,7 +178,7 @@ const Menu = () => {
 
           <div className="goddess-header-left">
             <span>
-              DISCOVER YOUR BEAUTY
+            ʚ 여신강림 ɞ
             </span>
           </div>
 

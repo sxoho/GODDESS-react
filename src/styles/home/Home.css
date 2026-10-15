@@ -1486,7 +1486,11 @@
 
   justify-content: space-between;
 
-  margin-bottom: 65px;
+  /* margin-bottom: 65px; */
+}
+
+.home-makeup-experience .home-section-heading {
+  margin-bottom: 25px;
 }
 
 .home-section-heading h2 {
@@ -4456,7 +4460,7 @@
   content: "";
   display: block;
   width: 100%;
-  margin-bottom: 86px;
+  margin-bottom: 1px;
   border-top: 1px solid rgba(23, 23, 23, 0.09);
 }
 
@@ -4492,7 +4496,7 @@
 
 /* 바로 이전 AI MAKEUP 섹션의 아래 공백을 줄임 */
 .home-makeup-experience {
-  padding-bottom: 50px;
+  padding-bottom: 30px;
 }
 
 /* BEAUTY CHECK 시작선과 제목 사이 간격 축소 */
